@@ -1,20 +1,23 @@
 import 'package:alsat/app/global/app_decoration.dart';
+import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
+import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
 
-class FilterView extends StatelessWidget {
+class FilterView extends GetView<FilterController> {
   const FilterView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final _credit = ValueNotifier<bool>(false);
-    final _exchange = ValueNotifier<bool>(false);
-    final _hasVin = ValueNotifier<bool>(false);
+    final _credit = ValueNotifier<bool>(controller.credit.value);
+    final _exchange = ValueNotifier<bool>(controller.exchange.value);
+    final _hasVin = ValueNotifier<bool>(controller.hasVinCode.value);
 
     return Scaffold(
       body: Padding(
@@ -66,7 +69,7 @@ class FilterView extends StatelessWidget {
                         ),
                         2.verticalSpace,
                         Text(
-                          "Automobile",
+                          controller.category.toString(),
                           style: medium.copyWith(
                             fontSize: 10.sp,
                             color: Colors.black54,
@@ -85,42 +88,53 @@ class FilterView extends StatelessWidget {
             ),
             //Location Section
             SliverToBoxAdapter(
-              child: Container(
-                decoration: borderedContainer,
-                margin: EdgeInsets.only(top: 10.h),
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.h,
-                  horizontal: 12.w,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Location",
-                          style: bold.copyWith(
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                        2.verticalSpace,
-                        Text(
-                          "Not Chosen Yet",
-                          style: medium.copyWith(
-                            fontSize: 10.sp,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
+              child: GestureDetector(
+                onTap: () {
+                  Get.bottomSheet(
+                    FilterBottomSheet(
+                      title: "Location",
+                      data: controller.dlocation,
+                      selectedData: controller.location,
                     ),
-                    Icon(
-                      Icons.keyboard_arrow_right,
-                      size: 30.h,
-                      color: AppColors.primary,
-                    )
-                  ],
+                  );
+                },
+                child: Container(
+                  decoration: borderedContainer,
+                  margin: EdgeInsets.only(top: 10.h),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10.h,
+                    horizontal: 12.w,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Location",
+                            style: bold.copyWith(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          2.verticalSpace,
+                          Text(
+                            "Not Chosen Yet",
+                            style: medium.copyWith(
+                              fontSize: 10.sp,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Icon(
+                        Icons.keyboard_arrow_right,
+                        size: 30.h,
+                        color: AppColors.primary,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -318,7 +332,15 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Model",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Model",
+                            data: controller.dbrand,
+                            selectedData: controller.brand,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   10.horizontalSpace,
@@ -326,7 +348,15 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Body Type",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Body Type",
+                            data: controller.dbodyType,
+                            selectedData: controller.bodyType,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -339,7 +369,15 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Drive Type",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Drive Type",
+                            data: controller.ddriveType,
+                            selectedData: controller.driveType,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   10.horizontalSpace,
@@ -347,7 +385,15 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Engine Type",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Engine Type",
+                            data: controller.dengineType,
+                            selectedData: controller.engineType,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ],
@@ -360,7 +406,15 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Transmission",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Transmission",
+                            data: controller.dtransmission,
+                            selectedData: controller.transmission,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   10.horizontalSpace,
@@ -381,14 +435,22 @@ class FilterView extends StatelessWidget {
                     child: FilterOptionWidget(
                       title: "Color",
                       subTitle: "Not Chosen Yet",
-                      onTap: () {},
+                      onTap: () {
+                        Get.bottomSheet(
+                          FilterBottomSheet(
+                            title: "Color",
+                            data: controller.dcolor,
+                            selectedData: controller.color,
+                          ),
+                        );
+                      },
                     ),
                   ),
                   10.horizontalSpace,
                   Expanded(
                     child: FilterOptionWidget(
                       title: "Mileage",
-                      subTitle: "1994 - 2009",
+                      subTitle: " ~ km",
                       onTap: () {},
                     ),
                   ),
