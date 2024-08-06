@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:logger/logger.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -19,8 +18,14 @@ enum RequestType {
 }
 
 class BaseClient {
-  static final Dio _dio = Dio(BaseOptions(headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}))
-    ..interceptors.add(PrettyDioLogger(
+  static final Dio _dio = Dio(
+    BaseOptions(
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+    ),
+  )..interceptors.add(PrettyDioLogger(
       requestHeader: true,
       requestBody: true,
       responseBody: true,
@@ -59,6 +64,7 @@ class BaseClient {
           url,
           onReceiveProgress: onReceiveProgress,
           queryParameters: queryParameters,
+          data: data,
           options: Options(
             headers: headers,
           ),

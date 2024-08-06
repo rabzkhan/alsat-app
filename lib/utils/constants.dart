@@ -1,4 +1,4 @@
 class Constants {
-  static const baseUrl = 'https://jsonplaceholder.typicode.com';
-  static const todosApiUrl = baseUrl + '/todos';
+  static const baseUrl = 'https://alsat-api.flutterrwave.pro/app/v1';
+  static const filter = '/posts';
 }
