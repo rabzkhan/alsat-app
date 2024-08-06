@@ -506,6 +506,9 @@ class FilterView extends GetView<FilterController> {
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
                         AdvancedSwitch(
+                          onChanged: (value) {
+                            controller.credit.value = value;
+                          },
                           controller: _credit,
                           activeColor: AppColors.primary,
                           inactiveColor: Colors.grey,
@@ -525,6 +528,9 @@ class FilterView extends GetView<FilterController> {
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
                         AdvancedSwitch(
+                          onChanged: (value) {
+                            controller.exchange.value = value;
+                          },
                           controller: _exchange,
                           activeColor: AppColors.primary,
                           inactiveColor: Colors.grey,
@@ -544,6 +550,9 @@ class FilterView extends GetView<FilterController> {
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
                         AdvancedSwitch(
+                          onChanged: (value) {
+                            controller.hasVinCode.value = value;
+                          },
                           controller: _hasVin,
                           activeColor: AppColors.primary,
                           inactiveColor: Colors.grey,

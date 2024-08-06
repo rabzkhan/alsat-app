@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:get/get_utils/get_utils.dart';
 import 'package:logger/logger.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
 import '../../config/translations/strings_enum.dart';
 import '../components/custom_snackbar.dart';
 import 'api_exceptions.dart';
@@ -25,15 +22,7 @@ class BaseClient {
         'Accept': 'application/json',
       },
     ),
-  )..interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      error: true,
-      compact: true,
-      maxWidth: 90,
-    ));
+  );
 
   // request timeout (default 10 seconds)
   static const int _timeoutInSeconds = 10;
@@ -55,9 +44,7 @@ class BaseClient {
     dynamic data,
   }) async {
     try {
-      // 1) indicate loading state
       await onLoading?.call();
-      // 2) try to perform http request
       late Response response;
       if (requestType == RequestType.get) {
         response = await _dio.get(
@@ -108,6 +95,7 @@ class BaseClient {
       _handleTimeoutException(url: url, onError: onError);
     } catch (error, stackTrace) {
       // print the line of code that throw unexpected exception
+
       Logger().e(stackTrace);
       // unexpected error for example (parsing json error)
       _handleUnexpectedException(url: url, onError: onError, error: error);

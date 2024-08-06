@@ -32,12 +32,12 @@ class FilterController extends GetxController {
   RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dtransmission = <String>["Manual", "Auto", "Triptonik"].obs;
-  RxList<String> dcolor = <String>["Red", "Blac", "Silver", "Blue", "White", "Marron"].obs;
+  RxList<String> dcolor = <String>["Red", "Black", "Silver", "Blue", "White", "Marron"].obs;
 
   // RxInt priceFrom = 0.obs;
   // RxInt priceTo = 100000.obs;
-  Rx<TextEditingController> priceFrom = TextEditingController(text: "").obs;
-  Rx<TextEditingController> priceTo = TextEditingController(text: "").obs;
+  Rx<TextEditingController> priceFrom = TextEditingController(text: "0").obs;
+  Rx<TextEditingController> priceTo = TextEditingController(text: "300000").obs;
 
   RxInt yearFrom = 1995.obs;
   RxInt yearTo = 2020.obs;
@@ -53,34 +53,32 @@ class FilterController extends GetxController {
   Rx<ItemModel> itemModel = ItemModel().obs;
 
   applyFilter() async {
-    Map filterData = {
-      // "category": "Automobile",
-      // "location": "New York",
-      // "condition": "Used",
-      "price_from": 2900,
-      "price_to": 3000,
-      // "brand": "Toyota",
-      // "model": "Camry",
-      // "body_type": "Sedan",
-      // "drive_type": "FWD",
-      // "engine_type": "Hybrid",
-      // "transmission": "Automatic",
-      // "year_from": 2010,
-      // "year_to": 2020,
-      // "color": "Blue",
-      // "mileage_from": 10000,
+    var filterData = {
+      // "location": location.value != "Not Chosen Yet" ? location.value : '',
+      // "condition": condition.value,
+      "price_from": priceFrom.value.text,
+      "price_to": priceTo.value.text
+      // "brand": brand.value != "Not Chosen Yet" ? brand.value : '',
+      // "model": model.value != "Not Chosen Yet" ? model.value : '',
+      // "body_type": bodyType.value != "Not Chosen Yet" ? bodyType.value : '',
+      // "drive_type": driveType.value != "Not Chosen Yet" ? driveType.value : '',
+      // "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      // "transmission": transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      // "year_from": 2000,
+      // "year_to": 2024,
+      // "color": color.value != "Not Chosen Yet" ? color.value : '',
+      // "mileage_from": 0,
       // "mileage_to": 100000,
-      // "credit": true,
-      // "exchange": false,
-      // "has_vin_code": true
+      // "credit": credit.value,
+      // "exchange": exchange.value,
+      // "has_vin_code": hasVinCode.value
     };
-    Logger().d(jsonEncode(filterData));
+    Logger().d(json.encode(filterData).toString());
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.filter,
       RequestType.get,
-      headers: {},
       queryParameters: {
-        "limit": 2,
+        "limit": 10,
         // "next": "",
       },
       data: json.encode(filterData),
@@ -88,11 +86,14 @@ class FilterController extends GetxController {
         isFilterLoading.value = true;
       },
       onSuccess: (response) {
-        itemModel.value = ItemModel.fromJson(response.data);
-        itemList.add(itemModel.value);
+        List<dynamic> jsonResponse = response.data;
+        // Map the JSON response to a list of ItemModel
+        itemList.value = jsonResponse.map((item) => ItemModel.fromJson(item)).toList();
         isFilterLoading.value = false;
+        Logger().d(itemList.first.title);
       },
       onError: (error) {
+        Logger().d("$error <- error");
         isFilterLoading.value = false;
       },
     );
