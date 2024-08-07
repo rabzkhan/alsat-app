@@ -18,6 +18,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   google_fonts: ^6.2.1
   flutter_advanced_switch: ^3.1.0
+  cached_network_image: ^3.4.0
 
 dev_dependencies:
   mockito:

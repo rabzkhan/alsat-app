@@ -1,6 +1,7 @@
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/state_manager.dart';
@@ -23,6 +24,14 @@ class FilterResultsView extends GetView<FilterController> {
       ),
       body: Obx(
         () {
+          if (controller.itemList.isEmpty) {
+            return Center(
+              child: Text(
+                "No matching results found!",
+                style: medium.copyWith(color: Colors.grey),
+              ),
+            );
+          }
           return ListView.builder(
             padding: EdgeInsets.only(top: 10.h),
             itemCount: controller.itemList.length,
@@ -49,11 +58,26 @@ class FilterResultsView extends GetView<FilterController> {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.all(Radius.circular(14.r)),
-                      child: Image.asset(
-                        "assets/images/car-2.jpg",
+                      child: CachedNetworkImage(
+                        imageUrl: controller.getRandomImageUrl(),
                         height: 100.h,
                         width: 90.w,
                         fit: BoxFit.cover,
+                        errorWidget: (context, url, error) => ClipRRect(
+                          borderRadius: BorderRadius.circular(14.r),
+                          child: Image.asset(
+                            "assets/images/placeholder.jpg",
+                            height: 100.h,
+                            width: 90.w,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        placeholder: (context, url) => Image.asset(
+                          "assets/images/placeholder.jpg",
+                          height: 100.h,
+                          width: 90.w,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                     20.horizontalSpace,
@@ -64,9 +88,12 @@ class FilterResultsView extends GetView<FilterController> {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                "${controller.itemList[index].carInfo?.brand ?? ''} ${controller.itemList[index].carInfo?.model ?? ''}",
-                                style: bold,
+                              Flexible(
+                                child: Text(
+                                  "${controller.itemList[index].carInfo?.brand ?? ''} ${controller.itemList[index].carInfo?.model ?? ''}",
+                                  maxLines: 1,
+                                  style: bold,
+                                ),
                               ),
                               5.horizontalSpace,
                               Text(
