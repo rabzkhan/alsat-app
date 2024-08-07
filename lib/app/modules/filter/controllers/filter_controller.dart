@@ -85,8 +85,8 @@ class FilterController extends GetxController {
       //"color": color.value != "Not Chosen Yet" ? color.value : '',
       // "mileage_from": 0,
       // "mileage_to": 100000,
-      // "credit": credit.value,
-      // "exchange": exchange.value,
+      "credit": credit.value,
+      //"exchange": exchange.value,
       // "has_vin_code": hasVinCode.value
     };
     Logger().d(json.encode(filterData).toString());
