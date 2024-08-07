@@ -8,7 +8,7 @@ ThemeData appTheme() => ThemeData(
       useMaterial3: false,
       fontFamily: GoogleFonts.inter().fontFamily,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: Colors.white,
+      scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
       tabBarTheme: TabBarTheme(
         labelColor: AppColors.primary,
         unselectedLabelColor: Colors.white,

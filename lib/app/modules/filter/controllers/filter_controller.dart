@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:alsat/app/modules/filter/models/item_model.dart';
+import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -9,6 +10,7 @@ import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:logger/logger.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
+import '../views/filter_results_view.dart';
 
 class FilterController extends GetxController {
   RxBool isFilterLoading = false.obs;
@@ -56,8 +58,8 @@ class FilterController extends GetxController {
     var filterData = {
       // "location": location.value != "Not Chosen Yet" ? location.value : '',
       // "condition": condition.value,
-      "price_from": priceFrom.value.text,
-      "price_to": priceTo.value.text
+      "price_from": int.parse(priceFrom.value.text),
+      "price_to": int.parse(priceTo.value.text)
       // "brand": brand.value != "Not Chosen Yet" ? brand.value : '',
       // "model": model.value != "Not Chosen Yet" ? model.value : '',
       // "body_type": bodyType.value != "Not Chosen Yet" ? bodyType.value : '',
@@ -78,7 +80,7 @@ class FilterController extends GetxController {
       Constants.baseUrl + Constants.filter,
       RequestType.get,
       queryParameters: {
-        "limit": 10,
+        "limit": 20,
         // "next": "",
       },
       data: json.encode(filterData),
@@ -90,7 +92,7 @@ class FilterController extends GetxController {
         // Map the JSON response to a list of ItemModel
         itemList.value = jsonResponse.map((item) => ItemModel.fromJson(item)).toList();
         isFilterLoading.value = false;
-        Logger().d(itemList.first.title);
+        Get.to(() => const FilterResultsView());
       },
       onError: (error) {
         Logger().d("$error <- error");

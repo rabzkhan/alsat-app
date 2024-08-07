@@ -574,23 +574,40 @@ class FilterView extends GetView<FilterController> {
               ),
             ),
             SliverToBoxAdapter(
-              child: ElevatedButton(
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
-                  padding: EdgeInsets.symmetric(vertical: 18.h),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
+              child: SizedBox(
+                height: 60.h,
+                child: ElevatedButton(
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: AppColors.primary,
+                    padding: EdgeInsets.symmetric(vertical: 18.h),
+                    elevation: 0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  controller.applyFilter();
-                },
-                child: Text(
-                  "Filter",
-                  style: medium.copyWith(
-                    color: Colors.white,
-                  ),
+                  onPressed: () {
+                    controller.applyFilter();
+                  },
+                  child: Obx(() {
+                    if (controller.isFilterLoading.value) {
+                      return SizedBox(
+                        height: 20.h,
+                        width: 20.w,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 1,
+                          ),
+                        ),
+                      );
+                    }
+                    return Text(
+                      "Filter",
+                      style: medium.copyWith(
+                        color: Colors.white,
+                      ),
+                    );
+                  }),
                 ),
               ),
             ),
