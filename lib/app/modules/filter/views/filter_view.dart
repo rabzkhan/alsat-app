@@ -20,21 +20,21 @@ class FilterView extends GetView<FilterController> {
     final _hasVin = ValueNotifier<bool>(controller.hasVinCode.value);
 
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              elevation: 0.4,
-              centerTitle: true,
-              title: Image.asset(
-                "assets/icons/appicon.png",
-                height: 30.h,
-              ),
+      body: CustomScrollView(
+        physics: const BouncingScrollPhysics(),
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            elevation: 0.4,
+            centerTitle: true,
+            title: Image.asset(
+              "assets/icons/appicon.png",
+              height: 30.h,
             ),
-            SliverToBoxAdapter(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(top: 10.h),
               child: Text(
                 "Filter",
                 textAlign: TextAlign.center,
@@ -43,11 +43,65 @@ class FilterView extends GetView<FilterController> {
                 ),
               ),
             ),
-            // //Category Section
-            SliverToBoxAdapter(
+          ),
+          // //Category Section
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: borderedContainer,
+              margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
+              padding: EdgeInsets.symmetric(
+                vertical: 10.h,
+                horizontal: 12.w,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Category",
+                        style: bold.copyWith(
+                          fontSize: 12.sp,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      2.verticalSpace,
+                      Text(
+                        controller.category.toString(),
+                        style: bold.copyWith(
+                          fontSize: 16.sp,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30.h,
+                    color: AppColors.primary,
+                  )
+                ],
+              ),
+            ),
+          ),
+
+          // //Location Section
+          SliverToBoxAdapter(
+            child: GestureDetector(
+              onTap: () {
+                Get.bottomSheet(
+                  FilterBottomSheet(
+                    title: "Location",
+                    data: controller.dlocation,
+                    selectedData: controller.location,
+                  ),
+                );
+              },
               child: Container(
                 decoration: borderedContainer,
-                margin: EdgeInsets.only(top: 14.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -60,18 +114,19 @@ class FilterView extends GetView<FilterController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Category",
+                          "Location",
                           style: bold.copyWith(
-                            fontSize: 12.sp,
-                            color: Colors.black54,
+                            fontSize: 14.sp,
                           ),
                         ),
                         2.verticalSpace,
-                        Text(
-                          controller.category.toString(),
-                          style: bold.copyWith(
-                            fontSize: 16.sp,
-                            color: Colors.black,
+                        Obx(
+                          () => Text(
+                            controller.location.value,
+                            style: medium.copyWith(
+                              fontSize: 10.sp,
+                              color: Colors.black54,
+                            ),
                           ),
                         ),
                       ],
@@ -85,158 +140,105 @@ class FilterView extends GetView<FilterController> {
                 ),
               ),
             ),
+          ),
 
-            // //Location Section
-            SliverToBoxAdapter(
-              child: GestureDetector(
-                onTap: () {
-                  Get.bottomSheet(
-                    FilterBottomSheet(
-                      title: "Location",
-                      data: controller.dlocation,
-                      selectedData: controller.location,
+          // //Condition section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 12.w),
+                    child: Text(
+                      "Condition",
+                      style: bold.copyWith(
+                        fontSize: 16.sp,
+                      ),
                     ),
-                  );
-                },
-                child: Container(
-                  decoration: borderedContainer,
-                  margin: EdgeInsets.only(top: 10.h),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 10.h,
-                    horizontal: 12.w,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
+                  6.verticalSpace,
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: AppColors.secondary,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(8),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 6.w),
+                      child: Row(
                         children: [
-                          Text(
-                            "Location",
-                            style: bold.copyWith(
-                              fontSize: 14.sp,
-                            ),
-                          ),
-                          2.verticalSpace,
-                          Obx(
-                            () => Text(
-                              controller.location.value,
-                              style: medium.copyWith(
-                                fontSize: 10.sp,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 30.h,
-                        color: AppColors.primary,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            // //Condition section
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(top: 12.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 12.w),
-                      child: Text(
-                        "Condition",
-                        style: bold.copyWith(
-                          fontSize: 16.sp,
-                        ),
-                      ),
-                    ),
-                    6.verticalSpace,
-                    Container(
-                      decoration: const BoxDecoration(
-                        color: AppColors.secondary,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 6.w),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Obx(
-                                () => ElevatedButton(
-                                  style: OutlinedButton.styleFrom(
-                                      backgroundColor:
-                                          controller.condition.value == "All" ? Colors.white : Colors.transparent,
-                                      elevation: 0,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
-                                  onPressed: () {
-                                    controller.condition.value = "All";
-                                  },
-                                  child: Text(
-                                    "All",
-                                    style: medium.copyWith(
-                                      color: Colors.black,
-                                    ),
+                          Expanded(
+                            child: Obx(
+                              () => ElevatedButton(
+                                style: OutlinedButton.styleFrom(
+                                    backgroundColor:
+                                        controller.condition.value == "All" ? Colors.white : Colors.transparent,
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                onPressed: () {
+                                  controller.condition.value = "All";
+                                },
+                                child: Text(
+                                  "All",
+                                  style: medium.copyWith(
+                                    color: Colors.black,
                                   ),
                                 ),
                               ),
                             ),
-                            Expanded(
-                              child: Obx(() => ElevatedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        backgroundColor: controller.condition.value == "Brand New"
-                                            ? Colors.white
-                                            : Colors.transparent,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
-                                    onPressed: () {
-                                      controller.condition.value = "Brand New";
-                                    },
-                                    child: Text(
-                                      "Brand New",
-                                      style: medium.copyWith(
-                                        color: Colors.black,
-                                      ),
+                          ),
+                          Expanded(
+                            child: Obx(() => ElevatedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor:
+                                          controller.condition.value == "Brand New" ? Colors.white : Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                  onPressed: () {
+                                    controller.condition.value = "Brand New";
+                                  },
+                                  child: Text(
+                                    "Brand New",
+                                    style: medium.copyWith(
+                                      color: Colors.black,
                                     ),
-                                  )),
-                            ),
-                            Expanded(
-                              child: Obx(() => ElevatedButton(
-                                    style: OutlinedButton.styleFrom(
-                                        backgroundColor:
-                                            controller.condition.value == "Used" ? Colors.white : Colors.transparent,
-                                        elevation: 0,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
-                                    onPressed: () {
-                                      controller.condition.value = "Used";
-                                    },
-                                    child: Text(
-                                      "Used",
-                                      style: medium.copyWith(
-                                        color: Colors.black,
-                                      ),
+                                  ),
+                                )),
+                          ),
+                          Expanded(
+                            child: Obx(() => ElevatedButton(
+                                  style: OutlinedButton.styleFrom(
+                                      backgroundColor:
+                                          controller.condition.value == "Used" ? Colors.white : Colors.transparent,
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                  onPressed: () {
+                                    controller.condition.value = "Used";
+                                  },
+                                  child: Text(
+                                    "Used",
+                                    style: medium.copyWith(
+                                      color: Colors.black,
                                     ),
-                                  )),
-                            ),
-                          ],
-                        ),
+                                  ),
+                                )),
+                          ),
+                        ],
                       ),
-                    )
-                  ],
-                ),
+                    ),
+                  )
+                ],
               ),
             ),
+          ),
 
-            // //Price Section
-            SliverToBoxAdapter(
+          // //Price Section
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -294,65 +296,68 @@ class FilterView extends GetView<FilterController> {
                 ],
               ),
             ),
+          ),
 
-            // //Brand Section
-            // //Location Section
-            SliverToBoxAdapter(
-              child: GestureDetector(
-                onTap: () {
-                  Get.bottomSheet(
-                    FilterBottomSheet(
-                      title: "Brand",
-                      data: controller.dbrand,
-                      selectedData: controller.brand,
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: borderedContainer,
-                  margin: EdgeInsets.only(top: 16.h, bottom: 10.h),
-                  padding: EdgeInsets.symmetric(
-                    vertical: 10.h,
-                    horizontal: 12.w,
+          // //Brand Section
+          // //Location Section
+          SliverToBoxAdapter(
+            child: GestureDetector(
+              onTap: () {
+                Get.bottomSheet(
+                  FilterBottomSheet(
+                    title: "Brand",
+                    data: controller.dbrand,
+                    selectedData: controller.brand,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Brand",
-                            style: bold.copyWith(
-                              fontSize: 14.sp,
+                );
+              },
+              child: Container(
+                decoration: borderedContainer,
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.h,
+                  horizontal: 12.w,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Brand",
+                          style: bold.copyWith(
+                            fontSize: 14.sp,
+                          ),
+                        ),
+                        2.verticalSpace,
+                        Obx(
+                          () => Text(
+                            controller.brand.value,
+                            style: medium.copyWith(
+                              fontSize: 10.sp,
+                              color: Colors.black54,
                             ),
                           ),
-                          2.verticalSpace,
-                          Obx(
-                            () => Text(
-                              controller.brand.value,
-                              style: medium.copyWith(
-                                fontSize: 10.sp,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                      Icon(
-                        Icons.add_circle_outline,
-                        size: 30.h,
-                        color: AppColors.liteGray,
-                      )
-                    ],
-                  ),
+                        )
+                      ],
+                    ),
+                    Icon(
+                      Icons.add_circle_outline,
+                      size: 30.h,
+                      color: AppColors.liteGray,
+                    )
+                  ],
                 ),
               ),
             ),
+          ),
 
-            // //
-            SliverToBoxAdapter(
+          // //
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
                   Expanded(
@@ -389,8 +394,11 @@ class FilterView extends GetView<FilterController> {
                 ],
               ),
             ),
+          ),
 
-            SliverToBoxAdapter(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
                   Expanded(
@@ -431,7 +439,10 @@ class FilterView extends GetView<FilterController> {
                 ],
               ),
             ),
-            SliverToBoxAdapter(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
                   Expanded(
@@ -460,7 +471,10 @@ class FilterView extends GetView<FilterController> {
                 ],
               ),
             ),
-            SliverToBoxAdapter(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: Row(
                 children: [
                   Expanded(
@@ -491,89 +505,101 @@ class FilterView extends GetView<FilterController> {
                 ],
               ),
             ),
-            // //Toggle Switches
+          ),
+          // //Toggle Switches
 
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: EdgeInsets.only(left: 12.w).copyWith(top: 20.h),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 20.h, left: 12.w),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: Text(
                           "Credit",
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
-                        AdvancedSwitch(
-                          onChanged: (value) {
-                            controller.credit.value = value;
-                          },
-                          controller: _credit,
-                          activeColor: AppColors.primary,
-                          inactiveColor: Colors.grey,
-                          width: 45.0,
-                          height: 25.h,
-                          enabled: true,
-                          disabledOpacity: 0.5,
-                        ),
-                      ],
-                    ),
-                    10.verticalSpace,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
+                      ),
+                      AdvancedSwitch(
+                        onChanged: (value) {
+                          controller.credit.value = value;
+                        },
+                        controller: _credit,
+                        activeColor: AppColors.primary,
+                        inactiveColor: Colors.grey,
+                        width: 45.0,
+                        height: 25.h,
+                        enabled: true,
+                        disabledOpacity: 0.5,
+                      ),
+                    ],
+                  ),
+                  10.verticalSpace,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: Text(
                           "Exchange",
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
-                        AdvancedSwitch(
-                          onChanged: (value) {
-                            controller.exchange.value = value;
-                          },
-                          controller: _exchange,
-                          activeColor: AppColors.primary,
-                          inactiveColor: Colors.grey,
-                          width: 45.0,
-                          height: 25.h,
-                          enabled: true,
-                          disabledOpacity: 0.5,
-                        ),
-                      ],
-                    ),
-                    10.verticalSpace,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
+                      ),
+                      AdvancedSwitch(
+                        onChanged: (value) {
+                          controller.exchange.value = value;
+                        },
+                        controller: _exchange,
+                        activeColor: AppColors.primary,
+                        inactiveColor: Colors.grey,
+                        width: 45.0,
+                        height: 25.h,
+                        enabled: true,
+                        disabledOpacity: 0.5,
+                      ),
+                    ],
+                  ),
+                  10.verticalSpace,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 10.w),
+                        child: Text(
                           "Has A VIN Code",
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
-                        AdvancedSwitch(
-                          onChanged: (value) {
-                            controller.hasVinCode.value = value;
-                          },
-                          controller: _hasVin,
-                          activeColor: AppColors.primary,
-                          inactiveColor: Colors.grey,
-                          width: 45.0,
-                          height: 25.h,
-                          enabled: true,
-                          disabledOpacity: 0.5,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                      AdvancedSwitch(
+                        onChanged: (value) {
+                          controller.hasVinCode.value = value;
+                        },
+                        controller: _hasVin,
+                        activeColor: AppColors.primary,
+                        inactiveColor: Colors.grey,
+                        width: 45.0,
+                        height: 25.h,
+                        enabled: true,
+                        disabledOpacity: 0.5,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
+          ),
 
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 40.h,
-              ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 30.h,
             ),
-            SliverToBoxAdapter(
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: SizedBox(
                 height: 60.h,
                 child: ElevatedButton(
@@ -611,13 +637,13 @@ class FilterView extends GetView<FilterController> {
                 ),
               ),
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 30.h,
-              ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 30.h,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

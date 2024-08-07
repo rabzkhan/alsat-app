@@ -6,7 +6,7 @@ import 'app_text_theme.dart';
 
 ThemeData appTheme() => ThemeData(
       useMaterial3: false,
-      fontFamily: GoogleFonts.inter().fontFamily,
+      // fontFamily: GoogleFonts.inter().fontFamily,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
       tabBarTheme: TabBarTheme(
