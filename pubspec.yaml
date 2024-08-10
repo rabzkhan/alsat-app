@@ -19,6 +19,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_advanced_switch: ^3.1.0
   cached_network_image: ^3.4.0
+  pull_to_refresh: ^2.0.0
 
 dev_dependencies:
   mockito:

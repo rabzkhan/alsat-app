@@ -256,8 +256,12 @@ class FilterView extends GetView<FilterController> {
                     children: [
                       Expanded(
                         child: TextField(
+                          autofocus: false,
                           controller: controller.priceFrom.value,
                           onChanged: (value) {},
+                          onTapOutside: (event) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             filled: true,
@@ -277,6 +281,10 @@ class FilterView extends GetView<FilterController> {
                         child: TextField(
                           controller: controller.priceTo.value,
                           onChanged: (value) {},
+                          autofocus: false,
+                          onTapOutside: (event) {
+                            FocusManager.instance.primaryFocus?.unfocus();
+                          },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
                             filled: true,

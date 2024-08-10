@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:logger/logger.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
 import '../views/filter_results_view.dart';
@@ -44,14 +45,12 @@ class FilterController extends GetxController {
   RxList<String> dlocation = <String>["New York", "Texas"].obs;
   RxList<String> dbrand = <String>["Toyota", "Honda", "Bmw", "Volvo", "Audi", "Mercedes Benz"].obs;
   RxList<String> dmodel = <String>["Camry", "Corolla", "X3", "XC60", "A6", "C-Class"].obs;
-  RxList<String> dbodyType = <String>["Coupe", "Sedam", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dbodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
-  RxList<String> dtransmission = <String>["Manual", "Auto", "Triptonik"].obs;
-  RxList<String> dcolor = <String>["Red", "Black", "Silver", "Blue", "White", "Marron"].obs;
+  RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
+  RxList<String> dcolor = <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
 
-  // RxInt priceFrom = 0.obs;
-  // RxInt priceTo = 100000.obs;
   Rx<TextEditingController> priceFrom = TextEditingController(text: "0").obs;
   Rx<TextEditingController> priceTo = TextEditingController(text: "300000").obs;
 
@@ -68,7 +67,9 @@ class FilterController extends GetxController {
   RxList<ItemModel> itemList = <ItemModel>[].obs;
   Rx<ItemModel> itemModel = ItemModel().obs;
 
-  applyFilter() async {
+  RefreshController refreshController = RefreshController(initialRefresh: false);
+
+  applyFilter({bool refresh = false, bool paginate = false, String? nextValue}) async {
     var filterData = {
       "location": location.value != "Not Chosen Yet" ? location.value : '',
       "condition": condition.value,
@@ -86,16 +87,16 @@ class FilterController extends GetxController {
       // "mileage_from": 0,
       // "mileage_to": 100000,
       "credit": credit.value,
-      //"exchange": exchange.value,
+      // "exchange": exchange.value,
       // "has_vin_code": hasVinCode.value
     };
-    Logger().d(json.encode(filterData).toString());
+
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.filter,
       RequestType.get,
       queryParameters: {
-        "limit": 1000,
-        // "next": "",
+        "limit": 30,
+        if (!refresh && paginate && nextValue != null) "next": nextValue,
       },
       data: json.encode(filterData),
       onLoading: () {
@@ -104,9 +105,23 @@ class FilterController extends GetxController {
       onSuccess: (response) {
         List<dynamic> jsonResponse = response.data;
         // Map the JSON response to a list of ItemModel
-        itemList.value = jsonResponse.map((item) => ItemModel.fromJson(item)).toList();
+        List<ItemModel> newItems = jsonResponse.map((item) => ItemModel.fromJson(item)).toList();
+
+        if (!refresh) {
+          if (paginate) {
+            itemList.addAll(newItems);
+            refreshController.loadComplete();
+          } else {
+            itemList.value = newItems;
+
+            Get.to(() => const FilterResultsView());
+          }
+        } else {
+          itemList.clear();
+          itemList.value = newItems;
+          refreshController.refreshCompleted();
+        }
         isFilterLoading.value = false;
-        Get.to(() => const FilterResultsView());
       },
       onError: (error) {
         Logger().d("$error <- error");

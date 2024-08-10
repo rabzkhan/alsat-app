@@ -3,11 +3,13 @@ part of 'app_pages.dart';
 
 abstract class Routes {
   Routes._();
+  static const INITIAL = _Paths.INITIAL;
   static const FILTER = _Paths.FILTER;
 }
 
 abstract class _Paths {
   _Paths._();
 
+  static const INITIAL = '/splash';
   static const FILTER = '/filter';
 }

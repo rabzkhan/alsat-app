@@ -37,6 +37,7 @@ Future<void> main() async {
           },
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
+          theme: appTheme(),
           locale: MySharedPref.getCurrentLocal(),
           translations: LocalizationService.getInstance(),
         );

@@ -71,7 +71,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               itemBuilder: (BuildContext context, int index) {
                 return InkWell(
                   onTap: () {
-                    widget.selectedData.value = widget.data[index];
+                    if (widget.selectedData.value == widget.data[index]) {
+                      widget.selectedData.value = "Not Chsen Yet";
+                    } else {
+                      widget.selectedData.value = widget.data[index];
+                    }
+
                     setState(() {});
                   },
                   child: Padding(
