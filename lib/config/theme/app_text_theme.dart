@@ -3,20 +3,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 final regular = TextStyle(
   fontWeight: FontWeight.w400,
+  color: Colors.black,
   fontSize: 14.sp,
 );
 
 final medium = TextStyle(
   fontWeight: FontWeight.w500,
+  color: Colors.black,
   fontSize: 14.sp,
 );
 
 final semiBold = TextStyle(
   fontWeight: FontWeight.w600,
+  color: Colors.black,
   fontSize: 14.sp,
 );
 
 final bold = TextStyle(
   fontWeight: FontWeight.w700,
+  color: Colors.black,
   fontSize: 14.sp,
 );

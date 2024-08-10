@@ -88,7 +88,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           padding: EdgeInsets.only(left: 20.w),
                           child: Text(
                             widget.data[index],
-                            style: medium.copyWith(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                            ),
                           ),
                         ),
                         widget.selectedData.value == widget.data[index]

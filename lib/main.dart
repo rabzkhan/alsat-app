@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'app/data/local/my_shared_pref.dart';
 import 'app/routes/app_pages.dart';
 import 'config/theme/app_theme.dart';
-import 'config/translations/localization_service.dart';
 
 Future<void> main() async {
   // wait for bindings
@@ -38,8 +37,8 @@ Future<void> main() async {
           initialRoute: AppPages.INITIAL,
           getPages: AppPages.routes,
           theme: appTheme(),
-          locale: MySharedPref.getCurrentLocal(),
-          translations: LocalizationService.getInstance(),
+          // locale: MySharedPref.getCurrentLocal(),
+          // translations: LocalizationService.getInstance(),
         );
       },
     ),

@@ -104,8 +104,13 @@ class FilterController extends GetxController {
       },
       onSuccess: (response) {
         List<dynamic> jsonResponse = response.data;
-        // Map the JSON response to a list of ItemModel
+
         List<ItemModel> newItems = jsonResponse.map((item) => ItemModel.fromJson(item)).toList();
+
+        if (newItems.isEmpty) {
+          Logger().d("came here");
+          refreshController.loadComplete();
+        }
 
         if (!refresh) {
           if (paginate) {
@@ -113,7 +118,6 @@ class FilterController extends GetxController {
             refreshController.loadComplete();
           } else {
             itemList.value = newItems;
-
             Get.to(() => const FilterResultsView());
           }
         } else {

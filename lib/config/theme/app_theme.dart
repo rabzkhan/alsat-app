@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'app_colors.dart';
 import 'app_text_theme.dart';
 
@@ -28,6 +28,16 @@ ThemeData appTheme() => ThemeData(
         systemOverlayStyle: SystemUiOverlayStyle(
           statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.dark,
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          textStyle: WidgetStateProperty.all(
+            TextStyle(
+              fontSize: 14.sp, // Example font size
+              color: Colors.black, // Explicitly set text color
+            ),
+          ),
         ),
       ),
     );

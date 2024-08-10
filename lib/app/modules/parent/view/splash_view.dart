@@ -15,7 +15,7 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     Future.delayed(
-      const Duration(seconds: 2),
+      const Duration(seconds: 3),
       () {
         Get.offAll(() => const FilterView());
       },
@@ -29,8 +29,8 @@ class _SplashViewState extends State<SplashView> {
       body: Center(
         child: Image.asset(
           'assets/icons/appicon.png',
-          height: 200.h,
-          width: 200.w,
+          height: 200,
+          width: 200,
         )
             .animate(
               onPlay: (controller) => controller.repeat(reverse: true),

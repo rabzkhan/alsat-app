@@ -174,16 +174,19 @@ class FilterView extends GetView<FilterController> {
                             child: Obx(
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
-                                    backgroundColor:
-                                        controller.condition.value == "All" ? Colors.white : Colors.transparent,
-                                    elevation: 0,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                  backgroundColor:
+                                      controller.condition.value == "All" ? Colors.white : Colors.transparent,
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.r),
+                                  ),
+                                ),
                                 onPressed: () {
                                   controller.condition.value = "All";
                                 },
-                                child: Text(
+                                child: const Text(
                                   "All",
-                                  style: medium.copyWith(
+                                  style: TextStyle(
                                     color: Colors.black,
                                   ),
                                 ),
@@ -200,9 +203,9 @@ class FilterView extends GetView<FilterController> {
                                   onPressed: () {
                                     controller.condition.value = "Brand New";
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Brand New",
-                                    style: medium.copyWith(
+                                    style: TextStyle(
                                       color: Colors.black,
                                     ),
                                   ),
@@ -218,9 +221,9 @@ class FilterView extends GetView<FilterController> {
                                   onPressed: () {
                                     controller.condition.value = "Used";
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     "Used",
-                                    style: medium.copyWith(
+                                    style: TextStyle(
                                       color: Colors.black,
                                     ),
                                   ),
@@ -637,7 +640,7 @@ class FilterView extends GetView<FilterController> {
                     }
                     return Text(
                       "Filter",
-                      style: medium.copyWith(
+                      style: TextStyle(
                         color: Colors.white,
                       ),
                     );
