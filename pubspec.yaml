@@ -20,6 +20,7 @@ dependencies:
   flutter_advanced_switch: ^3.1.0
   cached_network_image: ^3.4.0
   pull_to_refresh: ^2.0.0
+  flutter_animate: ^4.5.0
 
 dev_dependencies:
   mockito:

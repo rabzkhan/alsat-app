@@ -1,5 +1,6 @@
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/state_manager.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -54,13 +55,14 @@ class FilterResultsView extends GetView<FilterController> {
             onRefresh: onRefresh,
             onLoading: onLoading,
             child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.only(top: 10.h),
               itemCount: controller.itemList.length,
               scrollDirection: Axis.vertical,
               itemBuilder: (BuildContext context, int index) {
                 return ItemWidget(
                   itemModel: controller.itemList[index],
-                );
+                ).animate().fadeIn();
               },
             ),
           );
