@@ -1,4 +1,32 @@
 {
-  "top_restaurants": "Top Restaurants"
-
+  "hello": "Hello!",
+  "loading": "Loading",
+  
+  "changeTheme": "Change theme",
+  "changeLanguage": "Change language",
+  
+  "noInternetConnection": "No internet connection!",
+  "serverNotResponding": "Server is not responding!",
+  "someThingWentWorng": "Something went wrong",
+  "apiNotFound": "Route not found!",
+  "serverError": "Server error",
+  "urlNotFound": "Url not found",
+  
+  "goodMorning": "Good morning",
+  "name": "Emad Beltaje",
+  "attendanceRegistration": "Attendance Registration",
+  "time": "09:00 am",
+  "vocation": "Vocation",
+  "remainingTasks": "Remaining Tasks",
+  "daysOfDelays": "Days of Delays",
+  "absentDays": "Absent Days",
+  "days": "Days",
+  "tasks": "Tasks",
+  "vacationingEmployees": "Vacationing Employees",
+  "viewAll": "View All",
+  "gaza": "Gaza",
+  "abdQader": "Abd-Qader Shareef",
+  "loai": "Loai Arafat",
+  "retry": "Retry",
+  "internetError": "Error Occurred Check Your Internet Connection! ⚠️"
 }

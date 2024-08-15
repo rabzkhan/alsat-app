@@ -30,20 +30,22 @@ class MySharedPref {
 
   /// get if the current theme type is light
   static bool getThemeIsLight() =>
-      _sharedPreferences.getBool(_lightThemeKey) ?? true; // todo set the default theme (true for light, false for dark)
+      _sharedPreferences.getBool(_lightThemeKey) ??
+      true; // todo set the default theme (true for light, false for dark)
 
   /// save current locale
   static Future<void> setCurrentLanguage(String languageCode) =>
       _sharedPreferences.setString(_currentLocalKey, languageCode);
 
   /// get current locale
-  static Locale getCurrentLocal(){
-      String? langCode = _sharedPreferences.getString(_currentLocalKey);
-      // default language is english
-      if(langCode == null){
-        return LocalizationService.defaultLanguage;
-      }
-      return LocalizationService.supportedLanguages[langCode]!;
+  static Locale getCurrentLocal() {
+    // String? langCode = _sharedPreferences.getString(_currentLocalKey);
+    // // default language is english
+    // if(langCode == null){
+    //   return LocalizationService.defaultLanguage;
+    // }
+    // return LocalizationService.supportedLanguages[langCode]!;
+    return const Locale('en');
   }
 
   /// save generated fcm token
@@ -51,10 +53,8 @@ class MySharedPref {
       _sharedPreferences.setString(_fcmTokenKey, token);
 
   /// get authorization token
-  static String? getFcmToken() =>
-      _sharedPreferences.getString(_fcmTokenKey);
+  static String? getFcmToken() => _sharedPreferences.getString(_fcmTokenKey);
 
   /// clear all data from shared pref
   static Future<void> clear() async => await _sharedPreferences.clear();
-
 }

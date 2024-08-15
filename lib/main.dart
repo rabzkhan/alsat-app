@@ -50,6 +50,7 @@ Future<void> main() async {
             ],
             supportedLocales: const [
               Locale('en'), // English
+              Locale('ar'), // English
             ]);
       },
     ),
