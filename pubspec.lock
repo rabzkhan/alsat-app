@@ -259,6 +259,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_form_builder:
+    dependency: "direct main"
+    description:
+      name: flutter_form_builder
+      sha256: "447f8808f68070f7df968e8063aada3c9d2e90e789b5b70f3b44e4b315212656"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.3.0"
   flutter_launcher_icons:
     dependency: "direct main"
     description:
@@ -306,6 +314,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  form_builder_validators:
+    dependency: "direct main"
+    description:
+      name: form_builder_validators
+      sha256: c61ed7b1deecf0e1ebe49e2fa79e3283937c5a21c7e48e3ed9856a4a14e1191a
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.0.0"
   fuchsia_remote_debug_protocol:
     dependency: transitive
     description: flutter
@@ -649,6 +665,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      sha256: "3b28b0c545fa67ed9e5997d9f9720d486f54c0c607e056a1094544e36934dff3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0+3"
   source_gen:
     dependency: transitive
     description:
@@ -801,6 +825,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  widget_and_text_animator:
+    dependency: "direct main"
+    description:
+      name: widget_and_text_animator
+      sha256: dafad1df89f3038643f80853e0eb3a7ffc8a0e2abd9b189bff462d9d76d41bca
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.5"
   xdg_directories:
     dependency: transitive
     description:

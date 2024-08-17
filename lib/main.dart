@@ -1,3 +1,5 @@
+import 'package:alsat/app/common/binding/app_binding.dart';
+import 'package:alsat/app/modules/parent/view/onboarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -36,8 +38,10 @@ Future<void> main() async {
                 ),
               );
             },
-            initialRoute: AppPages.INITIAL,
+            // initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
+            home: const OnboardingPage(),
+            initialBinding: AppBinding(),
             theme: appTheme(),
             // locale: MySharedPref.getCurrentLocal(),
             // translations: LocalizationService.getInstance(),
