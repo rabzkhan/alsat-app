@@ -204,7 +204,9 @@ class OnboardingPage extends StatelessWidget {
                                                   ),
                                                   TextButton(
                                                     onPressed: () {
-                                                      Get.to(const SignupView(),transition: Transition.fadeIn);
+                                                      Get.to(const SignUpView(),
+                                                          transition: Transition
+                                                              .fadeIn);
                                                     },
                                                     child: Text(
                                                       'Sign Up',

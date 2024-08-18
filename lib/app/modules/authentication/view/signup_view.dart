@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 
 import '../../../common/const/image_path.dart';
+import '../controller/auth_controller.dart';
 
-class SignupView extends StatelessWidget {
-  const SignupView({super.key});
+class SignUpView extends StatelessWidget {
+  const SignUpView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.find();
     return Scaffold(
       backgroundColor: Get.theme.appBarTheme.backgroundColor,
       appBar: AppBar(
@@ -22,7 +26,7 @@ class SignupView extends StatelessWidget {
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(150.h),
           child: Padding(
-            padding:  EdgeInsets.only(bottom: 15.h),
+            padding: EdgeInsets.only(bottom: 15.h),
             child: CircleAvatar(
               radius: 60.r,
               backgroundColor: Get.theme.disabledColor.withOpacity(.05),
@@ -34,10 +38,42 @@ class SignupView extends StatelessWidget {
           ),
         ),
       ),
-      body:  ListView(
-        children: [
-
-        ],
+      body: FormBuilder(
+        key: authController.signUpFormKey,
+        child: ListView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 30.w,
+            vertical: 30.h,
+          ),
+          children: [
+            FormBuilderTextField(
+              name: 'phone',
+              decoration: const InputDecoration(
+                isDense: true,
+                labelText: 'Phone Number',
+                helperText: '',
+                hintText: '',
+                border: OutlineInputBorder(),
+                enabledBorder: OutlineInputBorder(),
+                errorBorder: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(),
+              ),
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+                FormBuilderValidators.email(),
+              ]),
+            ),
+            const SizedBox(height: 10),
+            FormBuilderTextField(
+              name: 'password',
+              decoration: const InputDecoration(labelText: 'Password'),
+              obscureText: true,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+              ]),
+            ),
+          ],
+        ),
       ),
     );
   }
