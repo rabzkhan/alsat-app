@@ -9,6 +9,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 import '../../../common/const/image_path.dart';
+import '../../app_home/view/app_home_view.dart';
 import '../controller/splash_controller.dart';
 import '../data/onbording_data.dart';
 
@@ -182,7 +183,12 @@ class OnboardingPage extends StatelessWidget {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   TextButton(
-                                                    onPressed: () {},
+                                                    onPressed: () {
+                                                      // AppHomeView
+                                                      Get.to(const AppHomeView(),
+                                                          transition: Transition
+                                                              .fadeIn);
+                                                    },
                                                     child: Text(
                                                       'Login',
                                                       style: Get.theme.textTheme

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 final regular = TextStyle(
   fontWeight: FontWeight.w400,
@@ -23,4 +24,10 @@ final bold = TextStyle(
   fontWeight: FontWeight.w700,
   color: Colors.black,
   fontSize: 14.sp,
+);
+
+var outlineBorder = OutlineInputBorder(
+  borderSide: BorderSide(
+    color: Get.theme.shadowColor.withOpacity(.2),
+  ),
 );

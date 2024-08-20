@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 
+import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../controller/auth_controller.dart';
 
@@ -46,27 +47,59 @@ class SignUpView extends StatelessWidget {
             vertical: 30.h,
           ),
           children: [
+            20.verticalSpace,
             FormBuilderTextField(
               name: 'phone',
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 isDense: true,
                 labelText: 'Phone Number',
-                helperText: '',
-                hintText: '',
-                border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(),
-                errorBorder: OutlineInputBorder(),
-                focusedBorder: OutlineInputBorder(),
+                labelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  color: Get.theme.shadowColor.withOpacity(.6),
+                ),
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
+                errorBorder: outlineBorder,
+                focusedBorder: outlineBorder,
               ),
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.required(),
                 FormBuilderValidators.email(),
               ]),
             ),
-            const SizedBox(height: 10),
+            20.verticalSpace,
             FormBuilderTextField(
               name: 'password',
-              decoration: const InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  color: Get.theme.shadowColor.withOpacity(.6),
+                ),
+                labelText: 'Password',
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
+                errorBorder: outlineBorder,
+                focusedBorder: outlineBorder,
+              ),
+              obscureText: true,
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+              ]),
+            ),
+            20.verticalSpace,
+            FormBuilderTextField(
+              name: 'password',
+              decoration: InputDecoration(
+                labelStyle: TextStyle(
+                  fontSize: 14.sp,
+                  color: Get.theme.shadowColor.withOpacity(.6),
+                ),
+                labelText: 'Confirm Password',
+                border: outlineBorder,
+                enabledBorder: outlineBorder,
+                errorBorder: outlineBorder,
+                focusedBorder: outlineBorder,
+              ),
               obscureText: true,
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.required(),
