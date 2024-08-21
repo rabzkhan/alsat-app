@@ -1,3 +1,4 @@
+import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:alsat/app/modules/authentication/view/signup_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 import '../../../common/const/image_path.dart';
 import '../../app_home/view/app_home_view.dart';
+import '../../authentication/controller/auth_controller.dart';
 import '../controller/splash_controller.dart';
 import '../data/onbording_data.dart';
 
@@ -19,6 +21,7 @@ class OnboardingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SplashController splashController = Get.find();
+    final AuthController authController = Get.find();
     return Scaffold(
       backgroundColor: Get.theme.appBarTheme.backgroundColor,
       appBar: AppBar(
@@ -185,7 +188,7 @@ class OnboardingPage extends StatelessWidget {
                                                   TextButton(
                                                     onPressed: () {
                                                       // AppHomeView
-                                                      Get.to(const AppHomeView(),
+                                                      Get.to(const LoginView(),
                                                           transition: Transition
                                                               .fadeIn);
                                                     },

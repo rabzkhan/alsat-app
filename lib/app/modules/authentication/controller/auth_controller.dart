@@ -4,4 +4,5 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   final signUpFormKey = GlobalKey<FormBuilderState>();
+  final loginFormKey = GlobalKey<FormBuilderState>();
 }

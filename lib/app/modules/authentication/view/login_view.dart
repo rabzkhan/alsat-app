@@ -7,10 +7,11 @@ import 'package:get/get.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
+import '../../app_home/view/app_home_view.dart';
 import '../controller/auth_controller.dart';
 
-class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +48,14 @@ class SignUpView extends StatelessWidget {
               topRight: Radius.circular(60.r),
             )),
         child: FormBuilder(
-          key: authController.signUpFormKey,
+          key: authController.loginFormKey,
           child: ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 30.w,
               vertical: 30.h,
             ),
             children: [
-              20.verticalSpace,
+              30.verticalSpace,
               FormBuilderTextField(
                 name: 'phone',
                 decoration: InputDecoration(
@@ -98,92 +99,21 @@ class SignUpView extends StatelessWidget {
                   FormBuilderValidators.required(),
                 ]),
               ),
-              20.verticalSpace,
-              FormBuilderTextField(
-                name: 'password',
-                decoration: InputDecoration(
-                  isDense: true,
-                  alignLabelWithHint: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelStyle: TextStyle(
-                    fontSize: 14.sp,
-                    color: Get.theme.shadowColor.withOpacity(.6),
-                  ),
-                  labelText: 'Confirm Password',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  errorBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                ),
-                obscureText: true,
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-              ),
-              5.verticalSpace,
-              FormBuilderRadioGroup(
-                controlAffinity: ControlAffinity.trailing,
-                wrapSpacing: 10.w,
-                itemDecoration: BoxDecoration(
-                  color: Get.theme.appBarTheme.backgroundColor,
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    labelText: 'Gender',
-                    labelStyle: TextStyle(
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                    )),
-                name: 'my_language',
-                validator: FormBuilderValidators.required(),
-                options: [
-                  'Man',
-                  'Woman',
-                ]
-                    .map(
-                      (lang) => FormBuilderFieldOption(
-                        value: lang,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 15.w,
-                            vertical: 5.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Get.theme.appBarTheme.backgroundColor,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Image.asset(
-                                lang == 'Man' ? manIcon : womanIcon,
-                                width: 25.w,
-                              ),
-                              10.horizontalSpace,
-                              Text(
-                                lang,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  color: Get.theme.shadowColor.withOpacity(.6),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(growable: false),
-              ),
-              20.verticalSpace,
+
+              50.verticalSpace,
+
               Row(
                 children: [
                   Expanded(
                     child: CupertinoButton.filled(
-                      onPressed: () {},
+                      onPressed: () {
+
+                        Get.to(const AppHomeView(),
+                            transition: Transition
+                                .fadeIn);
+                      },
                       child: Text(
-                        'Sign Up',
+                        'Login',
                         style: TextStyle(fontSize: 14.sp),
                       ),
                     ),
@@ -195,7 +125,7 @@ class SignUpView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Already A Member?',
+                    'New User?',
                     style: TextStyle(
                       fontSize: 14.sp,
                     ),
@@ -206,7 +136,7 @@ class SignUpView extends StatelessWidget {
 
                     },
                     child: Text(
-                      'Login',
+                      'Sign Up',
                       style: TextStyle(
                         fontSize: 14.sp,
                         color: Get.theme.primaryColor,

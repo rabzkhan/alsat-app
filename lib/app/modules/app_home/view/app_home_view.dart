@@ -1,7 +1,9 @@
 import 'dart:ui';
 
+import 'package:alsat/app/common/const/image_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -25,7 +27,7 @@ class _AppHomeViewState extends State<AppHomeView> {
           children: [
             Container(
               alignment: Alignment.center,
-              height: 66.h,
+              height: 55.h,
               padding: EdgeInsets.symmetric(
                 vertical: 10.h,
                 horizontal: 20.w,
@@ -47,19 +49,16 @@ class _AppHomeViewState extends State<AppHomeView> {
                       ),
                     ),
                     onPressed: () {},
-                    icon: Icon(
-                      CupertinoIcons.bell,
-                      size: 22.r,
-                    ),
+                    icon:Image.asset(notificationBell),
                   ),
                   Spacer(),
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(CupertinoIcons.search),
+                    icon:Image.asset(searchIcon)
                   ),
                   IconButton(
                     onPressed: () {},
-                    icon: const Icon(Icons.filter_alt_outlined),
+                    icon: Image.asset(filterIcon),
                   ),
                 ],
               ),
