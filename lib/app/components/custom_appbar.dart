@@ -60,6 +60,9 @@ class CustomAppbar extends StatelessWidget {
               ],
             ),
           ),
+
+          const Spacer(),
+          Image.asset(logo),
           const Spacer(),
 
           ///ll

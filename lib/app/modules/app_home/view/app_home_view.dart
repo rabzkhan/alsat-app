@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../components/product_tile.dart';
 import '../controller/home_controller.dart';
 
 class AppHomeView extends StatefulWidget {
@@ -158,17 +159,45 @@ class _AppHomeViewState extends State<AppHomeView> {
                                 scrollDirection: Axis.horizontal,
                               ),
                               items: [
-                                Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 15.w, vertical: 10.h),
-                                  decoration: BoxDecoration(
-                                    image: const DecorationImage(
-                                        image: AssetImage(appSliderBg)),
-                                    color: Get.theme.primaryColor,
-                                    borderRadius: BorderRadius.circular(20.r),
-                                  ),
-                                  child: _demoData(),
+                                Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 15.w, vertical: 10.h),
+                                      decoration: BoxDecoration(
+                                        image: const DecorationImage(
+                                            image: AssetImage(appSliderBg)),
+                                        color: Get.theme.primaryColor,
+                                        borderRadius:
+                                            BorderRadius.circular(20.r),
+                                      ),
+                                      child: _demoData(),
+                                    ),
+                                    Positioned(
+                                      right: -10,
+                                      top: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        width: 30.w,
+                                        height: 30.h,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Get.theme.appBarTheme
+                                              .backgroundColor!
+                                              .withOpacity(.7),
+                                        ),
+                                        child: Icon(
+                                          Icons.arrow_forward_ios_outlined,
+                                          color: Get.theme.appBarTheme
+                                              .backgroundColor!
+                                              .withOpacity(.8),
+                                          size: 20.r,
+                                        ),
+                                      ),
+                                    )
+                                  ],
                                 ),
                                 Container(
                                   width: MediaQuery.of(context).size.width,
@@ -252,28 +281,12 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                           // home prosuct car list
                           10.verticalSpace,
-                          Container(
-                            height: 90.h,
-                            decoration: BoxDecoration(
-                              color: Get.theme.appBarTheme.backgroundColor,
-                            ),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/car_demo.png',
-                                  height: 90.h,
-                                  width: 90.h,
-                                ),
-                                10.horizontalSpace,
-                                Expanded(
-                                    child: Column(
-                                  children: [
-                                    Text('data'),
-                                  ],
-                                ))
-                              ],
-                            ),
-                          )
+                          const ProductTile(),
+                          const ProductTile(),
+                          const ProductTile(),
+                          const ProductTile(),
+                          const ProductTile(),
+                          const ProductTile(),
                         ],
                       ),
                     ),
