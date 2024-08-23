@@ -9,6 +9,7 @@ ThemeData appTheme() => ThemeData(
       // fontFamily: GoogleFonts.inter().fontFamily,
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
+      secondaryHeaderColor: Colors.grey.shade100,
       tabBarTheme: TabBarTheme(
         labelColor: AppColors.primary,
         unselectedLabelColor: Colors.white,
