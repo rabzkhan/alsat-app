@@ -1,4 +1,5 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -78,7 +79,9 @@ class CustomAppbar extends StatelessWidget {
 
           ///ll
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Get.to(const FilterView(), transition: Transition.fadeIn);
+            },
             child: Image.asset(
               filterIcon,
               height: 23.h,

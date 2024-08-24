@@ -9,3 +9,9 @@ const String notificationBell = 'assets/icons/bell.png';
 const String crownIcon = 'assets/icons/crown.png';
 const String appSliderBg = 'assets/icons/slider_bg.png';
 const String carImage = 'assets/images/car_icon.png';
+// bottom Icon
+const String homeIcon = 'assets/icons/home.png';
+const String categoryIcon = 'assets/icons/category.png';
+const String chatIcon = 'assets/icons/chat.png';
+const String profileIcon = 'assets/icons/profile.png';
+const String addPost = 'assets/icons/addpost.png';

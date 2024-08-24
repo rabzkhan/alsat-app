@@ -38,9 +38,9 @@ Future<void> main() async {
                 ),
               );
             },
-            // initialRoute: AppPages.INITIAL,
+            initialRoute: AppPages.INITIAL,
             getPages: AppPages.routes,
-            home: const OnboardingPage(),
+            // home: const OnboardingPage(),
             initialBinding: AppBinding(),
             theme: appTheme(),
             // locale: MySharedPref.getCurrentLocal(),

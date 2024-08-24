@@ -1,4 +1,6 @@
+import 'package:alsat/app/modules/app_home/view/app_home_view.dart';
 import 'package:alsat/app/modules/filter/views/filter_view.dart';
+import 'package:alsat/app/modules/parent/view/onboarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -17,7 +19,7 @@ class _SplashViewState extends State<SplashView> {
     Future.delayed(
       const Duration(seconds: 3),
       () {
-        Get.offAll(() => const FilterView());
+        Get.offAll(() => const OnboardingPage());
       },
     );
     super.initState();

@@ -32,27 +32,33 @@ class OnboardingPage extends StatelessWidget {
           width: 100.w,
         ),
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 8.sp),
-            child: TextButton.icon(
-              onPressed: () {
-                splashController.currentIndexOnBoarding.value = 2;
-                splashController.onBoardingPageController.animateToPage(2,
-                    duration: 400.ms, curve: Curves.linearToEaseOut);
-              },
-              icon: Text(
-                'Skip',
-                style: Get.theme.textTheme.titleLarge!.copyWith(
-                  fontSize: 12.sp,
-                ),
-              ),
-              label: Icon(
-                Icons.arrow_forward_ios_outlined,
-                size: 14.r,
-                color: Get.theme.textTheme.titleLarge!.color,
-              ),
-            ),
-          )
+          Obx(() {
+            return splashController.currentIndexOnBoarding.value == 2
+                ? const Center()
+                : Padding(
+                    padding: EdgeInsets.only(right: 8.sp),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        splashController.currentIndexOnBoarding.value = 2;
+                        splashController.onBoardingPageController.animateToPage(
+                            2,
+                            duration: 400.ms,
+                            curve: Curves.linearToEaseOut);
+                      },
+                      icon: Text(
+                        'Skip',
+                        style: Get.theme.textTheme.titleLarge!.copyWith(
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      label: Icon(
+                        Icons.arrow_forward_ios_outlined,
+                        size: 14.r,
+                        color: Get.theme.textTheme.titleLarge!.color,
+                      ),
+                    ),
+                  ).animate().slideX(begin: 1);
+          })
         ],
       ),
       body: Stack(
@@ -99,8 +105,8 @@ class OnboardingPage extends StatelessWidget {
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 18.w),
                                   child: TextAnimator(
-                                    incomingEffect: WidgetTransitionEffects
-                                        .incomingScaleDown(
+                                    incomingEffect:
+                                        WidgetTransitionEffects.incomingScaleUp(
                                       duration:
                                           const Duration(milliseconds: 1000),
                                     ),
@@ -117,8 +123,8 @@ class OnboardingPage extends StatelessWidget {
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 40.w),
                                   child: TextAnimator(
-                                    incomingEffect: WidgetTransitionEffects
-                                        .incomingSlideInFromRight(
+                                    incomingEffect:
+                                        WidgetTransitionEffects.incomingScaleUp(
                                             delay: const Duration(
                                                 milliseconds: 0)),
                                     // overflow: TextOverflow.ellipsis,
@@ -227,7 +233,9 @@ class OnboardingPage extends StatelessWidget {
                                                     ),
                                                   ),
                                                 ],
-                                              ));
+                                              )
+                                                    .animate()
+                                                    .fadeIn(delay: 600.ms));
                                       }),
                                     ],
                                   ),
