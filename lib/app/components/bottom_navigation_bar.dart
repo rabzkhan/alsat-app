@@ -13,6 +13,7 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = Get.put(HomeController());
     return GlassmorphicContainer(
       width: Get.width,
       height: 70.h,
@@ -43,39 +44,32 @@ class AppBottomNavigationBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 25.w),
         child: Row(
           children: [
-            _bottomItem(
-              icon: homeIcon,
-              name: 'Home',
-            ),
-            _bottomItem(
-              icon: chatIcon,
-              name: 'Chat',
-            ),
-            _bottomItem(
-              icon: categoryIcon,
-              name: 'Category',
-            ),
-            _bottomItem(
-              icon: addPost,
-              name: 'Post Add',
-            ),
-            _bottomItem(
-              icon: profileIcon,
-              name: 'Profile',
-            ),
+            ...List.generate(homeController.bottomBarItems.length, (index) {
+              return _bottomItem(
+                icon: homeController.bottomBarItems[index]['icon'],
+                name: homeController.bottomBarItems[index]['name'],
+                index: index,
+              );
+            }),
           ],
         ),
       ),
     );
   }
 
-  Expanded _bottomItem({required String name, required String icon}) {
+  Expanded _bottomItem(
+      {required String name, required String icon, required int index}) {
     final homeController = Get.put(HomeController());
     return Expanded(
       child: Obx(() {
         return InkWell(
           onTap: () {
-            homeController.homeBottomIndex.value = name;
+            homeController.homePageController.animateToPage(
+              index,
+              duration: 200.ms,
+              curve: Curves.fastLinearToSlowEaseIn,
+            );
+            homeController.homeBottomIndex.value = index;
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -83,12 +77,12 @@ class AppBottomNavigationBar extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 width:
-                    homeController.homeBottomIndex.value == name ? 52.w : 47.w,
+                    homeController.homeBottomIndex.value == index ? 52.w : 47.w,
                 height:
-                    homeController.homeBottomIndex.value == name ? 27.h : 22.h,
+                    homeController.homeBottomIndex.value == index ? 27.h : 22.h,
                 child: Image.asset(
                   icon,
-                  color: homeController.homeBottomIndex.value == name
+                  color: homeController.homeBottomIndex.value == index
                       ? Get.theme.primaryColor
                       : Get.theme.disabledColor,
                 ),
@@ -98,7 +92,7 @@ class AppBottomNavigationBar extends StatelessWidget {
                 name,
                 style: regular.copyWith(
                   fontSize: 11.sp,
-                  color: homeController.homeBottomIndex.value == name
+                  color: homeController.homeBottomIndex.value == index
                       ? Get.theme.primaryColor
                       : Get.theme.disabledColor,
                 ),

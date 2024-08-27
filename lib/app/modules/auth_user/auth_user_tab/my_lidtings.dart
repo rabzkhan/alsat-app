@@ -1,30 +1,28 @@
+import 'package:alsat/app/components/product_grid_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../components/category_tile.dart';
-
-class CategoryContent extends StatelessWidget {
-  const CategoryContent({super.key});
+class MyLidtings extends StatelessWidget {
+  const MyLidtings({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
+      physics: const BouncingScrollPhysics(),
       padding: EdgeInsets.symmetric(
-        horizontal: 20.w,
+        horizontal: 8.w,
         vertical: 20.h,
       ),
-      itemCount: 30,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
+        crossAxisCount: 2,
         mainAxisSpacing: 10.h,
-        crossAxisSpacing: 8.w,
+        crossAxisSpacing: 10.w,
+        mainAxisExtent: 200.h,
       ),
       itemBuilder: (context, index) {
-        return const CategoryTile(
-          isAddedPadding: false,
-        );
-        ;
+        return const ProductGridTile();
       },
+      itemCount: 20,
     );
   }
 }

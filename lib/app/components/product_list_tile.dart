@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 
 import '../../config/theme/app_text_theme.dart';
 
-class ProductTile extends StatelessWidget {
-  const ProductTile({super.key});
+class ProductListTile extends StatelessWidget {
+  const ProductListTile({super.key});
 
   @override
   Widget build(BuildContext context) {
