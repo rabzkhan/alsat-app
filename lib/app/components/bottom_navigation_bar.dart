@@ -1,4 +1,6 @@
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
@@ -41,110 +43,70 @@ class AppBottomNavigationBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 25.w),
         child: Row(
           children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    chatIcon,
-                    width: 50.w,
-                    height: 25.h,
-                  ),
-                  5.verticalSpace,
-                  Text(
-                    'Chat',
-                    style: regular.copyWith(
-                      fontSize: 11.sp,
-                      color: Get.theme.primaryColor,
-                    ),
-                  ),
-                ],
-              ),
+            _bottomItem(
+              icon: homeIcon,
+              name: 'Home',
             ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    categoryIcon,
-                    width: 50.w,
-                    height: 25.h,
-                  ),
-                  5.verticalSpace,
-                  Text(
-                    'Category',
-                    style: regular.copyWith(
-                      fontSize: 11.sp,
-                      color: Get.theme.disabledColor,
-                    ),
-                  ),
-                ],
-              ),
+            _bottomItem(
+              icon: chatIcon,
+              name: 'Chat',
             ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    addPost,
-                    width: 40.w,
-                    height: 25.h,
-                    fit: BoxFit.cover,
-                  ),
-                  5.verticalSpace,
-                  Text(
-                    'Post Add',
-                    style: regular.copyWith(
-                      fontSize: 11.sp,
-                      color: Get.theme.disabledColor,
-                    ),
-                  ),
-                ],
-              ),
+            _bottomItem(
+              icon: categoryIcon,
+              name: 'Category',
             ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    homeIcon,
-                    width: 50.w,
-                    height: 25.h,
-                  ),
-                  5.verticalSpace,
-                  Text(
-                    'Home',
-                    style: regular.copyWith(
-                      fontSize: 11.sp,
-                      color: Get.theme.disabledColor,
-                    ),
-                  ),
-                ],
-              ),
+            _bottomItem(
+              icon: addPost,
+              name: 'Post Add',
             ),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    profileIcon,
-                    width: 50.w,
-                    height: 25.h,
-                  ),
-                  5.verticalSpace,
-                  Text(
-                    'Profile',
-                    style: regular.copyWith(
-                      fontSize: 11.sp,
-                      color: Get.theme.disabledColor,
-                    ),
-                  ),
-                ],
-              ),
+            _bottomItem(
+              icon: profileIcon,
+              name: 'Profile',
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Expanded _bottomItem({required String name, required String icon}) {
+    final homeController = Get.put(HomeController());
+    return Expanded(
+      child: Obx(() {
+        return InkWell(
+          onTap: () {
+            homeController.homeBottomIndex.value = name;
+          },
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width:
+                    homeController.homeBottomIndex.value == name ? 52.w : 47.w,
+                height:
+                    homeController.homeBottomIndex.value == name ? 27.h : 22.h,
+                child: Image.asset(
+                  icon,
+                  color: homeController.homeBottomIndex.value == name
+                      ? Get.theme.primaryColor
+                      : Get.theme.disabledColor,
+                ),
+              ),
+              5.verticalSpace,
+              Text(
+                name,
+                style: regular.copyWith(
+                  fontSize: 11.sp,
+                  color: homeController.homeBottomIndex.value == name
+                      ? Get.theme.primaryColor
+                      : Get.theme.disabledColor,
+                ),
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }
