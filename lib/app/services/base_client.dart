@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:get/get_utils/get_utils.dart';
 import 'package:logger/logger.dart';
-import '../../config/translations/strings_enum.dart';
+import '../../utils/helper.dart';
 import '../components/custom_snackbar.dart';
 import 'api_exceptions.dart';
 
@@ -39,7 +38,8 @@ class BaseClient {
     required Function(Response response) onSuccess,
     Function(ApiException)? onError,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)?
+        onSendProgress, // while sending (uploading) progress
     Function? onLoading,
     dynamic data,
   }) async {
@@ -126,7 +126,10 @@ class BaseClient {
   }
 
   /// handle unexpected error
-  static _handleUnexpectedException({Function(ApiException)? onError, required String url, required Object error}) {
+  static _handleUnexpectedException(
+      {Function(ApiException)? onError,
+      required String url,
+      required Object error}) {
     if (onError != null) {
       onError(ApiException(
         message: error.toString(),
@@ -138,60 +141,66 @@ class BaseClient {
   }
 
   /// handle timeout exception
-  static _handleTimeoutException({Function(ApiException)? onError, required String url}) {
+  static _handleTimeoutException(
+      {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: Strings.serverNotResponding.tr,
+        message: localLanguage.serverNotResponding,
         url: url,
       ));
     } else {
-      _handleError(Strings.serverNotResponding.tr);
+      _handleError(localLanguage.serverNotResponding);
     }
   }
 
   /// handle timeout exception
-  static _handleSocketException({Function(ApiException)? onError, required String url}) {
+  static _handleSocketException(
+      {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: Strings.noInternetConnection.tr,
+        message: localLanguage.noInternetConnection,
         url: url,
       ));
     } else {
-      _handleError(Strings.noInternetConnection.tr);
+      _handleError(localLanguage.noInternetConnection);
     }
   }
 
   /// handle Dio error
-  static _handleDioError({required DioException error, Function(ApiException)? onError, required String url}) {
+  static _handleDioError(
+      {required DioException error,
+      Function(ApiException)? onError,
+      required String url}) {
     // 404 error
     if (error.response?.statusCode == 404) {
       if (onError != null) {
         return onError(ApiException(
-          message: Strings.urlNotFound.tr,
+          message: localLanguage.urlNotFound,
           url: url,
           statusCode: 404,
         ));
       } else {
-        return _handleError(Strings.urlNotFound.tr);
+        return _handleError(localLanguage.urlNotFound);
       }
     }
 
     // no internet connection
-    if (error.message != null && error.message!.toLowerCase().contains('socket')) {
+    if (error.message != null &&
+        error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
-          message: Strings.noInternetConnection.tr,
+          message: localLanguage.noInternetConnection,
           url: url,
         ));
       } else {
-        return _handleError(Strings.noInternetConnection.tr);
+        return _handleError(localLanguage.noInternetConnection);
       }
     }
 
     // check if the error is 500 (server problem)
     if (error.response?.statusCode == 500) {
       var exception = ApiException(
-        message: Strings.serverError.tr,
+        message: localLanguage.serverError,
         url: url,
         statusCode: 500,
       );
