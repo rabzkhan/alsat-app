@@ -5,6 +5,7 @@ import '../../modules/app_home/controller/home_controller.dart';
 import '../../modules/auth_user/controller/user_controller.dart';
 import '../../modules/authentication/controller/auth_controller.dart';
 import '../../modules/filter/controllers/filter_controller.dart';
+import '../../modules/product/controller/product_controller.dart';
 
 class AppBinding extends Bindings {
   @override
@@ -14,5 +15,6 @@ class AppBinding extends Bindings {
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<FilterController>(() => FilterController());
     Get.lazyPut<UserController>(() => UserController());
+    Get.lazyPut<ProductController>(() => ProductController());
   }
 }
