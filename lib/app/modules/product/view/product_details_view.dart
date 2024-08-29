@@ -26,7 +26,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             Expanded(
               child: ListView(
                 padding: EdgeInsets.symmetric(
-                  horizontal: 20  .w,
+                  horizontal: 20.w,
                   vertical: 10.h,
                 ),
                 children: [
@@ -87,11 +87,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         children: [
                           Text(
                             'Hyundai Santa Fe',
-                            style: bold.copyWith(
-                              fontSize: 14.sp,
+                            style: semiBold.copyWith(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
-                          3.verticalSpace,
+                          6.verticalSpace,
                           Text(
                             '232\$',
                             style: semiBold.copyWith(
@@ -103,14 +104,17 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
-                          // padding: EdgeInsets.all(value),
-                          side: BorderSide(
-                            color: Get.theme.primaryColor,
-                          ),
-                          backgroundColor:
-                              Get.theme.primaryColor.withOpacity(.1),
-                          elevation: 0,
-                        ),
+                            // padding: EdgeInsets.all(value),
+                            side: BorderSide(
+                              color: Get.theme.primaryColor,
+                              width: 1.5,
+                            ),
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            )),
                         onPressed: () {},
                         label: Text(
                           '3 Days Ago',
@@ -126,12 +130,90 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         ),
                       )
                     ],
-                  )
+                  ),
+                  10.verticalSpace,
+                  //  information
+                  Text(
+                    'Information',
+                    style: bold.copyWith(
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  10.verticalSpace,
+                  Container(
+                    padding: REdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: 8.h,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      border: Border.all(
+                        color: Get.theme.disabledColor.withOpacity(.06),
+                      ),
+                      color: Get.theme.disabledColor.withOpacity(.03),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _infoTile(name: 'Brand', value: 'Test'),
+                        _infoTile(name: 'Body Type', value: 'Test'),
+                        _infoTile(name: 'Model Type', value: '  Bmw'),
+                        _infoTile(name: 'Year', value: '2014'),
+                        _infoTile(name: 'Engine', value: '2025'),
+                        TextButton.icon(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {},
+                          icon: Text(
+                            'More',
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                          label: const Icon(Icons.keyboard_arrow_down_rounded),
+                        )
+                      ],
+                    ),
+                  ),
+                  20.verticalSpace,
+                  //  discription
+                  Text(
+                    'Discription',
+                    style: bold.copyWith(
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  10.verticalSpace,
                 ],
               ),
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Padding _infoTile({required String name, required String value}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8.h),
+      child: Row(
+        children: [
+          Text(
+            name,
+            style: regular.copyWith(
+              fontSize: 14.sp,
+              color: Get.theme.disabledColor,
+            ),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: regular.copyWith(
+              fontSize: 14.sp,
+            ),
+          ),
+        ],
       ),
     );
   }
