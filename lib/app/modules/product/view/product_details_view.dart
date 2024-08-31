@@ -1,5 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
+import 'package:alsat/app/components/product_grid_tile.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +26,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
             ),
             Expanded(
               child: ListView(
+                physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                   horizontal: 20.w,
                   vertical: 10.h,
@@ -160,19 +162,24 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         _infoTile(name: 'Model Type', value: '  Bmw'),
                         _infoTile(name: 'Year', value: '2014'),
                         _infoTile(name: 'Engine', value: '2025'),
-                        TextButton.icon(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                          ),
-                          onPressed: () {},
-                          icon: Text(
-                            'More',
-                            style: TextStyle(
-                              fontSize: 14.sp,
+
+                        ///more
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'More',
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: Get.theme.primaryColor,
+                              ),
                             ),
-                          ),
-                          label: const Icon(Icons.keyboard_arrow_down_rounded),
-                        )
+                            Icon(
+                              Icons.keyboard_arrow_down_rounded,
+                              color: Get.theme.primaryColor,
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -184,7 +191,142 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       fontSize: 18.sp,
                     ),
                   ),
+                  6.verticalSpace,
+                  Text(
+                    'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing ',
+                    style: regular.copyWith(
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          eyeIcon,
+                          width: 25.w,
+                        ),
+                        5.horizontalSpace,
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'views',
+                              style: regular.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            Text(
+                              '152',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        10.horizontalSpace,
+                        Container(
+                          color: Get.theme.disabledColor,
+                          width: 1.w,
+                          height: 15.h,
+                        ),
+                        10.horizontalSpace,
+                        Image.asset(
+                          heartIcon,
+                          width: 25.w,
+                        ),
+                        5.horizontalSpace,
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Like',
+                              style: regular.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            Text(
+                              '152',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        10.horizontalSpace,
+                        Container(
+                          color: Get.theme.disabledColor,
+                          width: 1.w,
+                          height: 15.h,
+                        ),
+                        10.horizontalSpace,
+                        Image.asset(
+                          messageIcon,
+                          width: 25.w,
+                        ),
+                        5.horizontalSpace,
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'comment',
+                              style: regular.copyWith(
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                            Text(
+                              '152',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  ///user information
+                  ListTile(
+                    contentPadding: EdgeInsets.zero,
+                    leading: CircleAvatar(),
+                    title: Text(
+                      'John Coltrane',
+                      style: bold.copyWith(
+                        fontSize: 16.sp,
+                      ),
+                    ),
+                    subtitle: Text(
+                      'info@gmail.com',
+                      style: regular.copyWith(
+                        fontSize: 12.sp,
+                      ),
+                    ),
+                  ),
+                  5.verticalSpace,
+                  // more product
+                  Text(
+                    'More Items From Saravanan B',
+                    style: semiBold.copyWith(
+                      fontSize: 14.sp,
+                    ),
+                  ),
                   10.verticalSpace,
+                  SizedBox(
+                    height: 200.h,
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => 10.horizontalSpace,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 6,
+                      itemBuilder: (context, index) => SizedBox(
+                          width: (Get.width * .5) - 20.w,
+                          child: const ProductGridTile()),
+                    ),
+                  ),
+                  20.verticalSpace,
                 ],
               ),
             )
