@@ -15,7 +15,11 @@ class ProductGridTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(const ProductDetailsView(), transition: Transition.fadeIn);
+        Get.to(
+          const ProductDetailsView(),
+          transition: Transition.fadeIn,
+          preventDuplicates: false,
+        );
       },
       child: Container(
         padding: EdgeInsets.symmetric(
@@ -28,6 +32,7 @@ class ProductGridTile extends StatelessWidget {
         child: Stack(
           children: [
             Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(
