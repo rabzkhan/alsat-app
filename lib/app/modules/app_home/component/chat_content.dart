@@ -1,3 +1,4 @@
+import 'package:alsat/app/modules/conversation/view/conversation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -33,10 +34,42 @@ class ChatContent extends StatelessWidget {
               ),
             ),
             child: ListTile(
+
+              onTap: () {
+                Get.to(const ConversationView());
+                // Get.to(const ConversationView());
+              },
+
+
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 20.w,
               ),
               leading: CircleAvatar(),
+
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Alexander',
+                    style: regular.copyWith(
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                  5.horizontalSpace,
+                  CircleAvatar(
+                    radius: 2.r,
+                    backgroundColor: Get.theme.textTheme.bodyLarge!.color,
+                  ),
+                  5.horizontalSpace,
+                  Text(
+                    '1h',
+                    style: regular.copyWith(
+                      fontSize: 14.sp,
+                      color: Get.theme.disabledColor,
+                    ),
+                  ),
+                ],
+              ),
               title: Text('Alexander'),
               subtitle: Text('We no longer need to talk about Kevin'),
             ),
