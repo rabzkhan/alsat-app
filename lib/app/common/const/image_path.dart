@@ -9,6 +9,13 @@ const String notificationBell = 'assets/icons/bell.png';
 const String crownIcon = 'assets/icons/crown.png';
 const String appSliderBg = 'assets/icons/slider_bg.png';
 const String carImage = 'assets/images/car_icon.png';
+const String settingIcon = 'assets/icons/setting.png';
+const String favoriteIcon = 'assets/icons/favorite.png';
+const String moreIcon = 'assets/icons/more.png';
+const String shareIcon = 'assets/icons/share.png';
+const String eyeIcon = 'assets/icons/eye.png';
+const String heartIcon = 'assets/icons/heart.png';
+const String messageIcon = 'assets/icons/message.png';
 // bottom Icon
 const String homeIcon = 'assets/icons/home.png';
 const String categoryIcon = 'assets/icons/category.png';

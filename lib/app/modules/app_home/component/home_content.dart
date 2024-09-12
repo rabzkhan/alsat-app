@@ -4,157 +4,140 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
-import '../../../components/product_tile.dart';
+import '../../../components/category_tile.dart';
+import '../../../components/home_segmented.dart';
+import '../../../components/product_list_tile.dart';
 
 class HomeContent extends StatelessWidget {
   const HomeContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
+    return Column(
       children: [
-        //HOME SLIDER
-        Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: 15.h,
-          ).copyWith(
-            top: 6.h,
-          ),
-          child: CarouselSlider(
-            options: CarouselOptions(
-              height: 160.h, aspectRatio: 16 / 9,
-              viewportFraction: 0.8,
-              initialPage: 0,
-              enableInfiniteScroll: false,
-              reverse: false,
-              autoPlay: false,
-              autoPlayInterval: const Duration(seconds: 3),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enlargeCenterPage: true,
-              enlargeFactor: 0.3,
-              // onPageChanged: callbackFunction,
-              scrollDirection: Axis.horizontal,
-            ),
-            items: [
-              Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                    decoration: BoxDecoration(
-                      image:
-                          const DecorationImage(image: AssetImage(appSliderBg)),
-                      color: Get.theme.primaryColor,
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: _demoData(),
-                  ),
-                  Positioned(
-                    right: -10,
-                    top: 0,
-                    bottom: 0,
-                    child: Container(
-                      width: 30.w,
-                      height: 30.h,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Get.theme.appBarTheme.backgroundColor!
-                            .withOpacity(.7),
-                      ),
-                      child: Icon(
-                        Icons.arrow_forward_ios_outlined,
-                        color: Get.theme.appBarTheme.backgroundColor!
-                            .withOpacity(.8),
-                        size: 20.r,
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  image: const DecorationImage(image: AssetImage(appSliderBg)),
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: _demoData(),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  image: const DecorationImage(image: AssetImage(appSliderBg)),
-                  color: Colors.red,
-                  borderRadius: BorderRadius.circular(20.r),
-                ),
-                child: _demoData(),
-              ),
-            ],
-          ),
-        ),
-        // category list
-        SizedBox(
-          width: double.infinity,
-          height: 90.h,
+        const HomeSegmented(),
+        Expanded(
           child: ListView(
             physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
             children: [
-              20.horizontalSpace,
-              ...List.generate(
-                10,
-                (index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.r),
-                    ),
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 8.w,
-                      vertical: 5.h,
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+              //HOME SLIDER
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: 15.h,
+                ).copyWith(
+                  top: 6.h,
+                ),
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: 160.h, aspectRatio: 16 / 9,
+                    viewportFraction: 0.8,
+                    initialPage: 0,
+                    enableInfiniteScroll: false,
+                    reverse: false,
+                    autoPlay: false,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    enlargeFactor: 0.3,
+                    // onPageChanged: callbackFunction,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: [
+                    Stack(
+                      fit: StackFit.expand,
                       children: [
                         Container(
-                          width: 55.w,
-                          height: 50.h,
+                          width: MediaQuery.of(context).size.width,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 10.h),
                           decoration: BoxDecoration(
+                            image: const DecorationImage(
+                                image: AssetImage(appSliderBg)),
+                            color: Get.theme.primaryColor,
                             borderRadius: BorderRadius.circular(20.r),
                           ),
-                          child: Image.asset(
-                            carImage,
-                          ),
+                          child: _demoData(),
                         ),
-                        Text(
-                          "Nissan GT - R",
-                          style: regular.copyWith(
-                            fontSize: 8.sp,
+                        Positioned(
+                          right: -10,
+                          top: 0,
+                          bottom: 0,
+                          child: Container(
+                            width: 30.w,
+                            height: 30.h,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Get.theme.appBarTheme.backgroundColor!
+                                  .withOpacity(.7),
+                            ),
+                            child: Icon(
+                              Icons.arrow_forward_ios_outlined,
+                              color: Get.theme.appBarTheme.backgroundColor!
+                                  .withOpacity(.8),
+                              size: 20.r,
+                            ),
                           ),
-                        ),
+                        )
                       ],
                     ),
-                  );
-                },
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.w, vertical: 10.h),
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                            image: AssetImage(appSliderBg)),
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: _demoData(),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.w, vertical: 10.h),
+                      decoration: BoxDecoration(
+                        image: const DecorationImage(
+                            image: AssetImage(appSliderBg)),
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(20.r),
+                      ),
+                      child: _demoData(),
+                    ),
+                  ],
+                ),
               ),
+              // category list
+              SizedBox(
+                width: double.infinity,
+                height: 90.h,
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    20.horizontalSpace,
+                    ...List.generate(
+                      10,
+                      (index) {
+                        return const CategoryTile();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              // home prosuct car list
+              10.verticalSpace,
+              const ProductListTile(),
+              const ProductListTile(),
+              const ProductListTile(),
+              const ProductListTile(),
+              const ProductListTile(),
+              const ProductListTile(),
             ],
           ),
         ),
-        // home prosuct car list
-        10.verticalSpace,
-        const ProductTile(),
-        const ProductTile(),
-        const ProductTile(),
-        const ProductTile(),
-        const ProductTile(),
-        const ProductTile(),
       ],
     );
   }

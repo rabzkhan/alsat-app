@@ -99,18 +99,14 @@ class LoginView extends StatelessWidget {
                   FormBuilderValidators.required(),
                 ]),
               ),
-
               50.verticalSpace,
-
               Row(
                 children: [
                   Expanded(
                     child: CupertinoButton.filled(
                       onPressed: () {
-
-                        Get.to(const AppHomeView(),
-                            transition: Transition
-                                .fadeIn);
+                        Get.offAll(const AppHomeView(),
+                            transition: Transition.fadeIn);
                       },
                       child: Text(
                         'Login',
@@ -132,9 +128,7 @@ class LoginView extends StatelessWidget {
                   ),
                   6.horizontalSpace,
                   InkWell(
-                    onDoubleTap: () {
-
-                    },
+                    onDoubleTap: () {},
                     child: Text(
                       'Sign Up',
                       style: TextStyle(

@@ -7,12 +7,11 @@ import 'package:alsat/app/modules/app_home/component/category_content.dart';
 import 'package:alsat/app/modules/app_home/component/chat_content.dart';
 import 'package:alsat/app/modules/app_home/component/home_content.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
-import '../../../components/product_tile.dart';
+import '../../auth_user/controller/user_controller.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
 
@@ -26,6 +25,7 @@ class AppHomeView extends StatefulWidget {
 class _AppHomeViewState extends State<AppHomeView> {
   HomeController homeController = Get.find<HomeController>();
   FilterController filterController = Get.find<FilterController>();
+  final UserController userController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,100 +53,12 @@ class _AppHomeViewState extends State<AppHomeView> {
                       child: Column(
                         children: [
                           //HOME TAB
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                              vertical: 20.h,
-                            ).copyWith(
-                              top: 10.h,
-                            ),
-                            height: 45.h,
-                            width: Get.width * 0.7,
-                            color: Get.theme.appBarTheme.backgroundColor,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: SizedBox(
-                                    height: 45.h,
-                                    child: PhysicalModel(
-                                      shadowColor: Get.theme.primaryColor,
-                                      color: Get
-                                          .theme.appBarTheme.backgroundColor!,
-                                      elevation: 2,
-                                      shape: BoxShape.circle,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        color: Get
-                                            .theme.appBarTheme.backgroundColor!,
-                                        height: 45.h,
-                                        child: Text(
-                                          textAlign: TextAlign.center,
-                                          "Product",
-                                          style: regular.copyWith(
-                                            fontSize: 17.sp,
-                                            color: Get.theme.primaryColor,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 1,
-                                  height: 30.h,
-                                  color:
-                                      Get.theme.disabledColor.withOpacity(.1),
-                                ),
-                                Expanded(
-                                  child: SizedBox(
-                                    height: 45.h,
-                                    child: PhysicalModel(
-                                      shadowColor: Get.theme.primaryColor,
-                                      color: Get
-                                          .theme.appBarTheme.backgroundColor!,
-                                      elevation: 2,
-                                      shape: BoxShape.circle,
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        color: Get
-                                            .theme.appBarTheme.backgroundColor!,
-                                        height: 45.h,
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            CircleAvatar(
-                                              radius: 14.r,
-                                              backgroundColor: Get
-                                                  .theme.secondaryHeaderColor
-                                                  .withOpacity(.5),
-                                              child: Image.asset(
-                                                crownIcon,
-                                                width: 18.w,
-                                                height: 20.h,
-                                                color: Get.theme.disabledColor
-                                                    .withOpacity(.1),
-                                              ),
-                                            ),
-                                            5.horizontalSpace,
-                                            Text(
-                                              textAlign: TextAlign.center,
-                                              "Premium",
-                                              style: regular.copyWith(
-                                                fontSize: 17.sp,
-                                                // color: Get.theme.primaryColor,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
                           Expanded(
                             child: PageView(
+                              controller: homeController.homePageController,
+                              onPageChanged: (value) {
+                                homeController.homeBottomIndex.value = value;
+                              },
                               children: const [
                                 HomeContent(),
                                 ChatContent(),

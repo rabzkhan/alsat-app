@@ -30,6 +30,8 @@ dependencies:
   form_builder_validators: ^11.0.0
   glassmorphism: ^3.0.0
   carousel_slider: ^5.0.0
+  chatview:
+    path: packages\chatview
 
 dev_dependencies:
   mockito:

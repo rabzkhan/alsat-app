@@ -6,7 +6,10 @@ import 'package:get/get.dart';
 import '../common/const/image_path.dart';
 
 class CustomAppbar extends StatelessWidget {
-  const CustomAppbar({super.key});
+  final bool isShowSearch;
+  final bool isShowFilter;
+  const CustomAppbar(
+      {super.key, this.isShowSearch = true, this.isShowFilter = true});
 
   @override
   Widget build(BuildContext context) {
@@ -67,27 +70,30 @@ class CustomAppbar extends StatelessWidget {
           const Spacer(),
 
           ///ll
-          InkWell(
-            onTap: () {},
-            child: Image.asset(
-              searchIcon,
-              height: 23.h,
-              width: 23.w,
+          if (isShowSearch)
+            InkWell(
+              onTap: () {},
+              child: Image.asset(
+                searchIcon,
+                height: 23.h,
+                width: 23.w,
+              ),
             ),
-          ),
           12.horizontalSpace,
 
           ///ll
-          InkWell(
-            onTap: () {
-              Get.to(const FilterView(), transition: Transition.fadeIn);
-            },
-            child: Image.asset(
-              filterIcon,
-              height: 23.h,
-              width: 23.w,
+          if (isShowFilter)
+            InkWell(
+              onTap: () {
+                Get.to(const FilterView(), transition: Transition.fadeIn);
+              },
+              child: Image.asset(
+                filterIcon,
+                height: 23.h,
+                width: 23.w,
+              ),
             ),
-          ),
+          if (!isShowFilter && !isShowSearch) const Spacer()
         ],
       ),
     );
