@@ -1,3 +1,4 @@
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,7 @@ import '../common/const/image_path.dart';
 class CustomAppbar extends StatelessWidget {
   final bool isShowSearch;
   final bool isShowFilter;
-  const CustomAppbar(
-      {super.key, this.isShowSearch = true, this.isShowFilter = true});
+  const CustomAppbar({super.key, this.isShowSearch = true, this.isShowFilter = true});
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +27,7 @@ class CustomAppbar extends StatelessWidget {
         children: [
           IconButton(
             onPressed: () {
-              homeController.isShowDrawer.value =
-                  !homeController.isShowDrawer.value;
+              homeController.isShowDrawer.value = !homeController.isShowDrawer.value;
             },
             icon: const Icon(Icons.menu),
           ),
@@ -72,7 +71,9 @@ class CustomAppbar extends StatelessWidget {
           ///ll
           if (isShowSearch)
             InkWell(
-              onTap: () {},
+              onTap: () {
+                MySharedPref.clear();
+              },
               child: Image.asset(
                 searchIcon,
                 height: 23.h,

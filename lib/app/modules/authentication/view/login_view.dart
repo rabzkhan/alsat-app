@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
+import '../../../data/local/my_shared_pref.dart';
 import '../controller/auth_controller.dart';
 
 class LoginView extends GetView<AuthController> {
@@ -30,9 +31,14 @@ class LoginView extends GetView<AuthController> {
             child: CircleAvatar(
               radius: 60.r,
               backgroundColor: Get.theme.disabledColor.withOpacity(.05),
-              child: Image.asset(
-                signUpLogo,
-                height: 100.h,
+              child: InkWell(
+                onTap: () async {
+                  await MySharedPref.clear();
+                },
+                child: Image.asset(
+                  signUpLogo,
+                  height: 100.h,
+                ),
               ),
             ),
           ),
@@ -89,7 +95,7 @@ class LoginView extends GetView<AuthController> {
                       20.verticalSpace,
                       Center(
                         child: Text(
-                          "Resend OTP in $minutes:$seconds min",
+                          controller.canResendOtp.value ? "" : "Resend OTP in $minutes:$seconds min",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Get.theme.primaryColor,
@@ -124,13 +130,15 @@ class LoginView extends GetView<AuthController> {
                           ? null // Disable the login button if OTP process has started
                           : () {
                               if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
-                                controller.getOtp();
+                                controller.requestSmsPermission();
                               }
                             },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
+                      child: Obx(() {
+                        return Text(
+                          controller.isLoading.value ? "Varifying.." : 'Varify & Login',
+                          style: TextStyle(fontSize: 14.sp),
+                        );
+                      }),
                     ),
                   )
                 ],
