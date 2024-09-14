@@ -78,7 +78,7 @@ class AppDrawer extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            10.verticalSpace,
+                            20.verticalSpace,
                             Row(
                               children: [
                                 Image.asset(
@@ -95,6 +95,58 @@ class AppDrawer extends StatelessWidget {
                                 ),
                               ],
                             ),
+                            20.verticalSpace,
+                            Row(
+                              children: [
+                                Image.asset(
+                                  sportIcon,
+                                  width: 25.w,
+                                  color: Get.theme.textTheme.bodyLarge!.color!,
+                                ),
+                                10.horizontalSpace,
+                                Text(
+                                  'Sport',
+                                  style: regular.copyWith(
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            20.verticalSpace,
+                            Row(
+                              children: [
+                                Image.asset(
+                                  newsIcon,
+                                  width: 25.w,
+                                  color: Get.theme.textTheme.bodyLarge!.color!,
+                                ),
+                                10.horizontalSpace,
+                                Text(
+                                  'News',
+                                  style: regular.copyWith(
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            20.verticalSpace,
+                            Row(
+                              children: [
+                                Image.asset(
+                                  drawerSetting,
+                                  width: 25.w,
+                                  color: Get.theme.textTheme.bodyLarge!.color!,
+                                ),
+                                10.horizontalSpace,
+                                Text(
+                                  'Setting',
+                                  style: regular.copyWith(
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            120.verticalSpace,
                           ],
                         ),
                       ),

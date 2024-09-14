@@ -34,12 +34,10 @@ class ChatContent extends StatelessWidget {
               ),
             ),
             child: ListTile(
-
               onTap: () {
                 Get.to(const ConversationView());
                 // Get.to(const ConversationView());
               },
-
 
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 20.w,
@@ -70,7 +68,7 @@ class ChatContent extends StatelessWidget {
                   ),
                 ],
               ),
-              title: Text('Alexander'),
+              //   title: Text('Alexander'),
               subtitle: Text('We no longer need to talk about Kevin'),
             ),
           );

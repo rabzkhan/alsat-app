@@ -327,6 +327,54 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     ),
                   ),
                   20.verticalSpace,
+                  Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: MaterialButton(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 14.h,
+                            horizontal: 20.w,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            'Insights',
+                            style: regular.copyWith(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        flex: 3,
+                        child: MaterialButton(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 14.h,
+                            horizontal: 20.w,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          elevation: 0,
+                          color: Theme.of(context).primaryColor,
+                          onPressed: () {},
+                          child: Text(
+                            'Boost Your Ad',
+                            style: regular.copyWith(
+                              color: Get.theme.scaffoldBackgroundColor,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  )
                 ],
               ),
             )
