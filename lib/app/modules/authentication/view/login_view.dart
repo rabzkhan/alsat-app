@@ -7,15 +7,14 @@ import 'package:get/get.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
-import '../../app_home/view/app_home_view.dart';
+import '../../../data/local/my_shared_pref.dart';
 import '../controller/auth_controller.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends GetView<AuthController> {
   const LoginView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.find();
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -32,9 +31,14 @@ class LoginView extends StatelessWidget {
             child: CircleAvatar(
               radius: 60.r,
               backgroundColor: Get.theme.disabledColor.withOpacity(.05),
-              child: Image.asset(
-                signUpLogo,
-                height: 100.h,
+              child: InkWell(
+                onTap: () async {
+                  await MySharedPref.clear();
+                },
+                child: Image.asset(
+                  signUpLogo,
+                  height: 100.h,
+                ),
               ),
             ),
           ),
@@ -48,7 +52,7 @@ class LoginView extends StatelessWidget {
               topRight: Radius.circular(60.r),
             )),
         child: FormBuilder(
-          key: authController.loginFormKey,
+          key: controller.loginFormKey,
           child: ListView(
             padding: EdgeInsets.symmetric(
               horizontal: 30.w,
@@ -58,7 +62,13 @@ class LoginView extends StatelessWidget {
               30.verticalSpace,
               FormBuilderTextField(
                 name: 'phone',
+                controller: controller.phoneNumberController.value,
+                keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
+                  prefix: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.w),
+                    child: Text(controller.countryCode.value),
+                  ),
                   isDense: true,
                   alignLabelWithHint: true,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
@@ -74,72 +84,65 @@ class LoginView extends StatelessWidget {
                 ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
-                  FormBuilderValidators.email(),
                 ]),
               ),
-              20.verticalSpace,
-              FormBuilderTextField(
-                name: 'password',
-                decoration: InputDecoration(
-                  isDense: true,
-                  alignLabelWithHint: true,
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelStyle: TextStyle(
-                    fontSize: 14.sp,
-                    color: Get.theme.shadowColor.withOpacity(.6),
-                  ),
-                  labelText: 'Password',
-                  border: outlineBorder,
-                  enabledBorder: outlineBorder,
-                  errorBorder: outlineBorder,
-                  focusedBorder: outlineBorder,
-                ),
-                obscureText: true,
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-              ),
+              Obx(() {
+                if (controller.hasStartedOtpProcess.value) {
+                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
+                  return Column(
+                    children: [
+                      20.verticalSpace,
+                      Center(
+                        child: Text(
+                          controller.canResendOtp.value ? "" : "Resend OTP in $minutes:$seconds min",
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Get.theme.primaryColor,
+                          ),
+                        ),
+                      ),
+                      20.verticalSpace,
+                      // Resend OTP Button
+                      TextButton(
+                        onPressed: controller.canResendOtp.value
+                            ? () {
+                                controller.getOtp();
+                              }
+                            : null, // Disable button until countdown is over
+                        child: Text(
+                          'Resend OTP',
+                          style: TextStyle(fontSize: 14.sp),
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  return Container(); // Hide elements if OTP process hasn't started
+                }
+              }),
               50.verticalSpace,
               Row(
                 children: [
                   Expanded(
                     child: CupertinoButton.filled(
-                      onPressed: () {
-                        Get.offAll(const AppHomeView(),
-                            transition: Transition.fadeIn);
-                      },
-                      child: Text(
-                        'Login',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
+                      onPressed: controller.hasStartedOtpProcess.value
+                          ? null // Disable the login button if OTP process has started
+                          : () {
+                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
+                                controller.requestSmsPermission();
+                              }
+                            },
+                      child: Obx(() {
+                        return Text(
+                          controller.isLoading.value ? "Varifying.." : 'Varify & Login',
+                          style: TextStyle(fontSize: 14.sp),
+                        );
+                      }),
                     ),
                   )
                 ],
               ),
-              20.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'New User?',
-                    style: TextStyle(
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                  6.horizontalSpace,
-                  InkWell(
-                    onDoubleTap: () {},
-                    child: Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        color: Get.theme.primaryColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
         ),
