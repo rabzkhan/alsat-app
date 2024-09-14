@@ -31,7 +31,7 @@ dependencies:
   glassmorphism: ^3.0.0
   carousel_slider: ^5.0.0
   chatview:
-    path: packages\chatview
+    path: packages/chatview
 
 dev_dependencies:
   mockito:
