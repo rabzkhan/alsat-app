@@ -66,7 +66,9 @@ class ChatContent extends StatelessWidget {
                   ),
                 ],
               ),
-              subtitle: const Text('We no longer need to talk about Kevin'),
+              //   title: Text('Alexander'),
+              subtitle: Text('We no longer need to talk about Kevin'),
+
             ),
           );
         }),
