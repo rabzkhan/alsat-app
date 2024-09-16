@@ -130,7 +130,7 @@ class LoginView extends GetView<AuthController> {
                           ? null // Disable the login button if OTP process has started
                           : () {
                               if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
-                                controller.requestSmsPermission();
+                                controller.getOtp();
                               }
                             },
                       child: Obx(() {

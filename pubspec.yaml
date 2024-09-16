@@ -34,7 +34,8 @@ dependencies:
     path: packages/chatview
     
   permission_handler: ^11.3.1
-  background_sms: ^0.0.4
+  url_launcher: ^6.3.0
+
  
 
 

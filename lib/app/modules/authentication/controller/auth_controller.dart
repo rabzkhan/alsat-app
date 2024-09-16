@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
-import 'package:background_sms/background_sms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
-import 'package:permission_handler/permission_handler.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../utils/constants.dart';
 import '../../../data/local/my_shared_pref.dart';
 import '../../../services/base_client.dart';
@@ -30,29 +28,8 @@ class AuthController extends GetxController {
   RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
   RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
 
-  // Method to request SMS permission
-  Future<void> requestSmsPermission() async {
-    var status = await Permission.sms.status;
-    if (!status.isGranted) {
-      // Request permission
-      var result = await Permission.sms.request();
-      if (result.isGranted) {
-        // Permission granted
-        getOtp();
-      } else {
-        // Permission denied
-        // Ask for manual permission
-        Get.snackbar("SMS Permission", "Please enable sms permission");
-      }
-    } else {
-      // Permission already granted
-      getOtp();
-    }
-  }
-
   getOtp() async {
     isLoading.value = true;
-    hasStartedOtpProcess.value = true;
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.getOtp,
       RequestType.get,
@@ -71,7 +48,6 @@ class AuthController extends GetxController {
   void startOtpCountdown() {
     canResendOtp.value = false;
     countdown.value = 120;
-
     resendOtpTimer?.cancel();
     resendOtpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (countdown.value > 0) {
@@ -85,30 +61,57 @@ class AuthController extends GetxController {
 
   // Method to trigger phone number verification
   triggerSendSms() async {
-    await sendSms(phoneNumberController.value.text, otpData.value.sms!);
-    startOtpCountdown(); // Start the 4-minute countdown timer
-    startVerifyingNumber();
+    await sendSms(otpData.value.phone!, otpData.value.sms!);
+    //startOtpCountdown(); // Start the 4-minute countdown timer
   }
 
   // Method to send an SMS using flutter_sms
+
   Future<void> sendSms(String phoneNumber, String message) async {
-    SmsStatus result = await BackgroundSms.sendMessage(
-      phoneNumber: "65555109",
-      message: message,
+    // Show confirmation dialog
+    bool? sendSmsConfirmation = await showDialog(
+      context: Get.context!,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmation'),
+          content: Text('We are going to send an SMS to $phoneNumber. Do you want to proceed?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // Cancel sending SMS
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true); // Confirm sending SMS
+              },
+              child: const Text('Proceed'),
+            ),
+          ],
+        );
+      },
     );
 
-    if (result == SmsStatus.sent) {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(content: Text('SMS sent successfully')),
+    // If the user confirmed, send the SMS
+    if (sendSmsConfirmation == true) {
+      final Uri smsUri = Uri(
+        scheme: 'sms',
+        path: "365555109",
+        queryParameters: <String, String>{
+          'body': message,
+        },
       );
-    } else if (result == SmsStatus.failed) {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(content: Text('Failed to send SMS')),
-      );
-    } else {
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(content: Text('Unknown status')),
-      );
+
+      if (await canLaunchUrl(smsUri)) {
+        await launchUrl(
+          smsUri,
+          mode: LaunchMode.externalApplication,
+        );
+        startVerifyingNumber();
+      } else {
+        throw 'Could not send SMS';
+      }
     }
   }
 

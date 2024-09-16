@@ -21,11 +21,6 @@ public final class GeneratedPluginRegistrant {
       Log.e(TAG, "Error registering plugin audio_waveforms, com.simform.audio_waveforms.AudioWaveformsPlugin", e);
     }
     try {
-      flutterEngine.getPlugins().add(new com.j.background_sms.BackgroundSmsPlugin());
-    } catch (Exception e) {
-      Log.e(TAG, "Error registering plugin background_sms, com.j.background_sms.BackgroundSmsPlugin", e);
-    }
-    try {
       flutterEngine.getPlugins().add(new com.fintasys.emoji_picker_flutter.EmojiPickerFlutterPlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin emoji_picker_flutter, com.fintasys.emoji_picker_flutter.EmojiPickerFlutterPlugin", e);
