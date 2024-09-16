@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../config/translations/localization_service.dart';
 
 class MySharedPref {
-  // prevent making instance
+  // Prevent creating an instance
   MySharedPref._();
 
-  // get storage
+  // SharedPreferences instance
   static late SharedPreferences _sharedPreferences;
 
-  // STORING KEYS
+  // Storage Keys
   static const String _fcmTokenKey = 'fcm_token';
   static const String _currentLocalKey = 'current_local';
   static const String _lightThemeKey = 'is_theme_light';
+  static const String _isLoggedInKey = 'is_logged_in'; // Key to store login status
+  static const String _authTokenKey = 'auth_token'; // Key to store auth token
+  static const String _onboardingCompleteKey = 'onboarding_complete'; // Key to store onboarding status
 
-  /// init get storage services
+  /// Initialize SharedPreferences
   static Future<void> init() async {
     _sharedPreferences = await SharedPreferences.getInstance();
   }
@@ -24,37 +26,54 @@ class MySharedPref {
     _sharedPreferences = sharedPreferences;
   }
 
-  /// set theme current type as light theme
-  static Future<void> setThemeIsLight(bool lightTheme) =>
-      _sharedPreferences.setBool(_lightThemeKey, lightTheme);
+  /// Set theme as light or dark
+  static Future<void> setThemeIsLight(bool lightTheme) => _sharedPreferences.setBool(_lightThemeKey, lightTheme);
 
-  /// get if the current theme type is light
-  static bool getThemeIsLight() =>
-      _sharedPreferences.getBool(_lightThemeKey) ??
-      true; // todo set the default theme (true for light, false for dark)
+  /// Get theme type (light or dark)
+  static bool getThemeIsLight() => _sharedPreferences.getBool(_lightThemeKey) ?? true;
 
-  /// save current locale
+  /// Save current locale
   static Future<void> setCurrentLanguage(String languageCode) =>
       _sharedPreferences.setString(_currentLocalKey, languageCode);
 
-  /// get current locale
+  /// Get current locale
   static Locale getCurrentLocal() {
-    // String? langCode = _sharedPreferences.getString(_currentLocalKey);
-    // // default language is english
-    // if(langCode == null){
-    //   return LocalizationService.defaultLanguage;
-    // }
-    // return LocalizationService.supportedLanguages[langCode]!;
     return const Locale('en');
   }
 
-  /// save generated fcm token
-  static Future<void> setFcmToken(String token) =>
-      _sharedPreferences.setString(_fcmTokenKey, token);
+  /// Save generated FCM token
+  static Future<void> setFcmToken(String token) => _sharedPreferences.setString(_fcmTokenKey, token);
 
-  /// get authorization token
+  /// Get FCM token
   static String? getFcmToken() => _sharedPreferences.getString(_fcmTokenKey);
 
-  /// clear all data from shared pref
-  static Future<void> clear() async => await _sharedPreferences.clear();
+  /// Save login status (true if user is logged in)
+  static Future<void> setIsLoggedIn(bool isLoggedIn) => _sharedPreferences.setBool(_isLoggedInKey, isLoggedIn);
+
+  /// Check if user is logged in
+  static bool isLoggedIn() => _sharedPreferences.getBool(_isLoggedInKey) ?? false;
+
+  /// Save authorization token
+  static Future<void> setAuthToken(String token) => _sharedPreferences.setString(_authTokenKey, token);
+
+  /// Get authorization token
+  static String? getAuthToken() => _sharedPreferences.getString(_authTokenKey);
+
+  /// Save onboarding completion status (true if onboarding is completed)
+  static Future<void> setOnboardingComplete(bool isComplete) =>
+      _sharedPreferences.setBool(_onboardingCompleteKey, isComplete);
+
+  /// Check if onboarding is completed
+  static bool isOnboardingComplete() => _sharedPreferences.getBool(_onboardingCompleteKey) ?? false;
+
+  /// Clear all stored data
+  // Clear all stored data
+  static Future<void> clear() async {
+    bool result = await _sharedPreferences.clear();
+    if (result) {
+      print("SharedPreferences cleared successfully");
+    } else {
+      print("Failed to clear SharedPreferences");
+    }
+  }
 }

@@ -38,8 +38,7 @@ class BaseClient {
     required Function(Response response) onSuccess,
     Function(ApiException)? onError,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)?
-        onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
     Function? onLoading,
     dynamic data,
   }) async {
@@ -57,6 +56,7 @@ class BaseClient {
           ),
         );
       } else if (requestType == RequestType.post) {
+        Logger().d(data.toString());
         response = await _dio.post(
           url,
           data: data,
@@ -126,10 +126,7 @@ class BaseClient {
   }
 
   /// handle unexpected error
-  static _handleUnexpectedException(
-      {Function(ApiException)? onError,
-      required String url,
-      required Object error}) {
+  static _handleUnexpectedException({Function(ApiException)? onError, required String url, required Object error}) {
     if (onError != null) {
       onError(ApiException(
         message: error.toString(),
@@ -141,8 +138,7 @@ class BaseClient {
   }
 
   /// handle timeout exception
-  static _handleTimeoutException(
-      {Function(ApiException)? onError, required String url}) {
+  static _handleTimeoutException({Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: localLanguage.serverNotResponding,
@@ -154,8 +150,7 @@ class BaseClient {
   }
 
   /// handle timeout exception
-  static _handleSocketException(
-      {Function(ApiException)? onError, required String url}) {
+  static _handleSocketException({Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: localLanguage.noInternetConnection,
@@ -167,10 +162,7 @@ class BaseClient {
   }
 
   /// handle Dio error
-  static _handleDioError(
-      {required DioException error,
-      Function(ApiException)? onError,
-      required String url}) {
+  static _handleDioError({required DioException error, Function(ApiException)? onError, required String url}) {
     // 404 error
     if (error.response?.statusCode == 404) {
       if (onError != null) {
@@ -185,8 +177,7 @@ class BaseClient {
     }
 
     // no internet connection
-    if (error.message != null &&
-        error.message!.toLowerCase().contains('socket')) {
+    if (error.message != null && error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
           message: localLanguage.noInternetConnection,

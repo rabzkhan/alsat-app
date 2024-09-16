@@ -37,7 +37,7 @@ lintOptions {
 
 defaultConfig {
 
-    applicationId "com.fahad.app"
+    applicationId "com.emad.beltaje.alsat.alsat"
     minSdkVersion 21
     targetSdkVersion 34
     versionCode flutterVersionCode.toInteger()
