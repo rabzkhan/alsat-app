@@ -1,6 +1,7 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:alsat/app/components/product_grid_tile.dart';
+import 'package:alsat/app/modules/product/view/product_insights_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,6 +22,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         child: Column(
           children: [
             const CustomAppbar(
+              isShowBackButton: true,
               isShowFilter: false,
               isShowSearch: false,
             ),
@@ -157,11 +159,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        _infoTile(name: 'Brand', value: 'Test'),
-                        _infoTile(name: 'Body Type', value: 'Test'),
-                        _infoTile(name: 'Model Type', value: '  Bmw'),
-                        _infoTile(name: 'Year', value: '2014'),
-                        _infoTile(name: 'Engine', value: '2025'),
+                        infoTile(name: 'Brand', value: 'Test'),
+                        infoTile(name: 'Body Type', value: 'Test'),
+                        infoTile(name: 'Model Type', value: '  Bmw'),
+                        infoTile(name: 'Year', value: '2014'),
+                        infoTile(name: 'Engine', value: '2025'),
 
                         ///more
                         Row(
@@ -342,7 +344,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               color: Theme.of(context).primaryColor,
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Get.to(const ProductInsightsView(),
+                                transition: Transition.fadeIn);
+                          },
                           child: Text(
                             'Insights',
                             style: regular.copyWith(
@@ -383,28 +388,28 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       ),
     );
   }
+}
 
-  Padding _infoTile({required String name, required String value}) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        children: [
-          Text(
-            name,
-            style: regular.copyWith(
-              fontSize: 14.sp,
-              color: Get.theme.disabledColor,
-            ),
+Padding infoTile({required String name, required String value}) {
+  return Padding(
+    padding: EdgeInsets.symmetric(vertical: 8.h),
+    child: Row(
+      children: [
+        Text(
+          name,
+          style: regular.copyWith(
+            fontSize: 14.sp,
+            color: Get.theme.disabledColor,
           ),
-          const Spacer(),
-          Text(
-            value,
-            style: regular.copyWith(
-              fontSize: 14.sp,
-            ),
+        ),
+        const Spacer(),
+        Text(
+          value,
+          style: regular.copyWith(
+            fontSize: 14.sp,
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
 }

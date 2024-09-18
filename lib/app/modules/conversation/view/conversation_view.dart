@@ -97,7 +97,7 @@ class _ConversationViewState extends State<ConversationView> {
           border: Border.all(
             color: isDarkTheme ? Colors.transparent : Colors.grey,
           ),
-          icon: Icon(
+          icon: const Icon(
             Icons.keyboard_arrow_down_rounded,
             weight: 10,
             size: 30,

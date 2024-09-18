@@ -8,8 +8,12 @@ import '../common/const/image_path.dart';
 class CustomAppbar extends StatelessWidget {
   final bool isShowSearch;
   final bool isShowFilter;
+  final bool isShowBackButton;
   const CustomAppbar(
-      {super.key, this.isShowSearch = true, this.isShowFilter = true});
+      {super.key,
+      this.isShowSearch = true,
+      this.isShowFilter = true,
+      this.isShowBackButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +29,15 @@ class CustomAppbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () {
-              homeController.isShowDrawer.value =
-                  !homeController.isShowDrawer.value;
-            },
-            icon: const Icon(Icons.menu),
-          ),
+          !isShowBackButton
+              ? IconButton(
+                  onPressed: () {
+                    homeController.isShowDrawer.value =
+                        !homeController.isShowDrawer.value;
+                  },
+                  icon: const Icon(Icons.menu),
+                )
+              : const BackButton(),
           4.horizontalSpace,
           InkWell(
             onTap: () {},

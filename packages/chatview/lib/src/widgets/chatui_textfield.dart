@@ -89,9 +89,11 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
       sendMessageConfig?.cancelRecordConfiguration;
 
   OutlineInputBorder get _outLineBorder => OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.transparent),
+        borderSide: BorderSide(
+          color: Colors.grey.shade300,
+        ),
         borderRadius: widget.sendMessageConfig?.textFieldConfig?.borderRadius ??
-            BorderRadius.circular(textFieldBorderRadius),
+            BorderRadius.circular(6),
       );
 
   ValueNotifier<TypeWriterStatus> composingStatus =
@@ -132,12 +134,12 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
   Widget build(BuildContext context) {
     final outlineBorder = _outLineBorder;
     return Container(
-      padding:
-          textFieldConfig?.padding ?? const EdgeInsets.symmetric(horizontal: 6),
+      padding: textFieldConfig?.padding ??
+          const EdgeInsets.symmetric(horizontal: 6, vertical: 7),
       margin: textFieldConfig?.margin,
       decoration: BoxDecoration(
-        borderRadius: textFieldConfig?.borderRadius ??
-            BorderRadius.circular(textFieldBorderRadius),
+        // borderRadius: textFieldConfig?.borderRadius ??
+        //     BorderRadius.circular(textFieldBorderRadius),
         color: sendMessageConfig?.textFieldBackgroundColor ?? Colors.white,
       ),
       child: ValueListenableBuilder<bool>(
@@ -171,42 +173,51 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
                   ),
                 )
               else
-                Expanded(
-                  child: TextField(
-                    focusNode: widget.focusNode,
-                    controller: widget.textEditingController,
-                    style: textFieldConfig?.textStyle ??
-                        const TextStyle(color: Colors.white),
-                    maxLines: textFieldConfig?.maxLines ?? 5,
-                    minLines: textFieldConfig?.minLines ?? 1,
-                    keyboardType: textFieldConfig?.textInputType,
-                    inputFormatters: textFieldConfig?.inputFormatters,
-                    onChanged: _onChanged,
-                    enabled: textFieldConfig?.enabled,
-                    textCapitalization: textFieldConfig?.textCapitalization ??
-                        TextCapitalization.sentences,
-                    decoration: InputDecoration(
-                      hintText:
-                          textFieldConfig?.hintText ?? PackageStrings.message,
-                      fillColor: sendMessageConfig?.textFieldBackgroundColor ??
-                          Colors.white,
-                      filled: true,
-                      hintStyle: textFieldConfig?.hintStyle ??
-                          TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            color: Colors.grey.shade600,
-                            letterSpacing: 0.25,
-                          ),
-                      contentPadding: textFieldConfig?.contentPadding ??
-                          const EdgeInsets.symmetric(horizontal: 6),
-                      border: outlineBorder,
-                      focusedBorder: outlineBorder,
-                      enabledBorder: outlineBorder,
-                      disabledBorder: outlineBorder,
-                    ),
+                IconButton(
+                  onPressed: (textFieldConfig?.enabled ?? true)
+                      ? () => _onIconPressed(
+                            ImageSource.gallery,
+                            config: sendMessageConfig?.imagePickerConfiguration,
+                          )
+                      : null,
+                  icon: const Icon(Icons.add_circle_outline_sharp),
+                ),
+              Expanded(
+                child: TextField(
+                  focusNode: widget.focusNode,
+                  controller: widget.textEditingController,
+                  style: textFieldConfig?.textStyle ??
+                      const TextStyle(color: Colors.white),
+                  maxLines: textFieldConfig?.maxLines ?? 5,
+                  minLines: textFieldConfig?.minLines ?? 1,
+                  keyboardType: textFieldConfig?.textInputType,
+                  inputFormatters: textFieldConfig?.inputFormatters,
+                  onChanged: _onChanged,
+                  enabled: textFieldConfig?.enabled,
+                  textCapitalization: textFieldConfig?.textCapitalization ??
+                      TextCapitalization.sentences,
+                  decoration: InputDecoration(
+                    hintText:
+                        textFieldConfig?.hintText ?? PackageStrings.message,
+                    fillColor: sendMessageConfig?.textFieldBackgroundColor ??
+                        Colors.white,
+                    filled: true,
+                    hintStyle: textFieldConfig?.hintStyle ??
+                        TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey.shade600,
+                          letterSpacing: 0.25,
+                        ),
+                    contentPadding: textFieldConfig?.contentPadding ??
+                        const EdgeInsets.symmetric(horizontal: 6),
+                    border: outlineBorder,
+                    focusedBorder: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    disabledBorder: outlineBorder,
                   ),
                 ),
+              ),
               ValueListenableBuilder<String>(
                 valueListenable: _inputText,
                 builder: (_, inputTextValue, child) {
@@ -226,74 +237,79 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
                   } else {
                     return Row(
                       children: [
-                        if (!isRecordingValue) ...[
-                          if (sendMessageConfig?.enableCameraImagePicker ??
-                              true)
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              onPressed: (textFieldConfig?.enabled ?? true)
-                                  ? () => _onIconPressed(
-                                        ImageSource.camera,
-                                        config: sendMessageConfig
-                                            ?.imagePickerConfiguration,
-                                      )
-                                  : null,
-                              icon: imagePickerIconsConfig
-                                      ?.cameraImagePickerIcon ??
-                                  Icon(
-                                    Icons.camera_alt_outlined,
-                                    color:
-                                        imagePickerIconsConfig?.cameraIconColor,
-                                  ),
-                            ),
-                          if (sendMessageConfig?.enableGalleryImagePicker ??
-                              true)
-                            IconButton(
-                              constraints: const BoxConstraints(),
-                              onPressed: (textFieldConfig?.enabled ?? true)
-                                  ? () => _onIconPressed(
-                                        ImageSource.gallery,
-                                        config: sendMessageConfig
-                                            ?.imagePickerConfiguration,
-                                      )
-                                  : null,
-                              icon: imagePickerIconsConfig
-                                      ?.galleryImagePickerIcon ??
-                                  Icon(
-                                    Icons.image,
-                                    color: imagePickerIconsConfig
-                                        ?.galleryIconColor,
-                                  ),
-                            ),
-                        ],
-                        if ((sendMessageConfig?.allowRecordingVoice ?? false) &&
-                            !kIsWeb &&
-                            (Platform.isIOS || Platform.isAndroid))
-                          IconButton(
-                            onPressed: (textFieldConfig?.enabled ?? true)
-                                ? _recordOrStop
-                                : null,
-                            icon: (isRecordingValue
-                                    ? voiceRecordingConfig?.stopIcon
-                                    : voiceRecordingConfig?.micIcon) ??
-                                Icon(
-                                  isRecordingValue ? Icons.stop : Icons.mic,
-                                  color:
-                                      voiceRecordingConfig?.recorderIconColor,
-                                ),
-                          ),
-                        if (isRecordingValue &&
-                            cancelRecordConfiguration != null)
-                          IconButton(
-                            onPressed: () {
-                              cancelRecordConfiguration?.onCancel?.call();
-                              _cancelRecording();
-                            },
-                            icon: cancelRecordConfiguration?.icon ??
-                                const Icon(Icons.cancel_outlined),
-                            color: cancelRecordConfiguration?.iconColor ??
-                                voiceRecordingConfig?.recorderIconColor,
-                          ),
+                        IconButton(
+                          constraints: const BoxConstraints(),
+                          onPressed: () {},
+                          icon: const Icon(Icons.location_on_rounded),
+                        ),
+                        //   if (!isRecordingValue) ...[
+                        //     if (sendMessageConfig?.enableCameraImagePicker ??
+                        //         true)
+                        //       IconButton(
+                        //         constraints: const BoxConstraints(),
+                        //         onPressed: (textFieldConfig?.enabled ?? true)
+                        //             ? () => _onIconPressed(
+                        //                   ImageSource.camera,
+                        //                   config: sendMessageConfig
+                        //                       ?.imagePickerConfiguration,
+                        //                 )
+                        //             : null,
+                        //         icon: imagePickerIconsConfig
+                        //                 ?.cameraImagePickerIcon ??
+                        //             Icon(
+                        //               Icons.camera_alt_outlined,
+                        //               color:
+                        //                   imagePickerIconsConfig?.cameraIconColor,
+                        //             ),
+                        //       ),
+                        //     if (sendMessageConfig?.enableGalleryImagePicker ??
+                        //         true)
+                        //       IconButton(
+                        //         constraints: const BoxConstraints(),
+                        //         onPressed: (textFieldConfig?.enabled ?? true)
+                        //             ? () => _onIconPressed(
+                        //                   ImageSource.gallery,
+                        //                   config: sendMessageConfig
+                        //                       ?.imagePickerConfiguration,
+                        //                 )
+                        //             : null,
+                        //         icon: imagePickerIconsConfig
+                        //                 ?.galleryImagePickerIcon ??
+                        //             Icon(
+                        //               Icons.image,
+                        //               color: imagePickerIconsConfig
+                        //                   ?.galleryIconColor,
+                        //             ),
+                        //       ),
+                        //   ],
+                        //   if ((sendMessageConfig?.allowRecordingVoice ?? false) &&
+                        //       !kIsWeb &&
+                        //       (Platform.isIOS || Platform.isAndroid))
+                        //     IconButton(
+                        //       onPressed: (textFieldConfig?.enabled ?? true)
+                        //           ? _recordOrStop
+                        //           : null,
+                        //       icon: (isRecordingValue
+                        //               ? voiceRecordingConfig?.stopIcon
+                        //               : voiceRecordingConfig?.micIcon) ??
+                        //           Icon(
+                        //             isRecordingValue ? Icons.stop : Icons.mic,
+                        //             color:
+                        //                 voiceRecordingConfig?.recorderIconColor,
+                        //           ),
+                        //     ),
+                        //   if (isRecordingValue &&
+                        //       cancelRecordConfiguration != null)
+                        //     IconButton(
+                        //       onPressed: () {
+                        //         cancelRecordConfiguration?.onCancel?.call();
+                        //         _cancelRecording();
+                        //       },
+                        //       icon: cancelRecordConfiguration?.icon ??
+                        //           const Icon(Icons.cancel_outlined),
+                        //       color: cancelRecordConfiguration?.iconColor ??
+                        //           voiceRecordingConfig?.recorderIconColor,
+                        //     ),
                       ],
                     );
                   }
