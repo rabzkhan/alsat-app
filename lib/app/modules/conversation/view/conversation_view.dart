@@ -1,5 +1,7 @@
+import 'package:alsat/app/components/product_list_tile.dart';
 import 'package:alsat/app/modules/conversation/data.dart';
 import 'package:alsat/app/modules/conversation/models/theme.dart';
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:chatview/chatview.dart';
 
@@ -85,6 +87,10 @@ class _ConversationViewState extends State<ConversationView> {
           preferredSize: Size.fromHeight(60.h),
           child: const SafeArea(child: CustomAppbar())),
       body: ChatView(
+        productWidget: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
+          child: ProductListTile(),
+        ),
         chatController: _chatController,
         onSendTap: _onSendTap,
         featureActiveConfig: const FeatureActiveConfig(
@@ -105,11 +111,11 @@ class _ConversationViewState extends State<ConversationView> {
         ),
         chatViewState: ChatViewState.hasMessages,
         chatViewStateConfig: ChatViewStateConfiguration(
-          loadingWidgetConfig: ChatViewStateWidgetConfiguration(),
+          loadingWidgetConfig: const ChatViewStateWidgetConfiguration(),
           onReloadButtonTap: () {},
         ),
         typeIndicatorConfig: TypeIndicatorConfiguration(
-          flashingCircleBrightColor: Get.theme.primaryColor,
+          flashingCircleBrightColor: Colors.white,
           flashingCircleDarkColor: Get.theme.primaryColor,
         ),
         appBar: ChatViewAppBar(
@@ -134,17 +140,21 @@ class _ConversationViewState extends State<ConversationView> {
               fontSize: 17,
             ),
           ),
-          backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+          backgroundColor: Get.theme.primaryColor.withOpacity(.2),
         ),
         sendMessageConfig: SendMessageConfiguration(
-          imagePickerIconsConfig: ImagePickerIconsConfiguration(),
-          replyMessageColor: Get.theme.primaryColor,
+          imagePickerIconsConfig: const ImagePickerIconsConfiguration(),
+          replyMessageColor: AppColors.liteGray,
           // defaultSendButtonColor: theme.sendButtonColor,
           // replyDialogColor: theme.replyDialogColor,
           // replyTitleColor: theme.replyTitleColor,
           // textFieldBackgroundColor: theme.textFieldBackgroundColor,
           // closeIconColor: theme.closeIconColor,
           textFieldConfig: TextFieldConfiguration(
+            textStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 15.sp,
+            ),
             // onMessageTyping: (status) {
             //   /// Do with status
             //   debugPrint(status.toString());
@@ -153,36 +163,35 @@ class _ConversationViewState extends State<ConversationView> {
             // textStyle: TextStyle(color: theme.textFieldTextColor),
           ),
           // micIconColor: theme.replyMicIconColor,
-          voiceRecordingConfiguration: VoiceRecordingConfiguration(
-            // backgroundColor: theme.waveformBackgroundColor,
-            // recorderIconColor: theme.recordIconColor,
-            waveStyle: const WaveStyle(
-              showMiddleLine: false,
-              waveColor: Colors.red,
-              extendWaveform: true,
-            ),
-          ),
         ),
         chatBubbleConfig: ChatBubbleConfiguration(
           outgoingChatBubbleConfig: ChatBubble(
-            linkPreviewConfig: LinkPreviewConfiguration(
-              backgroundColor: Get.theme.primaryColor,
-              // bodyStyle: theme.outgoingChatLinkBodyStyle,
-              // titleStyle: theme.outgoingChatLinkTitleStyle,
+            textStyle: TextStyle(
+              color: Colors.black,
+              fontSize: 14.sp,
             ),
+            linkPreviewConfig: LinkPreviewConfiguration(),
             receiptsWidgetConfig:
                 const ReceiptsWidgetConfig(showReceiptsIn: ShowReceiptsIn.all),
-            color: Get.theme.primaryColor,
+            color: Colors.white,
           ),
           inComingChatBubbleConfig: ChatBubble(
             linkPreviewConfig: LinkPreviewConfiguration(
               linkStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
                 // color: theme.inComingChatBubbleTextColor,
                 decoration: TextDecoration.underline,
               ),
-              backgroundColor: Get.theme.primaryColor,
-              // bodyStyle: theme.incomingChatLinkBodyStyle,
-              // titleStyle: theme.incomingChatLinkTitleStyle,
+              bodyStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+              ),
+              titleStyle: TextStyle(
+                color: Colors.white,
+                fontSize: 14.sp,
+              ),
+              backgroundColor: Colors.transparent,
             ),
             // textStyle: TextStyle(color: theme.inComingChatBubbleTextColor),
             onMessageRead: (message) {
@@ -191,20 +200,21 @@ class _ConversationViewState extends State<ConversationView> {
             },
             // senderNameTextStyle:
             //     TextStyle(color: theme.inComingChatBubbleTextColor),
-            color: Get.theme.primaryColor,
+            color: Colors.black.withOpacity(.4),
           ),
         ),
         replyPopupConfig: ReplyPopupConfiguration(
-            // backgroundColor: theme.replyPopupColor,
-            // buttonTextStyle: TextStyle(color: theme.replyPopupButtonColor),
-            // topBorderColor: theme.replyPopupTopBorderColor,
-            ),
+          backgroundColor: Colors.black.withOpacity(.4),
+          // backgroundColor: theme.replyPopupColor,
+          // buttonTextStyle: TextStyle(color: theme.replyPopupButtonColor),
+          // topBorderColor: theme.replyPopupTopBorderColor,
+        ),
         reactionPopupConfig: ReactionPopupConfiguration(
           shadow: BoxShadow(
             color: isDarkTheme ? Colors.black54 : Colors.grey.shade400,
             blurRadius: 20,
           ),
-          backgroundColor: Get.theme.primaryColor,
+          backgroundColor: Colors.black.withOpacity(.4),
         ),
         messageConfig: MessageConfiguration(
           messageReactionConfig: MessageReactionConfiguration(
@@ -215,7 +225,7 @@ class _ConversationViewState extends State<ConversationView> {
             reactionCountTextStyle:
                 TextStyle(color: theme.inComingChatBubbleTextColor),
             reactionsBottomSheetConfig: ReactionsBottomSheetConfiguration(
-              backgroundColor: Get.theme.primaryColor,
+              backgroundColor: AppColors.liteGray,
               reactedUserTextStyle: TextStyle(
                 color: theme.inComingChatBubbleTextColor,
               ),
@@ -244,16 +254,15 @@ class _ConversationViewState extends State<ConversationView> {
           profileImageUrl: Data.profileImage,
         ),
         repliedMessageConfig: RepliedMessageConfiguration(
-          backgroundColor: Get.theme.primaryColor.withOpacity(.5),
+          backgroundColor: Colors.black.withOpacity(.4),
           verticalBarColor: theme.verticalBarColor,
-          repliedMsgAutoScrollConfig: RepliedMsgAutoScrollConfig(
+          repliedMsgAutoScrollConfig: const RepliedMsgAutoScrollConfig(
             enableHighlightRepliedMsg: true,
-            highlightColor: Colors.pinkAccent.shade100,
+            highlightColor: Colors.white,
             highlightScale: 1.1,
           ),
           textStyle: const TextStyle(
             color: Colors.white,
-            fontWeight: FontWeight.bold,
             letterSpacing: 0.25,
           ),
           replyTitleTextStyle: TextStyle(color: theme.repliedTitleTextColor),
