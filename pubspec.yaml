@@ -3,15 +3,15 @@ version: 1.0.0+1
 publish_to: none
 description: start your project in the fastest way
 environment:
-  sdk: '>=3.3.4 <4.0.0'
+  sdk: ">=3.3.4 <4.0.0"
 
 dependencies:
   cupertino_icons: ^1.0.8
-  get: ^4.6.6 
-  logger: ^2.3.0 
-  flutter_screenutil: ^5.9.3 
-  dio: ^5.4.3+1 
-  shared_preferences: ^2.2.3 
+  get: ^4.6.6
+  logger: ^2.3.0
+  flutter_screenutil: ^5.9.3
+  dio: ^5.4.3+1
+  shared_preferences: ^2.2.3
 
   flutter:
     sdk: flutter
@@ -31,8 +31,10 @@ dependencies:
   glassmorphism: ^3.0.0
   carousel_slider: ^5.0.0
   chatview:
-    path: packages\chatview
+    path: packages/chatview
   fl_chart: ^0.69.0
+  wave:
+    path: packages/wave
 
 dev_dependencies:
   mockito:
@@ -76,4 +78,3 @@ flutter:
           weight: 500
         - asset: assets/fonts/Cairo-SemiBold.ttf
           weight: 900
-

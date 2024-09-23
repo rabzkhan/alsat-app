@@ -85,7 +85,7 @@ class _ConversationViewState extends State<ConversationView> {
     return Scaffold(
       appBar: PreferredSize(
           preferredSize: Size.fromHeight(60.h),
-          child: const SafeArea(child: CustomAppbar())),
+          child: const SafeArea(child: CustomAppBar())),
       body: ChatView(
         productWidget: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),

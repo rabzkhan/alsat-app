@@ -297,7 +297,7 @@ class ProductInsightsView extends StatelessWidget {
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.h),
         child: const SafeArea(
-          child: CustomAppbar(
+          child: CustomAppBar(
             isShowBackButton: true,
           ),
         ),

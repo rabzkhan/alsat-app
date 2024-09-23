@@ -21,7 +21,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       body: SafeArea(
         child: Column(
           children: [
-            const CustomAppbar(
+            const CustomAppBar(
               isShowBackButton: true,
               isShowFilter: false,
               isShowSearch: false,
