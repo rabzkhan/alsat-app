@@ -4,4 +4,6 @@ class Constants {
 
   static const getOtp = '/otp';
   static const varifyOtp = '/join';
+
+  static const userProfile = '/users/profile';
 }

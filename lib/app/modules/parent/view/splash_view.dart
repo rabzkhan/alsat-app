@@ -1,4 +1,5 @@
 import 'package:alsat/app/modules/app_home/view/app_home_view.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:alsat/app/modules/parent/view/onboarding_view.dart';
