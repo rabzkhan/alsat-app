@@ -34,6 +34,7 @@ class ChatListWidget extends StatefulWidget {
   const ChatListWidget({
     Key? key,
     required this.chatController,
+    required this.productWidget,
     required this.assignReplyMessage,
     required this.replyMessage,
     this.loadingWidget,
@@ -44,6 +45,7 @@ class ChatListWidget extends StatefulWidget {
 
   /// Provides controller for accessing few function for running chat.
   final ChatController chatController;
+  final Widget productWidget;
 
   /// Provides widget for loading view while pagination is enabled.
   final Widget? loadingWidget;
@@ -138,6 +140,7 @@ class _ChatListWidgetState extends State<ChatListWidget>
               return Stack(
                 children: [
                   ChatGroupedListWidget(
+                    productWidget: widget.productWidget,
                     showPopUp: showPopupValue,
                     scrollController: scrollController,
                     isEnableSwipeToSeeTime:

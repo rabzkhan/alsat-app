@@ -31,8 +31,9 @@ import 'chat_group_header.dart';
 class ChatGroupedListWidget extends StatefulWidget {
   const ChatGroupedListWidget({
     Key? key,
-    required this.showPopUp,
     required this.scrollController,
+    required this.showPopUp,
+    required this.productWidget,
     required this.replyMessage,
     required this.assignReplyMessage,
     required this.onChatListTap,
@@ -42,6 +43,7 @@ class ChatGroupedListWidget extends StatefulWidget {
 
   /// Allow user to swipe to see time while reaction pop is not open.
   final bool showPopUp;
+  final Widget productWidget;
 
   /// Pass scroll controller
   final ScrollController scrollController;
@@ -144,57 +146,61 @@ class _ChatGroupedListWidgetState extends State<ChatGroupedListWidget>
   Widget build(BuildContext context) {
     final suggestionsListConfig =
         suggestionsConfig?.listConfig ?? const SuggestionListConfig();
-    return SingleChildScrollView(
-      reverse: true,
-      // When reaction popup is being appeared at that user should not scroll.
-      physics: showPopUp ? const NeverScrollableScrollPhysics() : null,
-      controller: widget.scrollController,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          GestureDetector(
-            onHorizontalDragUpdate: (details) =>
-                isEnableSwipeToSeeTime && !showPopUp
-                    ? _onHorizontalDrag(details)
-                    : null,
-            onHorizontalDragEnd: (details) =>
-                isEnableSwipeToSeeTime && !showPopUp
-                    ? _animationController?.reverse()
-                    : null,
-            onTap: widget.onChatListTap,
-            child: _animationController != null
-                ? AnimatedBuilder(
-                    animation: _animationController!,
-                    builder: (context, child) {
-                      return _chatStreamBuilder;
-                    },
-                  )
-                : _chatStreamBuilder,
-          ),
-          if (chatController != null)
-            ValueListenableBuilder(
-              valueListenable: chatController!.typingIndicatorNotifier,
-              builder: (context, value, child) => TypingIndicator(
-                typeIndicatorConfig: chatListConfig.typeIndicatorConfig,
-                chatBubbleConfig:
-                    chatListConfig.chatBubbleConfig?.inComingChatBubbleConfig,
-                showIndicator: value,
-              ),
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * .1),
+      child: SingleChildScrollView(
+        reverse: true,
+        // When reaction popup is being appeared at that user should not scroll.
+        physics: showPopUp ? const NeverScrollableScrollPhysics() : null,
+        controller: widget.scrollController,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            widget.productWidget ?? const Center(),
+            GestureDetector(
+              onHorizontalDragUpdate: (details) =>
+                  isEnableSwipeToSeeTime && !showPopUp
+                      ? _onHorizontalDrag(details)
+                      : null,
+              onHorizontalDragEnd: (details) =>
+                  isEnableSwipeToSeeTime && !showPopUp
+                      ? _animationController?.reverse()
+                      : null,
+              onTap: widget.onChatListTap,
+              child: _animationController != null
+                  ? AnimatedBuilder(
+                      animation: _animationController!,
+                      builder: (context, child) {
+                        return _chatStreamBuilder;
+                      },
+                    )
+                  : _chatStreamBuilder,
             ),
-          if (chatController != null)
-            Flexible(
-              child: Align(
-                alignment: suggestionsListConfig.axisAlignment.alignment,
-                child: const SuggestionList(),
+            if (chatController != null)
+              ValueListenableBuilder(
+                valueListenable: chatController!.typingIndicatorNotifier,
+                builder: (context, value, child) => TypingIndicator(
+                  typeIndicatorConfig: chatListConfig.typeIndicatorConfig,
+                  chatBubbleConfig:
+                      chatListConfig.chatBubbleConfig?.inComingChatBubbleConfig,
+                  showIndicator: value,
+                ),
               ),
-            ),
+            if (chatController != null)
+              Flexible(
+                child: Align(
+                  alignment: suggestionsListConfig.axisAlignment.alignment,
+                  child: const SuggestionList(),
+                ),
+              ),
 
-          // Adds bottom space to the message list, ensuring it is displayed
-          // above the message text field.
-          SizedBox(
-            height: chatTextFieldHeight,
-          ),
-        ],
+            // Adds bottom space to the message list, ensuring it is displayed
+            // above the message text field.
+            SizedBox(
+              height: chatTextFieldHeight,
+            ),
+          ],
+        ),
       ),
     );
   }

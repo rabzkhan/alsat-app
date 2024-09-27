@@ -1,5 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/promotions/view/my_promotions_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,21 +63,30 @@ class AppDrawer extends StatelessWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Row(
-                              children: [
-                                Image.asset(
-                                  crownIcon,
-                                  width: 25.w,
-                                  color: Get.theme.textTheme.bodyLarge!.color!,
-                                ),
-                                10.horizontalSpace,
-                                Text(
-                                  'My Promotions',
-                                  style: regular.copyWith(
-                                    fontSize: 14.sp,
+                            GestureDetector(
+                              onTap: () {
+                                Get.to(
+                                  const MyPromotionsView(),
+                                  transition: Transition.fadeIn,
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    crownIcon,
+                                    width: 25.w,
+                                    color:
+                                        Get.theme.textTheme.bodyLarge!.color!,
                                   ),
-                                ),
-                              ],
+                                  10.horizontalSpace,
+                                  Text(
+                                    'My Promotions',
+                                    style: regular.copyWith(
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                             20.verticalSpace,
                             Row(

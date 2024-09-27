@@ -6,10 +6,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../common/const/image_path.dart';
 
-class CustomAppbar extends StatelessWidget {
+class CustomAppBar extends StatelessWidget {
   final bool isShowSearch;
   final bool isShowFilter;
-  const CustomAppbar({super.key, this.isShowSearch = true, this.isShowFilter = true});
+  final bool isShowBackButton;
+  const CustomAppBar(
+      {super.key,
+      this.isShowSearch = true,
+      this.isShowFilter = true,
+      this.isShowBackButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -25,12 +30,16 @@ class CustomAppbar extends StatelessWidget {
       ),
       child: Row(
         children: [
-          IconButton(
-            onPressed: () {
-              homeController.isShowDrawer.value = !homeController.isShowDrawer.value;
-            },
-            icon: const Icon(Icons.menu),
-          ),
+          !isShowBackButton
+              ? IconButton(
+                  onPressed: () {
+                    homeController.isShowDrawer.value =
+                        !homeController.isShowDrawer.value;
+                    homeController.isShowSearch.value = false;
+                  },
+                  icon: const Icon(Icons.menu),
+                )
+              : const BackButton(),
           4.horizontalSpace,
           InkWell(
             onTap: () {},
@@ -73,6 +82,9 @@ class CustomAppbar extends StatelessWidget {
             InkWell(
               onTap: () {
                 MySharedPref.clear();
+                homeController.isShowSearch.value =
+                    !homeController.isShowSearch.value;
+                homeController.isShowDrawer.value = false;
               },
               child: Image.asset(
                 searchIcon,

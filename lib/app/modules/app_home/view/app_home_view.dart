@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../auth_user/controller/user_controller.dart';
+import '../../filter/views/search_view.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
 
@@ -34,7 +35,7 @@ class _AppHomeViewState extends State<AppHomeView> {
         child: Column(
           children: [
             //custom appbar
-            const CustomAppbar(),
+            const CustomAppBar(),
             //body
             Expanded(
               child: Stack(
@@ -74,7 +75,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                     ),
                   ),
                   //app drawer
-                  const AppDrawer()
+                  const AppDrawer(),
+                  const SearchView(),
                 ],
               ),
             ),

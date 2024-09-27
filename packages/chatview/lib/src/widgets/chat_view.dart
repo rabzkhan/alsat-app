@@ -38,6 +38,7 @@ import 'send_message_widget.dart';
 class ChatView extends StatefulWidget {
   const ChatView({
     Key? key,
+    required this.productWidget,
     required this.chatController,
     this.onSendTap,
     this.profileCircleConfig,
@@ -103,6 +104,7 @@ class ChatView extends StatefulWidget {
 
   /// Provides widget for loading view while pagination is enabled.
   final Widget? loadingWidget;
+  final Widget productWidget;
 
   /// Provides flag if there is no more next data left in list.
   final bool? isLastPage;
@@ -264,6 +266,7 @@ class _ChatViewState extends State<ChatView>
                                 valueListenable: replyMessage,
                                 builder: (_, state, child) {
                                   return ChatListWidget(
+                                    productWidget: widget.productWidget,
                                     replyMessage: state,
                                     chatController: widget.chatController,
                                     loadMoreData: widget.loadMoreData,
