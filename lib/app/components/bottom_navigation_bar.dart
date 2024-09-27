@@ -1,4 +1,5 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/product/view/post_product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,12 +65,16 @@ class AppBottomNavigationBar extends StatelessWidget {
       child: Obx(() {
         return InkWell(
           onTap: () {
-            homeController.homePageController.animateToPage(
-              index,
-              duration: 200.ms,
-              curve: Curves.fastLinearToSlowEaseIn,
-            );
-            homeController.homeBottomIndex.value = index;
+            if (index == 3) {
+              Get.to(const PostProductView(), transition: Transition.fadeIn);
+            } else {
+              homeController.homePageController.animateToPage(
+                index,
+                duration: 200.ms,
+                curve: Curves.fastLinearToSlowEaseIn,
+              );
+              homeController.homeBottomIndex.value = index;
+            }
           },
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

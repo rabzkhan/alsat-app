@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../../filter/views/search_view.dart';
+import '../../product/controller/product_controller.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
 
@@ -24,6 +25,7 @@ class AppHomeView extends StatefulWidget {
 }
 
 class _AppHomeViewState extends State<AppHomeView> {
+  ProductController productController = Get.find();
   HomeController homeController = Get.find<HomeController>();
   FilterController filterController = Get.find<FilterController>();
   final UserController userController = Get.find();
@@ -56,6 +58,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                           //HOME TAB
                           Expanded(
                             child: PageView(
+                              physics: const NeverScrollableScrollPhysics(),
                               controller: homeController.homePageController,
                               onPageChanged: (value) {
                                 homeController.homeBottomIndex.value = value;
