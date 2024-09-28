@@ -8,6 +8,7 @@ class HomeController extends GetxController {
   RxBool isShowSearch = false.obs;
   //home page variable
   RxInt homeBottomIndex = RxInt(0);
+  RxInt categoryExpandedIndex = RxInt(0);
   List<Map<String, dynamic>> bottomBarItems = [
     {
       "icon": homeIcon,
