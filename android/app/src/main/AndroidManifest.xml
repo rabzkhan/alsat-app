@@ -1,9 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.emad.beltaje.alsat.alsat">
+    <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+   <!-- permissions end -->
     <queries>
-    <!-- If your app checks for SMS support -->
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="sms" />

@@ -1,7 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../components/custom_appbar.dart';
 import '../controller/product_controller.dart';
@@ -128,6 +130,108 @@ class _PostProductViewState extends State<PostProductView> {
                 )
               ],
             )
+
+            /// Post Product Video
+            ,
+            Obx(() {
+              return !productController.isShowPostProductVideo.value
+                  ? Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 15.w,
+                        vertical: 25.h,
+                      ),
+                      height: 70.h,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: BouncingScrollPhysics(),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: productController.pickImageList.length,
+                            itemBuilder: (context, index) {
+                              return Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 7.w),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      child: Image.file(
+                                        productController.pickImageList[index],
+                                        fit: BoxFit.cover,
+                                        width: 70.w,
+                                        height: 70.h,
+                                      ),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: -2.h,
+                                    right: 0,
+                                    left: 0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        productController.pickImageList
+                                            .removeAt(index);
+                                      },
+                                      child: Icon(
+                                        CupertinoIcons.xmark_circle_fill,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              productController.pickImage(context);
+                            },
+                            child: Container(
+                              width: 70.w,
+                              height: 70.h,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  border: Border.all(
+                                    width: 1,
+                                    color: context.theme.disabledColor,
+                                  )),
+                              child: Icon(
+                                Icons.add,
+                                size: 30.sp,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Center(
+                      child: SizedBox(
+                        height: 100.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: productController.pickVideoList.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10.r),
+                                child: Image.file(
+                                  productController.pickVideoList[index],
+                                  fit: BoxFit.cover,
+                                  width: 100.w,
+                                  height: 100.h,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    );
+            })
           ],
         ),
       ),

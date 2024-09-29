@@ -47,5 +47,8 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- WeChat Assets -->
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>Replace with your permission description.</string>
 </dict>
 </plist>

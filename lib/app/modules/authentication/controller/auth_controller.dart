@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
+import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -27,6 +28,17 @@ class AuthController extends GetxController {
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
   RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
   RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
+
+  //
+  Rx<UserDataModel> userDataModel = UserDataModel().obs;
+
+  @override
+  void onInit() {
+    if (MySharedPref.isLoggedIn()) {
+      getProfile();
+    }
+    super.onInit();
+  }
 
   getOtp() async {
     isLoading.value = true;
@@ -97,7 +109,8 @@ class AuthController extends GetxController {
     if (sendSmsConfirmation == true) {
       final Uri smsUri = Uri(
         scheme: 'sms',
-        path: "365555109",
+        //path: "365555109",
+        path: "01701034287",
         queryParameters: <String, String>{
           'body': message,
         },
@@ -139,8 +152,26 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d("Verification successful!");
+        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
+        getProfile();
         Get.to(() => const AppHomeView());
+      },
+      onError: (error) {
+        Logger().d("$error <- error");
+      },
+    );
+  }
+
+  getProfile() async {
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.userProfile,
+      RequestType.get,
+      headers: {
+        'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+      },
+      onLoading: () {},
+      onSuccess: (response) async {
+        userDataModel.value = UserDataModel.fromJson(response.data);
       },
       onError: (error) {
         Logger().d("$error <- error");
@@ -151,7 +182,8 @@ class AuthController extends GetxController {
   @override
   void onClose() {
     verificationTimer?.cancel(); // Clean up the verification timer
-    resendOtpTimer?.cancel(); // Clean up the resend OTP timer
+    resendOtpTimer?.cancel();
+    // Clean up the resend OTP timer
     super.onClose();
   }
 }

@@ -10,8 +10,9 @@ import '../../modules/product/controller/product_controller.dart';
 class AppBinding extends Bindings {
   @override
   void dependencies() {
+    Get.put(AuthController());
     Get.lazyPut<SplashController>(() => SplashController());
-    Get.lazyPut<AuthController>(() => AuthController());
+    //Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<FilterController>(() => FilterController());
     Get.lazyPut<UserController>(() => UserController());

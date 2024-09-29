@@ -1,3 +1,4 @@
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -67,8 +68,7 @@ class HomeSegmented extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 14.r,
-                        backgroundColor:
-                            Get.theme.secondaryHeaderColor.withOpacity(.5),
+                        backgroundColor: Get.theme.secondaryHeaderColor.withOpacity(.5),
                         child: Image.asset(
                           crownIcon,
                           width: 18.w,
@@ -77,12 +77,17 @@ class HomeSegmented extends StatelessWidget {
                         ),
                       ),
                       5.horizontalSpace,
-                      Text(
-                        textAlign: TextAlign.center,
-                        "Premium",
-                        style: regular.copyWith(
-                          fontSize: 17.sp,
-                          // color: Get.theme.primaryColor,
+                      InkWell(
+                        onTap: () {
+                          Get.find<AuthController>().getProfile();
+                        },
+                        child: Text(
+                          textAlign: TextAlign.center,
+                          "Premium",
+                          style: regular.copyWith(
+                            fontSize: 17.sp,
+                            // color: Get.theme.primaryColor,
+                          ),
                         ),
                       ),
                     ],

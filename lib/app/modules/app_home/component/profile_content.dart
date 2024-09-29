@@ -1,8 +1,11 @@
 import 'package:alsat/app/common/const/image_path.dart';
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/auth_user/auth_user_tab/my_lidtings.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -14,6 +17,7 @@ class ProfileContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController userController = Get.find();
+    final AuthController authController = Get.find();
     return DefaultTabController(
       length: userController.profileTab.length,
       child: Container(
@@ -31,50 +35,40 @@ class ProfileContent extends StatelessWidget {
                 radius: 28.r,
                 child: Image.asset(carImage),
               ),
-              title: Text(
-                'John Coltrane',
-                style: bold.copyWith(
-                  fontSize: 18.sp,
-                ),
-              ),
+              title: Obx(() => Text(
+                    authController.userDataModel.value.userName ?? 'Guest User',
+                    style: bold.copyWith(
+                      fontSize: 18.sp,
+                    ),
+                  )),
               subtitle: Padding(
                 padding: EdgeInsets.symmetric(vertical: 2.h),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'info@gmail.com',
-                      style: regular.copyWith(
-                        fontSize: 10.sp,
+                    Obx(() => Text(
+                          authController.userDataModel.value.phone ?? ' 01211312342',
+                          style: regular.copyWith(
+                            fontSize: 10.sp,
+                          ),
+                        )),
+                    Obx(
+                      () => RatingBar.builder(
+                        itemSize: 15.h,
+                        initialRating: MySharedPref.isLoggedIn()
+                            ? double.parse(authController.userDataModel.value.rating.toString())
+                            : 0,
+                        minRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: true,
+                        itemCount: 5,
+                        itemBuilder: (context, _) => Icon(
+                          Icons.star,
+                          color: Get.theme.primaryColor,
+                        ),
+                        onRatingUpdate: (rating) {},
                       ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.star,
-                          size: 13.r,
-                          color: Get.theme.primaryColor,
-                        ),
-                        Icon(
-                          Icons.star,
-                          size: 13.r,
-                          color: Get.theme.primaryColor,
-                        ),
-                        Icon(
-                          Icons.star,
-                          size: 13.r,
-                          color: Get.theme.primaryColor,
-                        ),
-                        Icon(
-                          Icons.star,
-                          size: 13.r,
-                        ),
-                        Icon(
-                          Icons.star,
-                          size: 13.r,
-                        ),
-                      ],
                     ),
                   ],
                 ),
