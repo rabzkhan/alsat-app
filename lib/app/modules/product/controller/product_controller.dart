@@ -1,12 +1,16 @@
+import 'dart:developer';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class ProductController extends GetxController {
   RxBool isShowPostProductVideo = RxBool(false);
   RxList<File> pickImageList = RxList([]);
   RxList<File> pickVideoList = RxList([]);
+  RxList<Uint8List?> videoThumbnails = <Uint8List?>[].obs;
 
   // PICK IMAGE FOR POST PRODUCT
   Future<void> pickImage(BuildContext context) async {
@@ -39,7 +43,25 @@ class ProductController extends GetxController {
         if (file != null) {
           pickVideoList.add(file);
         }
+        videoThumbnails.clear();
+        _generateThumbnails();
         update();
+      }
+    }
+  }
+
+  Future<void> _generateThumbnails() async {
+    for (var videoFile in pickVideoList) {
+      try {
+        final thumbnailData = await VideoThumbnail.thumbnailData(
+          video: videoFile.path,
+          imageFormat: ImageFormat.JPEG,
+          maxHeight: 150,
+          quality: 75,
+        );
+        videoThumbnails.add(thumbnailData);
+      } catch (e) {
+        log('Error generating thumbnail: $e');
       }
     }
   }
