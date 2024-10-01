@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-
 class CategoryContent extends StatelessWidget {
   const CategoryContent({super.key});
 
@@ -29,16 +28,14 @@ class CategoryContent extends StatelessWidget {
             materialGapSize: 0.h,
             children: [
               ...List.generate(
-                10,
+                homeController.categories.length,
                 (index) => ExpansionPanel(
-                  isExpanded:
-                      homeController.categoryExpandedIndex.value == index,
+                  isExpanded: homeController.categoryExpandedIndex.value == index,
                   backgroundColor: Colors.transparent,
                   headerBuilder: (context, isExpanded) {
                     return GestureDetector(
                       onTap: () {
-                        if (homeController.categoryExpandedIndex.value ==
-                            index) {
+                        if (homeController.categoryExpandedIndex.value == index) {
                           homeController.categoryExpandedIndex.value = -1;
                         } else {
                           homeController.categoryExpandedIndex.value = index;
@@ -53,7 +50,7 @@ class CategoryContent extends StatelessWidget {
                             height: 22.w,
                           ),
                           Text(
-                            'Real Estate',
+                            homeController.categories[index].name ?? "",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontWeight: FontWeight.w500,
@@ -72,34 +69,6 @@ class CategoryContent extends StatelessWidget {
                       children: [
                         Text(
                           "Sell of apartments & houses",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                        8.verticalSpace,
-                        Text(
-                          "Sell of commercial & private estate",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                        8.verticalSpace,
-                        Text(
-                          "Rent of apartment, room, house",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                        8.verticalSpace,
-                        Text(
-                          "Rent of office",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                          ),
-                        ),
-                        8.verticalSpace,
-                        Text(
-                          "Rent of commercial & private estate",
                           style: TextStyle(
                             fontSize: 15.sp,
                           ),

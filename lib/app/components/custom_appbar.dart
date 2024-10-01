@@ -44,7 +44,9 @@ class CustomAppBar extends StatelessWidget {
           4.horizontalSpace,
           isShowNotification
               ? InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    homeController.getCategories();
+                  },
                   child: Stack(
                     children: [
                       Container(

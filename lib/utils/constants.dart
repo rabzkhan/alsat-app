@@ -6,4 +6,5 @@ class Constants {
   static const varifyOtp = '/join';
 
   static const userProfile = '/users/profile';
+  static const categories = '/categories';
 }
