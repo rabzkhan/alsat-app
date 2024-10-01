@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../config/translations/localization_service.dart';
 
 class MySharedPref {
   // Prevent creating an instance

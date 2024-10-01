@@ -200,6 +200,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+// ignore_for_file: unused_element
+
 import 'dart:async';
 import 'dart:math';
 
@@ -245,16 +247,13 @@ class _WaveWidgetState extends State<WaveWidget> with TickerProviderStateMixin {
 
   _initAnimations() {
     if (widget.config.colorMode == ColorMode.custom) {
-      _waveControllers =
-          (widget.config as CustomConfig).durations!.map((duration) {
+      _waveControllers = (widget.config as CustomConfig).durations!.map((duration) {
         _waveAmplitudes.add(widget.waveAmplitude + 10);
-        return AnimationController(
-            vsync: this, duration: Duration(milliseconds: duration));
+        return AnimationController(vsync: this, duration: Duration(milliseconds: duration));
       }).toList();
 
       _wavePhaseValues = _waveControllers.map((controller) {
-        CurvedAnimation _curve =
-            CurvedAnimation(parent: controller, curve: Curves.easeInOut);
+        CurvedAnimation _curve = CurvedAnimation(parent: controller, curve: Curves.easeInOut);
         Animation<double> value = Tween(
           begin: widget.wavePhase,
           end: 360 + widget.wavePhase,
@@ -282,8 +281,7 @@ class _WaveWidgetState extends State<WaveWidget> with TickerProviderStateMixin {
                 gradient: _gradients == null ? null : _gradients[i],
                 gradientBegin: begin,
                 gradientEnd: end,
-                heightPercentage:
-                    (widget.config as CustomConfig).heightPercentages![i],
+                heightPercentage: (widget.config as CustomConfig).heightPercentages![i],
                 repaint: _waveControllers[i],
                 waveFrequency: widget.waveFrequency,
                 wavePhaseValue: _wavePhaseValues[i],
@@ -397,15 +395,9 @@ class _CustomWavePainter extends CustomPainter {
     );
 
     _layer.path!.reset();
-    _layer.path!.moveTo(
-        0.0,
-        viewCenterY +
-            _layer.amplitude! * _getSinY(_layer.phase!, waveFrequency!, -1));
+    _layer.path!.moveTo(0.0, viewCenterY + _layer.amplitude! * _getSinY(_layer.phase!, waveFrequency!, -1));
     for (int i = 1; i < size.width + 1; i++) {
-      _layer.path!.lineTo(
-          i.toDouble(),
-          viewCenterY +
-              _layer.amplitude! * _getSinY(_layer.phase!, waveFrequency!, i));
+      _layer.path!.lineTo(i.toDouble(), viewCenterY + _layer.amplitude! * _getSinY(_layer.phase!, waveFrequency!, i));
     }
 
     _layer.path!.lineTo(size.width, size.height);
@@ -415,12 +407,9 @@ class _CustomWavePainter extends CustomPainter {
       _paint.color = _layer.color!;
     }
     if (_layer.gradient != null) {
-      var rect = Offset.zero &
-          Size(size.width, size.height - viewCenterY * heightPercentage!);
+      var rect = Offset.zero & Size(size.width, size.height - viewCenterY * heightPercentage!);
       _paint.shader = LinearGradient(
-              begin: gradientBegin == null
-                  ? Alignment.bottomCenter
-                  : gradientBegin!,
+              begin: gradientBegin == null ? Alignment.bottomCenter : gradientBegin!,
               end: gradientEnd == null ? Alignment.topCenter : gradientEnd!,
               colors: _layer.gradient!)
           .createShader(rect);
@@ -445,8 +434,7 @@ class _CustomWavePainter extends CustomPainter {
     return false;
   }
 
-  double _getSinY(
-      double startradius, double waveFrequency, int currentposition) {
+  double _getSinY(double startradius, double waveFrequency, int currentposition) {
     if (_tempA == 0) {
       _tempA = pi / viewWidth;
     }
@@ -454,7 +442,6 @@ class _CustomWavePainter extends CustomPainter {
       _tempB = 2 * pi / 360.0;
     }
 
-    return (sin(
-        _tempA * waveFrequency * (currentposition + 1) + startradius * _tempB));
+    return (sin(_tempA * waveFrequency * (currentposition + 1) + startradius * _tempB));
   }
 }

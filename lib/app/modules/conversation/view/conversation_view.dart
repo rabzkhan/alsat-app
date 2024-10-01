@@ -89,7 +89,7 @@ class _ConversationViewState extends State<ConversationView> {
       body: ChatView(
         productWidget: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-          child: ProductListTile(),
+          child: const ProductListTile(),
         ),
         chatController: _chatController,
         onSendTap: _onSendTap,
@@ -170,7 +170,7 @@ class _ConversationViewState extends State<ConversationView> {
               color: Colors.black,
               fontSize: 14.sp,
             ),
-            linkPreviewConfig: LinkPreviewConfiguration(),
+            linkPreviewConfig: const LinkPreviewConfiguration(),
             receiptsWidgetConfig:
                 const ReceiptsWidgetConfig(showReceiptsIn: ShowReceiptsIn.all),
             color: Colors.white,

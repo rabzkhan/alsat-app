@@ -294,7 +294,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   ///user information
                   ListTile(
                     contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(),
+                    leading: const CircleAvatar(),
                     title: Text(
                       'John Coltrane',
                       style: bold.copyWith(

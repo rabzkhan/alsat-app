@@ -15,7 +15,7 @@ class ProductController extends GetxController {
   // PICK IMAGE FOR POST PRODUCT
   Future<void> pickImage(BuildContext context) async {
     List<AssetEntity>? pickImage = await AssetPicker.pickAssets(context,
-        pickerConfig: AssetPickerConfig(
+        pickerConfig: const AssetPickerConfig(
           maxAssets: 10,
           requestType: RequestType.image,
         ));
@@ -33,7 +33,7 @@ class ProductController extends GetxController {
   // PICK VIDEO FOR POST PRODUCT
   Future<void> pickVideo(BuildContext context) async {
     List<AssetEntity>? pickVideo = await AssetPicker.pickAssets(context,
-        pickerConfig: AssetPickerConfig(
+        pickerConfig: const AssetPickerConfig(
           maxAssets: 10,
           requestType: RequestType.video,
         ));

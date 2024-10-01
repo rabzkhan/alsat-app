@@ -15,9 +15,9 @@ class FilterView extends GetView<FilterController> {
 
   @override
   Widget build(BuildContext context) {
-    final _credit = ValueNotifier<bool>(controller.credit.value);
-    final _exchange = ValueNotifier<bool>(controller.exchange.value);
-    final _hasVin = ValueNotifier<bool>(controller.hasVinCode.value);
+    final credit = ValueNotifier<bool>(controller.credit.value);
+    final exchange = ValueNotifier<bool>(controller.exchange.value);
+    final hasVin = ValueNotifier<bool>(controller.hasVinCode.value);
 
     return Scaffold(
       body: CustomScrollView(
@@ -538,7 +538,7 @@ class FilterView extends GetView<FilterController> {
                         onChanged: (value) {
                           controller.credit.value = value;
                         },
-                        controller: _credit,
+                        controller: credit,
                         activeColor: AppColors.primary,
                         inactiveColor: Colors.grey,
                         width: 45.0,
@@ -563,7 +563,7 @@ class FilterView extends GetView<FilterController> {
                         onChanged: (value) {
                           controller.exchange.value = value;
                         },
-                        controller: _exchange,
+                        controller: exchange,
                         activeColor: AppColors.primary,
                         inactiveColor: Colors.grey,
                         width: 45.0,
@@ -588,7 +588,7 @@ class FilterView extends GetView<FilterController> {
                         onChanged: (value) {
                           controller.hasVinCode.value = value;
                         },
-                        controller: _hasVin,
+                        controller: hasVin,
                         activeColor: AppColors.primary,
                         inactiveColor: Colors.grey,
                         width: 45.0,
@@ -638,7 +638,7 @@ class FilterView extends GetView<FilterController> {
                         ),
                       );
                     }
-                    return Text(
+                    return const Text(
                       "Filter",
                       style: TextStyle(
                         color: Colors.white,

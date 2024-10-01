@@ -45,7 +45,7 @@ class _MyPromotionsViewState extends State<MyPromotionsView> {
             ),
             Expanded(
                 child: ListView(
-              children: [
+              children: const [
                 PromotionTile(),
               ],
             ))

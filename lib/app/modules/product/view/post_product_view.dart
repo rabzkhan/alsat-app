@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import '../../../components/custom_appbar.dart';
 import '../controller/product_controller.dart';
@@ -28,6 +27,7 @@ class _PostProductViewState extends State<PostProductView> {
             const CustomAppBar(
               isShowFilter: false,
               isShowSearch: false,
+              isShowNotification: false,
             ),
             Text(
               'Add Your Stuff',
@@ -46,25 +46,20 @@ class _PostProductViewState extends State<PostProductView> {
                   ),
                   width: Get.width * .5,
                   height: Get.width > 600 ? 60.h : 40.h,
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.r),
-                      boxShadow: [
-                        BoxShadow(
-                          color: context.theme.disabledColor.withOpacity(.1),
-                          offset: Offset(0, 0),
-                          blurRadius: 10,
-                        )
-                      ]),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8.r), boxShadow: [
+                    BoxShadow(
+                      color: context.theme.disabledColor.withOpacity(.1),
+                      offset: const Offset(0, 0),
+                      blurRadius: 10,
+                    )
+                  ]),
                   child: Obx(() {
                     return Stack(
                       children: [
                         AnimatedPositioned(
                           height: Get.width > 600 ? 60.h : 30.h,
                           duration: 300.ms,
-                          left: !productController.isShowPostProductVideo.value
-                              ? 0
-                              : Get.width * .22,
+                          left: !productController.isShowPostProductVideo.value ? 0 : Get.width * .22,
                           child: Container(
                             width: Get.width * .22,
                             height: Get.width > 600 ? 60.h : 40.h,
@@ -79,8 +74,7 @@ class _PostProductViewState extends State<PostProductView> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  productController
-                                      .isShowPostProductVideo.value = false;
+                                  productController.isShowPostProductVideo.value = false;
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -89,10 +83,7 @@ class _PostProductViewState extends State<PostProductView> {
                                       'Image',
                                       style: TextStyle(
                                         fontSize: 14.sp,
-                                        color: !productController
-                                                .isShowPostProductVideo.value
-                                            ? Colors.white
-                                            : null,
+                                        color: !productController.isShowPostProductVideo.value ? Colors.white : null,
                                       ),
                                     );
                                   }),
@@ -102,8 +93,7 @@ class _PostProductViewState extends State<PostProductView> {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () {
-                                  productController
-                                      .isShowPostProductVideo.value = true;
+                                  productController.isShowPostProductVideo.value = true;
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -112,10 +102,7 @@ class _PostProductViewState extends State<PostProductView> {
                                       'Video',
                                       style: TextStyle(
                                         fontSize: 14.sp,
-                                        color: productController
-                                                .isShowPostProductVideo.value
-                                            ? Colors.white
-                                            : null,
+                                        color: productController.isShowPostProductVideo.value ? Colors.white : null,
                                       ),
                                     );
                                   }),
@@ -150,7 +137,7 @@ class _PostProductViewState extends State<PostProductView> {
                             child: SizedBox(
                               height: 70.h,
                               child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -162,14 +149,11 @@ class _PostProductViewState extends State<PostProductView> {
                                           clipBehavior: Clip.none,
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 7.w),
+                                              padding: EdgeInsets.symmetric(horizontal: 7.w),
                                               child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
+                                                borderRadius: BorderRadius.circular(10.r),
                                                 child: Image.file(
-                                                  productController
-                                                      .pickImageList[index],
+                                                  productController.pickImageList[index],
                                                   fit: BoxFit.cover,
                                                   width: 70.w,
                                                   height: 70.h,
@@ -182,13 +166,10 @@ class _PostProductViewState extends State<PostProductView> {
                                               left: 0,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  productController
-                                                      .pickImageList
-                                                      .removeAt(index);
+                                                  productController.pickImageList.removeAt(index);
                                                 },
-                                                child: Icon(
-                                                  CupertinoIcons
-                                                      .xmark_circle_fill,
+                                                child: const Icon(
+                                                  CupertinoIcons.xmark_circle_fill,
                                                   color: Colors.red,
                                                 ),
                                               ),
@@ -241,7 +222,7 @@ class _PostProductViewState extends State<PostProductView> {
                             child: SizedBox(
                               height: 70.h,
                               child: SingleChildScrollView(
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -254,14 +235,11 @@ class _PostProductViewState extends State<PostProductView> {
                                           alignment: Alignment.center,
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 7.w),
+                                              padding: EdgeInsets.symmetric(horizontal: 7.w),
                                               child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.r),
+                                                borderRadius: BorderRadius.circular(10.r),
                                                 child: Image.memory(
-                                                  productController
-                                                      .videoThumbnails[index]!,
+                                                  productController.videoThumbnails[index]!,
                                                   fit: BoxFit.cover,
                                                   width: 70.w,
                                                   height: 70.h,
@@ -279,16 +257,11 @@ class _PostProductViewState extends State<PostProductView> {
                                               left: 0,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  productController
-                                                      .videoThumbnails
-                                                      .removeAt(index);
-                                                  productController
-                                                      .pickVideoList
-                                                      .removeAt(index);
+                                                  productController.videoThumbnails.removeAt(index);
+                                                  productController.pickVideoList.removeAt(index);
                                                 },
-                                                child: Icon(
-                                                  CupertinoIcons
-                                                      .xmark_circle_fill,
+                                                child: const Icon(
+                                                  CupertinoIcons.xmark_circle_fill,
                                                   color: Colors.red,
                                                 ),
                                               ),

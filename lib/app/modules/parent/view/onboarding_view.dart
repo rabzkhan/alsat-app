@@ -1,4 +1,3 @@
-import 'package:alsat/app/modules/app_home/view/app_home_view.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:alsat/app/modules/authentication/view/signup_view.dart';
 import 'package:flutter/cupertino.dart';

@@ -58,7 +58,7 @@ class AppBottomNavigationBar extends StatelessWidget {
       child: Obx(() {
         return InkWell(
           onTap: () {
-            if (index == 3) {
+            if (index == 2) {
               Get.to(const PostProductView(), transition: Transition.fadeIn);
             } else {
               homeController.homePageController.animateToPage(

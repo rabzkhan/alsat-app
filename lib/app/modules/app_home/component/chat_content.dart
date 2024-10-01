@@ -41,7 +41,7 @@ class ChatContent extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 20.w,
               ),
-              leading: CircleAvatar(),
+              leading: const CircleAvatar(),
               title: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -67,7 +67,7 @@ class ChatContent extends StatelessWidget {
                 ],
               ),
               //   title: Text('Alexander'),
-              subtitle: Text('We no longer need to talk about Kevin'),
+              subtitle: const Text('We no longer need to talk about Kevin'),
 
             ),
           );

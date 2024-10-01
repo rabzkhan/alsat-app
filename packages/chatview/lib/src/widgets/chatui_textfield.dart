@@ -23,7 +23,6 @@ import 'dart:async';
 import 'dart:io' show File, Platform;
 
 import 'package:audio_waveforms/audio_waveforms.dart';
-import 'package:chatview/src/utils/constants/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -140,7 +139,7 @@ class _ChatUITextFieldState extends State<ChatUITextField> {
       decoration: BoxDecoration(
         // borderRadius: textFieldConfig?.borderRadius ??
         //     BorderRadius.circular(textFieldBorderRadius),
-        borderRadius: BorderRadius.only(
+        borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(12),
           topRight: Radius.circular(12),
         ),

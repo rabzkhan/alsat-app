@@ -1,10 +1,8 @@
-import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../../../components/category_tile.dart';
 
 class CategoryContent extends StatelessWidget {
   const CategoryContent({super.key});
