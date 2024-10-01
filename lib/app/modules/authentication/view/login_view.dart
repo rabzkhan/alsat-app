@@ -46,10 +46,13 @@ class LoginView extends GetView<AuthController> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Get.to(const AppHomeView(), transition: Transition.fadeIn);
-              },
-              icon: Icon(Icons.skip_next_outlined))
+            onPressed: () {
+              Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
+            },
+            icon: const Icon(
+              Icons.skip_next_outlined,
+            ),
+          )
         ],
       ),
       body: Container(
@@ -96,20 +99,14 @@ class LoginView extends GetView<AuthController> {
               ),
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
-                  final minutes = (controller.countdown.value ~/ 60)
-                      .toString()
-                      .padLeft(2, '0');
-                  final seconds = (controller.countdown.value % 60)
-                      .toString()
-                      .padLeft(2, '0');
+                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
                   return Column(
                     children: [
                       20.verticalSpace,
                       Center(
                         child: Text(
-                          controller.canResendOtp.value
-                              ? ""
-                              : "Resend OTP in $minutes:$seconds min",
+                          controller.canResendOtp.value ? "" : "Resend OTP in $minutes:$seconds min",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Get.theme.primaryColor,
@@ -143,17 +140,13 @@ class LoginView extends GetView<AuthController> {
                       onPressed: controller.hasStartedOtpProcess.value
                           ? null // Disable the login button if OTP process has started
                           : () {
-                              if (controller.loginFormKey.currentState
-                                      ?.saveAndValidate() ??
-                                  false) {
+                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
                                 controller.getOtp();
                               }
                             },
                       child: Obx(() {
                         return Text(
-                          controller.isLoading.value
-                              ? "Varifying.."
-                              : 'Varify & Login',
+                          controller.isLoading.value ? "Varifying.." : 'Varify & Login',
                           style: TextStyle(fontSize: 14.sp),
                         );
                       }),

@@ -1,6 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/data/local/my_shared_pref.dart';
-import 'package:alsat/app/modules/auth_user/auth_user_tab/my_lidtings.dart';
+import 'package:alsat/app/modules/auth_user/auth_user_tab/my_listings.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,23 +53,24 @@ class ProfileContent extends StatelessWidget {
                             fontSize: 10.sp,
                           ),
                         )),
-                    Obx(
-                      () => RatingBar.builder(
-                        itemSize: 15.h,
-                        initialRating: MySharedPref.isLoggedIn()
-                            ? double.parse(authController.userDataModel.value.rating.toString())
-                            : 0,
-                        minRating: 0,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemBuilder: (context, _) => Icon(
-                          Icons.star,
-                          color: Get.theme.primaryColor,
+                    if (MySharedPref.isLoggedIn())
+                      Obx(
+                        () => RatingBar.builder(
+                          itemSize: 15.h,
+                          initialRating: MySharedPref.isLoggedIn()
+                              ? double.parse(authController.userDataModel.value.rating.toString())
+                              : 0,
+                          minRating: 0,
+                          direction: Axis.horizontal,
+                          allowHalfRating: true,
+                          itemCount: 5,
+                          itemBuilder: (context, _) => Icon(
+                            Icons.star,
+                            color: Get.theme.primaryColor,
+                          ),
+                          onRatingUpdate: (rating) {},
                         ),
-                        onRatingUpdate: (rating) {},
                       ),
-                    ),
                   ],
                 ),
               ),
@@ -125,7 +126,7 @@ class ProfileContent extends StatelessWidget {
             const Expanded(
               child: TabBarView(
                 children: [
-                  MyLidtings(),
+                  MyListings(),
                   Center(),
                   Center(),
                   Center(),

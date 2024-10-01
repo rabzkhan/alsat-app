@@ -25,65 +25,89 @@ class AppHomeView extends StatefulWidget {
 }
 
 class _AppHomeViewState extends State<AppHomeView> {
-  ProductController productController = Get.find();
   HomeController homeController = Get.find<HomeController>();
   FilterController filterController = Get.find<FilterController>();
   final UserController userController = Get.find();
+
+  Future<bool> _onWillPop() async {
+    return await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Confirm Exit'),
+            content: const Text('Do you really want to go back?'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false), // Stay
+                child: const Text('No'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true), // Exit
+                child: const Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Get.theme.secondaryHeaderColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            //custom appbar
-            const CustomAppBar(),
-            //body
-            Expanded(
-              child: Stack(
-                children: [
-                  NotificationListener(
-                    onNotification: (notification) {
-                      if (notification is ScrollStartNotification) {
-                        if (homeController.isShowDrawer.value) {
-                          homeController.isShowDrawer.value = false;
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Get.theme.secondaryHeaderColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Custom appbar
+              const CustomAppBar(),
+              // Body
+              Expanded(
+                child: Stack(
+                  children: [
+                    NotificationListener(
+                      onNotification: (notification) {
+                        if (notification is ScrollStartNotification) {
+                          if (homeController.isShowDrawer.value) {
+                            homeController.isShowDrawer.value = false;
+                          }
                         }
-                      }
-                      return true;
-                    },
-                    child: Container(
-                      color: Get.theme.secondaryHeaderColor,
-                      child: Column(
-                        children: [
-                          //HOME TAB
-                          Expanded(
-                            child: PageView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              controller: homeController.homePageController,
-                              onPageChanged: (value) {
-                                homeController.homeBottomIndex.value = value;
-                              },
-                              children: const [
-                                HomeContent(),
-                                ChatContent(),
-                                CategoryContent(),
-                                AddPostContent(),
-                                ProfileContent(),
-                              ],
+                        return true;
+                      },
+                      child: Container(
+                        color: Get.theme.secondaryHeaderColor,
+                        child: Column(
+                          children: [
+                            // HOME TAB
+                            Expanded(
+                              child: PageView(
+                                physics: const NeverScrollableScrollPhysics(),
+                                controller: homeController.homePageController,
+                                onPageChanged: (value) {
+                                  homeController.homeBottomIndex.value = value;
+                                },
+                                children: const [
+                                  HomeContent(),
+                                  CategoryContent(),
+                                  AddPostContent(),
+                                  ChatContent(),
+                                  ProfileContent(),
+                                ],
+                              ),
                             ),
-                          ),
-                          const AppBottomNavigationBar(),
-                        ],
+                            const AppBottomNavigationBar(),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  //app drawer
-                  const AppDrawer(),
-                  const SearchView(),
-                ],
+                    // App drawer
+                    const AppDrawer(),
+                    const SearchView(),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

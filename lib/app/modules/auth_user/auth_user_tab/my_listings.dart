@@ -2,8 +2,8 @@ import 'package:alsat/app/components/product_grid_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class MyLidtings extends StatelessWidget {
-  const MyLidtings({super.key});
+class MyListings extends StatelessWidget {
+  const MyListings({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -11,6 +11,7 @@ class AppBinding extends Bindings {
   @override
   void dependencies() {
     Get.put(AuthController());
+    Get.put(ProductController());
     Get.lazyPut<SplashController>(() => SplashController());
     //Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<HomeController>(() => HomeController());

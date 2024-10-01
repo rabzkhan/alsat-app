@@ -15,16 +15,16 @@ class HomeController extends GetxController {
       "name": 'Home',
     },
     {
-      "icon": chatIcon,
-      "name": 'Chat',
-    },
-    {
-      "icon": categoryIcon,
-      "name": 'Category',
+      "icon": searchIcon,
+      "name": 'Search',
     },
     {
       "icon": addPost,
       "name": 'Post Add',
+    },
+    {
+      "icon": chatIcon,
+      "name": 'Chat',
     },
     {
       "icon": profileIcon,
