@@ -16,6 +16,8 @@ class HomeController extends GetxController {
   //home page variable
   RxInt homeBottomIndex = RxInt(0);
   RxInt categoryExpandedIndex = RxInt(0);
+  RxBool isCategoryLoading = false.obs;
+
   List<Map<String, dynamic>> bottomBarItems = [
     {
       "icon": homeIcon,
@@ -46,14 +48,22 @@ class HomeController extends GetxController {
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.categories,
       RequestType.get,
-      onLoading: () {},
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isCategoryLoading.value = true;
+      },
       onSuccess: (response) async {
         Logger().d(response.data.toString());
-        // List<dynamic> data = response.data;
-        // categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        List<dynamic> data = response.data;
+        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        isCategoryLoading.value = false;
       },
       onError: (error) {
         Logger().d("$error <- error");
+        isCategoryLoading.value = false;
       },
     );
   }

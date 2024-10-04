@@ -1,6 +1,7 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class CategoryContent extends StatelessWidget {
@@ -11,10 +12,13 @@ class CategoryContent extends StatelessWidget {
     HomeController homeController = Get.find();
     return SingleChildScrollView(
       child: Container(
-        margin: EdgeInsets.symmetric(
-          horizontal: 10.w,
-        ),
+        margin: EdgeInsets.symmetric(horizontal: 16.w),
         child: Obx(() {
+          if (homeController.isCategoryLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
           return ExpansionPanelList(
             expansionCallback: (panelIndex, isExpanded) {
               if (homeController.categoryExpandedIndex.value == panelIndex) {
@@ -23,9 +27,11 @@ class CategoryContent extends StatelessWidget {
                 homeController.categoryExpandedIndex.value = panelIndex;
               }
             },
+            dividerColor: Get.theme.primaryColor.withOpacity(0.2),
             elevation: 0,
             expandedHeaderPadding: EdgeInsets.zero,
             materialGapSize: 0.h,
+            expandIconColor: Get.theme.primaryColor.withOpacity(0.6),
             children: [
               ...List.generate(
                 homeController.categories.length,
@@ -43,12 +49,13 @@ class CategoryContent extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          4.horizontalSpace,
-                          Image.asset(
-                            'assets/icons/real-estate-01.png',
+                          6.horizontalSpace,
+                          SvgPicture.network(
+                            homeController.categories[index].icon.toString(),
                             width: 35.w,
                             height: 22.w,
                           ),
+                          10.horizontalSpace,
                           Text(
                             homeController.categories[index].name ?? "",
                             style: TextStyle(
@@ -63,16 +70,22 @@ class CategoryContent extends StatelessWidget {
                   body: Container(
                     width: Get.width,
                     margin: EdgeInsets.symmetric(horizontal: Get.width * .12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        Text(
-                          "Sell of apartments & houses",
-                          style: TextStyle(
-                            fontSize: 15.sp,
-                          ),
-                        ),
+                        ...homeController.categories[index].subCategories!.map((subCategory) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                            child: Text(
+                              subCategory.name.toString(),
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          );
+                        })
                       ],
                     ),
                   ),
