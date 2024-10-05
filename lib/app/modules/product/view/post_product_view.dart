@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+
 import '../../../components/custom_appbar.dart';
 import '../controller/product_controller.dart';
 
