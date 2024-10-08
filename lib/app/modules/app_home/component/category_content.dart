@@ -36,12 +36,14 @@ class CategoryContent extends StatelessWidget {
               ...List.generate(
                 homeController.categories.length,
                 (index) => ExpansionPanel(
-                  isExpanded: homeController.categoryExpandedIndex.value == index,
+                  isExpanded:
+                      homeController.categoryExpandedIndex.value == index,
                   backgroundColor: Colors.transparent,
                   headerBuilder: (context, isExpanded) {
                     return GestureDetector(
                       onTap: () {
-                        if (homeController.categoryExpandedIndex.value == index) {
+                        if (homeController.categoryExpandedIndex.value ==
+                            index) {
                           homeController.categoryExpandedIndex.value = -1;
                         } else {
                           homeController.categoryExpandedIndex.value = index;
@@ -74,9 +76,11 @@ class CategoryContent extends StatelessWidget {
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        ...homeController.categories[index].subCategories!.map((subCategory) {
+                        ...homeController.categories[index].subCategories!
+                            .map((subCategory) {
                           return Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 10.w),
                             child: Text(
                               subCategory.name.toString(),
                               style: TextStyle(

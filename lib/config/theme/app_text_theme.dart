@@ -31,3 +31,8 @@ var outlineBorder = OutlineInputBorder(
     color: Get.theme.shadowColor.withOpacity(.2),
   ),
 );
+var outlineBorderPrimary = OutlineInputBorder(
+  borderSide: BorderSide(
+    color: Get.theme.primaryColor.withOpacity(.5),
+  ),
+);

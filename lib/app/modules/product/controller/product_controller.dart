@@ -1,7 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -11,6 +12,8 @@ class ProductController extends GetxController {
   RxList<File> pickImageList = RxList([]);
   RxList<File> pickVideoList = RxList([]);
   RxList<Uint8List?> videoThumbnails = <Uint8List?>[].obs;
+  Rxn<TimeOfDay> fromTime = Rxn<TimeOfDay>();
+  Rxn<TimeOfDay> toTime = Rxn<TimeOfDay>();
 
   // PICK IMAGE FOR POST PRODUCT
   Future<void> pickImage(BuildContext context) async {
@@ -64,5 +67,11 @@ class ProductController extends GetxController {
         log('Error generating thumbnail: $e');
       }
     }
+  }
+
+  Future<TimeOfDay?> showUserTimePickerDialog(BuildContext context) async {
+    TimeOfDay? selectTime = await showTimePicker(
+        context: context, initialTime: const TimeOfDay(hour: 0, minute: 0));
+    return selectTime;
   }
 }

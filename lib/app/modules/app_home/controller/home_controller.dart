@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -45,6 +47,7 @@ class HomeController extends GetxController {
   RxList<CategoriesModel> categories = <CategoriesModel>[].obs;
 
   getCategories() async {
+    log('CategoryCall: ${Constants.baseUrl + Constants.categories}');
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.categories,
       RequestType.get,
@@ -58,10 +61,12 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
         isCategoryLoading.value = false;
       },
       onError: (error) {
+        log('CategoryError: ${error.message}');
         Logger().d("$error <- error");
         isCategoryLoading.value = false;
       },
