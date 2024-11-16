@@ -27,3 +27,6 @@ const String addPost = 'assets/icons/addpost.png';
 const String drawerSetting = 'assets/icons/settingdrawer.png';
 const String sportIcon = 'assets/icons/sport.png';
 const String newsIcon = 'assets/icons/news.png';
+const String youtubeIcon = 'assets/icons/youtube.png';
+const String tiktokIcon = 'assets/icons/tik-tok.png';
+const String twitchIcon = 'assets/icons/twitch.png';

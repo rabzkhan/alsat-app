@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:alsat/app/components/custom_appbar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -112,7 +109,7 @@ class _MySettingsState extends State<MySettings> {
                       "Upgrade to premium",
                       style: bold,
                     ),
-                    Spacer(),
+                    const Spacer(),
                     GestureDetector(
                       onTap: () {
                         upgradeToPremiumDialog();
@@ -278,7 +275,7 @@ class _MySettingsState extends State<MySettings> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
-                      crownIcon,
+                      youtubeIcon,
                       width: 14.w,
                       height: 14.h,
                       color: Get.theme.primaryColor,
@@ -307,7 +304,7 @@ class _MySettingsState extends State<MySettings> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
-                      crownIcon,
+                      tiktokIcon,
                       width: 14.w,
                       height: 14.h,
                       color: Get.theme.primaryColor,
@@ -336,7 +333,7 @@ class _MySettingsState extends State<MySettings> {
                   keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
-                      crownIcon,
+                      twitchIcon,
                       width: 14.w,
                       height: 14.h,
                       color: Get.theme.primaryColor,
