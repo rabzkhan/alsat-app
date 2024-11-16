@@ -1,4 +1,5 @@
 import 'package:alsat/app/components/custom_appbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,7 +37,7 @@ class _MySettingsState extends State<MySettings> {
         ),
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 30.w),
+        padding: EdgeInsets.symmetric(horizontal: 30.w).copyWith(bottom: 20.h),
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -355,6 +356,46 @@ class _MySettingsState extends State<MySettings> {
                     [],
                   ),
                 ),
+                40.verticalSpace,
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          fixedSize: const Size.fromHeight(48),
+                          backgroundColor: Get.theme.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                        ),
+                        onPressed: () {},
+                        child: false
+                            ? const CupertinoActivityIndicator()
+                            : Text(
+                                "Save",
+                                style: regular.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                      ),
+                    )
+                  ],
+                ),
+                20.verticalSpace,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Delete Account",
+                        textAlign: TextAlign.center,
+                        style: regular,
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
           )
