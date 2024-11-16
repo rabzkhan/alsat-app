@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 
 import '../../../../../config/theme/app_text_theme.dart';
+import '../../../../common/const/image_path.dart';
 import '../../controller/user_controller.dart';
 
 upgradeToPremiumDialog() {
@@ -28,6 +29,12 @@ upgradeToPremiumDialog() {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Image.asset(
+                  crownIcon,
+                  width: 60.w,
+                  height: 60.h,
+                  color: Get.theme.primaryColor,
+                ),
                 Text(
                   "Unlock Premium",
                   style: Get.theme.textTheme.titleMedium!.copyWith(
@@ -54,8 +61,8 @@ upgradeToPremiumDialog() {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          width: 56,
-                          height: 3,
+                          width: 56.w,
+                          height: 3.h,
                           decoration: BoxDecoration(
                             color: Get.theme.primaryColor,
                             borderRadius: BorderRadius.circular(8),
@@ -67,10 +74,10 @@ upgradeToPremiumDialog() {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Container(
-                          width: 56,
-                          height: 3,
+                          width: 56.w,
+                          height: 3.h,
                           decoration: BoxDecoration(
-                            color: Get.theme.primaryColor.withOpacity(0.2),
+                            color: Get.theme.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
