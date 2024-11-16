@@ -1,0 +1,32 @@
+{
+  "hello": "مرحباً!",
+  "loading": "جاري التحميل",
+  
+  "changeTheme": "تغيير الثيم",
+  "changeLanguage": "تغيير اللغة",
+  
+  "noInternetConnection": "لا يوجد إتصال بالإنترنت",
+  "serverNotResponding": "لا يوجد إستجابة من السيرفر!",
+  "someThingWentWorng": "حدث خطأ غير متوقع!",
+  "apiNotFound": "الرابط الذي تحاول الوصول اليه غير موجود!",
+  "serverError": "مشكلة من السيرفر",
+  "urlNotFound": "مشكلة في الرابط",
+  
+  "goodMorning": "صباح الخير",
+  "name": "عماد البلتاجي",
+  "attendanceRegistration": "تسجيل الحضور",
+  "time": "09:00 م",
+  "vocation": "الإجازات",
+  "remainingTasks": "المهام المتبقية",
+  "daysOfDelays": "أيام التأخر",
+  "absentDays": "أيام الغياب",
+  "days": "ايام",
+  "tasks": "المهام",
+  "vacationingEmployees": "موظفين في اجازة",
+  "viewAll": "عرض الكل",
+  "gaza": "غزة",
+  "abdQader": "عبد القادر الشريف",
+  "loai": "لؤي عرفات",
+  "retry": "اعادة المحاولة",
+  "internetError": "خطأ في الاتصال بالانترنت ⚠️"
+}

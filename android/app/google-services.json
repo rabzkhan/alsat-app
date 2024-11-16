@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "739877698459",
+    "project_id": "alsat-978ee",
+    "storage_bucket": "alsat-978ee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:739877698459:android:36dd4da7b9c7798db43f3e",
+        "android_client_info": {
+          "package_name": "com.alsat.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfBCs66Bman49Bl08YvI6ucI5-oIbU3uk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

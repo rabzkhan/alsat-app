@@ -1,0 +1,269 @@
+import 'dart:developer';
+
+import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../../../../utils/constants.dart';
+import '../../../components/custom_snackbar.dart';
+import '../../../services/base_client.dart';
+import '../../authentication/controller/auth_controller.dart';
+import '../../authentication/model/user_data_model.dart';
+import '../model/product_post_res.dart';
+
+class ProductDetailsController extends GetxController {
+  //-- get Product Like Count --//
+  RxnNum likeCount = RxnNum(0);
+  RxBool isProductLike = RxBool(true);
+  Future<void> productLikeCount({required String productId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/likes/count",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductLike.value = true;
+        likeCount.value = 0;
+      },
+      onSuccess: (response) {
+        likeCount.value = response.data['count'];
+        isProductLike.value = false;
+      },
+      onError: (p0) {
+        isProductLike.value = false;
+      },
+    );
+  }
+
+  //-- get Product Like Count --//
+  RxnNum commentCount = RxnNum(0);
+  RxBool isProductComment = RxBool(true);
+  Future<void> productCommentCount({required String productId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/comment/count",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductComment.value = true;
+        commentCount.value = 0;
+      },
+      onSuccess: (response) {
+        commentCount.value = response.data['count'];
+        isProductComment.value = false;
+      },
+      onError: (p0) {
+        isProductComment.value = false;
+      },
+    );
+  }
+
+  //-- get Product view Count --//
+  RxnNum viewCount = RxnNum(0);
+  RxBool isProductView = RxBool(true);
+  Future<void> productViewCount(
+      {required String productId, required String productCreateTime}) async {
+    log("${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime");
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductView.value = true;
+        viewCount.value = 0;
+      },
+      onSuccess: (response) {
+        viewCount.value = response.data['count'];
+        isProductView.value = false;
+      },
+      onError: (p0) {
+        isProductView.value = false;
+      },
+    );
+  }
+
+  Future<void> productViewCountAdding({required String productId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/views",
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) {
+        log("${response.data}");
+      },
+      onError: (p0) {
+        log("${p0.toString()}");
+      },
+    );
+  }
+
+  //-- get product comment list--//
+  Rxn<ProudctPostCommentRes> productCommentListRes =
+      Rxn<ProudctPostCommentRes>();
+  RxList<CommentModel> productCommentList = RxList<CommentModel>();
+  RxBool isProductCommentList = RxBool(true);
+  Future<void> getProductComments({required String productId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductCommentList.value = true;
+        productCommentList.clear();
+      },
+      onSuccess: (response) {
+        log("${response.data}");
+        Map<String, dynamic> data = response.data;
+        productCommentListRes.value = ProudctPostCommentRes.fromJson(data);
+        productCommentList.value = productCommentListRes.value?.data ?? [];
+
+        isProductCommentList.value = false;
+      },
+      onError: (p0) {
+        isProductCommentList.value = false;
+      },
+    );
+  }
+
+  //-- Add Product Comment --//
+  RxBool isProductCommentAdd = RxBool(false);
+  TextEditingController commentController = TextEditingController();
+  Future<void> addProductComment(
+      {required String productId, required String comment}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {"content": comment},
+      onLoading: () {
+        FocusScope.of(Get.context!).unfocus();
+        isProductCommentAdd.value = true;
+      },
+      onSuccess: (response) {
+        commentController.clear();
+        getProductComments(productId: productId);
+        isProductCommentAdd.value = false;
+      },
+      onError: (e) {
+        if (e.response?.data['result'] != null) {
+          CustomSnackBar.showCustomErrorToast(
+              message: e.response?.data['result']);
+        }
+        isProductCommentAdd.value = false;
+      },
+    );
+  }
+
+  //-- get User by User Id --//
+  Rxn<UserDataModel> postUserModel = Rxn<UserDataModel>();
+  RxBool isFetchUserLoading = RxBool(true);
+  Future<void> getUserMyUserId({required String userId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.user}/$userId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) {
+        Map<String, dynamic> data = response.data;
+        postUserModel.value = UserDataModel.fromJson(data);
+        isFetchUserLoading.value = false;
+      },
+      onError: (p0) {
+        isFetchUserLoading.value = false;
+      },
+    );
+  }
+
+  //--- Get User PRODUCT ---//
+
+  RxBool isFetchUserProduct = RxBool(true);
+  RxList<ProductModel> userProductList = RxList<ProductModel>();
+  ProudctPostListRes? userProductPostListRes;
+  String selectUserId = '';
+  Future<void> fetchUserProducts({String? nextPaginateDate}) async {
+    String url = Constants.baseUrl + Constants.postProduct;
+    if (nextPaginateDate != null) {
+      url =
+          '$url?next=$nextPaginateDate&user=${postUserModel.value?.id ?? selectUserId}';
+    } else {
+      url = "$url?user=${postUserModel.value?.id ?? selectUserId}";
+    }
+
+    await BaseClient.safeApiCall(
+      url,
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {},
+      onLoading: () {
+        if (nextPaginateDate == null) {
+          isFetchUserProduct.value = true;
+          userProductList.clear();
+        }
+      },
+      onSuccess: (response) {
+        log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
+        Map<String, dynamic> responseData = response.data;
+        userProductPostListRes = ProudctPostListRes.fromJson(responseData);
+        if (nextPaginateDate != null) {
+          userProductList.addAll(userProductPostListRes?.data ?? []);
+        } else {
+          userProductList.value = userProductPostListRes?.data ?? [];
+        }
+        isFetchUserProduct.value = false;
+      },
+      onError: (p0) {
+        log('${p0.url} ${Constants.token}');
+        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
+        isFetchUserProduct.value = false;
+        CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
+      },
+    );
+  }
+
+  //--- Get All PRODUCT ---//
+  RefreshController userProductRefreshController =
+      RefreshController(initialRefresh: false);
+  void userProductRefresh() async {
+    await fetchUserProducts();
+    userProductRefreshController.refreshCompleted();
+  }
+
+  void userProductLoading() async {
+    if (userProductPostListRes?.hasMore ?? false) {
+      await fetchUserProducts(
+          nextPaginateDate: userProductList.value.last.createdAt);
+    }
+    userProductRefreshController.loadComplete();
+  }
+
+  //-- dispose --//
+  @override
+  void onClose() {
+    commentController.dispose();
+    super.onClose();
+  }
+}
