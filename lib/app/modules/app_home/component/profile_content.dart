@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 
 import '../../auth_user/auth_user_tab/my_followers.dart';
 import '../../auth_user/auth_user_tab/my_like_post.dart';
+import '../../auth_user/auth_user_tab/my_settings.dart';
 import '../../auth_user/controller/user_controller.dart';
 
 class ProfileContent extends StatefulWidget {
@@ -65,8 +66,7 @@ class _ProfileContentState extends State<ProfileContent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => Text(
-                          authController.userDataModel.value.phone ??
-                              ' 01211312342',
+                          authController.userDataModel.value.phone ?? ' 01211312342',
                           style: regular.copyWith(
                             fontSize: 10.sp,
                           ),
@@ -76,9 +76,7 @@ class _ProfileContentState extends State<ProfileContent> {
                         () => RatingBar.builder(
                           itemSize: 15.h,
                           initialRating: MySharedPref.isLoggedIn()
-                              ? double.parse(authController
-                                  .userDataModel.value.rating
-                                  .toString())
+                              ? double.parse(authController.userDataModel.value.rating.toString())
                               : 0,
                           minRating: 0,
                           direction: Axis.horizontal,
@@ -97,21 +95,26 @@ class _ProfileContentState extends State<ProfileContent> {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Container(
-                    width: 30.w,
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 5.w,
-                      vertical: 4.h,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Get.theme.primaryColor.withOpacity(.15),
-                      borderRadius: BorderRadius.circular(5.r),
-                    ),
-                    child: Image.asset(
-                      settingIcon,
+                  IconButton(
+                    onPressed: () {
+                      Get.to(() => MySettings());
+                    },
+                    icon: Container(
+                      width: 30.w,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 5.w,
+                        vertical: 4.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Get.theme.primaryColor.withOpacity(.15),
+                        borderRadius: BorderRadius.circular(5.r),
+                      ),
+                      child: Image.asset(
+                        settingIcon,
+                      ),
                     ),
                   ),
-                  const Icon(Icons.more_vert_outlined),
+                  //const Icon(Icons.more_vert_outlined),
                 ],
               ),
             ),

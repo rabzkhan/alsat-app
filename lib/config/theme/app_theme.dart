@@ -7,6 +7,7 @@ import 'app_text_theme.dart';
 ThemeData appTheme() => ThemeData(
       useMaterial3: false,
       // fontFamily: GoogleFonts.inter().fontFamily,
+
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
       secondaryHeaderColor: Colors.grey.shade100,
@@ -27,8 +28,8 @@ ThemeData appTheme() => ThemeData(
         ),
         backgroundColor: Colors.white,
         systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarIconBrightness: Brightness.light,
-          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark, // For Android
+          statusBarBrightness: Brightness.light, // For iOS
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

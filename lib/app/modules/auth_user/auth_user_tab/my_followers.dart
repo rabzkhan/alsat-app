@@ -43,20 +43,16 @@ class _MyFollowersState extends State<MyFollowers> {
           padding: EdgeInsets.symmetric(
             horizontal: 8.w,
           ),
-          itemCount: userController.isFollowerLoading.value
-              ? 10
-              : (userController.followerRes.value?.data ?? []).length,
+          itemCount:
+              userController.isFollowerLoading.value ? 10 : (userController.followerRes.value?.data ?? []).length,
           itemBuilder: (context, index) {
             var user = userController.followerRes.value?.data?[index];
             return ListTile(
               onTap: () {
-                ProductDetailsController productDetailsController = Get.put(
-                    ProductDetailsController(),
-                    tag: user?.follower?.id.toString());
-                productDetailsController.selectUserId =
-                    user?.follower?.id ?? '';
-                productDetailsController.getUserMyUserId(
-                    userId: user?.follower?.id ?? '');
+                ProductDetailsController productDetailsController =
+                    Get.put(ProductDetailsController(), tag: user?.follower?.id.toString());
+                productDetailsController.selectUserId = user?.follower?.id ?? '';
+                productDetailsController.getUserMyUserId(userId: user?.follower?.id ?? '');
                 Get.to(
                   () => ClientProfileView(
                     userId: user?.follower?.id ?? '',
@@ -84,8 +80,7 @@ class _MyFollowersState extends State<MyFollowers> {
                 ),
               ),
               subtitle: Text(
-                DateFormat('MMMM dd yyyy')
-                    .format(user?.followedAt ?? DateTime.now()),
+                DateFormat('MMMM dd yyyy').format(user?.followedAt ?? DateTime.now()),
                 style: regular.copyWith(
                   fontSize: 10.sp,
                 ),

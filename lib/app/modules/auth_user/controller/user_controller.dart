@@ -2,11 +2,16 @@ import 'dart:developer';
 
 import 'package:alsat/app/services/base_client.dart';
 import 'package:alsat/utils/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 
 import '../../app_home/models/follower_res.dart';
 
 class UserController extends GetxController {
+  final userSettingsFormKey = GlobalKey<FormBuilderState>();
+  final userNameTextController = TextEditingController().obs;
+
   List<String> profileTab = [
     'My Listings',
     'Liked',
