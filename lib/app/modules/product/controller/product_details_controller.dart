@@ -187,6 +187,7 @@ class ProductDetailsController extends GetxController {
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
         postUserModel.value = UserDataModel.fromJson(data);
+        selectUserId = postUserModel.value?.id ?? '';
         isFetchUserLoading.value = false;
       },
       onError: (p0) {
@@ -258,6 +259,35 @@ class ProductDetailsController extends GetxController {
           nextPaginateDate: userProductList.value.last.createdAt);
     }
     userProductRefreshController.loadComplete();
+  }
+
+  //-- Rate User --//
+  RxBool isRateUserLoading = RxBool(false);
+  RxDouble userRate = RxDouble(3);
+  Future<void> rateUser() async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.user}/$selectUserId/rate",
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {"stars": userRate.value},
+      onLoading: () {
+        isRateUserLoading.value = true;
+      },
+      onSuccess: (response) {
+        isRateUserLoading.value = false;
+        Get.back();
+        CustomSnackBar.showCustomToast(message: 'Rate Successfully');
+        getUserMyUserId(userId: selectUserId);
+      },
+      onError: (p0) {
+        log('${p0.message}${p0.url} ${Constants.token}');
+        isRateUserLoading.value = false;
+        CustomSnackBar.showCustomErrorToast(message: 'Rate Failed');
+      },
+    );
   }
 
   //-- dispose --//

@@ -11,6 +11,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/custom_appbar.dart';
 import '../../../components/product_grid_tile.dart';
+import '../widget/rate_bottom_sheet.dart';
 
 class ClientProfileView extends StatefulWidget {
   final String userId;
@@ -100,18 +101,30 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                   ),
                                 ),
                               3.verticalSpace,
-                              RatingBarIndicator(
-                                rating: (widget.productDetailsController
-                                            .postUserModel.value?.rating ??
-                                        0)
-                                    .toDouble(),
-                                itemBuilder: (context, index) => const Icon(
-                                  Icons.star_border_outlined,
-                                  color: Colors.amber,
-                                ),
-                                itemCount: 5,
-                                itemSize: 13.r,
-                                direction: Axis.horizontal,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  RatingBarIndicator(
+                                    rating: (widget.productDetailsController
+                                                .postUserModel.value?.rating ??
+                                            0)
+                                        .toDouble(),
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star_border_outlined,
+                                      color: Colors.amber,
+                                    ),
+                                    itemCount: 5,
+                                    itemSize: 13.r,
+                                    direction: Axis.horizontal,
+                                  ),
+                                  5.horizontalSpace,
+                                  Text(
+                                    '(${widget.productDetailsController.postUserModel.value?.rating ?? 0})',
+                                    style: regular.copyWith(
+                                      fontSize: 8.sp,
+                                    ),
+                                  )
+                                ],
                               ),
                             ],
                           ),
@@ -197,7 +210,11 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           ),
                         ),
                         10.horizontalSpace,
-                        Center(
+                        InkWell(
+                          onTap: () {
+                            showRateBottomSheet(
+                                context, widget.productDetailsController);
+                          },
                           child: Container(
                             decoration: BoxDecoration(
                               border: Border.all(
