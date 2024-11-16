@@ -7,6 +7,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../../authentication/controller/auth_controller.dart';
@@ -206,7 +207,157 @@ class _MySettingsState extends State<MySettings> {
                   validator: FormBuilderValidators.compose(
                     [],
                   ),
-                )
+                ),
+                20.verticalSpace,
+                FormBuilderTextField(
+                  name: 'location',
+                  controller: userController.userNameTextController.value,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    suffix: Icon(
+                      Icons.keyboard_arrow_right,
+                      size: 14.h,
+                      color: AppColors.primary,
+                    ),
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Location',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [],
+                  ),
+                ),
+                20.verticalSpace,
+                FormBuilderTextField(
+                  name: 'category',
+                  controller: userController.userNameTextController.value,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    suffix: Icon(
+                      Icons.keyboard_arrow_right,
+                      size: 14.h,
+                      color: AppColors.primary,
+                    ),
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Category',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [],
+                  ),
+                ),
+                20.verticalSpace,
+                Text(
+                  "Social",
+                  style: medium.copyWith(
+                    color: Colors.grey.shade800,
+                  ),
+                ),
+                20.verticalSpace,
+                FormBuilderTextField(
+                  name: 'youtube',
+                  controller: userController.userNameTextController.value,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    suffix: Image.asset(
+                      crownIcon,
+                      width: 14.w,
+                      height: 14.h,
+                      color: Get.theme.primaryColor,
+                    ),
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Youtube',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [],
+                  ),
+                ),
+                20.verticalSpace,
+                FormBuilderTextField(
+                  name: 'tiktok',
+                  controller: userController.userNameTextController.value,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    suffix: Image.asset(
+                      crownIcon,
+                      width: 14.w,
+                      height: 14.h,
+                      color: Get.theme.primaryColor,
+                    ),
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Tiktok',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [],
+                  ),
+                ),
+                20.verticalSpace,
+                FormBuilderTextField(
+                  name: 'twitch',
+                  controller: userController.userNameTextController.value,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                    suffix: Image.asset(
+                      crownIcon,
+                      width: 14.w,
+                      height: 14.h,
+                      color: Get.theme.primaryColor,
+                    ),
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'Twitch',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [],
+                  ),
+                ),
               ],
             ),
           )
