@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:alsat/app/components/app_drawer.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +159,7 @@ showRateBottomSheet(
                         ),
                       ),
                     )
-                  : Container(
+                  : SizedBox(
                       height: Get.height * .4,
                       width: Get.width,
                     );

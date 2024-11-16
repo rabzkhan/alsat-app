@@ -3,13 +3,11 @@ import 'dart:developer';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../../services/base_client.dart';
-import '../../authentication/controller/auth_controller.dart';
 import '../../authentication/model/user_data_model.dart';
 import '../model/product_post_res.dart';
 
@@ -104,7 +102,7 @@ class ProductDetailsController extends GetxController {
         log("${response.data}");
       },
       onError: (p0) {
-        log("${p0.toString()}");
+        log(p0.toString());
       },
     );
   }

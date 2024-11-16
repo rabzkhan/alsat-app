@@ -96,7 +96,7 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.justify,
-                          widget.productModel?.description ??
+                          widget.productModel.description ??
                               'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing ',
                           style: regular.copyWith(
                             fontSize: 14.sp,

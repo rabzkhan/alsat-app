@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

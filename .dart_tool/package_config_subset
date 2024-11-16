@@ -554,6 +554,10 @@ photo_view
 2.12
 file:///Users/mac/.pub-cache/hosted/pub.dev/photo_view-0.15.0/
 file:///Users/mac/.pub-cache/hosted/pub.dev/photo_view-0.15.0/lib/
+pinput
+2.15
+file:///Users/mac/.pub-cache/hosted/pub.dev/pinput-5.0.0/
+file:///Users/mac/.pub-cache/hosted/pub.dev/pinput-5.0.0/lib/
 platform
 3.2
 file:///Users/mac/.pub-cache/hosted/pub.dev/platform-3.1.5/
@@ -706,6 +710,10 @@ typed_data
 3.5
 file:///Users/mac/.pub-cache/hosted/pub.dev/typed_data-1.4.0/
 file:///Users/mac/.pub-cache/hosted/pub.dev/typed_data-1.4.0/lib/
+universal_platform
+2.12
+file:///Users/mac/.pub-cache/hosted/pub.dev/universal_platform-1.1.0/
+file:///Users/mac/.pub-cache/hosted/pub.dev/universal_platform-1.1.0/lib/
 url_launcher
 3.3
 file:///Users/mac/.pub-cache/hosted/pub.dev/url_launcher-6.3.1/

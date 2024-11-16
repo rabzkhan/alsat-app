@@ -97,7 +97,7 @@ class _ProfileContentState extends State<ProfileContent> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      Get.to(() => MySettings());
+                      Get.to(() => const MySettings());
                     },
                     icon: Container(
                       width: 30.w,

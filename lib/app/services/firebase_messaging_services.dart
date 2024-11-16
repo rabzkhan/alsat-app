@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'package:alsat/app/services/notification_service.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../../../main.dart';
 

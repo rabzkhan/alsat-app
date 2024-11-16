@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/config/theme/app_colors.dart';
@@ -511,7 +510,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     ? _realEstate(context)
                                     : productController.selectCategory.value?.name?.toLowerCase() == 'phone'
                                         ? _phoneCategory(context)
-                                        : Center()),
+                                        : const Center()),
                             //product Name
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
@@ -1504,7 +1503,7 @@ class _PostProductViewState extends State<PostProductView> {
   _tile(String title, String value, {Function()? onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: Get.width,
         child: Column(
           mainAxisSize: MainAxisSize.min,

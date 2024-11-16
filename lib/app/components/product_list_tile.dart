@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';

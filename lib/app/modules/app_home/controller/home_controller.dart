@@ -2,14 +2,11 @@ import 'dart:developer';
 
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:logger/logger.dart';
 
 import '../../../../utils/constants.dart';
 import '../../../common/const/image_path.dart';
-import '../../../data/local/my_shared_pref.dart';
 import '../../../services/base_client.dart';
 import '../models/banner_res.dart';
 

@@ -1,6 +1,5 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
-import 'package:alsat/app/components/product_grid_tile.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -108,9 +107,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     enableInfiniteScroll: true,
                                     reverse: false,
                                     autoPlay: true,
-                                    autoPlayInterval: Duration(seconds: 3),
+                                    autoPlayInterval: const Duration(seconds: 3),
                                     autoPlayAnimationDuration:
-                                        Duration(milliseconds: 800),
+                                        const Duration(milliseconds: 800),
                                     autoPlayCurve: Curves.fastOutSlowIn,
                                     enlargeCenterPage: true,
                                     enlargeFactor: 0.3,
@@ -322,7 +321,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           infoTile(
                                               name: 'Brand',
                                               value:
-                                                  "${widget.productModel?.phoneInfo?.brand ?? ''}"),
+                                                  widget.productModel?.phoneInfo?.brand ?? ''),
                                         ],
                                       )
                                     : Column(

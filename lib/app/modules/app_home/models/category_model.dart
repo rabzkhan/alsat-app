@@ -32,7 +32,7 @@ class CategoriesModel {
     if (json['sub_categories'] != null) {
       subCategories = <SubCategories>[];
       json['sub_categories'].forEach((v) {
-        subCategories!.add(new SubCategories.fromJson(v));
+        subCategories!.add(SubCategories.fromJson(v));
       });
     }
   }

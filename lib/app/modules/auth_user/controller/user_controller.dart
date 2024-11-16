@@ -47,4 +47,7 @@ class UserController extends GetxController {
       },
     );
   }
+
+  //-- Upgrade to premium--//
+  RxBool isUpgradePreimumLoading = false.obs;
 }

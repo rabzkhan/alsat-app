@@ -63,8 +63,7 @@ class HomeContent extends StatelessWidget {
                               reverse: false,
                               autoPlay: true,
                               autoPlayInterval: const Duration(seconds: 3),
-                              autoPlayAnimationDuration:
-                                  const Duration(milliseconds: 800),
+                              autoPlayAnimationDuration: const Duration(milliseconds: 800),
                               autoPlayCurve: Curves.fastOutSlowIn,
                               enlargeCenterPage: true,
                               enlargeFactor: 0.3,
@@ -73,16 +72,12 @@ class HomeContent extends StatelessWidget {
                               scrollDirection: Axis.horizontal,
                             ),
                             items: List.generate(
-                              homeController.isBannerLoading.value
-                                  ? 5
-                                  : homeController.mainBanner.length,
+                              homeController.isBannerLoading.value ? 5 : homeController.mainBanner.length,
                               (index) => NewworkImagePreview(
                                 radius: 10.r,
                                 url: homeController.isBannerLoading.value
                                     ? ''
-                                    : homeController
-                                            .mainBanner[index].picture ??
-                                        '',
+                                    : homeController.mainBanner[index].picture ?? '',
                                 height: 100.h,
                                 fit: BoxFit.cover,
                               ),
@@ -100,36 +95,33 @@ class HomeContent extends StatelessWidget {
                         end: Alignment.centerRight,
                       ),
                       child: ListView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: homeController.isBannerLoading.value
-                            ? 2
-                            : homeController.otherBanner.take(2).length,
+                        itemCount: homeController.isBannerLoading.value ? 2 : homeController.otherBanner.take(2).length,
                         itemBuilder: (context, index) {
-                          return NewworkImagePreview(
-                            url: homeController.isBannerLoading.value
-                                ? ''
-                                : homeController.otherBanner[index].picture ??
-                                    '',
-                            height: 120.h,
-                            width: double.infinity,
-                            fit: BoxFit.fill,
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 8.h),
+                            child: NewworkImagePreview(
+                              url: homeController.isBannerLoading.value
+                                  ? ''
+                                  : homeController.otherBanner[index].picture ?? '',
+                              height: 120.h,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           );
                         },
                       ),
                     ),
                     //-- home Product ---//
                     ListView.builder(
-                      itemCount: productController.isFetchProduct.value
-                          ? 10
-                          : productController.productList.length,
+                      itemCount: productController.isFetchProduct.value ? 10 : productController.productList.length,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         ProductModel? productModel =
-                            productController.isFetchProduct.value
-                                ? null
-                                : productController.productList[index];
+                            productController.isFetchProduct.value ? null : productController.productList[index];
                         return Padding(
                           padding: EdgeInsets.only(
                             bottom: 10.h,
@@ -137,8 +129,7 @@ class HomeContent extends StatelessWidget {
                           child: Skeletonizer(
                             enabled: productController.isFetchProduct.value,
                             effect: ShimmerEffect(
-                              baseColor:
-                                  Get.theme.disabledColor.withOpacity(.2),
+                              baseColor: Get.theme.disabledColor.withOpacity(.2),
                               highlightColor: Colors.white,
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,

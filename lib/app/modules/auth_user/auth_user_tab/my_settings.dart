@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:alsat/app/components/custom_appbar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +11,7 @@ import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../../authentication/controller/auth_controller.dart';
 import '../controller/user_controller.dart';
+import 'widgets/upgrade_to_premium_dialog.dart';
 
 class MySettings extends StatefulWidget {
   const MySettings({super.key});
@@ -101,6 +105,48 @@ class _MySettingsState extends State<MySettings> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Row(
+                  children: [
+                    Text(
+                      "Upgrade to premium",
+                      style: bold,
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        upgradeToPremiumDialog();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Get.theme.primaryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Image.asset(
+                              crownIcon,
+                              width: 14.w,
+                              height: 14.h,
+                              color: Get.theme.primaryColor,
+                            ),
+                            5.horizontalSpace,
+                            Text(
+                              "Upgrade",
+                              style: regular.copyWith(
+                                fontSize: 12.sp,
+                                color: Get.theme.primaryColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                10.verticalSpace,
                 Text(
                   "Account",
                   style: medium.copyWith(

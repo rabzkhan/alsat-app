@@ -1,14 +1,10 @@
-import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:alsat/app/components/product_list_tile.dart';
-import 'package:alsat/app/modules/conversation/data.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +31,7 @@ class ConversationView extends StatefulWidget {
 }
 
 class _ConversationViewState extends State<ConversationView> {
-  List<types.Message> _messages = [];
+  final List<types.Message> _messages = [];
   late types.User _user;
 
   final ConversationController conversationController = Get.find();

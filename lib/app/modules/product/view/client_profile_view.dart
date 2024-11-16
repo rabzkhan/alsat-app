@@ -1,4 +1,3 @@
-import 'package:alsat/app/components/app_drawer.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
