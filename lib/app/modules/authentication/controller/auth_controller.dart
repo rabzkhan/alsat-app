@@ -12,6 +12,7 @@ import '../../../../utils/constants.dart';
 import '../../../data/local/my_shared_pref.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/view/app_home_view.dart';
+import '../widgets/sms_confirmation.dart';
 
 class AuthController extends GetxController {
   final signUpFormKey = GlobalKey<FormBuilderState>();
@@ -27,10 +28,8 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp =
-      false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess =
-      false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -52,7 +51,7 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await triggerSendSms();
+        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
       },
       onError: (error) {
         Logger().d("$error <- error");
@@ -60,76 +59,23 @@ class AuthController extends GetxController {
     );
   }
 
-  // Start the 4-minute countdown timer
-  void startOtpCountdown() {
-    canResendOtp.value = false;
-    countdown.value = 120;
-    resendOtpTimer?.cancel();
-    resendOtpTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (countdown.value > 0) {
-        countdown.value--;
-      } else {
-        canResendOtp.value = true;
-        resendOtpTimer?.cancel();
-      }
-    });
-  }
-
-  // Method to trigger phone number verification
-  triggerSendSms() async {
-    await sendSms(otpData.value.phone!, otpData.value.sms!);
-    //startOtpCountdown(); // Start the 4-minute countdown timer
-  }
-
-  // Method to send an SMS using flutter_sms
-
   Future<void> sendSms(String phoneNumber, String message) async {
-    // Show confirmation dialog
-    bool? sendSmsConfirmation = await showDialog(
-      context: Get.context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Confirmation'),
-          content: Text(
-              'We are going to send an SMS to $phoneNumber. Do you want to proceed?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false); // Cancel sending SMS
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true); // Confirm sending SMS
-              },
-              child: const Text('Proceed'),
-            ),
-          ],
-        );
+    final Uri smsUri = Uri(
+      scheme: 'sms',
+      //path: "365555109",
+      path: "01701034287",
+      queryParameters: <String, String>{
+        'body': message,
       },
     );
-
-    // If the user confirmed, send the SMS
-    if (sendSmsConfirmation == true) {
-      final Uri smsUri = Uri(
-        scheme: 'sms',
-        //path: "365555109",
-        path: "01701034287",
-        queryParameters: <String, String>{
-          'body': message,
-        },
+    if (await canLaunchUrl(smsUri)) {
+      await launchUrl(
+        smsUri,
+        mode: LaunchMode.externalApplication,
       );
-
-      if (await canLaunchUrl(smsUri)) {
-        await launchUrl(
-          smsUri,
-          mode: LaunchMode.externalApplication,
-        );
-        startVerifyingNumber();
-      } else {
-        throw 'Could not send SMS';
-      }
+      startVerifyingNumber();
+    } else {
+      throw 'Could not send SMS';
     }
   }
 
@@ -158,8 +104,7 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d(
-            "Verification successful! and the token is ${varifiedModel.value.token!}");
+        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
         getProfile();
         Get.to(() => const AppHomeView());
       },
@@ -185,13 +130,5 @@ class AuthController extends GetxController {
         Logger().d("$error <- error");
       },
     );
-  }
-
-  @override
-  void onClose() {
-    verificationTimer?.cancel(); // Clean up the verification timer
-    resendOtpTimer?.cancel();
-    // Clean up the resend OTP timer
-    super.onClose();
   }
 }
