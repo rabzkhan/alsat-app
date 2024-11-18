@@ -33,6 +33,24 @@ class _ClientProfileViewState extends State<ClientProfileView> {
     super.initState();
   }
 
+  //--- Get All PRODUCT ---//
+  RefreshController userProductRefreshController =
+      RefreshController(initialRefresh: false);
+  void userProductRefresh() async {
+    await widget.productDetailsController.fetchUserProducts();
+    userProductRefreshController.refreshCompleted();
+  }
+
+  void userProductLoading() async {
+    if (widget.productDetailsController.userProductPostListRes?.hasMore ??
+        false) {
+      await widget.productDetailsController.fetchUserProducts(
+          nextPaginateDate: widget
+              .productDetailsController.userProductList.value.last.createdAt);
+    }
+    userProductRefreshController.loadComplete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -252,10 +270,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                   header: WaterDropHeader(
                     waterDropColor: context.theme.primaryColor,
                   ),
-                  controller: widget
-                      .productDetailsController.userProductRefreshController,
-                  onRefresh: widget.productDetailsController.userProductRefresh,
-                  onLoading: widget.productDetailsController.userProductLoading,
+                  controller: userProductRefreshController,
+                  onRefresh: userProductRefresh,
+                  onLoading: userProductLoading,
                   child: GridView.builder(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.symmetric(

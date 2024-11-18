@@ -243,22 +243,6 @@ class ProductDetailsController extends GetxController {
     );
   }
 
-  //--- Get All PRODUCT ---//
-  RefreshController userProductRefreshController =
-      RefreshController(initialRefresh: false);
-  void userProductRefresh() async {
-    await fetchUserProducts();
-    userProductRefreshController.refreshCompleted();
-  }
-
-  void userProductLoading() async {
-    if (userProductPostListRes?.hasMore ?? false) {
-      await fetchUserProducts(
-          nextPaginateDate: userProductList.value.last.createdAt);
-    }
-    userProductRefreshController.loadComplete();
-  }
-
   //-- Rate User --//
   RxBool isRateUserLoading = RxBool(false);
   RxDouble userRate = RxDouble(3);

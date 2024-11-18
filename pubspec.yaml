@@ -88,6 +88,8 @@ dependencies:
   shared_preferences: ^2.2.3
   flutter_launcher_icons: ^0.13.1
   pinput: ^5.0.0
+  location: ^6.0.2
+  geocoding: ^3.0.0
 
 
     

@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:google_maps_flutter/google_maps_flutter.dart'
+    as google_maps_flutter;
+import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:location/location.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
@@ -59,6 +63,7 @@ class ProductController extends GetxController {
   //-- On Init Method --//
   @override
   void onInit() {
+    getCurrentLocation();
     fetchProducts();
     super.onInit();
   }
@@ -398,5 +403,43 @@ class ProductController extends GetxController {
         CustomSnackBar.showCustomErrorToast(message: 'Product like failed');
       },
     );
+  }
+
+  //-- get my current location--//
+  late google_maps_flutter.LatLng selectLatLon;
+  google_maps_flutter.LatLng selectPosition =
+      const google_maps_flutter.LatLng(0, 0);
+  final Completer<google_maps_flutter.GoogleMapController> mapController =
+      Completer();
+  Rxn<LocationData> currentLocation = Rxn();
+  RxList<geocoding.Placemark> placemarks = RxList([]);
+
+  void getCurrentLocation() async {
+    log("Call getCurrentLocation");
+    Location location = Location();
+    location.getLocation().then(
+      (location) {
+        currentLocation.value = location;
+        getLatLngToAddress(
+          google_maps_flutter.LatLng(
+            location.latitude ?? 0,
+            location.longitude ?? 0,
+          ),
+        );
+      },
+    );
+
+    location.onLocationChanged.listen(
+      (newLoc) {
+        currentLocation.value = newLoc;
+      },
+    );
+  }
+
+  getLatLngToAddress(google_maps_flutter.LatLng latLng) async {
+    selectLatLon = latLng;
+    placemarks.value = await geocoding.placemarkFromCoordinates(
+        latLng.latitude, latLng.longitude);
+    log("Address ${placemarks!.last.street}");
   }
 }

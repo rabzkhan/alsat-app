@@ -10,7 +10,7 @@ FollowerRes followerResFromJson(String str) =>
 String followerResToJson(FollowerRes data) => json.encode(data.toJson());
 
 class FollowerRes {
-  final List<Datum>? data;
+  final List<FollowerModel>? data;
   final bool? hasMore;
 
   FollowerRes({
@@ -19,7 +19,7 @@ class FollowerRes {
   });
 
   FollowerRes copyWith({
-    List<Datum>? data,
+    List<FollowerModel>? data,
     bool? hasMore,
   }) =>
       FollowerRes(
@@ -30,7 +30,8 @@ class FollowerRes {
   factory FollowerRes.fromJson(Map<String, dynamic> json) => FollowerRes(
         data: json["data"] == null
             ? []
-            : List<Datum>.from(json["data"]!.map((x) => Datum.fromJson(x))),
+            : List<FollowerModel>.from(
+                json["data"]!.map((x) => FollowerModel.fromJson(x))),
         hasMore: json["has_more"],
       );
 
@@ -42,36 +43,34 @@ class FollowerRes {
       };
 }
 
-class Datum {
+class FollowerModel {
   final Follower? follower;
-  final DateTime? followedAt;
+  final String? followedAt;
 
-  Datum({
+  FollowerModel({
     this.follower,
     this.followedAt,
   });
 
-  Datum copyWith({
+  FollowerModel copyWith({
     Follower? follower,
-    DateTime? followedAt,
+    String? followedAt,
   }) =>
-      Datum(
+      FollowerModel(
         follower: follower ?? this.follower,
         followedAt: followedAt ?? this.followedAt,
       );
 
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
+  factory FollowerModel.fromJson(Map<String, dynamic> json) => FollowerModel(
         follower: json["follower"] == null
             ? null
             : Follower.fromJson(json["follower"]),
-        followedAt: json["followed_at"] == null
-            ? null
-            : DateTime.parse(json["followed_at"]),
+        followedAt: json["followed_at"],
       );
 
   Map<String, dynamic> toJson() => {
         "follower": follower?.toJson(),
-        "followed_at": followedAt?.toIso8601String(),
+        "followed_at": followedAt,
       };
 }
 
