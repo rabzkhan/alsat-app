@@ -90,6 +90,10 @@ dependencies:
   pinput: ^5.0.0
   location: ^6.0.2
   geocoding: ^3.0.0
+  get_thumbnail_video: ^0.7.3
+  video_player: ^2.9.2
+  flick_video_player: ^0.9.0
+  pod_player: ^0.2.2
 
 
     

@@ -6,6 +6,8 @@ import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart'
     as google_maps_flutter;
 import 'package:geocoding/geocoding.dart' as geocoding;
@@ -97,7 +99,7 @@ class ProductController extends GetxController {
     }
     int filledCount = 0;
     if (selectCategory.value != null) {
-      if (selectCategory.value?.name == 'automobile') {
+      if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
         if (selectCategory.value != null) filledCount++;
         if (selectedBrand.value != null) filledCount++;
         if (selectedModel.value != null) filledCount++;
@@ -130,6 +132,10 @@ class ProductController extends GetxController {
         if (productNameController.text.trim().isNotEmpty) filledCount++;
         if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         if (phoneBrandController.text.trim().isNotEmpty) filledCount++;
+      } else {
+        if (selectCategory.value != null) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
     } else {
       if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
@@ -203,13 +209,13 @@ class ProductController extends GetxController {
   Future<void> _generateThumbnails() async {
     for (var videoFile in pickVideoList) {
       try {
-        // final thumbnailData = await VideoThumbnail.thumbnailData(
-        //   video: videoFile.path,
-        //   imageFormat: ImageFormat.JPEG,
-        //   maxHeight: 150,
-        //   quality: 75,
-        // );
-        // videoThumbnails.add("thumbnailData");
+        final thumbnailData = await VideoThumbnail.thumbnailData(
+          video: videoFile.path,
+          imageFormat: ImageFormat.JPEG,
+          maxHeight: 150,
+          quality: 75,
+        );
+        videoThumbnails.add(thumbnailData);
       } catch (e) {
         log('Error generating thumbnail: $e');
       }
@@ -447,7 +453,8 @@ class ProductController extends GetxController {
   /// product like
   RxBool isProductLike = RxBool(false);
   RxString productLikeId = RxString('');
-  Future<void> addProductLike({required String productId}) async {
+  Future<void> addProductLike(
+      {required String productId, required bool likeValue}) async {
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
     log('$url ${Constants.token}');
@@ -458,7 +465,7 @@ class ProductController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: {},
+      data: {"like": likeValue},
       onLoading: () {
         productLikeId.value = productId;
         isProductLike.value = true;

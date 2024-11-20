@@ -171,10 +171,7 @@ class ProductListTile extends StatelessWidget {
                 right: 10.w,
                 top: 4.h,
                 child: InkWell(
-                  onTap: () {
-                    productController.addProductLike(
-                        productId: productModel?.id ?? '');
-                  },
+                  onTap: () {},
                   child: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: 5.w,

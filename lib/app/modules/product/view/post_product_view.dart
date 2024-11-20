@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:alsat/app/common/const/image_path.dart';
@@ -413,10 +414,10 @@ class _PostProductViewState extends State<PostProductView> {
                                 )
                               : Container(
                                   margin: EdgeInsets.symmetric(
-                                    horizontal: 15.w,
-                                    vertical: 25.h,
+                                    horizontal: 5.w,
+                                    vertical: 15.h,
                                   ),
-                                  height: 70.h,
+                                  height: 100.h,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
@@ -424,7 +425,7 @@ class _PostProductViewState extends State<PostProductView> {
                                       Flexible(
                                         // Allows flexible width to avoid overflow
                                         child: SizedBox(
-                                          height: 70.h,
+                                          height: 100.h,
                                           child: SingleChildScrollView(
                                             physics:
                                                 const BouncingScrollPhysics(),
@@ -450,7 +451,8 @@ class _PostProductViewState extends State<PostProductView> {
                                                             borderRadius:
                                                                 BorderRadius
                                                                     .circular(
-                                                                        10.r),
+                                                              15.r,
+                                                            ),
                                                             child: Image.memory(
                                                               productController
                                                                       .videoThumbnails[
@@ -468,7 +470,7 @@ class _PostProductViewState extends State<PostProductView> {
                                                           color: Colors.red,
                                                         ),
                                                         Positioned(
-                                                          bottom: -2.h,
+                                                          bottom: -10.h,
                                                           right: 0,
                                                           left: 0,
                                                           child:
@@ -483,10 +485,9 @@ class _PostProductViewState extends State<PostProductView> {
                                                                   .removeAt(
                                                                       index);
                                                             },
-                                                            child: const Icon(
-                                                              CupertinoIcons
-                                                                  .xmark_circle_fill,
-                                                              color: Colors.red,
+                                                            child: Image.asset(
+                                                              xmarkIcon,
+                                                              height: 25.h,
                                                             ),
                                                           ),
                                                         ),
@@ -505,20 +506,38 @@ class _PostProductViewState extends State<PostProductView> {
                                           productController.pickVideo(context);
                                         },
                                         child: Container(
+                                          alignment: Alignment.center,
                                           width: 70.w,
                                           height: 70.h,
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(10.r),
+                                                BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1,
-                                              color:
-                                                  context.theme.disabledColor,
+                                              color: context.theme.disabledColor
+                                                  .withOpacity(.4),
                                             ),
                                           ),
-                                          child: Icon(
-                                            Icons.add,
-                                            size: 30.sp,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                CupertinoIcons.add,
+                                                size: 20.sp,
+                                                color: context
+                                                    .theme.disabledColor
+                                                    .withOpacity(.4),
+                                              ),
+                                              Text(
+                                                "Add",
+                                                style: regular.copyWith(
+                                                  color: context
+                                                      .theme.disabledColor
+                                                      .withOpacity(.4),
+                                                  fontSize: 12.sp,
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -1824,6 +1843,10 @@ class _PostProductViewState extends State<PostProductView> {
     List<Map> media = [];
     for (var image in productController.pickImageList.value) {
       var mediaDataTemp = await imageToBase64(image.path);
+      media.add(mediaDataTemp);
+    }
+    for (var video in productController.pickVideoList.value) {
+      var mediaDataTemp = await videoToBase64(video.path);
       media.add(mediaDataTemp);
     }
     productPostMap['media'] = media;

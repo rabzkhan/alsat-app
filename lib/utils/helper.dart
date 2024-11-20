@@ -84,3 +84,48 @@ Future<String> convertImageToBase64(String filePath) async {
   String base64Image = base64Encode(imageBytes);
   return base64Image;
 }
+
+//
+Future<String> convertFileToBase64(String filePath) async {
+  final bytes = await File(filePath).readAsBytes();
+  return base64Encode(bytes);
+}
+
+Future<Map<String, dynamic>> videoToBase64(String filePath) async {
+  String base64String = await convertFileToBase64(filePath);
+  String extension = path.extension(filePath).toLowerCase();
+  String contentType;
+
+  // Determine content type based on file extension
+  switch (extension) {
+    case '.mp4':
+      contentType = 'video/mp4';
+      break;
+    case '.avi':
+      contentType = 'video/x-msvideo';
+      break;
+    case '.mov':
+      contentType = 'video/quicktime';
+      break;
+    case '.mkv':
+      contentType = 'video/x-matroska';
+      break;
+    case '.webm':
+      contentType = 'video/webm';
+      break;
+    default:
+      contentType =
+          'application/octet-stream'; // Default for unknown file types
+  }
+
+  // Creating a JSON object for the video
+  var jsonObject = {
+    "name": base64String,
+    "type": "video",
+    "size": File(filePath).lengthSync(), // Get file size in bytes
+    "hash": calculateHash(base64String), // Generate a hash of the Base64 string
+    "content_type": contentType // MIME type of the video
+  };
+
+  return jsonObject;
+}

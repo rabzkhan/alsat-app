@@ -1,16 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pod_player/pod_player.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:video_player/video_player.dart';
+
 import '../../../components/network_image_preview.dart';
 import '../controller/product_details_controller.dart';
 import '../model/product_post_list_res.dart';
@@ -93,13 +102,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               ? CarouselSlider(
                                   items: (widget.productModel?.media ?? [])
                                       .map(
-                                        (e) => NewworkImagePreview(
-                                          radius: 10.r,
-                                          url: e.name ?? '',
-                                          height: 90.h,
-                                          width: Get.width,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        (e) => ProductMediaWidget(e: e),
                                       )
                                       .toList(),
                                   options: CarouselOptions(
@@ -109,7 +112,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     initialPage: 0,
                                     enableInfiniteScroll: true,
                                     reverse: false,
-                                    autoPlay: true,
+                                    autoPlay: false,
                                     autoPlayInterval:
                                         const Duration(seconds: 3),
                                     autoPlayAnimationDuration:
@@ -155,9 +158,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           onTap: () async {
                                             await productController
                                                 .addProductLike(
-                                                    productId: widget
-                                                            .productModel?.id ??
-                                                        '')
+                                              productId:
+                                                  widget.productModel?.id ?? '',
+                                              likeValue:
+                                                  !(productDetailsController
+                                                          .selectPostProductModel
+                                                          .value
+                                                          ?.liked ??
+                                                      false),
+                                            )
                                                 .then((_) {
                                               productDetailsController
                                                   .getSingleProductDetails(
@@ -754,6 +763,62 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         ),
       ),
     );
+  }
+}
+
+class ProductMediaWidget extends StatefulWidget {
+  final Media e;
+  const ProductMediaWidget({
+    super.key,
+    required this.e,
+  });
+
+  @override
+  State<ProductMediaWidget> createState() => _ProductMediaWidgetState();
+}
+
+class _ProductMediaWidgetState extends State<ProductMediaWidget> {
+  late VideoPlayerController videoPlayerController;
+  late final PodPlayerController controller;
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    if ((widget.e.contentType ?? '').toLowerCase().contains('video')) {
+      controller = PodPlayerController(
+        playVideoFrom: PlayVideoFrom.network(
+          widget.e.name ?? '',
+        ),
+      )..initialise().catchError((onError) {
+          log('videoError: $onError');
+        });
+    }
+  }
+
+  @override
+  dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.e.contentType ?? '').toLowerCase().contains('image')
+        ? NewworkImagePreview(
+            radius: 10.r,
+            url: widget.e.name ?? '',
+            height: 90.h,
+            width: Get.width,
+            fit: BoxFit.cover,
+          )
+        : (widget.e.contentType ?? '').toLowerCase().contains('video')
+            ? PodVideoPlayer(controller: controller)
+            : Center();
   }
 }
 
