@@ -80,7 +80,7 @@ class _MyFollowersState extends State<MyFollowers> {
                       tag: user?.follower?.id.toString());
                   productDetailsController.selectUserId =
                       user?.follower?.id ?? '';
-                  productDetailsController.getUserMyUserId(
+                  productDetailsController.getUserByUId(
                       userId: user?.follower?.id ?? '');
                   Get.to(
                     () => ClientProfileView(

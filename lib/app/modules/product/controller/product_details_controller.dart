@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -173,7 +174,7 @@ class ProductDetailsController extends GetxController {
   //-- get User by User Id --//
   Rxn<UserDataModel> postUserModel = Rxn<UserDataModel>();
   RxBool isFetchUserLoading = RxBool(true);
-  Future<void> getUserMyUserId({required String userId}) async {
+  Future<void> getUserByUId({required String userId}) async {
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.user}/$userId",
       DioRequestType.get,
@@ -262,12 +263,77 @@ class ProductDetailsController extends GetxController {
         isRateUserLoading.value = false;
         Get.back();
         CustomSnackBar.showCustomToast(message: 'Rate Successfully');
-        getUserMyUserId(userId: selectUserId);
+        getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
         log('${p0.message}${p0.url} ${Constants.token}');
         isRateUserLoading.value = false;
         CustomSnackBar.showCustomErrorToast(message: 'Rate Failed');
+      },
+    );
+  }
+
+  //-Get Product Details --//
+  RxBool isProductDetailsLoading = RxBool(true);
+  Rxn<ProductModel> selectPostProductModel = Rxn<ProductModel>();
+  Future<void> getSingleProductDetails(String pId) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$pId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductDetailsLoading.value = true;
+        selectPostProductModel.value = null;
+      },
+      onSuccess: (response) {
+        Map<String, dynamic> data = response.data;
+        selectPostProductModel.value = ProductModel.fromJson(data);
+        isProductDetailsLoading.value = false;
+      },
+      onError: (p0) {
+        isProductDetailsLoading.value = false;
+      },
+    );
+  }
+
+  //--follow user--//
+  RxBool isFollowUserLoading = RxBool(false);
+  Future<void> followingAUser({
+    required String userId,
+    required bool isFollow,
+  }) async {
+    AuthController authController = Get.find();
+
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.user}/follow",
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {
+        "follower_id": authController.userDataModel.value.id,
+        "user_id": userId,
+        "follow": isFollow,
+      },
+      onLoading: () {
+        isRateUserLoading.value = true;
+      },
+      onSuccess: (response) {
+        isRateUserLoading.value = false;
+
+        CustomSnackBar.showCustomToast(
+            message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
+        getUserByUId(userId: selectUserId);
+      },
+      onError: (p0) {
+        log('${p0.message}${p0.url} ${Constants.token}');
+        isRateUserLoading.value = false;
+        isFetchUserLoading.value = true;
+        CustomSnackBar.showCustomErrorToast(message: 'Follow Failed');
       },
     );
   }

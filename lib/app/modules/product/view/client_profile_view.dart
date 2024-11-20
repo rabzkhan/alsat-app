@@ -150,7 +150,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '120',
+                              '${widget.productDetailsController.postUserModel.value?.followers ?? 0}',
                               style: regular.copyWith(
                                 fontSize: 14.sp,
                               ),
@@ -164,23 +164,23 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           ],
                         ),
                         10.horizontalSpace,
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '120',
-                              style: regular.copyWith(
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            Text(
-                              'Following',
-                              style: regular.copyWith(
-                                fontSize: 13.sp,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Column(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: [
+                        //     Text(
+                        //       '120',
+                        //       style: regular.copyWith(
+                        //         fontSize: 14.sp,
+                        //       ),
+                        //     ),
+                        //     Text(
+                        //       'Following',
+                        //       style: regular.copyWith(
+                        //         fontSize: 13.sp,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                     //-- Follow and chat buttons--//
@@ -188,22 +188,59 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                     Row(
                       children: [
                         Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
+                          child: Obx(() {
+                            return Skeletonizer(
+                              enabled: widget.productDetailsController
+                                  .isFetchUserLoading.value,
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
                               ),
-                            ),
-                            child: Text(
-                              'Follow',
-                              style: regular.copyWith(
-                                color: Get.theme.scaffoldBackgroundColor,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  widget.productDetailsController
+                                      .isFetchUserLoading.value = true;
+                                  widget.productDetailsController
+                                      .followingAUser(
+                                    userId: widget.productDetailsController
+                                            .postUserModel.value?.id ??
+                                        '',
+                                    isFollow: !(widget.productDetailsController
+                                            .postUserModel.value?.followed ??
+                                        false),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0,
+                                  backgroundColor: (widget
+                                              .productDetailsController
+                                              .postUserModel
+                                              .value
+                                              ?.followed ??
+                                          false)
+                                      ? context.theme.disabledColor
+                                          .withOpacity(.5)
+                                      : Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                ),
+                                child: Text(
+                                  (widget.productDetailsController.postUserModel
+                                              .value?.followed ??
+                                          false)
+                                      ? 'UnFollow'
+                                      : 'Follow',
+                                  style: regular.copyWith(
+                                    color: Get.theme.scaffoldBackgroundColor,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                         ),
                         10.horizontalSpace,
                         Expanded(

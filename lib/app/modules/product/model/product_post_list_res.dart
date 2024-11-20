@@ -61,6 +61,7 @@ class ProductModel {
   final CarInfo? carInfo;
   final PhoneInfo? phoneInfo;
   final EstateInfo? estateInfo;
+  final bool liked;
 
   ProductModel({
     this.id,
@@ -78,6 +79,7 @@ class ProductModel {
     this.carInfo,
     this.phoneInfo,
     this.estateInfo,
+    this.liked = false,
   });
 
   ProductModel copyWith({
@@ -96,9 +98,11 @@ class ProductModel {
     CarInfo? carInfo,
     PhoneInfo? phoneInfo,
     EstateInfo? estateInfo,
+    bool? liked,
   }) =>
       ProductModel(
         id: id ?? this.id,
+        liked: liked ?? this.liked,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
         accessedAt: accessedAt ?? this.accessedAt,
@@ -117,6 +121,7 @@ class ProductModel {
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["_id"],
+        liked: json["liked"] ?? false,
         createdAt: json["created_at"],
         updatedAt: json["updated_at"] == null
             ? null
@@ -151,6 +156,7 @@ class ProductModel {
 
   Map<String, dynamic> toJson() => {
         "_id": id,
+        "liked": liked,
         "created_at": createdAt,
         "updated_at": updatedAt?.toIso8601String(),
         "accessed_at": accessedAt?.toIso8601String(),

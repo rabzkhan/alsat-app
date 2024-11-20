@@ -1,16 +1,23 @@
+import 'dart:developer';
+
 import 'package:alsat/app/common/const/image_path.dart';
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import '../../../components/custom_appbar.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../filter/controllers/filter_controller.dart';
+import '../../filter/widgets/car_brand_sheet.dart';
+import '../../filter/widgets/car_model_sheet.dart';
 import '../../filter/widgets/filter_bottom_sheet.dart';
 import '../controller/product_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -27,6 +34,7 @@ class PostProductView extends StatefulWidget {
 
 class _PostProductViewState extends State<PostProductView> {
   ProductController productController = Get.find();
+  HomeController homeController = Get.find();
   FilterController filterController = Get.find();
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -93,6 +101,7 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                       onPressed: () {
                         Get.back();
+                        resetForm();
                       },
                     ),
                   ),
@@ -115,13 +124,31 @@ class _PostProductViewState extends State<PostProductView> {
                                 _formKey.currentState!.saveAndValidate();
                                 if (_formKey.currentState!.validate()) {
                                   FocusScope.of(context).unfocus();
-                                  productController.isProductPosting.value =
-                                      true;
-                                  addProductDataFormate(
-                                          _formKey.currentState!.value)
-                                      .then((_) {
-                                    _formKey.currentState!.reset();
-                                  });
+                                  if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
+                                      productController
+                                              .productPriceFiled.value !=
+                                          productController
+                                              .productPriceFiledCount.value ||
+                                      productController
+                                              .individualInfoFiled.value !=
+                                          productController
+                                              .individualInfoFiledCount.value) {
+                                    CustomSnackBar.showCustomErrorToast(
+                                        message: "Please fill all the fields");
+                                  }
+                                  if (productController.pickImageList.isEmpty) {
+                                    CustomSnackBar.showCustomErrorToast(
+                                        message:
+                                            "Please select at least one image");
+                                  } else {
+                                    productController.isProductPosting.value =
+                                        true;
+                                    addProductDataFormate(
+                                            _formKey.currentState!.value)
+                                        .then((_) {
+                                      _formKey.currentState!.reset();
+                                    });
+                                  }
                                 }
                               },
                         child: productController.isProductPosting.value
@@ -575,7 +602,8 @@ class _PostProductViewState extends State<PostProductView> {
                                       builder: (context) =>
                                           const CategorySelection(),
                                     ).then((_) {
-                                      productController.calculateFilledFields();
+                                      productController
+                                          .calculateFilledProductFields();
                                     });
                                   },
                                 )),
@@ -604,7 +632,8 @@ class _PostProductViewState extends State<PostProductView> {
                                 ]),
                                 name: 'productName',
                                 onChanged: (newValue) {
-                                  productController.calculateFilledFields();
+                                  productController
+                                      .calculateFilledProductFields();
                                 },
                                 controller:
                                     productController.productNameController,
@@ -669,7 +698,8 @@ class _PostProductViewState extends State<PostProductView> {
                                     controller: productController
                                         .productDescriptionController,
                                     onChanged: (newValue) {
-                                      productController.calculateFilledFields();
+                                      productController
+                                          .calculateFilledProductFields();
                                     },
                                     minLines: 3,
                                     maxLines: 3,
@@ -718,21 +748,45 @@ class _PostProductViewState extends State<PostProductView> {
                               width: .7,
                             ),
                           ),
-                          leading: Padding(
-                            padding: EdgeInsets.all(5.w).copyWith(right: 0),
-                            child: CircularProgressIndicator(
-                              value: .6,
-                              strokeAlign: .1,
-                              strokeWidth: 2,
-                              backgroundColor: Colors.grey.shade300,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '5/11 filled',
-                            style: regular.copyWith(
-                              fontSize: 10.sp,
-                            ),
-                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .individualInfoFiledCount.value /
+                                      productController
+                                          .individualInfoFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .individualInfoFiledCount.value ==
+                                          productController
+                                              .individualInfoFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.individualInfoFiledCount.value}/${productController.individualInfoFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
                           title: Text(
                             'Individual Info',
                             style: bold.copyWith(
@@ -798,6 +852,10 @@ class _PostProductViewState extends State<PostProductView> {
                                 validator: FormBuilderValidators.compose([
                                   FormBuilderValidators.required(),
                                 ]),
+                                onChanged: (value) {
+                                  productController
+                                      .calculateFilledIndividualInfoFields();
+                                },
                                 name: 'phoneNumber',
                                 controller:
                                     productController.phoneNumberController,
@@ -852,11 +910,17 @@ class _PostProductViewState extends State<PostProductView> {
                                                 .then((value) {
                                               productController.fromTime.value =
                                                   value;
+                                              productController
+                                                  .calculateFilledIndividualInfoFields();
                                             });
                                           },
                                           child: Obx(() {
                                             return Text(
-                                              'From ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
+                                              productController
+                                                          .fromTime.value ==
+                                                      null
+                                                  ? "From N/A"
+                                                  : 'From ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -873,11 +937,16 @@ class _PostProductViewState extends State<PostProductView> {
                                                 .then((value) {
                                               productController.toTime.value =
                                                   value;
+                                              productController
+                                                  .calculateFilledIndividualInfoFields();
                                             });
                                           },
                                           child: Obx(() {
                                             return Text(
-                                              'To ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
+                                              productController.toTime.value ==
+                                                      null
+                                                  ? "TO N/A"
+                                                  : 'To ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -973,21 +1042,44 @@ class _PostProductViewState extends State<PostProductView> {
                               width: .7,
                             ),
                           ),
-                          leading: Padding(
-                            padding: EdgeInsets.all(5.w).copyWith(right: 0),
-                            child: CircularProgressIndicator(
-                              value: .6,
-                              strokeAlign: .1,
-                              strokeWidth: 2,
-                              backgroundColor: Colors.grey.shade300,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '5/11 filled',
-                            style: regular.copyWith(
-                              fontSize: 10.sp,
-                            ),
-                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .productPriceFiledCount.value /
+                                      productController.productPriceFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .productPriceFiledCount.value ==
+                                          productController
+                                              .productPriceFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
                           title: Text(
                             'Price',
                             style: bold.copyWith(
@@ -1004,6 +1096,20 @@ class _PostProductViewState extends State<PostProductView> {
                                   5.horizontalSpace,
                                   Expanded(
                                     child: FormBuilderTextField(
+                                      onChanged: (value) {
+                                        if ((value ?? '').isEmpty) {
+                                          productController
+                                              .productPriceFiledCount.value = 2;
+                                        } else {
+                                          productController
+                                              .productPriceFiledCount.value = 3;
+                                        }
+                                      },
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d*\.?\d*')),
+                                      ],
                                       validator: FormBuilderValidators.compose([
                                         FormBuilderValidators.required(),
                                       ]),
@@ -1115,7 +1221,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateType',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateTypeController,
             textAlign: TextAlign.right,
@@ -1163,7 +1269,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateAddress',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateAddressController,
             textAlign: TextAlign.right,
@@ -1211,7 +1317,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateDealType',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateDealTypeController,
             textAlign: TextAlign.right,
@@ -1266,9 +1372,13 @@ class _PostProductViewState extends State<PostProductView> {
               Expanded(
                 child: FormBuilderTextField(
                   controller: productController.floor,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
                   name: 'floor',
                   onChanged: (newValue) {
-                    productController.calculateFilledFields();
+                    productController.calculateFilledProductFields();
                   },
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1307,10 +1417,14 @@ class _PostProductViewState extends State<PostProductView> {
               10.horizontalSpace,
               Expanded(
                 child: FormBuilderTextField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
                   controller: productController.room,
                   name: 'room',
                   onChanged: (newValue) {
-                    productController.calculateFilledFields();
+                    productController.calculateFilledProductFields();
                   },
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1341,6 +1455,87 @@ class _PostProductViewState extends State<PostProductView> {
               ),
             ],
           ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h)
+              .copyWith(bottom: 0, right: 5.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Lift Available',
+                      style: bold.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Transform.scale(
+                      scale: 0.7,
+                      child: Obx(() {
+                        return CupertinoSwitch(
+                          value: productController.isLeftAvalable.value,
+                          onChanged: (value) {
+                            productController.isLeftAvalable.value = value;
+                          },
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              // 10.horizontalSpace,
+              // Expanded(
+              //   flex: 2,
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'Room',
+              //         style: bold.copyWith(
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       ),
+              //       10.horizontalSpace,
+              //       Expanded(
+              //         child: FormBuilderTextField(
+              //           controller: productController.room,
+              //           name: 'room',
+              //           onChanged: (newValue) {
+              //             productController.calculateFilledFields();
+              //           },
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //             fontSize: 12.sp,
+              //             color: Get.theme.primaryColor.withOpacity(.6),
+              //           ),
+              //           decoration: InputDecoration(
+              //             contentPadding: const EdgeInsets.symmetric(
+              //               vertical: 10,
+              //             ),
+              //             isDense: true,
+              //             alignLabelWithHint: true,
+              //             floatingLabelBehavior: FloatingLabelBehavior.always,
+              //             labelText: '',
+              //             labelStyle: TextStyle(
+              //               fontSize: 12.sp,
+              //               color: Get.theme.primaryColor.withOpacity(.6),
+              //             ),
+              //             border: outlineBorderPrimary,
+              //             enabledBorder: outlineBorderPrimary,
+              //             errorBorder: outlineBorderPrimary,
+              //             focusedBorder: outlineBorderPrimary,
+              //           ),
+              //           validator: FormBuilderValidators.compose([
+              //             FormBuilderValidators.required(),
+              //           ]),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+            ],
+          ),
         )
       ],
     );
@@ -1358,9 +1553,9 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'brand',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
-            controller: productController.estateTypeController,
+            controller: productController.phoneBrandController,
             textAlign: TextAlign.right,
             textAlignVertical: TextAlignVertical.center,
             style: regular.copyWith(
@@ -1415,34 +1610,49 @@ class _PostProductViewState extends State<PostProductView> {
                     Obx(
                       () => _tile(
                         "Brand",
-                        productController.selectedBrand.value,
+                        productController.selectedBrand.value?.brand ?? '',
                         onTap: () {
                           Get.bottomSheet(
-                            FilterBottomSheet(
+                            CarBrandBottomSheet(
                               title: "Brand",
-                              data: filterController.dbrand,
+                              data: homeController.brandList,
                               selectedData: productController.selectedBrand,
                             ),
                           ).then((_) {
-                            productController.calculateFilledFields();
+                            productController.calculateFilledProductFields();
                           });
                         },
                       ),
                     ),
                     Obx(() => _tile(
                           "Model",
-                          productController.selectedModel.value,
-                          onTap: () {
-                            Get.bottomSheet(
-                              FilterBottomSheet(
-                                title: "Model",
-                                data: filterController.dmodel,
-                                selectedData: productController.selectedModel,
-                              ),
-                            ).then((_) {
-                              productController.calculateFilledFields();
-                            });
-                          },
+                          productController.selectedModel.value?.name ?? '',
+                          onTap:
+                              (productController.selectedBrand.value?.model ??
+                                          [])
+                                      .isEmpty
+                                  ? null
+                                  : () {
+                                      Get.bottomSheet(
+                                        CarModelBottomSheet(
+                                          title: "Model",
+                                          data: productController
+                                              .selectedBrand.value!.model!,
+                                          selectedData:
+                                              productController.selectedModel,
+                                        ),
+                                      ).then((_) {
+                                        productController.selectModelCarClass
+                                            .value = productController
+                                                .selectedModel
+                                                .value
+                                                ?.modelClass ??
+                                            [];
+
+                                        productController
+                                            .calculateFilledProductFields();
+                                      });
+                                    },
                         )),
                     Obx(() => _tile(
                           "Body Type",
@@ -1451,12 +1661,12 @@ class _PostProductViewState extends State<PostProductView> {
                             Get.bottomSheet(
                               FilterBottomSheet(
                                 title: "Body Type",
-                                data: filterController.dbodyType,
+                                data: productController.selectModelCarClass,
                                 selectedData:
                                     productController.selectedBodyType,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1472,7 +1682,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     productController.selectedTransmission,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1488,7 +1698,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     productController.selectedEngineType,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1511,7 +1721,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 selectedData: productController.selectedColor,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1519,7 +1729,33 @@ class _PostProductViewState extends State<PostProductView> {
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
                         vertical: 10.h,
+                      ).copyWith(bottom: 0),
+                      child: FormBuilderRadioGroup(
+                        initialValue: 'New',
+                        decoration: InputDecoration(
+                          isDense: true,
+                          // isCollapsed: true,
+                          border: InputBorder.none,
+                          labelText: 'Car Condition',
+                          labelStyle: bold.copyWith(
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        name: 'condition',
+                        validator: FormBuilderValidators.required(),
+                        options: [
+                          'New',
+                          'Used',
+                        ]
+                            .map((lang) => FormBuilderFieldOption(value: lang))
+                            .toList(growable: false),
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 10.h,
+                      ).copyWith(top: 0),
                       child: Row(
                         children: [
                           Text(
@@ -1532,7 +1768,7 @@ class _PostProductViewState extends State<PostProductView> {
                             controller: productController.vinCode,
                             name: 'vinCode',
                             onChanged: (newValue) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             },
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -1593,11 +1829,16 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['media'] = media;
 
     productPostMap['individual_info'] = {
-      "location_province": productController.selectedLocation.value,
-      "location_city": '',
+      "location_province":
+          "${productController.placemarks.last.street} ${productController.placemarks.first.subLocality} ${productController.placemarks.first.administrativeArea}",
+      "location_city": productController.placemarks.first.subLocality ??
+          productController.placemarks.first.administrativeArea,
       "location_geo": {
         "type": "Point",
-        "coordinates": [10, -10],
+        "coordinates": [
+          productController.selectLatLon?.longitude ?? 0,
+          productController.selectLatLon?.latitude ?? 0
+        ],
       },
       "phone_number": map['phoneNumber'],
       "free_to_call_from":
@@ -1617,9 +1858,9 @@ class _PostProductViewState extends State<PostProductView> {
         productController.selectCategory.value?.name?.toLowerCase() ==
                 'automobile'
             ? {
-                "condition": "used",
-                "brand": productController.selectedBrand.value,
-                "model": productController.selectedModel.value,
+                "condition": map['condition'],
+                "brand": productController.selectedBrand.value?.brand,
+                "model": productController.selectedModel.value?.name,
                 "class": productController.selectedBodyType.value,
                 "body_type": productController.selectedBodyType.value,
                 "transmission": productController.selectedTransmission.value,
@@ -1642,15 +1883,41 @@ class _PostProductViewState extends State<PostProductView> {
                 "floor_type": 2,
                 "room": num.parse(map['room']).toInt(),
                 "renov": "cosmetique",
-                "lift": true
+                "lift": productController.isLeftAvalable.value,
               }
             : null;
     productPostMap['phone_info'] =
         productController.selectCategory.value?.name?.toLowerCase() == 'phone'
             ? {"brand": map['brand']}
             : null;
-    // log('productPostMap: $productPostMap');
+
+    resetForm();
     return await productController.postProduct(productPostMap);
+  }
+
+  resetForm() {
+    _formKey.currentState?.reset();
+    productController.estateDealTypeController.clear();
+    productController.estateAddressController.clear();
+    productController.estateTypeController.clear();
+    productController.phoneBrandController.clear();
+    productController.productNameController.clear();
+    productController.productDescriptionController.clear();
+    productController.vinCode.clear();
+    productController.floor.clear();
+    productController.priceController.clear();
+    productController.room.clear();
+    productController.phoneNumberController.clear();
+    productController.pickImageList.clear();
+    productController.selectCategory.value = null;
+    productController.selectedBrand.value = null;
+    productController.selectedModel.value = null;
+    productController.selectedBodyType.value = '';
+    productController.selectedTransmission.value = '';
+    productController.selectedEngineType.value = '';
+    productController.selectedColor.value = '';
+    productController.fromTime.value = null;
+    productController.toTime.value = null;
   }
 
   _tile(String title, String value, {Function()? onTap}) {
