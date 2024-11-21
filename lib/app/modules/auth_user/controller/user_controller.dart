@@ -18,10 +18,11 @@ class UserController extends GetxController {
     'Followers',
     'Following',
   ];
+  //-- Upgrade to premium--//
+  RxBool isUpgradePreimumLoading = false.obs;
 
   //-- Get user follower--//
   RxBool isFollowerLoading = true.obs;
-
   RxList<FollowerModel> followerList = RxList<FollowerModel>();
   getUserFollower({String? next}) async {
     String url = Constants.baseUrl + Constants.follower;
@@ -58,9 +59,6 @@ class UserController extends GetxController {
     );
   }
 
-  //-- Upgrade to premium--//
-  RxBool isUpgradePreimumLoading = false.obs;
-
   //-- Get user following--//
 
   RxBool isFollowingLoading = true.obs;
@@ -79,23 +77,23 @@ class UserController extends GetxController {
       },
       onLoading: () {
         if (next == null) {
-          isFollowerLoading.value = true;
-          followerList.value = [];
+          isFollowingLoading.value = true;
+          followingList.value = [];
         }
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         FollowerRes followerRes = FollowerRes.fromJson(data);
         if (next != null) {
-          followerList.addAll(followerRes.data ?? []);
+          followingList.addAll(followerRes.data ?? []);
         } else {
-          followerList.value = followerRes.data ?? [];
+          followingList.value = followerRes.data ?? [];
         }
-        followerList.refresh();
-        isFollowerLoading.value = false;
+        followingList.refresh();
+        isFollowingLoading.value = false;
       },
       onError: (error) {
-        isFollowerLoading.value = false;
+        isFollowingLoading.value = false;
       },
     );
   }

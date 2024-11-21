@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
@@ -28,8 +29,10 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp =
+      false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess =
+      false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -51,7 +54,8 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+        await smsConfirmation(
+            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
       },
       onError: (error) {
         Logger().d("$error <- error");
@@ -104,7 +108,8 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
+        Logger().d(
+            "Verification successful! and the token is ${varifiedModel.value.token!}");
         getProfile();
         Get.to(() => const AppHomeView());
       },
@@ -121,6 +126,34 @@ class AuthController extends GetxController {
       headers: {
         // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) async {
+        UserDataModel? user = UserDataModel.fromJson(response.data);
+        userDataModel.value = user;
+        if (user.active == true) {
+          saveFcmToken();
+        }
+      },
+      onError: (error) {
+        Logger().d("$error <- error");
+      },
+    );
+  }
+
+  //-- save fcm token to server --//
+  saveFcmToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken();
+    log('fcmTokenStore: $fcmToken');
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.fcmStore,
+      DioRequestType.patch,
+      headers: {
+        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {
+        "device": fcmToken,
       },
       onLoading: () {},
       onSuccess: (response) async {

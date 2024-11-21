@@ -60,10 +60,12 @@ class FollowerModel {
         follower: follower ?? this.follower,
         followedAt: followedAt ?? this.followedAt,
       );
-
+//followed
   factory FollowerModel.fromJson(Map<String, dynamic> json) => FollowerModel(
         follower: json["follower"] == null
-            ? null
+            ? json["followed"] == null
+                ? null
+                : Follower.fromJson(json["followed"])
             : Follower.fromJson(json["follower"]),
         followedAt: json["followed_at"],
       );

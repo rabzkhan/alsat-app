@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:alsat/app/global/app_decoration.dart';
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
@@ -6,12 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../../product/controller/product_controller.dart';
+import '../../product/widget/category_selection.dart';
+import '../widgets/car_brand_sheet.dart';
+import '../widgets/car_model_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
 
-class FilterView extends GetView<FilterController> {
+class FilterView extends StatefulWidget {
   const FilterView({super.key});
+
+  @override
+  State<FilterView> createState() => _FilterViewState();
+}
+
+class _FilterViewState extends State<FilterView> {
+  ProductController productController = Get.find();
+  FilterController controller = Get.find();
+  HomeController homeController = Get.find();
+
+  @override
+  void initState() {
+    productController.getCurrentLocation();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,62 +69,24 @@ class FilterView extends GetView<FilterController> {
           ),
           // //Category Section
           SliverToBoxAdapter(
-            child: Container(
-              decoration: borderedContainer,
-              margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
-              padding: EdgeInsets.symmetric(
-                vertical: 10.h,
-                horizontal: 12.w,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Category",
-                        style: bold.copyWith(
-                          fontSize: 12.sp,
-                          color: Colors.black54,
-                        ),
-                      ),
-                      2.verticalSpace,
-                      Text(
-                        controller.category.toString(),
-                        style: bold.copyWith(
-                          fontSize: 16.sp,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Icon(
-                    Icons.keyboard_arrow_right,
-                    size: 30.h,
-                    color: AppColors.primary,
-                  )
-                ],
-              ),
-            ),
-          ),
-
-          // //Location Section
-          SliverToBoxAdapter(
             child: GestureDetector(
               onTap: () {
-                Get.bottomSheet(
-                  FilterBottomSheet(
-                    title: "Location",
-                    data: controller.dlocation,
-                    selectedData: controller.location,
-                  ),
-                );
+                showCupertinoModalBottomSheet(
+                  expand: true,
+                  context: context,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) =>
+                      const CategorySelection(valueReturn: true),
+                ).then((value) {
+                  log('Category Selection: $value');
+                  controller.category.value = value;
+                  // productController.calculateFilledProductFields();
+                });
               },
               child: Container(
                 decoration: borderedContainer,
-                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+                margin:
+                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -114,21 +99,24 @@ class FilterView extends GetView<FilterController> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Location",
+                          "Category",
                           style: bold.copyWith(
-                            fontSize: 14.sp,
+                            fontSize: 12.sp,
+                            color: Colors.black54,
                           ),
                         ),
                         2.verticalSpace,
-                        Obx(
-                          () => Text(
-                            controller.location.value,
-                            style: medium.copyWith(
-                              fontSize: 10.sp,
-                              color: Colors.black54,
+                        Obx(() {
+                          return Text(
+                            (controller.category.value?.name ??
+                                    'Select Category')
+                                .toString(),
+                            style: bold.copyWith(
+                              fontSize: 16.sp,
+                              color: Colors.black,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                     Icon(
@@ -142,10 +130,58 @@ class FilterView extends GetView<FilterController> {
             ),
           ),
 
+          // //Location Section
+          SliverToBoxAdapter(
+            child: Container(
+              decoration: borderedContainer,
+              margin:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              padding: EdgeInsets.symmetric(
+                vertical: 10.h,
+                horizontal: 12.w,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Location",
+                        style: bold.copyWith(
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      2.verticalSpace,
+                      Obx(() {
+                        return productController.placemarks.isEmpty
+                            ? const Center()
+                            : Text(
+                                "${productController.placemarks.last.street} ${productController.placemarks.first.subLocality} ${productController.placemarks.first.administrativeArea}",
+                                style: regular.copyWith(
+                                  fontSize: 10.sp,
+                                  color: context.theme.primaryColor,
+                                ),
+                              );
+                      }),
+                    ],
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30.h,
+                    color: AppColors.primary,
+                  )
+                ],
+              ),
+            ),
+          ),
+
           // //Condition section
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -175,7 +211,9 @@ class FilterView extends GetView<FilterController> {
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      controller.condition.value == "All" ? Colors.white : Colors.transparent,
+                                      controller.condition.value == "All"
+                                          ? Colors.white
+                                          : Colors.transparent,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.r),
@@ -197,9 +235,14 @@ class FilterView extends GetView<FilterController> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value == "Brand New" ? Colors.white : Colors.transparent,
+                                          controller.condition.value ==
+                                                  "Brand New"
+                                              ? Colors.white
+                                              : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.condition.value = "Brand New";
                                   },
@@ -215,9 +258,13 @@ class FilterView extends GetView<FilterController> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value == "Used" ? Colors.white : Colors.transparent,
+                                          controller.condition.value == "Used"
+                                              ? Colors.white
+                                              : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.condition.value = "Used";
                                   },
@@ -241,7 +288,8 @@ class FilterView extends GetView<FilterController> {
           // //Price Section
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              padding:
+                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -275,7 +323,8 @@ class FilterView extends GetView<FilterController> {
                             ),
                             hintText: 'From',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -298,7 +347,8 @@ class FilterView extends GetView<FilterController> {
                             ),
                             hintText: 'To',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -315,16 +365,17 @@ class FilterView extends GetView<FilterController> {
             child: GestureDetector(
               onTap: () {
                 Get.bottomSheet(
-                  FilterBottomSheet(
+                  CarBrandBottomSheet(
                     title: "Brand",
-                    data: controller.dbrand,
+                    data: homeController.brandList,
                     selectedData: controller.brand,
                   ),
-                );
+                ).then((_) {});
               },
               child: Container(
                 decoration: borderedContainer,
-                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w)
+                    .copyWith(top: 16.h, bottom: 10.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -345,7 +396,7 @@ class FilterView extends GetView<FilterController> {
                         2.verticalSpace,
                         Obx(
                           () => Text(
-                            controller.brand.value,
+                            controller.brand.value?.brand ?? 'Choose Brand',
                             style: medium.copyWith(
                               fontSize: 10.sp,
                               color: Colors.black54,
@@ -374,12 +425,13 @@ class FilterView extends GetView<FilterController> {
                   Expanded(
                     child: Obx(() => FilterOptionWidget(
                           title: "Model",
-                          subTitle: controller.model.value,
+                          subTitle:
+                              controller.model.value?.name ?? 'Choose Model',
                           onTap: () {
                             Get.bottomSheet(
-                              FilterBottomSheet(
+                              CarModelBottomSheet(
                                 title: "Model",
-                                data: controller.dmodel,
+                                data: controller.brand.value?.model ?? [],
                                 selectedData: controller.model,
                               ),
                             );
@@ -521,7 +573,8 @@ class FilterView extends GetView<FilterController> {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 20.h, left: 12.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w)
+                  .copyWith(top: 20.h, left: 12.w),
               child: Column(
                 children: [
                   Row(

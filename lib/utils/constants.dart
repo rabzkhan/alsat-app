@@ -15,6 +15,7 @@ class Constants {
   static const categories = '/categories';
   static const banners = '/banners';
   static const user = '/users';
+  static const fcmStore = '/users/device';
   static const follower = '/users/followers';
   static const following = '/users/following';
   static const carBrandEndPoint = '/carBrands?limit=200000';

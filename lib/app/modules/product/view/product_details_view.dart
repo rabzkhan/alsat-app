@@ -790,10 +790,14 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
   init() async {
     if ((widget.e.contentType ?? '').toLowerCase().contains('video')) {
       controller = PodPlayerController(
-        playVideoFrom: PlayVideoFrom.network(
-          widget.e.name ?? '',
-        ),
-      )..initialise().catchError((onError) {
+          playVideoFrom: PlayVideoFrom.network(
+            widget.e.name ?? '',
+          ),
+          podPlayerConfig: const PodPlayerConfig(
+            autoPlay: false,
+            isLooping: false,
+          ))
+        ..initialise().catchError((onError) {
           log('videoError: $onError');
         });
     }
@@ -817,8 +821,13 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
             fit: BoxFit.cover,
           )
         : (widget.e.contentType ?? '').toLowerCase().contains('video')
-            ? PodVideoPlayer(controller: controller)
-            : Center();
+            ? PodVideoPlayer(
+                controller: controller,
+                onLoading: (context) => const CupertinoActivityIndicator(
+                  color: Colors.white,
+                ),
+              )
+            : const CupertinoActivityIndicator();
   }
 }
 
