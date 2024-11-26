@@ -330,7 +330,14 @@ class ProductDetailsController extends GetxController {
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
-        log('${p0.message}${p0.url} ${Constants.token}');
+        var data = {
+          "follower_id": authController.userDataModel.value.id,
+          "user_id": userId,
+          "follow": isFollow,
+        };
+        log("Follow Failed ${authController.userDataModel.toJson()}");
+
+        log('$data--${p0.message}${p0.url} ${Constants.token}');
         isRateUserLoading.value = false;
         isFetchUserLoading.value = true;
         CustomSnackBar.showCustomErrorToast(message: 'Follow Failed');

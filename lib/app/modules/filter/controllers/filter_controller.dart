@@ -36,13 +36,15 @@ class FilterController extends GetxController {
   RxString condition = "Used".obs;
 
   RxString location = "Not Chosen Yet".obs;
-  Rxn<BrandModel> brand = Rxn<BrandModel>();
+  RxList<BrandModel> brand = RxList<BrandModel>();
   Rxn<CarModel> model = Rxn<CarModel>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
   RxString transmission = "Not Chosen Yet".obs;
-  RxString color = "Not Chosen Yet".obs;
+  RxList<String> color = <String>[].obs;
+
+  // Real state variables
 
   RxList<String> dlocation = <String>["New York", "Texas"].obs;
   RxList<String> dbrand =

@@ -5,18 +5,21 @@ import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
+import 'package:simple_chips_input/simple_chips_input.dart';
+import '../../app_home/models/car_brand_res.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/widget/category_selection.dart';
-import '../widgets/car_brand_sheet.dart';
 import '../widgets/car_model_sheet.dart';
+import '../widgets/car_multi_brand_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
+import '../widgets/multi_filter_bottom_sheet.dart';
 
 class FilterView extends StatefulWidget {
   const FilterView({super.key});
@@ -26,6 +29,27 @@ class FilterView extends StatefulWidget {
 }
 
 class _FilterViewState extends State<FilterView> {
+  //realstate style
+  String output = '';
+  String? deletedChip, deletedChipIndex;
+  final keySimpleChipsInput = GlobalKey<FormState>();
+  final FocusNode focusNode = FocusNode();
+  final TextFormFieldStyle style = TextFormFieldStyle(
+    keyboardType: TextInputType.text,
+    cursorColor: Colors.black,
+    decoration: InputDecoration(
+      labelText: 'Real Estate Type',
+      labelStyle: TextStyle(
+        color: Colors.black,
+        fontSize: 12.sp,
+      ),
+      contentPadding: const EdgeInsets.all(0.0),
+      border: InputBorder.none,
+      // isDense: true,
+      // isCollapsed: true,
+    ),
+  );
+  //
   ProductController productController = Get.find();
   FilterController controller = Get.find();
   HomeController homeController = Get.find();
@@ -362,214 +386,338 @@ class _FilterViewState extends State<FilterView> {
           // //Brand Section
           // //Location Section
           SliverToBoxAdapter(
-            child: GestureDetector(
-              onTap: () {
-                Get.bottomSheet(
-                  CarBrandBottomSheet(
-                    title: "Brand",
-                    data: homeController.brandList,
-                    selectedData: controller.brand,
-                  ),
-                ).then((_) {});
-              },
-              child: Container(
-                decoration: borderedContainer,
-                margin: EdgeInsets.symmetric(horizontal: 16.w)
-                    .copyWith(top: 16.h, bottom: 10.h),
-                padding: EdgeInsets.symmetric(
-                  vertical: 10.h,
-                  horizontal: 12.w,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
+            child: Obx(() {
+              return controller.category.value?.name?.toLowerCase() ==
+                      'automobile'
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          "Brand",
-                          style: bold.copyWith(
-                            fontSize: 14.sp,
+                        //*Brand Section
+                        GestureDetector(
+                          onTap: () {
+                            Get.bottomSheet(
+                              CarMultiBrandBottomSheet(
+                                title: "Brand",
+                                data: homeController.brandList,
+                                selectedData: controller.brand,
+                              ),
+                            ).then((_) {
+                              controller.brand.refresh();
+                            });
+                          },
+                          child: Container(
+                            decoration: borderedContainer,
+                            margin: EdgeInsets.symmetric(horizontal: 16.w)
+                                .copyWith(top: 16.h, bottom: 10.h),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10.h,
+                              horizontal: 12.w,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Brand",
+                                      style: bold.copyWith(
+                                        fontSize: 14.sp,
+                                      ),
+                                    ),
+                                    3.verticalSpace,
+                                    Obx(
+                                      () => SizedBox(
+                                        height: 20.h,
+                                        width: Get.width - 90.w,
+                                        child: controller.brand.isEmpty
+                                            ? Container(
+                                                margin:
+                                                    EdgeInsets.only(right: 4.w),
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 2.h,
+                                                ),
+                                                child: Text(
+                                                  'Choose Brand',
+                                                  style: medium.copyWith(
+                                                    fontSize: 10.sp,
+                                                    color: Colors.black54,
+                                                  ),
+                                                ),
+                                              )
+                                            : ListView(
+                                                scrollDirection:
+                                                    Axis.horizontal,
+                                                children: controller.brand
+                                                    .map((brand) {
+                                                  return Container(
+                                                    decoration: BoxDecoration(
+                                                      color: AppColors
+                                                          .textFieldGray,
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                        Radius.circular(4.0.r),
+                                                      ),
+                                                    ),
+                                                    margin: EdgeInsets.only(
+                                                        right: 4.w),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      vertical: 2.h,
+                                                      horizontal: 4.w,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        brand.brand ??
+                                                            'Choose Brand',
+                                                        style: medium.copyWith(
+                                                          fontSize: 10.sp,
+                                                          color: Colors.black54,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                }).toList()),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  size: 30.h,
+                                  color: AppColors.liteGray,
+                                )
+                              ],
+                            ),
                           ),
                         ),
-                        2.verticalSpace,
-                        Obx(
-                          () => Text(
-                            controller.brand.value?.brand ?? 'Choose Brand',
-                            style: medium.copyWith(
-                              fontSize: 10.sp,
-                              color: Colors.black54,
-                            ),
+                        //*model section
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Obx(() => FilterOptionWidget(
+                                      title: "Model",
+                                      subTitle: controller.model.value?.name ??
+                                          'Choose Model',
+                                      onTap: () {
+                                        Get.bottomSheet(
+                                          CarModelBottomSheet(
+                                            title: "Model",
+                                            data: (controller.brand.value)
+                                                .expand((e) =>
+                                                    e.model ?? <CarModel>[])
+                                                .toList(),
+                                            selectedData: controller.model,
+                                          ),
+                                        );
+                                      },
+                                    )),
+                              ),
+                              10.horizontalSpace,
+                              Expanded(
+                                child: Obx(() => FilterOptionWidget(
+                                      title: "Body Type",
+                                      subTitle: controller.bodyType.value,
+                                      onTap: () {
+                                        Get.bottomSheet(
+                                          FilterBottomSheet(
+                                            title: "Body Type",
+                                            data: controller.dbodyType,
+                                            selectedData: controller.bodyType,
+                                          ),
+                                        );
+                                      },
+                                    )),
+                              ),
+                            ],
                           ),
-                        )
+                        ),
+                        // drive type
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Obx(
+                                  () => FilterOptionWidget(
+                                    title: "Drive Type",
+                                    subTitle: controller.driveType.value,
+                                    onTap: () {
+                                      Get.bottomSheet(
+                                        FilterBottomSheet(
+                                          title: "Drive Type",
+                                          data: controller.ddriveType,
+                                          selectedData: controller.driveType,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              10.horizontalSpace,
+                              Expanded(
+                                child: Obx(
+                                  () => FilterOptionWidget(
+                                    title: "Engine Type",
+                                    subTitle: controller.engineType.value,
+                                    onTap: () {
+                                      Get.bottomSheet(
+                                        FilterBottomSheet(
+                                          title: "Engine Type",
+                                          data: controller.dengineType,
+                                          selectedData: controller.engineType,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // transmission
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Obx(() => FilterOptionWidget(
+                                      title: "Transmission",
+                                      subTitle: controller.transmission.value,
+                                      onTap: () {
+                                        Get.bottomSheet(
+                                          FilterBottomSheet(
+                                            title: "Transmission",
+                                            data: controller.dtransmission,
+                                            selectedData:
+                                                controller.transmission,
+                                          ),
+                                        );
+                                      },
+                                    )),
+                              ),
+                              10.horizontalSpace,
+                              Expanded(
+                                child: FilterOptionWidget(
+                                  title: "Year",
+                                  subTitle: "1994 - 2009",
+                                  onTap: () {},
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        //color
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Obx(
+                                  () => FilterOptionWidget(
+                                    title: "Color",
+                                    subTitle: controller.color.value
+                                        .expand((e) => [e.toString()])
+                                        .join(', '),
+                                    onTap: () {
+                                      Get.bottomSheet(
+                                        MultiFilterBottomSheet(
+                                          title: "Color",
+                                          data: controller.dcolor,
+                                          selectedData: controller.color,
+                                        ),
+                                      ).then((_) {
+                                        controller.color.refresh();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                              10.horizontalSpace,
+                              Expanded(
+                                child: FilterOptionWidget(
+                                  title: "Mileage",
+                                  subTitle: " ~ km",
+                                  onTap: () {},
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
-                    ),
-                    Icon(
-                      Icons.add_circle_outline,
-                      size: 30.h,
-                      color: AppColors.liteGray,
                     )
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // //
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Obx(() => FilterOptionWidget(
-                          title: "Model",
-                          subTitle:
-                              controller.model.value?.name ?? 'Choose Model',
-                          onTap: () {
-                            Get.bottomSheet(
-                              CarModelBottomSheet(
-                                title: "Model",
-                                data: controller.brand.value?.model ?? [],
-                                selectedData: controller.model,
+                  : controller.category.value?.name?.toLowerCase() ==
+                          'real estate'
+                      ? Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 16.w, vertical: 10.h),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.r),
+                                border: Border.all(
+                                  color: AppColors.textFieldGray,
+                                ),
                               ),
-                            );
-                          },
-                        )),
-                  ),
-                  10.horizontalSpace,
-                  Expanded(
-                    child: Obx(() => FilterOptionWidget(
-                          title: "Body Type",
-                          subTitle: controller.bodyType.value,
-                          onTap: () {
-                            Get.bottomSheet(
-                              FilterBottomSheet(
-                                title: "Body Type",
-                                data: controller.dbodyType,
-                                selectedData: controller.bodyType,
+                              child: SimpleChipsInput(
+                                separatorCharacter: ",",
+                                focusNode: focusNode,
+                                validateInput: true,
+                                formKey: keySimpleChipsInput,
+                                textFormFieldStyle: style,
+                                validateInputMethod: (String value) {},
+                                onSubmitted: (p0) {
+                                  setState(() {
+                                    output = p0;
+                                  });
+                                },
+                                onChipDeleted: (p0, p1) {
+                                  setState(() {
+                                    deletedChip = p0;
+                                    deletedChipIndex = p1.toString();
+                                  });
+                                },
+                                onSaved: ((p0) {
+                                  setState(() {
+                                    output = p0;
+                                  });
+                                }),
+                                chipTextStyle: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                ),
+                                deleteIcon: Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(
+                                    CupertinoIcons.xmark_circle_fill,
+                                    size: 16.r,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                widgetContainerDecoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                chipContainerDecoration: BoxDecoration(
+                                  color: Colors.grey.shade200,
+                                  borderRadius: BorderRadius.circular(8.r),
+                                ),
+                                placeChipsSectionAbove: false,
                               ),
-                            );
-                          },
-                        )),
-                  ),
-                ],
-              ),
-            ),
+                            )
+                          ],
+                        )
+                      : controller.category.value?.name?.toLowerCase() ==
+                              'phone'
+                          ? Center()
+                          : Center();
+            }),
           ),
-
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Obx(
-                      () => FilterOptionWidget(
-                        title: "Drive Type",
-                        subTitle: controller.driveType.value,
-                        onTap: () {
-                          Get.bottomSheet(
-                            FilterBottomSheet(
-                              title: "Drive Type",
-                              data: controller.ddriveType,
-                              selectedData: controller.driveType,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  10.horizontalSpace,
-                  Expanded(
-                    child: Obx(
-                      () => FilterOptionWidget(
-                        title: "Engine Type",
-                        subTitle: controller.engineType.value,
-                        onTap: () {
-                          Get.bottomSheet(
-                            FilterBottomSheet(
-                              title: "Engine Type",
-                              data: controller.dengineType,
-                              selectedData: controller.engineType,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Obx(() => FilterOptionWidget(
-                          title: "Transmission",
-                          subTitle: controller.transmission.value,
-                          onTap: () {
-                            Get.bottomSheet(
-                              FilterBottomSheet(
-                                title: "Transmission",
-                                data: controller.dtransmission,
-                                selectedData: controller.transmission,
-                              ),
-                            );
-                          },
-                        )),
-                  ),
-                  10.horizontalSpace,
-                  Expanded(
-                    child: FilterOptionWidget(
-                      title: "Year",
-                      subTitle: "1994 - 2009",
-                      onTap: () {},
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Obx(
-                      () => FilterOptionWidget(
-                        title: "Color",
-                        subTitle: controller.color.value,
-                        onTap: () {
-                          Get.bottomSheet(
-                            FilterBottomSheet(
-                              title: "Color",
-                              data: controller.dcolor,
-                              selectedData: controller.color,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  10.horizontalSpace,
-                  Expanded(
-                    child: FilterOptionWidget(
-                      title: "Mileage",
-                      subTitle: " ~ km",
-                      onTap: () {},
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          // //Toggle Switches
 
           SliverToBoxAdapter(
             child: Padding(

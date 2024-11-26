@@ -78,9 +78,10 @@ class _ProfileContentState extends State<ProfileContent> {
                         () => RatingBar.builder(
                           itemSize: 15.h,
                           initialRating: MySharedPref.isLoggedIn()
-                              ? double.parse(authController
-                                  .userDataModel.value.rating
-                                  .toString())
+                              ? double.parse(
+                                  (authController.userDataModel.value.rating ??
+                                          "0")
+                                      .toString())
                               : 0,
                           minRating: 0,
                           direction: Axis.horizontal,
@@ -123,6 +124,7 @@ class _ProfileContentState extends State<ProfileContent> {
               ),
             ),
             10.verticalSpace,
+
             SizedBox(
               height: 32.h,
               child: TabBar(

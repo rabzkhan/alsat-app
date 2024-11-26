@@ -94,6 +94,11 @@ dependencies:
   video_player: ^2.9.2
   flick_video_player: ^0.9.0
   pod_player: ^0.2.2
+  video_editor:
+    path: packages/video_editor
+  video_trimmer:
+    path: packages/video_trimmer-3.0.1
+  simple_chips_input: ^1.2.0
 
 
     

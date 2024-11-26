@@ -118,9 +118,9 @@ class ConversationController extends GetxController {
 
           var message = types.Message.fromJson({
             "author": {
-              "firstName": auth.userName,
-              "id": auth.id,
-              "imageUrl": auth.picture,
+              "firstName": element.senderId,
+              "id": element.senderId,
+              "imageUrl": '',
               "lastName": ''
             },
             "createdAt":
@@ -132,6 +132,7 @@ class ConversationController extends GetxController {
           });
           coverMessage.add(message);
         }
+
         isConversationMessageLoading.value = false;
       },
       onError: (error) {

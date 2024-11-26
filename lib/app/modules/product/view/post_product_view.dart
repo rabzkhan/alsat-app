@@ -14,6 +14,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:video_editor/video_editor.dart';
 import '../../../components/custom_appbar.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../filter/controllers/filter_controller.dart';
@@ -23,6 +24,7 @@ import '../../filter/widgets/filter_bottom_sheet.dart';
 import '../controller/product_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../video_edit/crop_video.dart';
 import '../widget/category_selection.dart';
 import 'map_address_picker_view.dart';
 
@@ -503,7 +505,18 @@ class _PostProductViewState extends State<PostProductView> {
                                       5.horizontalSpace,
                                       GestureDetector(
                                         onTap: () {
-                                          productController.pickVideo(context);
+                                          productController
+                                              .pickVideo(context)
+                                              .then((onValue) {
+                                            log("Call To Pick Video");
+                                            if (productController
+                                                    .pickVideoFile !=
+                                                null) {
+                                              Get.to(VideoCropScreen(
+                                                  productController
+                                                      .pickVideoFile!));
+                                            }
+                                          });
                                         },
                                         child: Container(
                                           alignment: Alignment.center,

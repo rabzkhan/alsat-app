@@ -131,11 +131,13 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         UserDataModel? user = UserDataModel.fromJson(response.data);
         userDataModel.value = user;
+        log('login User Info --- :${userDataModel.value.id}');
         if (user.active == true) {
           saveFcmToken();
         }
       },
       onError: (error) {
+        log('profile $error <- error');
         Logger().d("$error <- error");
       },
     );
@@ -156,9 +158,7 @@ class AuthController extends GetxController {
         "device": fcmToken,
       },
       onLoading: () {},
-      onSuccess: (response) async {
-        userDataModel.value = UserDataModel.fromJson(response.data);
-      },
+      onSuccess: (response) async {},
       onError: (error) {
         Logger().d("$error <- error");
       },

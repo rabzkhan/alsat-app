@@ -6,6 +6,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../components/no_data_widget.dart';
+
 class MyListings extends StatelessWidget {
   const MyListings({super.key});
 
@@ -23,30 +25,33 @@ class MyListings extends StatelessWidget {
           controller: productController.myListingRefreshController,
           onRefresh: productController.myListingRefresh,
           onLoading: productController.myListingLoading,
-          child: GridView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(
-              horizontal: 8.w,
-              vertical: 20.h,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 10.h,
-              crossAxisSpacing: 10.w,
-              mainAxisExtent: 200.h,
-            ),
-            itemBuilder: (context, index) {
-              return ProductGridTile(
-                loading: productController.isFetchMyProduct.value,
-                productModel: productController.isFetchMyProduct.value
-                    ? null
-                    : productController.myProductList[index],
-              );
-            },
-            itemCount: productController.isFetchMyProduct.value
-                ? 10
-                : productController.myProductList.length,
-          ),
+          child: !productController.isFetchMyProduct.value &&
+                  productController.myProductList.isEmpty
+              ? const NoDataWidget()
+              : GridView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.w,
+                    vertical: 20.h,
+                  ),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10.h,
+                    crossAxisSpacing: 10.w,
+                    mainAxisExtent: 200.h,
+                  ),
+                  itemBuilder: (context, index) {
+                    return ProductGridTile(
+                      loading: productController.isFetchMyProduct.value,
+                      productModel: productController.isFetchMyProduct.value
+                          ? null
+                          : productController.myProductList[index],
+                    );
+                  },
+                  itemCount: productController.isFetchMyProduct.value
+                      ? 10
+                      : productController.myProductList.length,
+                ),
         );
       },
     );

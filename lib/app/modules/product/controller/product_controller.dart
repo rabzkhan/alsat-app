@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
+import 'package:alsat/app/modules/product/video_edit/crop_video.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,7 @@ import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:video_editor/video_editor.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -187,26 +189,30 @@ class ProductController extends GetxController {
   }
 
   // PICK VIDEO FOR POST PRODUCT
+  File? pickVideoFile;
   Future<void> pickVideo(BuildContext context) async {
     List<AssetEntity>? pickVideo = await AssetPicker.pickAssets(context,
         pickerConfig: const AssetPickerConfig(
-          maxAssets: 10,
+          maxAssets: 1,
           requestType: RequestType.video,
+          shouldAutoplayPreview: true,
         ));
     if (pickVideo != null) {
       for (AssetEntity videoPick in pickVideo) {
         File? file = await videoPick.file;
         if (file != null) {
-          pickVideoList.add(file);
+          // pickVideoList.value = [file];
+          pickVideoFile = file;
         }
-        videoThumbnails.clear();
-        _generateThumbnails();
-        update();
       }
+
+      generateThumbnails();
+      update();
     }
   }
 
-  Future<void> _generateThumbnails() async {
+  Future<void> generateThumbnails() async {
+    videoThumbnails.clear();
     for (var videoFile in pickVideoList) {
       try {
         final thumbnailData = await VideoThumbnail.thumbnailData(

@@ -1,3 +1,4 @@
+import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/auth_user/controller/user_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
@@ -53,73 +54,76 @@ class _MyFollowersState extends State<MyFollowers> {
         controller: followerRefreshController,
         onRefresh: followerRefresh,
         onLoading: followerLoading,
-        child: ListView.builder(
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(
-            horizontal: 8.w,
-          ),
-          itemCount: userController.isFollowerLoading.value
-              ? 10
-              : (userController.followerList).length,
-          itemBuilder: (context, index) {
-            var user = userController.isFollowerLoading.value
-                ? null
-                : userController.followerList[index];
-            return Skeletonizer(
-              enabled: userController.isFollowerLoading.value,
-              effect: ShimmerEffect(
-                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                highlightColor: Colors.white,
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
-              child: ListTile(
-                onTap: () {
-                  ProductDetailsController productDetailsController = Get.put(
-                      ProductDetailsController(),
-                      tag: user?.follower?.id.toString());
-                  productDetailsController.selectUserId =
-                      user?.follower?.id ?? '';
-                  productDetailsController.getUserByUId(
-                      userId: user?.follower?.id ?? '');
-                  Get.to(
-                    () => ClientProfileView(
-                      userId: user?.follower?.id ?? '',
-                      productDetailsController: productDetailsController,
+        child: !userController.isFollowerLoading.value &&
+                userController.followerList.isEmpty
+            ? const NoDataWidget()
+            : ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8.w,
+                ),
+                itemCount: userController.isFollowerLoading.value
+                    ? 10
+                    : (userController.followerList).length,
+                itemBuilder: (context, index) {
+                  var user = userController.isFollowerLoading.value
+                      ? null
+                      : userController.followerList[index];
+                  return Skeletonizer(
+                    enabled: userController.isFollowerLoading.value,
+                    effect: ShimmerEffect(
+                      baseColor: Get.theme.disabledColor.withOpacity(.2),
+                      highlightColor: Colors.white,
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
                     ),
-                    transition: Transition.fadeIn,
+                    child: ListTile(
+                      onTap: () {
+                        ProductDetailsController productDetailsController =
+                            Get.put(ProductDetailsController(),
+                                tag: user?.follower?.id.toString());
+                        productDetailsController.selectUserId =
+                            user?.follower?.id ?? '';
+                        productDetailsController.getUserByUId(
+                            userId: user?.follower?.id ?? '');
+                        Get.to(
+                          () => ClientProfileView(
+                            userId: user?.follower?.id ?? '',
+                            productDetailsController: productDetailsController,
+                          ),
+                          transition: Transition.fadeIn,
+                        );
+                      },
+                      tileColor: const Color(0xFFD9D9D9),
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(
+                        radius: 22.r,
+                        child: NewworkImagePreview(
+                          radius: 22.r,
+                          url: user?.follower?.picture ?? '',
+                          height: 44.h,
+                          width: 44.w,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      title: Text(
+                        user?.follower?.userName ?? 'John Coltrane',
+                        style: bold.copyWith(
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                      subtitle: Text(
+                        DateFormat('MMMM dd yyyy').format(
+                            DateTime.tryParse(user?.followedAt ?? '') ??
+                                DateTime.now()),
+                        style: regular.copyWith(
+                          fontSize: 10.sp,
+                        ),
+                      ),
+                    ),
                   );
                 },
-                tileColor: const Color(0xFFD9D9D9),
-                contentPadding: EdgeInsets.zero,
-                leading: CircleAvatar(
-                  radius: 22.r,
-                  child: NewworkImagePreview(
-                    radius: 22.r,
-                    url: user?.follower?.picture ?? '',
-                    height: 44.h,
-                    width: 44.w,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                title: Text(
-                  user?.follower?.userName ?? 'John Coltrane',
-                  style: bold.copyWith(
-                    fontSize: 16.sp,
-                  ),
-                ),
-                subtitle: Text(
-                  DateFormat('MMMM dd yyyy').format(
-                      DateTime.tryParse(user?.followedAt ?? '') ??
-                          DateTime.now()),
-                  style: regular.copyWith(
-                    fontSize: 10.sp,
-                  ),
-                ),
               ),
-            );
-          },
-        ),
       );
     });
   }
