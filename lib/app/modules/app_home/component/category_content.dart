@@ -55,7 +55,7 @@ class CategoryContent extends StatelessWidget {
                     childrenPadding:
                         EdgeInsets.symmetric(horizontal: Get.width * .12),
                     children: [
-                      ...homeController.categories[index].subCategories!
+                      ...(homeController.categories[index].subCategories ?? [])
                           .map((subCategory) {
                         return Padding(
                           padding: EdgeInsets.symmetric(

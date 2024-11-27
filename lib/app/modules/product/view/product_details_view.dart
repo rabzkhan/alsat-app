@@ -1,15 +1,25 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:pod_player/pod_player.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:video_player/video_player.dart';
+
 import '../../../components/network_image_preview.dart';
 import '../controller/product_details_controller.dart';
 import '../model/product_post_list_res.dart';
@@ -38,6 +48,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
   initMethod() async {
     productDetailsController.productLikeCount(
         productId: widget.productModel?.id ?? '');
+    productDetailsController
+        .getSingleProductDetails(widget.productModel?.id ?? '');
     productDetailsController.productViewCountAdding(
         productId: widget.productModel?.id ?? '');
     productDetailsController.productViewCount(
@@ -45,7 +57,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         productCreateTime: widget.productModel?.createdAt ?? '');
     productDetailsController.productCommentCount(
         productId: widget.productModel?.id ?? '');
-    productDetailsController.getUserMyUserId(
+    productDetailsController.getUserByUId(
         userId: widget.productModel?.userId ?? '');
   }
 
@@ -90,13 +102,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               ? CarouselSlider(
                                   items: (widget.productModel?.media ?? [])
                                       .map(
-                                        (e) => NewworkImagePreview(
-                                          radius: 10.r,
-                                          url: e.name ?? '',
-                                          height: 90.h,
-                                          width: Get.width,
-                                          fit: BoxFit.cover,
-                                        ),
+                                        (e) => ProductMediaWidget(e: e),
                                       )
                                       .toList(),
                                   options: CarouselOptions(
@@ -106,8 +112,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     initialPage: 0,
                                     enableInfiniteScroll: true,
                                     reverse: false,
-                                    autoPlay: true,
-                                    autoPlayInterval: const Duration(seconds: 3),
+                                    autoPlay: false,
+                                    autoPlayInterval:
+                                        const Duration(seconds: 3),
                                     autoPlayAnimationDuration:
                                         const Duration(milliseconds: 800),
                                     autoPlayCurve: Curves.fastOutSlowIn,
@@ -120,36 +127,125 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   fit: BoxFit.fill,
                                   width: Get.width,
                                 ),
-                          Column(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: 8.h,
-                                ),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Image.asset(
-                                      shareIcon,
-                                      height: 30.h,
-                                    ),
-                                    8.horizontalSpace,
-                                    Image.asset(
-                                      favoriteIcon,
-                                      height: 30.h,
-                                    ),
-                                    8.horizontalSpace,
-                                    Image.asset(
-                                      moreIcon,
-                                      height: 20.h,
-                                    ),
-                                    30.horizontalSpace,
-                                  ],
-                                ),
+                          Obx(() {
+                            return Skeletonizer(
+                              enabled: productDetailsController
+                                  .isProductDetailsLoading.value,
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
                               ),
-                            ],
-                          )
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.only(
+                                      top: 8.h,
+                                    ),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Image.asset(
+                                          shareIcon,
+                                          height: 30.h,
+                                        ),
+                                        8.horizontalSpace,
+                                        InkWell(
+                                          onTap: () async {
+                                            await productController
+                                                .addProductLike(
+                                              productId:
+                                                  widget.productModel?.id ?? '',
+                                              likeValue:
+                                                  !(productDetailsController
+                                                          .selectPostProductModel
+                                                          .value
+                                                          ?.liked ??
+                                                      false),
+                                            )
+                                                .then((_) {
+                                              productDetailsController
+                                                  .getSingleProductDetails(
+                                                      widget.productModel?.id ??
+                                                          '');
+                                            });
+                                          },
+                                          child: Obx(() {
+                                            return Container(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 5.w,
+                                                vertical: 5.h,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: (productDetailsController
+                                                            .selectPostProductModel
+                                                            .value
+                                                            ?.liked ??
+                                                        false)
+                                                    ? Colors.red
+                                                    : Colors.transparent,
+                                                border: Border.all(
+                                                  color: (productDetailsController
+                                                              .selectPostProductModel
+                                                              .value
+                                                              ?.liked ??
+                                                          false)
+                                                      ? Colors.red
+                                                      : Colors.black,
+                                                  width: 1,
+                                                ),
+                                              ),
+                                              child: productController
+                                                          .isProductLike
+                                                          .value &&
+                                                      productController
+                                                              .productLikeId
+                                                              .value ==
+                                                          (widget.productModel
+                                                                  ?.id ??
+                                                              '')
+                                                  ? const CupertinoActivityIndicator(
+                                                      color: Colors.red,
+                                                    )
+                                                  : Icon(
+                                                      (productDetailsController
+                                                                  .selectPostProductModel
+                                                                  .value
+                                                                  ?.liked ??
+                                                              false)
+                                                          ? Icons.favorite
+                                                          : Icons
+                                                              .favorite_border,
+                                                      color: (productDetailsController
+                                                                  .selectPostProductModel
+                                                                  .value
+                                                                  ?.liked ??
+                                                              false)
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      size: 20.r,
+                                                    ),
+                                            );
+                                          }),
+                                        ),
+                                        8.horizontalSpace,
+                                        // Image.asset(
+                                        //   moreIcon,
+                                        //   height: 20.h,
+                                        // ),
+                                        // 30.horizontalSpace,
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          })
                         ],
                       ),
                     ),
@@ -245,15 +341,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           widget.productModel?.carInfo?.brand ??
                                               ''),
                                   infoTile(
-                                      name: 'Body Type',
-                                      value: widget.productModel?.carInfo
-                                              ?.bodyType ??
-                                          ''),
-                                  infoTile(
                                       name: 'Model Type',
                                       value:
                                           widget.productModel?.carInfo?.model ??
                                               ''),
+                                  infoTile(
+                                      name: 'Body Type',
+                                      value: widget.productModel?.carInfo
+                                              ?.bodyType ??
+                                          ''),
                                   infoTile(
                                       name: 'Year',
                                       value:
@@ -320,8 +416,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         children: [
                                           infoTile(
                                               name: 'Brand',
-                                              value:
-                                                  widget.productModel?.phoneInfo?.brand ?? ''),
+                                              value: widget.productModel
+                                                      ?.phoneInfo?.brand ??
+                                                  ''),
                                         ],
                                       )
                                     : Column(
@@ -574,10 +671,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             initialCameraPosition: CameraPosition(
                               target: LatLng(
                                   widget.productModel?.individualInfo
-                                          ?.locationGeo?.coordinates?.first ??
+                                          ?.locationGeo?.coordinates?.last ??
                                       0,
                                   widget.productModel?.individualInfo
-                                          ?.locationGeo?.coordinates?.last ??
+                                          ?.locationGeo?.coordinates?.first ??
                                       0),
                               zoom: 14.0,
                             ),
@@ -666,6 +763,71 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         ),
       ),
     );
+  }
+}
+
+class ProductMediaWidget extends StatefulWidget {
+  final Media e;
+  const ProductMediaWidget({
+    super.key,
+    required this.e,
+  });
+
+  @override
+  State<ProductMediaWidget> createState() => _ProductMediaWidgetState();
+}
+
+class _ProductMediaWidgetState extends State<ProductMediaWidget> {
+  late VideoPlayerController videoPlayerController;
+  late final PodPlayerController controller;
+
+  @override
+  void initState() {
+    init();
+    super.initState();
+  }
+
+  init() async {
+    if ((widget.e.contentType ?? '').toLowerCase().contains('video')) {
+      controller = PodPlayerController(
+          playVideoFrom: PlayVideoFrom.network(
+            widget.e.name ?? '',
+          ),
+          podPlayerConfig: const PodPlayerConfig(
+            autoPlay: false,
+            isLooping: false,
+          ))
+        ..initialise().catchError((onError) {
+          log('videoError: $onError');
+        });
+    }
+  }
+
+  @override
+  dispose() {
+    controller.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return (widget.e.contentType ?? '').toLowerCase().contains('image')
+        ? NewworkImagePreview(
+            radius: 10.r,
+            url: widget.e.name ?? '',
+            height: 90.h,
+            width: Get.width,
+            fit: BoxFit.cover,
+          )
+        : (widget.e.contentType ?? '').toLowerCase().contains('video')
+            ? PodVideoPlayer(
+                controller: controller,
+                onLoading: (context) => const CupertinoActivityIndicator(
+                  color: Colors.white,
+                ),
+              )
+            : const CupertinoActivityIndicator();
   }
 }
 

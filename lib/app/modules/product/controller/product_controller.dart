@@ -1,12 +1,21 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
+import 'package:alsat/app/modules/product/video_edit/crop_video.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart'
+    as google_maps_flutter;
+import 'package:geocoding/geocoding.dart' as geocoding;
+import 'package:location/location.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:video_editor/video_editor.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -27,59 +36,125 @@ class ProductController extends GetxController {
 
   /// post product
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>();
-  RxString selectedBrand = RxString("");
-  RxString selectedModel = RxString("");
+  Rxn<BrandModel> selectedBrand = Rxn<BrandModel>();
+  Rxn<CarModel> selectedModel = Rxn<CarModel>();
+  RxList<String> selectModelCarClass = RxList([]);
   RxString selectedBodyType = RxString("");
   RxString selectedTransmission = RxString("");
   RxString selectedEngineType = RxString("");
   RxString selectedColor = RxString("");
   RxString selectedYear = RxString('20000');
   RxString selectedPassed = RxString('1999');
-  RxInt totalProductFiled = RxInt(12);
+  //-- post product count --//
+  RxInt totalProductFiled = RxInt(3);
   RxInt totalProductFiledCount = RxInt(0);
+  //-- Price Field--//
+  RxInt productPriceFiled = RxInt(3);
+  RxInt productPriceFiledCount = RxInt(2);
+  //-- individual info --//
+  RxInt individualInfoFiled = RxInt(6);
+  RxInt individualInfoFiledCount = RxInt(2);
+  //--Text Field--//
   TextEditingController estateDealTypeController = TextEditingController();
   TextEditingController estateAddressController = TextEditingController();
   TextEditingController estateTypeController = TextEditingController();
+  TextEditingController phoneBrandController = TextEditingController();
   TextEditingController productNameController = TextEditingController();
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController vinCode = TextEditingController();
   TextEditingController floor = TextEditingController();
   TextEditingController room = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController priceController = TextEditingController();
 
   ///Individual Info
   RxString selectedLocation = RxString("");
   RxBool allowCall = RxBool(true);
   RxBool contactOnlyWithChat = RxBool(true);
-  TextEditingController phoneNumberController = TextEditingController();
 
   //price
-  TextEditingController priceController = TextEditingController();
+
   RxBool isExchange = RxBool(true);
   RxBool isCredit = RxBool(true);
+  RxBool isLeftAvalable = RxBool(true);
   //-- On Init Method --//
   @override
   void onInit() {
+    getCurrentLocation();
     fetchProducts();
     super.onInit();
   }
 
   // field calculated
-  calculateFilledFields() {
+  calculateFilledProductFields() {
+    //-- Category check to find the total field --//
+    if (selectCategory.value != null) {
+      if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
+        totalProductFiled.value = 13;
+      }
+      if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
+        totalProductFiled.value = 9;
+      }
+      if (selectCategory.value?.name?.toLowerCase() == 'phone') {
+        totalProductFiled.value = 4;
+      }
+    }
     int filledCount = 0;
-    if (selectCategory.value != null) filledCount++;
-    if (selectedBrand.value.isNotEmpty) filledCount++;
-    if (selectedModel.value.isNotEmpty) filledCount++;
-    if (selectedBodyType.value.isNotEmpty) filledCount++;
-    if (selectedTransmission.value.isNotEmpty) filledCount++;
-    if (selectedEngineType.value.isNotEmpty) filledCount++;
-    if (selectedPassed.value.isNotEmpty) filledCount++;
-    if (selectedYear.value.isNotEmpty) filledCount++;
-    if (selectedColor.value.isNotEmpty) filledCount++;
-    if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-    if (productNameController.text.trim().isNotEmpty) filledCount++;
-    if (vinCode.text.trim().isNotEmpty) filledCount++;
-
+    if (selectCategory.value != null) {
+      if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
+        if (selectCategory.value != null) filledCount++;
+        if (selectedBrand.value != null) filledCount++;
+        if (selectedModel.value != null) filledCount++;
+        if (selectedBodyType.value.isNotEmpty) filledCount++;
+        if (selectedTransmission.value.isNotEmpty) filledCount++;
+        if (selectedEngineType.value.isNotEmpty) filledCount++;
+        if (selectedPassed.value.isNotEmpty) filledCount++;
+        if (selectedYear.value.isNotEmpty) filledCount++;
+        if (selectedColor.value.isNotEmpty) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
+        if (vinCode.text.trim().isNotEmpty) filledCount++;
+        // car condition
+        filledCount++;
+      }
+      if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
+        if (selectCategory.value != null) filledCount++;
+        if (estateDealTypeController.text.trim().isNotEmpty) filledCount++;
+        if (estateAddressController.text.trim().isNotEmpty) filledCount++;
+        if (estateTypeController.text.trim().isNotEmpty) filledCount++;
+        if (floor.text.trim().isNotEmpty) filledCount++;
+        if (room.text.trim().isNotEmpty) filledCount++;
+        //left count
+        filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
+      }
+      if (selectCategory.value?.name?.toLowerCase() == 'phone') {
+        if (selectCategory.value != null) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (phoneBrandController.text.trim().isNotEmpty) filledCount++;
+      } else {
+        if (selectCategory.value != null) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
+      }
+    } else {
+      if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+      if (productNameController.text.trim().isNotEmpty) filledCount++;
+    }
     totalProductFiledCount.value = filledCount;
+  }
+
+  // field calculated in individual info
+  calculateFilledIndividualInfoFields() {
+    int filledCount = 2;
+    log('selectedLocation.value.isNotEmpty: ${selectedLocation.value.isNotEmpty}');
+    if (selectLatLon != null) filledCount++;
+    if (phoneNumberController.text.trim().isNotEmpty) filledCount++;
+    if (toTime.value != null) filledCount++;
+    if (fromTime.value != null) filledCount++;
+    individualInfoFiledCount.value = filledCount;
   }
 
   // PICK IMAGE FOR POST PRODUCT
@@ -114,35 +189,39 @@ class ProductController extends GetxController {
   }
 
   // PICK VIDEO FOR POST PRODUCT
+  File? pickVideoFile;
   Future<void> pickVideo(BuildContext context) async {
     List<AssetEntity>? pickVideo = await AssetPicker.pickAssets(context,
         pickerConfig: const AssetPickerConfig(
-          maxAssets: 10,
+          maxAssets: 1,
           requestType: RequestType.video,
+          shouldAutoplayPreview: true,
         ));
     if (pickVideo != null) {
       for (AssetEntity videoPick in pickVideo) {
         File? file = await videoPick.file;
         if (file != null) {
-          pickVideoList.add(file);
+          // pickVideoList.value = [file];
+          pickVideoFile = file;
         }
-        videoThumbnails.clear();
-        _generateThumbnails();
-        update();
       }
+
+      generateThumbnails();
+      update();
     }
   }
 
-  Future<void> _generateThumbnails() async {
+  Future<void> generateThumbnails() async {
+    videoThumbnails.clear();
     for (var videoFile in pickVideoList) {
       try {
-        // final thumbnailData = await VideoThumbnail.thumbnailData(
-        //   video: videoFile.path,
-        //   imageFormat: ImageFormat.JPEG,
-        //   maxHeight: 150,
-        //   quality: 75,
-        // );
-        // videoThumbnails.add("thumbnailData");
+        final thumbnailData = await VideoThumbnail.thumbnailData(
+          video: videoFile.path,
+          imageFormat: ImageFormat.JPEG,
+          maxHeight: 150,
+          quality: 75,
+        );
+        videoThumbnails.add(thumbnailData);
       } catch (e) {
         log('Error generating thumbnail: $e');
       }
@@ -150,9 +229,18 @@ class ProductController extends GetxController {
   }
 
   Future<TimeOfDay?> showUserTimePickerDialog(BuildContext context) async {
-    TimeOfDay? selectTime = await showTimePicker(
-        context: context, initialTime: const TimeOfDay(hour: 0, minute: 0));
-    return selectTime;
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: const TimeOfDay(hour: 0, minute: 0),
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+          child: child!,
+        );
+      },
+    );
+
+    return selectedTime;
   }
 
   //--- POST PRODUCT ---//
@@ -371,9 +459,11 @@ class ProductController extends GetxController {
   /// product like
   RxBool isProductLike = RxBool(false);
   RxString productLikeId = RxString('');
-  Future<void> addProductLike({required String productId}) async {
+  Future<void> addProductLike(
+      {required String productId, required bool likeValue}) async {
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
+    log('$url ${Constants.token}');
     await BaseClient.safeApiCall(
       url,
       DioRequestType.post,
@@ -381,7 +471,7 @@ class ProductController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: {},
+      data: {"like": likeValue},
       onLoading: () {
         productLikeId.value = productId;
         isProductLike.value = true;
@@ -398,5 +488,44 @@ class ProductController extends GetxController {
         CustomSnackBar.showCustomErrorToast(message: 'Product like failed');
       },
     );
+  }
+
+  //-- get my current location--//
+  google_maps_flutter.LatLng? selectLatLon;
+  google_maps_flutter.LatLng selectPosition =
+      const google_maps_flutter.LatLng(0, 0);
+  final Completer<google_maps_flutter.GoogleMapController> mapController =
+      Completer();
+  Rxn<LocationData> currentLocation = Rxn();
+  RxList<geocoding.Placemark> placemarks = RxList([]);
+
+  void getCurrentLocation() async {
+    log("Call getCurrentLocation");
+    Location location = Location();
+    location.getLocation().then(
+      (location) {
+        currentLocation.value = location;
+        getLatLngToAddress(
+          google_maps_flutter.LatLng(
+            location.latitude ?? 0,
+            location.longitude ?? 0,
+          ),
+        );
+      },
+    );
+
+    location.onLocationChanged.listen(
+      (newLoc) {
+        currentLocation.value = newLoc;
+      },
+    );
+  }
+
+  getLatLngToAddress(google_maps_flutter.LatLng latLng) async {
+    selectLatLon = latLng;
+    placemarks.value = await geocoding.placemarkFromCoordinates(
+        latLng.latitude, latLng.longitude);
+
+    calculateFilledIndividualInfoFields();
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:alsat/app/components/product_list_tile.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -35,6 +36,7 @@ class _ConversationViewState extends State<ConversationView> {
   late types.User _user;
 
   final ConversationController conversationController = Get.find();
+  AuthController authController = Get.find();
   @override
   void initState() {
     super.initState();
@@ -309,9 +311,9 @@ class _ConversationViewState extends State<ConversationView> {
     Participant? user = widget.conversation.participants
         ?.firstWhereOrNull((e) => e.id == userID);
     _user = types.User(
-      firstName: user?.userName,
-      imageUrl: '${user?.picture}',
-      id: (user?.id).toString(),
+      firstName: authController.userDataModel.value.userName,
+      imageUrl: authController.userDataModel.value.picture,
+      id: authController.userDataModel.value.id ?? '',
     );
     conversationController.selectConversation.value = widget.conversation;
     conversationController.getConversationsMessages();

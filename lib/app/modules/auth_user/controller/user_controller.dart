@@ -18,36 +18,83 @@ class UserController extends GetxController {
     'Followers',
     'Following',
   ];
+  //-- Upgrade to premium--//
+  RxBool isUpgradePreimumLoading = false.obs;
 
   //-- Get user follower--//
   RxBool isFollowerLoading = true.obs;
-  Rxn<FollowerRes> followerRes = Rxn<FollowerRes>();
-  getUserFollower() async {
+  RxList<FollowerModel> followerList = RxList<FollowerModel>();
+  getUserFollower({String? next}) async {
+    String url = Constants.baseUrl + Constants.follower;
+    if (next != null) {
+      url += '?next=$next';
+    }
     await BaseClient.safeApiCall(
-      Constants.baseUrl + Constants.follower,
+      url,
       DioRequestType.get,
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
       onLoading: () {
-        isFollowerLoading.value = true;
-        followerRes.value = null;
+        if (next == null) {
+          isFollowerLoading.value = true;
+          followerList.value = [];
+        }
       },
       onSuccess: (response) async {
-        log('follower response $response');
         Map<String, dynamic> data = response.data;
-        followerRes.value = FollowerRes.fromJson(data);
+        FollowerRes followerRes = FollowerRes.fromJson(data);
+        if (next != null) {
+          followerList.addAll(followerRes.data ?? []);
+        } else {
+          followerList.value = followerRes.data ?? [];
+        }
+        followerList.refresh();
         isFollowerLoading.value = false;
       },
       onError: (error) {
-        log('follower error $error');
         isFollowerLoading.value = false;
-        followerRes.value = null;
       },
     );
   }
 
-  //-- Upgrade to premium--//
-  RxBool isUpgradePreimumLoading = false.obs;
+  //-- Get user following--//
+
+  RxBool isFollowingLoading = true.obs;
+  RxList<FollowerModel> followingList = RxList<FollowerModel>();
+  getUserFollowing({String? next}) async {
+    String url = Constants.baseUrl + Constants.following;
+    if (next != null) {
+      url += '?next=$next';
+    }
+    await BaseClient.safeApiCall(
+      url,
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        if (next == null) {
+          isFollowingLoading.value = true;
+          followingList.value = [];
+        }
+      },
+      onSuccess: (response) async {
+        Map<String, dynamic> data = response.data;
+        FollowerRes followerRes = FollowerRes.fromJson(data);
+        if (next != null) {
+          followingList.addAll(followerRes.data ?? []);
+        } else {
+          followingList.value = followerRes.data ?? [];
+        }
+        followingList.refresh();
+        isFollowingLoading.value = false;
+      },
+      onError: (error) {
+        isFollowingLoading.value = false;
+      },
+    );
+  }
 }

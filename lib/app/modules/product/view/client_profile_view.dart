@@ -1,4 +1,5 @@
 import 'package:alsat/app/components/network_image_preview.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -25,12 +26,31 @@ class ClientProfileView extends StatefulWidget {
 }
 
 class _ClientProfileViewState extends State<ClientProfileView> {
+  AuthController authController = Get.find();
   @override
   void initState() {
     if (widget.productDetailsController.userProductList.isEmpty) {
       widget.productDetailsController.fetchUserProducts();
     }
     super.initState();
+  }
+
+  //--- Get All PRODUCT ---//
+  RefreshController userProductRefreshController =
+      RefreshController(initialRefresh: false);
+  void userProductRefresh() async {
+    await widget.productDetailsController.fetchUserProducts();
+    userProductRefreshController.refreshCompleted();
+  }
+
+  void userProductLoading() async {
+    if (widget.productDetailsController.userProductPostListRes?.hasMore ??
+        false) {
+      await widget.productDetailsController.fetchUserProducts(
+          nextPaginateDate: widget
+              .productDetailsController.userProductList.value.last.createdAt);
+    }
+    userProductRefreshController.loadComplete();
   }
 
   @override
@@ -116,9 +136,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                     itemSize: 13.r,
                                     direction: Axis.horizontal,
                                   ),
-                                  5.horizontalSpace,
+                                  3.horizontalSpace,
                                   Text(
-                                    '(${widget.productDetailsController.postUserModel.value?.rating ?? 0})',
+                                    '(${(widget.productDetailsController.postUserModel.value?.rating ?? 0).toStringAsFixed(1)})',
                                     style: regular.copyWith(
                                       fontSize: 8.sp,
                                     ),
@@ -132,7 +152,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              '120',
+                              '${widget.productDetailsController.postUserModel.value?.followers ?? 0}',
                               style: regular.copyWith(
                                 fontSize: 14.sp,
                               ),
@@ -146,97 +166,153 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           ],
                         ),
                         10.horizontalSpace,
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '120',
-                              style: regular.copyWith(
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                            Text(
-                              'Following',
-                              style: regular.copyWith(
-                                fontSize: 13.sp,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // Column(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: [
+                        //     Text(
+                        //       '120',
+                        //       style: regular.copyWith(
+                        //         fontSize: 14.sp,
+                        //       ),
+                        //     ),
+                        //     Text(
+                        //       'Following',
+                        //       style: regular.copyWith(
+                        //         fontSize: 13.sp,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                       ],
                     ),
                     //-- Follow and chat buttons--//
-                    10.verticalSpace,
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              elevation: 0,
-                              backgroundColor: Theme.of(context).primaryColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
-                            child: Text(
-                              'Follow',
-                              style: regular.copyWith(
-                                color: Get.theme.scaffoldBackgroundColor,
-                              ),
+                    // 10.verticalSpace,
+                    authController.userDataModel.value.id ==
+                            widget.productDetailsController.postUserModel.value
+                                ?.id
+                        ? const Center()
+                        : Padding(
+                            padding: EdgeInsets.only(top: 10.h),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Obx(() {
+                                    return Skeletonizer(
+                                      enabled: widget.productDetailsController
+                                          .isFetchUserLoading.value,
+                                      effect: ShimmerEffect(
+                                        baseColor: Get.theme.disabledColor
+                                            .withOpacity(.2),
+                                        highlightColor: Colors.white,
+                                        begin: Alignment.centerLeft,
+                                        end: Alignment.centerRight,
+                                      ),
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          widget.productDetailsController
+                                              .isFetchUserLoading.value = true;
+                                          widget.productDetailsController
+                                              .followingAUser(
+                                            userId: widget
+                                                    .productDetailsController
+                                                    .postUserModel
+                                                    .value
+                                                    ?.id ??
+                                                '',
+                                            isFollow: !(widget
+                                                    .productDetailsController
+                                                    .postUserModel
+                                                    .value
+                                                    ?.followed ??
+                                                false),
+                                          );
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          elevation: 0,
+                                          backgroundColor: (widget
+                                                      .productDetailsController
+                                                      .postUserModel
+                                                      .value
+                                                      ?.followed ??
+                                                  false)
+                                              ? context.theme.disabledColor
+                                                  .withOpacity(.5)
+                                              : Theme.of(context).primaryColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.r),
+                                          ),
+                                        ),
+                                        child: Text(
+                                          (widget
+                                                      .productDetailsController
+                                                      .postUserModel
+                                                      .value
+                                                      ?.followed ??
+                                                  false)
+                                              ? 'UnFollow'
+                                              : 'Follow',
+                                          style: regular.copyWith(
+                                            color: Get
+                                                .theme.scaffoldBackgroundColor,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                                10.horizontalSpace,
+                                Expanded(
+                                  child: OutlinedButton(
+                                    onPressed: () {},
+                                    style: OutlinedButton.styleFrom(
+                                      side: BorderSide(
+                                        color: Get.theme.primaryColor,
+                                      ),
+                                      elevation: 0,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(12.r),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Message',
+                                      style: regular.copyWith(
+                                        color: Get.theme.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                10.horizontalSpace,
+                                InkWell(
+                                  onTap: () {
+                                    showRateBottomSheet(context,
+                                        widget.productDetailsController);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Get.theme
+                                            .primaryColor, // Set border color
+                                      ),
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 5,
+                                      ),
+                                      child: Icon(
+                                        Icons.star_border_outlined,
+                                        color: Colors.amber,
+                                        size: 25.r,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        ),
-                        10.horizontalSpace,
-                        Expanded(
-                          child: OutlinedButton(
-                            onPressed: () {},
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(
-                                color: Get.theme.primaryColor,
-                              ),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                            ),
-                            child: Text(
-                              'Message',
-                              style: regular.copyWith(
-                                color: Get.theme.primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        10.horizontalSpace,
-                        InkWell(
-                          onTap: () {
-                            showRateBottomSheet(
-                                context, widget.productDetailsController);
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color:
-                                    Get.theme.primaryColor, // Set border color
-                              ),
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 5,
-                              ),
-                              child: Icon(
-                                Icons.star_border_outlined,
-                                color: Colors.amber,
-                                size: 25.r,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
                     10.verticalSpace,
                   ],
                 ),
@@ -252,10 +328,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                   header: WaterDropHeader(
                     waterDropColor: context.theme.primaryColor,
                   ),
-                  controller: widget
-                      .productDetailsController.userProductRefreshController,
-                  onRefresh: widget.productDetailsController.userProductRefresh,
-                  onLoading: widget.productDetailsController.userProductLoading,
+                  controller: userProductRefreshController,
+                  onRefresh: userProductRefresh,
+                  onLoading: userProductLoading,
                   child: GridView.builder(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.symmetric(

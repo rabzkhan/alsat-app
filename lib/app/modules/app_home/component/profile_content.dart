@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../auth_user/auth_user_tab/my_followers.dart';
+import '../../auth_user/auth_user_tab/my_following.dart';
 import '../../auth_user/auth_user_tab/my_like_post.dart';
 import '../../auth_user/auth_user_tab/my_settings.dart';
 import '../../auth_user/controller/user_controller.dart';
@@ -66,7 +67,8 @@ class _ProfileContentState extends State<ProfileContent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Obx(() => Text(
-                          authController.userDataModel.value.phone ?? ' 01211312342',
+                          authController.userDataModel.value.phone ??
+                              ' 01211312342',
                           style: regular.copyWith(
                             fontSize: 10.sp,
                           ),
@@ -76,7 +78,10 @@ class _ProfileContentState extends State<ProfileContent> {
                         () => RatingBar.builder(
                           itemSize: 15.h,
                           initialRating: MySharedPref.isLoggedIn()
-                              ? double.parse(authController.userDataModel.value.rating.toString())
+                              ? double.parse(
+                                  (authController.userDataModel.value.rating ??
+                                          "0")
+                                      .toString())
                               : 0,
                           minRating: 0,
                           direction: Axis.horizontal,
@@ -119,6 +124,7 @@ class _ProfileContentState extends State<ProfileContent> {
               ),
             ),
             10.verticalSpace,
+
             SizedBox(
               height: 32.h,
               child: TabBar(
@@ -152,7 +158,7 @@ class _ProfileContentState extends State<ProfileContent> {
                   MyListings(),
                   MyLikePost(),
                   MyFollowers(),
-                  Center(),
+                  MyFollowing(),
                 ],
               ),
             )

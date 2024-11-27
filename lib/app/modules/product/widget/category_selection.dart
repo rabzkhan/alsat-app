@@ -10,7 +10,8 @@ import '../../app_home/controller/home_controller.dart';
 import '../controller/product_controller.dart';
 
 class CategorySelection extends StatelessWidget {
-  const CategorySelection({super.key});
+  final bool valueReturn;
+  const CategorySelection({super.key, this.valueReturn = false});
 
   @override
   Widget build(BuildContext context) {
@@ -46,10 +47,11 @@ class CategorySelection extends StatelessWidget {
                       (index) => ListTile(
                         title: GestureDetector(
                           onTap: () {
-                            log("${homeController.categories[index].toJson()}");
-                            productController.selectCategory.value =
-                                homeController.categories[index];
-                            Get.back();
+                            if (!valueReturn) {
+                              productController.selectCategory.value =
+                                  homeController.categories[index];
+                            }
+                            Get.back(result: homeController.categories[index]);
                           },
                           child: Row(
                             children: [

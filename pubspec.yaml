@@ -88,6 +88,17 @@ dependencies:
   shared_preferences: ^2.2.3
   flutter_launcher_icons: ^0.13.1
   pinput: ^5.0.0
+  location: ^6.0.2
+  geocoding: ^3.0.0
+  get_thumbnail_video: ^0.7.3
+  video_player: ^2.9.2
+  flick_video_player: ^0.9.0
+  pod_player: ^0.2.2
+  video_editor:
+    path: packages/video_editor
+  video_trimmer:
+    path: packages/video_trimmer-3.0.1
+  simple_chips_input: ^1.2.0
 
 
     

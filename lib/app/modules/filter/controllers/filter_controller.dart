@@ -8,6 +8,8 @@ import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
+import '../../app_home/models/car_brand_res.dart';
+import '../../app_home/models/category_model.dart';
 import '../views/filter_results_view.dart';
 
 class FilterController extends GetxController {
@@ -30,17 +32,19 @@ class FilterController extends GetxController {
 
   RxBool isFilterLoading = false.obs;
 
-  RxString category = "Automobile".obs;
+  Rxn<CategoriesModel> category = Rxn<CategoriesModel>();
   RxString condition = "Used".obs;
 
   RxString location = "Not Chosen Yet".obs;
-  RxString brand = "Not Chosen Yet".obs;
-  RxString model = "Not Chosen Yet".obs;
+  RxList<BrandModel> brand = RxList<BrandModel>();
+  Rxn<CarModel> model = Rxn<CarModel>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
   RxString transmission = "Not Chosen Yet".obs;
-  RxString color = "Not Chosen Yet".obs;
+  RxList<String> color = <String>[].obs;
+
+  // Real state variables
 
   RxList<String> dlocation = <String>["New York", "Texas"].obs;
   RxList<String> dbrand =

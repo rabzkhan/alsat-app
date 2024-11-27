@@ -1,4 +1,3 @@
-
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/product_details_view.dart';
@@ -13,7 +12,9 @@ import '../modules/product/model/product_post_list_res.dart';
 
 class ProductListTile extends StatelessWidget {
   final ProductModel? productModel;
-  const ProductListTile({super.key, this.productModel});
+  final bool isShowLikeButton;
+  const ProductListTile(
+      {super.key, this.productModel, this.isShowLikeButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class ProductListTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: 1.h,
         ),
-        height: 90.h,
+        height: 95.h,
         decoration: BoxDecoration(
           color: Get.theme.appBarTheme.backgroundColor,
           borderRadius: BorderRadius.circular(10.r),
@@ -165,42 +166,40 @@ class ProductListTile extends StatelessWidget {
                 )
               ],
             ),
-            Positioned(
-              right: 10.w,
-              top: 4.h,
-              child: InkWell(
-                onTap: () {
-                  productController.addProductLike(
-                      productId: productModel?.id ?? '');
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Get.theme.disabledColor.withOpacity(.06),
-                      width: 1,
+            if (isShowLikeButton)
+              Positioned(
+                right: 10.w,
+                top: 4.h,
+                child: InkWell(
+                  onTap: () {},
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 5.h,
                     ),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Get.theme.disabledColor.withOpacity(.06),
+                        width: 1,
+                      ),
+                    ),
+                    child: Obx(() {
+                      return productController.isProductLike.value &&
+                              productController.productLikeId.value ==
+                                  (productModel?.id ?? '')
+                          ? const CupertinoActivityIndicator(
+                              color: Colors.red,
+                            )
+                          : Icon(
+                              Icons.favorite_border,
+                              color: Colors.red,
+                              size: 20.r,
+                            );
+                    }),
                   ),
-                  child: Obx(() {
-                    return productController.isProductLike.value &&
-                            productController.productLikeId.value ==
-                                (productModel?.id ?? '')
-                        ? const CupertinoActivityIndicator(
-                            color: Colors.red,
-                          )
-                        : Icon(
-                            Icons.favorite_border,
-                            color: Colors.red,
-                            size: 20.r,
-                          );
-                  }),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),

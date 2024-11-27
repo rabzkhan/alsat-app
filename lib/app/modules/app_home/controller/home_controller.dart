@@ -9,6 +9,7 @@ import '../../../../utils/constants.dart';
 import '../../../common/const/image_path.dart';
 import '../../../services/base_client.dart';
 import '../models/banner_res.dart';
+import '../models/car_brand_res.dart';
 
 class HomeController extends GetxController {
   RxBool isShowDrawer = false.obs;
@@ -47,6 +48,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     getBanner();
+    fetchCarBrand();
     getCategories();
     super.onInit();
   }
@@ -110,6 +112,34 @@ class HomeController extends GetxController {
         log('CategoryError: ${error.message}');
         Logger().d("$error <- error");
         isBannerLoading.value = false;
+      },
+    );
+  }
+
+  //-- Get Brand --//
+  RxList<BrandModel> brandList = <BrandModel>[].obs;
+  RxBool isBrandLoading = true.obs;
+  fetchCarBrand() async {
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.carBrandEndPoint,
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isBrandLoading.value = true;
+        brandList.clear();
+      },
+      onSuccess: (response) async {
+        Map<String, dynamic> data = response.data;
+        CarBrandRes carBrandRes = CarBrandRes.fromJson(data);
+        brandList.value = carBrandRes.data ?? [];
+        log("Brand List: ${brandList.length}");
+        isBrandLoading.value = false;
+      },
+      onError: (error) {
+        isBrandLoading.value = false;
       },
     );
   }

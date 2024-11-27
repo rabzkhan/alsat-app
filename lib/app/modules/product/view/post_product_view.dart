@@ -1,22 +1,32 @@
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:alsat/app/common/const/image_path.dart';
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import 'package:video_editor/video_editor.dart';
 import '../../../components/custom_appbar.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../filter/controllers/filter_controller.dart';
+import '../../filter/widgets/car_brand_sheet.dart';
+import '../../filter/widgets/car_model_sheet.dart';
 import '../../filter/widgets/filter_bottom_sheet.dart';
 import '../controller/product_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
+import '../video_edit/crop_video.dart';
 import '../widget/category_selection.dart';
+import 'map_address_picker_view.dart';
 
 class PostProductView extends StatefulWidget {
   const PostProductView({super.key});
@@ -27,8 +37,17 @@ class PostProductView extends StatefulWidget {
 
 class _PostProductViewState extends State<PostProductView> {
   ProductController productController = Get.find();
+  HomeController homeController = Get.find();
   FilterController filterController = Get.find();
   final _formKey = GlobalKey<FormBuilderState>();
+
+  @override
+  void initState() {
+    if (productController.currentLocation.value == null) {
+      productController.getCurrentLocation();
+    }
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +67,9 @@ class _PostProductViewState extends State<PostProductView> {
                       fontSize: 10.sp,
                     ),
                     children: const [
-                      TextSpan(text: 'By Posting, you confirm the agreement with terms and conditions of'),
+                      TextSpan(
+                          text:
+                              'By Posting, you confirm the agreement with terms and conditions of'),
                       TextSpan(
                         text: ' Alsat',
                         style: TextStyle(
@@ -64,7 +85,8 @@ class _PostProductViewState extends State<PostProductView> {
                     flex: 2,
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        backgroundColor: context.theme.primaryColor.withOpacity(.1),
+                        backgroundColor:
+                            context.theme.primaryColor.withOpacity(.1),
                         side: BorderSide(
                           color: context.theme.primaryColor,
                           width: 1,
@@ -82,6 +104,7 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                       onPressed: () {
                         Get.back();
+                        resetForm();
                       },
                     ),
                   ),
@@ -104,10 +127,31 @@ class _PostProductViewState extends State<PostProductView> {
                                 _formKey.currentState!.saveAndValidate();
                                 if (_formKey.currentState!.validate()) {
                                   FocusScope.of(context).unfocus();
-                                  productController.isProductPosting.value = true;
-                                  addProductDataFormate(_formKey.currentState!.value).then((_) {
-                                    _formKey.currentState!.reset();
-                                  });
+                                  if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
+                                      productController
+                                              .productPriceFiled.value !=
+                                          productController
+                                              .productPriceFiledCount.value ||
+                                      productController
+                                              .individualInfoFiled.value !=
+                                          productController
+                                              .individualInfoFiledCount.value) {
+                                    CustomSnackBar.showCustomErrorToast(
+                                        message: "Please fill all the fields");
+                                  }
+                                  if (productController.pickImageList.isEmpty) {
+                                    CustomSnackBar.showCustomErrorToast(
+                                        message:
+                                            "Please select at least one image");
+                                  } else {
+                                    productController.isProductPosting.value =
+                                        true;
+                                    addProductDataFormate(
+                                            _formKey.currentState!.value)
+                                        .then((_) {
+                                      _formKey.currentState!.reset();
+                                    });
+                                  }
                                 }
                               },
                         child: productController.isProductPosting.value
@@ -153,21 +197,26 @@ class _PostProductViewState extends State<PostProductView> {
                     ),
                     width: Get.width * .5,
                     height: Get.width > 600 ? 60.h : 40.h,
-                    decoration:
-                        BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10.r), boxShadow: [
-                      BoxShadow(
-                        color: context.theme.disabledColor.withOpacity(.1),
-                        offset: const Offset(0, 0),
-                        blurRadius: 10,
-                      )
-                    ]),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.r),
+                        boxShadow: [
+                          BoxShadow(
+                            color: context.theme.disabledColor.withOpacity(.1),
+                            offset: const Offset(0, 0),
+                            blurRadius: 10,
+                          )
+                        ]),
                     child: Obx(() {
                       return Stack(
                         children: [
                           AnimatedPositioned(
                             height: Get.width > 600 ? 60.h : 30.h,
                             duration: 300.ms,
-                            left: !productController.isShowPostProductVideo.value ? 0 : Get.width * .22,
+                            left:
+                                !productController.isShowPostProductVideo.value
+                                    ? 0
+                                    : Get.width * .22,
                             child: Container(
                               width: Get.width * .22,
                               height: Get.width > 600 ? 60.h : 40.h,
@@ -182,7 +231,8 @@ class _PostProductViewState extends State<PostProductView> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    productController.isShowPostProductVideo.value = false;
+                                    productController
+                                        .isShowPostProductVideo.value = false;
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
@@ -191,7 +241,10 @@ class _PostProductViewState extends State<PostProductView> {
                                         'Image',
                                         style: TextStyle(
                                           fontSize: 14.sp,
-                                          color: !productController.isShowPostProductVideo.value ? Colors.white : null,
+                                          color: !productController
+                                                  .isShowPostProductVideo.value
+                                              ? Colors.white
+                                              : null,
                                         ),
                                       );
                                     }),
@@ -201,7 +254,8 @@ class _PostProductViewState extends State<PostProductView> {
                               Expanded(
                                 child: GestureDetector(
                                   onTap: () {
-                                    productController.isShowPostProductVideo.value = true;
+                                    productController
+                                        .isShowPostProductVideo.value = true;
                                   },
                                   child: Container(
                                     alignment: Alignment.center,
@@ -210,7 +264,10 @@ class _PostProductViewState extends State<PostProductView> {
                                         'Video',
                                         style: TextStyle(
                                           fontSize: 14.sp,
-                                          color: productController.isShowPostProductVideo.value ? Colors.white : null,
+                                          color: productController
+                                                  .isShowPostProductVideo.value
+                                              ? Colors.white
+                                              : null,
                                         ),
                                       );
                                     }),
@@ -230,7 +287,8 @@ class _PostProductViewState extends State<PostProductView> {
                 child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
                     child: ListView(
-                      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
                       physics: const BouncingScrollPhysics(),
                       children: [
                         /// Post Product Video
@@ -251,25 +309,34 @@ class _PostProductViewState extends State<PostProductView> {
                                         child: SizedBox(
                                           height: 100.h,
                                           child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 ...List.generate(
-                                                  productController.pickImageList.length,
+                                                  productController
+                                                      .pickImageList.length,
                                                   (index) {
                                                     return Stack(
                                                       clipBehavior: Clip.none,
                                                       children: [
                                                         Padding(
-                                                          padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      7.w),
                                                           child: ClipRRect(
-                                                            borderRadius: BorderRadius.circular(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
                                                               15.r,
                                                             ),
                                                             child: Image.file(
-                                                              productController.pickImageList[index],
+                                                              productController
+                                                                      .pickImageList[
+                                                                  index],
                                                               fit: BoxFit.cover,
                                                               width: 70.w,
                                                               height: 70.h,
@@ -280,9 +347,13 @@ class _PostProductViewState extends State<PostProductView> {
                                                           bottom: -10.h,
                                                           right: 0,
                                                           left: 0,
-                                                          child: GestureDetector(
+                                                          child:
+                                                              GestureDetector(
                                                             onTap: () {
-                                                              productController.pickImageList.removeAt(index);
+                                                              productController
+                                                                  .pickImageList
+                                                                  .removeAt(
+                                                                      index);
                                                             },
                                                             child: Image.asset(
                                                               xmarkIcon,
@@ -309,10 +380,12 @@ class _PostProductViewState extends State<PostProductView> {
                                           width: 70.w,
                                           height: 70.h,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15.r),
+                                            borderRadius:
+                                                BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1,
-                                              color: context.theme.disabledColor.withOpacity(.4),
+                                              color: context.theme.disabledColor
+                                                  .withOpacity(.4),
                                             ),
                                           ),
                                           child: Column(
@@ -321,12 +394,16 @@ class _PostProductViewState extends State<PostProductView> {
                                               Icon(
                                                 CupertinoIcons.add,
                                                 size: 20.sp,
-                                                color: context.theme.disabledColor.withOpacity(.4),
+                                                color: context
+                                                    .theme.disabledColor
+                                                    .withOpacity(.4),
                                               ),
                                               Text(
                                                 "Add",
                                                 style: regular.copyWith(
-                                                  color: context.theme.disabledColor.withOpacity(.4),
+                                                  color: context
+                                                      .theme.disabledColor
+                                                      .withOpacity(.4),
                                                   fontSize: 12.sp,
                                                 ),
                                               )
@@ -339,10 +416,10 @@ class _PostProductViewState extends State<PostProductView> {
                                 )
                               : Container(
                                   margin: EdgeInsets.symmetric(
-                                    horizontal: 15.w,
-                                    vertical: 25.h,
+                                    horizontal: 5.w,
+                                    vertical: 15.h,
                                   ),
-                                  height: 70.h,
+                                  height: 100.h,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     mainAxisSize: MainAxisSize.min,
@@ -350,26 +427,38 @@ class _PostProductViewState extends State<PostProductView> {
                                       Flexible(
                                         // Allows flexible width to avoid overflow
                                         child: SizedBox(
-                                          height: 70.h,
+                                          height: 100.h,
                                           child: SingleChildScrollView(
-                                            physics: const BouncingScrollPhysics(),
+                                            physics:
+                                                const BouncingScrollPhysics(),
                                             scrollDirection: Axis.horizontal,
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 ...List.generate(
-                                                  productController.videoThumbnails.length,
+                                                  productController
+                                                      .videoThumbnails.length,
                                                   (index) {
                                                     return Stack(
                                                       clipBehavior: Clip.none,
-                                                      alignment: Alignment.center,
+                                                      alignment:
+                                                          Alignment.center,
                                                       children: [
                                                         Padding(
-                                                          padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  horizontal:
+                                                                      7.w),
                                                           child: ClipRRect(
-                                                            borderRadius: BorderRadius.circular(10.r),
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              15.r,
+                                                            ),
                                                             child: Image.memory(
-                                                              productController.videoThumbnails[index]!,
+                                                              productController
+                                                                      .videoThumbnails[
+                                                                  index]!,
                                                               fit: BoxFit.cover,
                                                               width: 70.w,
                                                               height: 70.h,
@@ -377,22 +466,30 @@ class _PostProductViewState extends State<PostProductView> {
                                                           ),
                                                         ),
                                                         Icon(
-                                                          Icons.play_arrow_rounded,
+                                                          Icons
+                                                              .play_arrow_rounded,
                                                           size: 25.r,
                                                           color: Colors.red,
                                                         ),
                                                         Positioned(
-                                                          bottom: -2.h,
+                                                          bottom: -10.h,
                                                           right: 0,
                                                           left: 0,
-                                                          child: GestureDetector(
+                                                          child:
+                                                              GestureDetector(
                                                             onTap: () {
-                                                              productController.videoThumbnails.removeAt(index);
-                                                              productController.pickVideoList.removeAt(index);
+                                                              productController
+                                                                  .videoThumbnails
+                                                                  .removeAt(
+                                                                      index);
+                                                              productController
+                                                                  .pickVideoList
+                                                                  .removeAt(
+                                                                      index);
                                                             },
-                                                            child: const Icon(
-                                                              CupertinoIcons.xmark_circle_fill,
-                                                              color: Colors.red,
+                                                            child: Image.asset(
+                                                              xmarkIcon,
+                                                              height: 25.h,
                                                             ),
                                                           ),
                                                         ),
@@ -408,21 +505,52 @@ class _PostProductViewState extends State<PostProductView> {
                                       5.horizontalSpace,
                                       GestureDetector(
                                         onTap: () {
-                                          productController.pickVideo(context);
+                                          productController
+                                              .pickVideo(context)
+                                              .then((onValue) {
+                                            log("Call To Pick Video");
+                                            if (productController
+                                                    .pickVideoFile !=
+                                                null) {
+                                              Get.to(VideoCropScreen(
+                                                  productController
+                                                      .pickVideoFile!));
+                                            }
+                                          });
                                         },
                                         child: Container(
+                                          alignment: Alignment.center,
                                           width: 70.w,
                                           height: 70.h,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(10.r),
+                                            borderRadius:
+                                                BorderRadius.circular(15.r),
                                             border: Border.all(
                                               width: 1,
-                                              color: context.theme.disabledColor,
+                                              color: context.theme.disabledColor
+                                                  .withOpacity(.4),
                                             ),
                                           ),
-                                          child: Icon(
-                                            Icons.add,
-                                            size: 30.sp,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                CupertinoIcons.add,
+                                                size: 20.sp,
+                                                color: context
+                                                    .theme.disabledColor
+                                                    .withOpacity(.4),
+                                              ),
+                                              Text(
+                                                "Add",
+                                                style: regular.copyWith(
+                                                  color: context
+                                                      .theme.disabledColor
+                                                      .withOpacity(.4),
+                                                  fontSize: 12.sp,
+                                                ),
+                                              )
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -454,13 +582,16 @@ class _PostProductViewState extends State<PostProductView> {
                                 alignment: Alignment.center,
                                 children: [
                                   CircularProgressIndicator(
-                                    value: productController.totalProductFiledCount.value /
-                                        productController.totalProductFiled.value,
+                                    value: productController
+                                            .totalProductFiledCount.value /
+                                        productController
+                                            .totalProductFiled.value,
                                     strokeAlign: .1,
                                     strokeWidth: 2,
                                     backgroundColor: Colors.grey.shade300,
                                   ),
-                                  if (productController.totalProductFiledCount.value ==
+                                  if (productController
+                                          .totalProductFiledCount.value ==
                                       productController.totalProductFiled.value)
                                     Icon(
                                       Icons.check,
@@ -492,37 +623,52 @@ class _PostProductViewState extends State<PostProductView> {
                             ),
                             Obx(() => _tile(
                                   "Category",
-                                  productController.selectCategory.value?.name ?? "Not choosen yet",
+                                  productController
+                                          .selectCategory.value?.name ??
+                                      "Not choosen yet",
                                   onTap: () {
                                     showCupertinoModalBottomSheet(
                                       expand: true,
                                       context: context,
                                       backgroundColor: Colors.transparent,
-                                      builder: (context) => const CategorySelection(),
+                                      builder: (context) =>
+                                          const CategorySelection(),
                                     ).then((_) {
-                                      productController.calculateFilledFields();
+                                      productController
+                                          .calculateFilledProductFields();
                                     });
                                   },
                                 )),
-                            Obx(() => productController.selectCategory.value?.name?.toLowerCase() == 'automobile'
+                            Obx(() => productController
+                                        .selectCategory.value?.name
+                                        ?.toLowerCase() ==
+                                    'automobile'
                                 ? _autoMobile(context)
-                                : productController.selectCategory.value?.name?.toLowerCase() == 'real estate'
+                                : productController.selectCategory.value?.name
+                                            ?.toLowerCase() ==
+                                        'real estate'
                                     ? _realEstate(context)
-                                    : productController.selectCategory.value?.name?.toLowerCase() == 'phone'
+                                    : productController
+                                                .selectCategory.value?.name
+                                                ?.toLowerCase() ==
+                                            'phone'
                                         ? _phoneCategory(context)
                                         : const Center()),
                             //product Name
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15.w, vertical: 4.h),
                               child: FormBuilderTextField(
                                 validator: FormBuilderValidators.compose([
                                   FormBuilderValidators.required(),
                                 ]),
                                 name: 'productName',
                                 onChanged: (newValue) {
-                                  productController.calculateFilledFields();
+                                  productController
+                                      .calculateFilledProductFields();
                                 },
-                                controller: productController.productNameController,
+                                controller:
+                                    productController.productNameController,
                                 textAlign: TextAlign.right,
                                 textAlignVertical: TextAlignVertical.center,
                                 style: regular.copyWith(
@@ -544,17 +690,20 @@ class _PostProductViewState extends State<PostProductView> {
                                   ),
                                   border: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                 ),
@@ -578,9 +727,11 @@ class _PostProductViewState extends State<PostProductView> {
                                   ),
                                   10.verticalSpace,
                                   FormBuilderTextField(
-                                    controller: productController.productDescriptionController,
+                                    controller: productController
+                                        .productDescriptionController,
                                     onChanged: (newValue) {
-                                      productController.calculateFilledFields();
+                                      productController
+                                          .calculateFilledProductFields();
                                     },
                                     minLines: 3,
                                     maxLines: 3,
@@ -629,21 +780,45 @@ class _PostProductViewState extends State<PostProductView> {
                               width: .7,
                             ),
                           ),
-                          leading: Padding(
-                            padding: EdgeInsets.all(5.w).copyWith(right: 0),
-                            child: CircularProgressIndicator(
-                              value: .6,
-                              strokeAlign: .1,
-                              strokeWidth: 2,
-                              backgroundColor: Colors.grey.shade300,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '5/11 filled',
-                            style: regular.copyWith(
-                              fontSize: 10.sp,
-                            ),
-                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .individualInfoFiledCount.value /
+                                      productController
+                                          .individualInfoFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .individualInfoFiledCount.value ==
+                                          productController
+                                              .individualInfoFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.individualInfoFiledCount.value}/${productController.individualInfoFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
                           title: Text(
                             'Individual Info',
                             style: bold.copyWith(
@@ -653,26 +828,40 @@ class _PostProductViewState extends State<PostProductView> {
                           children: [
                             CupertinoListTile(
                               onTap: () {
-                                Get.bottomSheet(
-                                  FilterBottomSheet(
-                                    title: "Location",
-                                    data: filterController.dlocation,
-                                    selectedData: productController.selectedLocation,
-                                  ),
-                                );
+                                Get.to(() => const LocationFromMapView());
+                                // Get.bottomSheet(
+                                //   FilterBottomSheet(
+                                //     title: "Location",
+                                //     data: filterController.dlocation,
+                                //     selectedData: productController.selectedLocation,
+                                //   ),
+                                // );
                               },
+                              subtitle: Obx(() {
+                                return productController.placemarks.isEmpty
+                                    ? const Center()
+                                    : Text(
+                                        "${productController.placemarks.last.street} ${productController.placemarks.first.subLocality} ${productController.placemarks.first.administrativeArea}",
+                                        style: regular.copyWith(
+                                          fontSize: 10.sp,
+                                          color: context.theme.primaryColor,
+                                        ),
+                                      );
+                              }),
                               title: Text(
                                 "Location",
                                 style: regular,
                               ),
                               trailing: Obx(() {
-                                return productController.selectedLocation.value.isEmpty
+                                return productController
+                                        .selectedLocation.value.isEmpty
                                     ? Icon(
                                         Icons.arrow_forward_ios_rounded,
                                         size: 15.r,
                                       )
                                     : Text(
-                                        productController.selectedLocation.value,
+                                        productController
+                                            .selectedLocation.value,
                                         style: regular.copyWith(
                                           fontSize: 12.sp,
                                           color: context.theme.primaryColor,
@@ -684,17 +873,24 @@ class _PostProductViewState extends State<PostProductView> {
                               padding: EdgeInsets.symmetric(horizontal: 15.w),
                               child: Divider(
                                 height: 1,
-                                color: context.theme.shadowColor.withOpacity(.4),
+                                color:
+                                    context.theme.shadowColor.withOpacity(.4),
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 4.h),
                               child: FormBuilderTextField(
                                 validator: FormBuilderValidators.compose([
                                   FormBuilderValidators.required(),
                                 ]),
+                                onChanged: (value) {
+                                  productController
+                                      .calculateFilledIndividualInfoFields();
+                                },
                                 name: 'phoneNumber',
-                                controller: productController.phoneNumberController,
+                                controller:
+                                    productController.phoneNumberController,
                                 decoration: InputDecoration(
                                   hintText: 'Phone Number',
                                   hintStyle: TextStyle(
@@ -702,17 +898,20 @@ class _PostProductViewState extends State<PostProductView> {
                                   ),
                                   border: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                   enabledBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
                                     ),
                                   ),
                                 ),
@@ -720,7 +919,8 @@ class _PostProductViewState extends State<PostProductView> {
                             ),
                             //time picker
                             Padding(
-                              padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 20.w),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 6.h, horizontal: 20.w),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -736,13 +936,23 @@ class _PostProductViewState extends State<PostProductView> {
                                       Expanded(
                                         child: OutlinedButton(
                                           onPressed: () {
-                                            productController.showUserTimePickerDialog(context).then((value) {
-                                              productController.fromTime.value = value;
+                                            productController
+                                                .showUserTimePickerDialog(
+                                                    context)
+                                                .then((value) {
+                                              productController.fromTime.value =
+                                                  value;
+                                              productController
+                                                  .calculateFilledIndividualInfoFields();
                                             });
                                           },
                                           child: Obx(() {
                                             return Text(
-                                              'From ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
+                                              productController
+                                                          .fromTime.value ==
+                                                      null
+                                                  ? "From N/A"
+                                                  : 'From ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -753,13 +963,22 @@ class _PostProductViewState extends State<PostProductView> {
                                         child: OutlinedButton(
                                           onPressed: () {
                                             FocusScope.of(context).unfocus();
-                                            productController.showUserTimePickerDialog(context).then((value) {
-                                              productController.toTime.value = value;
+                                            productController
+                                                .showUserTimePickerDialog(
+                                                    context)
+                                                .then((value) {
+                                              productController.toTime.value =
+                                                  value;
+                                              productController
+                                                  .calculateFilledIndividualInfoFields();
                                             });
                                           },
                                           child: Obx(() {
                                             return Text(
-                                              'To ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
+                                              productController.toTime.value ==
+                                                      null
+                                                  ? "TO N/A"
+                                                  : 'To ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -768,10 +987,12 @@ class _PostProductViewState extends State<PostProductView> {
                                     ],
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 5.h),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 5.h),
                                     child: Divider(
                                       height: 1,
-                                      color: context.theme.shadowColor.withOpacity(.4),
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.4),
                                     ),
                                   ),
                                 ],
@@ -780,7 +1001,8 @@ class _PostProductViewState extends State<PostProductView> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Allow me to call',
@@ -790,9 +1012,11 @@ class _PostProductViewState extends State<PostProductView> {
                                     scale: 0.7,
                                     child: Obx(() {
                                       return CupertinoSwitch(
-                                        value: productController.allowCall.value,
+                                        value:
+                                            productController.allowCall.value,
                                         onChanged: (value) {
-                                          productController.allowCall.value = value;
+                                          productController.allowCall.value =
+                                              value;
                                         },
                                       );
                                     }),
@@ -803,7 +1027,8 @@ class _PostProductViewState extends State<PostProductView> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Contact only in chat',
@@ -813,9 +1038,11 @@ class _PostProductViewState extends State<PostProductView> {
                                     scale: 0.7,
                                     child: Obx(() {
                                       return CupertinoSwitch(
-                                        value: productController.contactOnlyWithChat.value,
+                                        value: productController
+                                            .contactOnlyWithChat.value,
                                         onChanged: (value) {
-                                          productController.contactOnlyWithChat.value = value;
+                                          productController.contactOnlyWithChat
+                                              .value = value;
                                         },
                                       );
                                     }),
@@ -847,21 +1074,44 @@ class _PostProductViewState extends State<PostProductView> {
                               width: .7,
                             ),
                           ),
-                          leading: Padding(
-                            padding: EdgeInsets.all(5.w).copyWith(right: 0),
-                            child: CircularProgressIndicator(
-                              value: .6,
-                              strokeAlign: .1,
-                              strokeWidth: 2,
-                              backgroundColor: Colors.grey.shade300,
-                            ),
-                          ),
-                          subtitle: Text(
-                            '5/11 filled',
-                            style: regular.copyWith(
-                              fontSize: 10.sp,
-                            ),
-                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .productPriceFiledCount.value /
+                                      productController.productPriceFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .productPriceFiledCount.value ==
+                                          productController
+                                              .productPriceFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
                           title: Text(
                             'Price',
                             style: bold.copyWith(
@@ -870,18 +1120,34 @@ class _PostProductViewState extends State<PostProductView> {
                           ),
                           children: [
                             Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 4.h),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 4.h),
                               child: Row(
                                 children: [
                                   Text('Price, \$', style: regular),
                                   5.horizontalSpace,
                                   Expanded(
                                     child: FormBuilderTextField(
+                                      onChanged: (value) {
+                                        if ((value ?? '').isEmpty) {
+                                          productController
+                                              .productPriceFiledCount.value = 2;
+                                        } else {
+                                          productController
+                                              .productPriceFiledCount.value = 3;
+                                        }
+                                      },
+                                      keyboardType: TextInputType.number,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp(r'^\d*\.?\d*')),
+                                      ],
                                       validator: FormBuilderValidators.compose([
                                         FormBuilderValidators.required(),
                                       ]),
                                       name: 'price',
-                                      controller: productController.priceController,
+                                      controller:
+                                          productController.priceController,
                                       decoration: InputDecoration(
                                         hintText: '',
                                         hintStyle: TextStyle(
@@ -889,17 +1155,20 @@ class _PostProductViewState extends State<PostProductView> {
                                         ),
                                         border: UnderlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: context.theme.shadowColor.withOpacity(.3),
+                                            color: context.theme.shadowColor
+                                                .withOpacity(.3),
                                           ),
                                         ),
                                         focusedBorder: UnderlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: context.theme.shadowColor.withOpacity(.3),
+                                            color: context.theme.shadowColor
+                                                .withOpacity(.3),
                                           ),
                                         ),
                                         enabledBorder: UnderlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: context.theme.shadowColor.withOpacity(.3),
+                                            color: context.theme.shadowColor
+                                                .withOpacity(.3),
                                           ),
                                         ),
                                       ),
@@ -911,7 +1180,8 @@ class _PostProductViewState extends State<PostProductView> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Possible Exchange',
@@ -921,9 +1191,11 @@ class _PostProductViewState extends State<PostProductView> {
                                     scale: 0.7,
                                     child: Obx(() {
                                       return CupertinoSwitch(
-                                        value: productController.isExchange.value,
+                                        value:
+                                            productController.isExchange.value,
                                         onChanged: (value) {
-                                          productController.isExchange.value = value;
+                                          productController.isExchange.value =
+                                              value;
                                         },
                                       );
                                     }),
@@ -934,7 +1206,8 @@ class _PostProductViewState extends State<PostProductView> {
                             Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     'Credit',
@@ -946,7 +1219,8 @@ class _PostProductViewState extends State<PostProductView> {
                                       return CupertinoSwitch(
                                         value: productController.isCredit.value,
                                         onChanged: (value) {
-                                          productController.isCredit.value = value;
+                                          productController.isCredit.value =
+                                              value;
                                         },
                                       );
                                     }),
@@ -979,7 +1253,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateType',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateTypeController,
             textAlign: TextAlign.right,
@@ -1027,7 +1301,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateAddress',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateAddressController,
             textAlign: TextAlign.right,
@@ -1075,7 +1349,7 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'estateDealType',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
             controller: productController.estateDealTypeController,
             textAlign: TextAlign.right,
@@ -1130,9 +1404,13 @@ class _PostProductViewState extends State<PostProductView> {
               Expanded(
                 child: FormBuilderTextField(
                   controller: productController.floor,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
                   name: 'floor',
                   onChanged: (newValue) {
-                    productController.calculateFilledFields();
+                    productController.calculateFilledProductFields();
                   },
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1171,10 +1449,14 @@ class _PostProductViewState extends State<PostProductView> {
               10.horizontalSpace,
               Expanded(
                 child: FormBuilderTextField(
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
+                  ],
                   controller: productController.room,
                   name: 'room',
                   onChanged: (newValue) {
-                    productController.calculateFilledFields();
+                    productController.calculateFilledProductFields();
                   },
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -1205,6 +1487,87 @@ class _PostProductViewState extends State<PostProductView> {
               ),
             ],
           ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h)
+              .copyWith(bottom: 0, right: 5.w),
+          child: Row(
+            children: [
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Lift Available',
+                      style: bold.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Transform.scale(
+                      scale: 0.7,
+                      child: Obx(() {
+                        return CupertinoSwitch(
+                          value: productController.isLeftAvalable.value,
+                          onChanged: (value) {
+                            productController.isLeftAvalable.value = value;
+                          },
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              // 10.horizontalSpace,
+              // Expanded(
+              //   flex: 2,
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'Room',
+              //         style: bold.copyWith(
+              //           fontWeight: FontWeight.w500,
+              //         ),
+              //       ),
+              //       10.horizontalSpace,
+              //       Expanded(
+              //         child: FormBuilderTextField(
+              //           controller: productController.room,
+              //           name: 'room',
+              //           onChanged: (newValue) {
+              //             productController.calculateFilledFields();
+              //           },
+              //           textAlign: TextAlign.center,
+              //           style: TextStyle(
+              //             fontSize: 12.sp,
+              //             color: Get.theme.primaryColor.withOpacity(.6),
+              //           ),
+              //           decoration: InputDecoration(
+              //             contentPadding: const EdgeInsets.symmetric(
+              //               vertical: 10,
+              //             ),
+              //             isDense: true,
+              //             alignLabelWithHint: true,
+              //             floatingLabelBehavior: FloatingLabelBehavior.always,
+              //             labelText: '',
+              //             labelStyle: TextStyle(
+              //               fontSize: 12.sp,
+              //               color: Get.theme.primaryColor.withOpacity(.6),
+              //             ),
+              //             border: outlineBorderPrimary,
+              //             enabledBorder: outlineBorderPrimary,
+              //             errorBorder: outlineBorderPrimary,
+              //             focusedBorder: outlineBorderPrimary,
+              //           ),
+              //           validator: FormBuilderValidators.compose([
+              //             FormBuilderValidators.required(),
+              //           ]),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+            ],
+          ),
         )
       ],
     );
@@ -1222,9 +1585,9 @@ class _PostProductViewState extends State<PostProductView> {
             ]),
             name: 'brand',
             onChanged: (newValue) {
-              productController.calculateFilledFields();
+              productController.calculateFilledProductFields();
             },
-            controller: productController.estateTypeController,
+            controller: productController.phoneBrandController,
             textAlign: TextAlign.right,
             textAlignVertical: TextAlignVertical.center,
             style: regular.copyWith(
@@ -1279,34 +1642,49 @@ class _PostProductViewState extends State<PostProductView> {
                     Obx(
                       () => _tile(
                         "Brand",
-                        productController.selectedBrand.value,
+                        productController.selectedBrand.value?.brand ?? '',
                         onTap: () {
                           Get.bottomSheet(
-                            FilterBottomSheet(
+                            CarBrandBottomSheet(
                               title: "Brand",
-                              data: filterController.dbrand,
+                              data: homeController.brandList,
                               selectedData: productController.selectedBrand,
                             ),
                           ).then((_) {
-                            productController.calculateFilledFields();
+                            productController.calculateFilledProductFields();
                           });
                         },
                       ),
                     ),
                     Obx(() => _tile(
                           "Model",
-                          productController.selectedModel.value,
-                          onTap: () {
-                            Get.bottomSheet(
-                              FilterBottomSheet(
-                                title: "Model",
-                                data: filterController.dmodel,
-                                selectedData: productController.selectedModel,
-                              ),
-                            ).then((_) {
-                              productController.calculateFilledFields();
-                            });
-                          },
+                          productController.selectedModel.value?.name ?? '',
+                          onTap:
+                              (productController.selectedBrand.value?.model ??
+                                          [])
+                                      .isEmpty
+                                  ? null
+                                  : () {
+                                      Get.bottomSheet(
+                                        CarModelBottomSheet(
+                                          title: "Model",
+                                          data: productController
+                                              .selectedBrand.value!.model!,
+                                          selectedData:
+                                              productController.selectedModel,
+                                        ),
+                                      ).then((_) {
+                                        productController.selectModelCarClass
+                                            .value = productController
+                                                .selectedModel
+                                                .value
+                                                ?.modelClass ??
+                                            [];
+
+                                        productController
+                                            .calculateFilledProductFields();
+                                      });
+                                    },
                         )),
                     Obx(() => _tile(
                           "Body Type",
@@ -1315,11 +1693,12 @@ class _PostProductViewState extends State<PostProductView> {
                             Get.bottomSheet(
                               FilterBottomSheet(
                                 title: "Body Type",
-                                data: filterController.dbodyType,
-                                selectedData: productController.selectedBodyType,
+                                data: productController.selectModelCarClass,
+                                selectedData:
+                                    productController.selectedBodyType,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1331,10 +1710,11 @@ class _PostProductViewState extends State<PostProductView> {
                               FilterBottomSheet(
                                 title: "Transmission",
                                 data: filterController.dtransmission,
-                                selectedData: productController.selectedTransmission,
+                                selectedData:
+                                    productController.selectedTransmission,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1346,10 +1726,11 @@ class _PostProductViewState extends State<PostProductView> {
                               FilterBottomSheet(
                                 title: "Engine Type",
                                 data: filterController.dengineType,
-                                selectedData: productController.selectedEngineType,
+                                selectedData:
+                                    productController.selectedEngineType,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1372,7 +1753,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 selectedData: productController.selectedColor,
                               ),
                             ).then((_) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             });
                           },
                         )),
@@ -1380,7 +1761,33 @@ class _PostProductViewState extends State<PostProductView> {
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
                         vertical: 10.h,
+                      ).copyWith(bottom: 0),
+                      child: FormBuilderRadioGroup(
+                        initialValue: 'New',
+                        decoration: InputDecoration(
+                          isDense: true,
+                          // isCollapsed: true,
+                          border: InputBorder.none,
+                          labelText: 'Car Condition',
+                          labelStyle: bold.copyWith(
+                            fontSize: 18.sp,
+                          ),
+                        ),
+                        name: 'condition',
+                        validator: FormBuilderValidators.required(),
+                        options: [
+                          'New',
+                          'Used',
+                        ]
+                            .map((lang) => FormBuilderFieldOption(value: lang))
+                            .toList(growable: false),
                       ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 10.h,
+                      ).copyWith(top: 0),
                       child: Row(
                         children: [
                           Text(
@@ -1393,7 +1800,7 @@ class _PostProductViewState extends State<PostProductView> {
                             controller: productController.vinCode,
                             name: 'vinCode',
                             onChanged: (newValue) {
-                              productController.calculateFilledFields();
+                              productController.calculateFilledProductFields();
                             },
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -1403,7 +1810,8 @@ class _PostProductViewState extends State<PostProductView> {
                             decoration: InputDecoration(
                               isDense: true,
                               alignLabelWithHint: true,
-                              floatingLabelBehavior: FloatingLabelBehavior.always,
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.always,
                               labelText: '',
                               labelStyle: TextStyle(
                                 fontSize: 12.sp,
@@ -1431,13 +1839,17 @@ class _PostProductViewState extends State<PostProductView> {
   Future<void> addProductDataFormate(Map<String, dynamic> map) async {
     Map<String, dynamic> productPostMap = {};
     productPostMap['title'] = map['productName'];
-    productPostMap['type'] = productController.selectCategory.value?.name?.toLowerCase() == 'automobile'
-        ? 'car'
-        : productController.selectCategory.value?.name?.toLowerCase() == 'real estate'
-            ? "real_estate"
-            : productController.selectCategory.value?.name?.toLowerCase() == 'phone'
-                ? 'phone'
-                : 'general';
+    productPostMap['type'] =
+        productController.selectCategory.value?.name?.toLowerCase() ==
+                'automobile'
+            ? 'car'
+            : productController.selectCategory.value?.name?.toLowerCase() ==
+                    'real estate'
+                ? "real_estate"
+                : productController.selectCategory.value?.name?.toLowerCase() ==
+                        'phone'
+                    ? 'phone'
+                    : 'general';
     productPostMap['category_id'] = productController.selectCategory.value?.sId;
     productPostMap['description'] = map['discription'];
 
@@ -1446,18 +1858,29 @@ class _PostProductViewState extends State<PostProductView> {
       var mediaDataTemp = await imageToBase64(image.path);
       media.add(mediaDataTemp);
     }
+    for (var video in productController.pickVideoList.value) {
+      var mediaDataTemp = await videoToBase64(video.path);
+      media.add(mediaDataTemp);
+    }
     productPostMap['media'] = media;
 
     productPostMap['individual_info'] = {
-      "location_province": productController.selectedLocation.value,
-      "location_city": '',
+      "location_province":
+          "${productController.placemarks.last.street} ${productController.placemarks.first.subLocality} ${productController.placemarks.first.administrativeArea}",
+      "location_city": productController.placemarks.first.subLocality ??
+          productController.placemarks.first.administrativeArea,
       "location_geo": {
         "type": "Point",
-        "coordinates": [10, -10],
+        "coordinates": [
+          productController.selectLatLon?.longitude ?? 0,
+          productController.selectLatLon?.latitude ?? 0
+        ],
       },
       "phone_number": map['phoneNumber'],
-      "free_to_call_from": "${productController.fromTime.value?.hour}:${productController.fromTime.value?.minute}",
-      "free_to_call_to": '${productController.toTime.value?.hour}:${productController.toTime.value?.minute}',
+      "free_to_call_from":
+          "${productController.fromTime.value?.hour}:${productController.fromTime.value?.minute}",
+      "free_to_call_to":
+          '${productController.toTime.value?.hour}:${productController.toTime.value?.minute}',
       "allow_to_call": productController.allowCall.value,
       "contact_only_in_chat": productController.contactOnlyWithChat.value,
       "can_comment": true
@@ -1467,37 +1890,70 @@ class _PostProductViewState extends State<PostProductView> {
       "possible_exchange": productController.isExchange.value,
       "credit": productController.isCredit.value,
     };
-    productPostMap['car_info'] = productController.selectCategory.value?.name?.toLowerCase() == 'automobile'
-        ? {
-            "condition": "used",
-            "brand": productController.selectedBrand.value,
-            "model": productController.selectedModel.value,
-            "class": productController.selectedBodyType.value,
-            "body_type": productController.selectedBodyType.value,
-            "transmission": productController.selectedTransmission.value,
-            "engine_type": productController.selectedEngineType.value,
-            "passed_km": num.parse(productController.selectedPassed.value).toInt(),
-            "year": num.parse(productController.selectedYear.value).toInt(),
-            "color": productController.selectedColor.value,
-            "vin_code": map['vinCode'],
-          }
-        : null;
-    productPostMap['estate_info'] = productController.selectCategory.value?.name?.toLowerCase() == 'real estate'
-        ? {
-            "type": map['estateType'],
-            "address": map['estateAddress'],
-            "deal_type": map['estateDealType'],
-            "floor": num.parse(map['floor']).toInt(),
-            "floor_type": 2,
-            "room": num.parse(map['room']).toInt(),
-            "renov": "cosmetique",
-            "lift": true
-          }
-        : null;
+    productPostMap['car_info'] =
+        productController.selectCategory.value?.name?.toLowerCase() ==
+                'automobile'
+            ? {
+                "condition": map['condition'],
+                "brand": productController.selectedBrand.value?.brand,
+                "model": productController.selectedModel.value?.name,
+                "class": productController.selectedBodyType.value,
+                "body_type": productController.selectedBodyType.value,
+                "transmission": productController.selectedTransmission.value,
+                "engine_type": productController.selectedEngineType.value,
+                "passed_km":
+                    num.parse(productController.selectedPassed.value).toInt(),
+                "year": num.parse(productController.selectedYear.value).toInt(),
+                "color": productController.selectedColor.value,
+                "vin_code": map['vinCode'],
+              }
+            : null;
+    productPostMap['estate_info'] =
+        productController.selectCategory.value?.name?.toLowerCase() ==
+                'real estate'
+            ? {
+                "type": map['estateType'],
+                "address": map['estateAddress'],
+                "deal_type": map['estateDealType'],
+                "floor": num.parse(map['floor']).toInt(),
+                "floor_type": 2,
+                "room": num.parse(map['room']).toInt(),
+                "renov": "cosmetique",
+                "lift": productController.isLeftAvalable.value,
+              }
+            : null;
     productPostMap['phone_info'] =
-        productController.selectCategory.value?.name?.toLowerCase() == 'phone' ? {"brand": map['brand']} : null;
-    // log('productPostMap: $productPostMap');
+        productController.selectCategory.value?.name?.toLowerCase() == 'phone'
+            ? {"brand": map['brand']}
+            : null;
+
+    resetForm();
     return await productController.postProduct(productPostMap);
+  }
+
+  resetForm() {
+    _formKey.currentState?.reset();
+    productController.estateDealTypeController.clear();
+    productController.estateAddressController.clear();
+    productController.estateTypeController.clear();
+    productController.phoneBrandController.clear();
+    productController.productNameController.clear();
+    productController.productDescriptionController.clear();
+    productController.vinCode.clear();
+    productController.floor.clear();
+    productController.priceController.clear();
+    productController.room.clear();
+    productController.phoneNumberController.clear();
+    productController.pickImageList.clear();
+    productController.selectCategory.value = null;
+    productController.selectedBrand.value = null;
+    productController.selectedModel.value = null;
+    productController.selectedBodyType.value = '';
+    productController.selectedTransmission.value = '';
+    productController.selectedEngineType.value = '';
+    productController.selectedColor.value = '';
+    productController.fromTime.value = null;
+    productController.toTime.value = null;
   }
 
   _tile(String title, String value, {Function()? onTap}) {
@@ -1524,7 +1980,9 @@ class _PostProductViewState extends State<PostProductView> {
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
                       fontSize: 12.sp,
-                      color: value.isEmpty ? Colors.red : context.theme.primaryColor,
+                      color: value.isEmpty
+                          ? Colors.red
+                          : context.theme.primaryColor,
                     ),
                   ),
                 ],

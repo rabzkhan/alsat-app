@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../components/scrolling_text.dart';
 import '../../../global/app_decoration.dart';
 
 class FilterOptionWidget extends StatelessWidget {
@@ -29,25 +30,29 @@ class FilterOptionWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: bold.copyWith(
-                    fontSize: 14.sp,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: bold.copyWith(
+                      fontSize: 14.sp,
+                    ),
                   ),
-                ),
-                2.verticalSpace,
-                Text(
-                  subTitle,
-                  style: medium.copyWith(
-                    fontSize: 10.sp,
-                    color: Colors.black54,
+                  2.verticalSpace,
+                  ScrollingTextWidget(
+                    child: Text(
+                      subTitle,
+                      style: medium.copyWith(
+                        fontSize: 10.sp,
+                        color: Colors.black54,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             Icon(
               Icons.keyboard_arrow_down,
