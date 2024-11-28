@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/components/scrolling_text.dart';
 import 'package:alsat/app/global/app_decoration.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
@@ -7,8 +8,11 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_chips_input/simple_chips_input.dart';
@@ -17,6 +21,7 @@ import '../../product/controller/product_controller.dart';
 import '../../product/widget/category_selection.dart';
 import '../widgets/car_model_sheet.dart';
 import '../widgets/car_multi_brand_sheet.dart';
+import '../widgets/car_multi_model_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
@@ -199,6 +204,156 @@ class _FilterViewState extends State<FilterView> {
                 ],
               ),
             ),
+          ),
+          SliverToBoxAdapter(
+            child: Obx(() {
+              return controller.category.value?.name?.toLowerCase() == 'phone'
+                  ? GestureDetector(
+                      onTap: () {
+                        Get.bottomSheet(
+                          MultiFilterBottomSheet(
+                            title: "Mobile Brand",
+                            data: controller.mobileBrand,
+                            selectedData: controller.selectMobileBrand,
+                          ),
+                        ).then((_) {
+                          controller.selectMobileBrand.refresh();
+                        });
+                      },
+                      child: Container(
+                        decoration: borderedContainer,
+                        margin: EdgeInsets.symmetric(horizontal: 16.w)
+                            .copyWith(top: 10.h),
+                        padding: EdgeInsets.symmetric(
+                          vertical: 10.h,
+                          horizontal: 12.w,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Brand",
+                                    style: bold.copyWith(
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                  2.verticalSpace,
+                                  Obx(() {
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: ScrollingTextWidget(
+                                            child: Text(
+                                              controller
+                                                      .selectMobileBrand.isEmpty
+                                                  ? 'Not Choose Yet'
+                                                  : controller.selectMobileBrand
+                                                      .expand(
+                                                          (e) => [e.toString()])
+                                                      .join(', '),
+                                              style: regular.copyWith(
+                                                fontSize: 10.sp,
+                                                color:
+                                                    context.theme.primaryColor,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                                ],
+                              ),
+                            ),
+                            Icon(
+                              Icons.keyboard_arrow_right,
+                              size: 30.h,
+                              color: AppColors.primary,
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  : controller.category.value?.name?.toLowerCase() ==
+                          'real estate'
+                      ? GestureDetector(
+                          onTap: () {
+                            Get.bottomSheet(
+                              MultiFilterBottomSheet(
+                                title: "Mobile Brand",
+                                data: controller.estateTtypeList,
+                                selectedData: controller.estateTtype,
+                              ),
+                            ).then((_) {
+                              controller.estateTtype.refresh();
+                            });
+                          },
+                          child: Container(
+                            decoration: borderedContainer,
+                            margin: EdgeInsets.symmetric(horizontal: 16.w)
+                                .copyWith(top: 10.h),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 10.h,
+                              horizontal: 12.w,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Estate Type",
+                                        style: bold.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                      2.verticalSpace,
+                                      Obx(() {
+                                        return Row(
+                                          children: [
+                                            Expanded(
+                                              child: ScrollingTextWidget(
+                                                child: Text(
+                                                  controller.estateTtype.isEmpty
+                                                      ? 'Not Choose Yet'
+                                                      : controller.estateTtype
+                                                          .expand((e) =>
+                                                              [e.toString()])
+                                                          .join(', '),
+                                                  style: regular.copyWith(
+                                                    fontSize: 10.sp,
+                                                    color: context
+                                                        .theme.primaryColor,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                ),
+                                Icon(
+                                  Icons.keyboard_arrow_right,
+                                  size: 30.h,
+                                  color: AppColors.primary,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : const Center();
+            }),
           ),
 
           // //Condition section
@@ -402,6 +557,12 @@ class _FilterViewState extends State<FilterView> {
                                 selectedData: controller.brand,
                               ),
                             ).then((_) {
+                              for (var element in controller.brand) {
+                                controller.brandAndSelectedModel.add({
+                                  'brand': element,
+                                  'model': <CarModel>[],
+                                });
+                              }
                               controller.brand.refresh();
                             });
                           },
@@ -495,28 +656,65 @@ class _FilterViewState extends State<FilterView> {
                         //*model section
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Obx(() {
+                            return Wrap(
+                              spacing: 10.w,
+                              children: [
+                                ...List.generate(
+                                  controller.brandAndSelectedModel.length,
+                                  (index) {
+                                    var brand =
+                                        controller.brandAndSelectedModel[index];
+                                    return SizedBox(
+                                      width: (Get.width /
+                                              (controller.brand.length > 1
+                                                  ? 2
+                                                  : 1)) -
+                                          26.w,
+                                      child: FilterOptionWidget(
+                                        title: "Model ",
+                                        titleSub:
+                                            '*(${brand['brand'].brand ?? ''})',
+                                        subTitle: controller
+                                                .brandAndSelectedModel[index]
+                                                    ['model']
+                                                .isEmpty
+                                            ? 'Choose Model'
+                                            : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
+                                                  e.name.toString()
+                                                ]).join(', ')}',
+                                        onTap: () {
+                                          Get.bottomSheet(
+                                            CarMultiModelBottomSheet(
+                                              title: "Model",
+                                              data: (brand['brand'].model ??
+                                                      <CarModel>[])
+                                                  .toList(),
+                                              selectedData: controller
+                                                      .brandAndSelectedModel[
+                                                  index]['model'],
+                                              onSelect: (p0) {
+                                                controller
+                                                        .brandAndSelectedModel[
+                                                    index]['model'] = p0;
+                                                controller.brandAndSelectedModel
+                                                    .refresh();
+                                              },
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                )
+                              ],
+                            );
+                          }),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
                           child: Row(
                             children: [
-                              Expanded(
-                                child: Obx(() => FilterOptionWidget(
-                                      title: "Model",
-                                      subTitle: controller.model.value?.name ??
-                                          'Choose Model',
-                                      onTap: () {
-                                        Get.bottomSheet(
-                                          CarModelBottomSheet(
-                                            title: "Model",
-                                            data: (controller.brand.value)
-                                                .expand((e) =>
-                                                    e.model ?? <CarModel>[])
-                                                .toList(),
-                                            selectedData: controller.model,
-                                          ),
-                                        );
-                                      },
-                                    )),
-                              ),
-                              10.horizontalSpace,
                               Expanded(
                                 child: Obx(() => FilterOptionWidget(
                                       title: "Body Type",
@@ -619,9 +817,11 @@ class _FilterViewState extends State<FilterView> {
                                 child: Obx(
                                   () => FilterOptionWidget(
                                     title: "Color",
-                                    subTitle: controller.color.value
-                                        .expand((e) => [e.toString()])
-                                        .join(', '),
+                                    subTitle: controller.color.value.isEmpty
+                                        ? 'Not Choose Yet'
+                                        : controller.color.value
+                                            .expand((e) => [e.toString()])
+                                            .join(', '),
                                     onTap: () {
                                       Get.bottomSheet(
                                         MultiFilterBottomSheet(
@@ -651,71 +851,154 @@ class _FilterViewState extends State<FilterView> {
                     )
                   : controller.category.value?.name?.toLowerCase() ==
                           'real estate'
-                      ? Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 16.w, vertical: 10.h),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.r),
-                                border: Border.all(
-                                  color: AppColors.textFieldGray,
-                                ),
-                              ),
-                              child: SimpleChipsInput(
-                                separatorCharacter: ",",
-                                focusNode: focusNode,
-                                validateInput: true,
-                                formKey: keySimpleChipsInput,
-                                textFormFieldStyle: style,
-                                validateInputMethod: (String value) {},
-                                onSubmitted: (p0) {
-                                  setState(() {
-                                    output = p0;
-                                  });
-                                },
-                                onChipDeleted: (p0, p1) {
-                                  setState(() {
-                                    deletedChip = p0;
-                                    deletedChipIndex = p1.toString();
-                                  });
-                                },
-                                onSaved: ((p0) {
-                                  setState(() {
-                                    output = p0;
-                                  });
-                                }),
-                                chipTextStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14.sp,
-                                ),
-                                deleteIcon: Padding(
-                                  padding: const EdgeInsets.only(left: 4.0),
-                                  child: Icon(
-                                    CupertinoIcons.xmark_circle_fill,
-                                    size: 16.r,
-                                    color: Colors.black,
+                      ? Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16.w)
+                              .copyWith(top: 16.h, bottom: 10.h),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 4.h,
+                                    horizontal: 8.w,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    border: Border.all(
+                                      color: Get.theme.primaryColor
+                                          .withOpacity(.4),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Floor',
+                                        style: bold.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      3.verticalSpace,
+                                      FormBuilderTextField(
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d*\.?\d*')),
+                                        ],
+                                        controller: productController.room,
+                                        name: 'floor',
+                                        onChanged: (newValue) {},
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Get.theme.primaryColor
+                                              .withOpacity(.6),
+                                        ),
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: AppColors.liteGray
+                                              .withOpacity(.3),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 0.h,
+                                          ),
+                                          isDense: true,
+                                          alignLabelWithHint: true,
+                                          floatingLabelBehavior:
+                                              FloatingLabelBehavior.always,
+                                          labelText: '',
+                                          labelStyle: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Get.theme.primaryColor
+                                                .withOpacity(.6),
+                                          ),
+                                          border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                        ),
+                                        validator:
+                                            FormBuilderValidators.compose([]),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                widgetContainerDecoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                chipContainerDecoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  borderRadius: BorderRadius.circular(8.r),
-                                ),
-                                placeChipsSectionAbove: false,
                               ),
-                            )
-                          ],
+                              20.horizontalSpace,
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    vertical: 4.h,
+                                    horizontal: 8.w,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                    border: Border.all(
+                                      color: Get.theme.primaryColor
+                                          .withOpacity(.4),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Room',
+                                        style: bold.copyWith(
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                      3.verticalSpace,
+                                      FormBuilderTextField(
+                                        keyboardType: TextInputType.number,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp(r'^\d*\.?\d*')),
+                                        ],
+                                        controller: productController.room,
+                                        name: 'room',
+                                        onChanged: (newValue) {},
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 12.sp,
+                                          color: Get.theme.primaryColor
+                                              .withOpacity(.6),
+                                        ),
+                                        decoration: InputDecoration(
+                                          filled: true,
+                                          fillColor: AppColors.liteGray
+                                              .withOpacity(.3),
+                                          contentPadding: EdgeInsets.symmetric(
+                                            vertical: 0.h,
+                                          ),
+                                          isDense: true,
+                                          alignLabelWithHint: true,
+                                          floatingLabelBehavior:
+                                              FloatingLabelBehavior.always,
+                                          labelText: '',
+                                          labelStyle: TextStyle(
+                                            fontSize: 12.sp,
+                                            color: Get.theme.primaryColor
+                                                .withOpacity(.6),
+                                          ),
+                                          border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          errorBorder: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                        ),
+                                        validator:
+                                            FormBuilderValidators.compose([]),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         )
-                      : controller.category.value?.name?.toLowerCase() ==
-                              'phone'
-                          ? Center()
-                          : Center();
+                      : Center();
             }),
           ),
 
@@ -775,28 +1058,77 @@ class _FilterViewState extends State<FilterView> {
                     ],
                   ),
                   10.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          "Has A VIN Code",
-                          style: bold.copyWith(fontSize: 14.sp),
+                  Obx(() {
+                    return controller.category.value?.name?.toLowerCase() ==
+                            'automobile'
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.w),
+                                child: Text(
+                                  "Has A VIN Code",
+                                  style: bold.copyWith(fontSize: 14.sp),
+                                ),
+                              ),
+                              AdvancedSwitch(
+                                onChanged: (value) {
+                                  controller.hasVinCode.value = value;
+                                },
+                                controller: hasVin,
+                                activeColor: AppColors.primary,
+                                inactiveColor: Colors.grey,
+                                width: 45.0,
+                                height: 25.h,
+                                enabled: true,
+                                disabledOpacity: 0.5,
+                              ),
+                            ],
+                          )
+                        : const Center();
+                  }),
+                  //Sort
+                  10.verticalSpace,
+                  ExpansionTile(
+                    dense: true,
+                    iconColor: context.theme.primaryColor,
+                    collapsedIconColor: context.theme.primaryColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      side: BorderSide(
+                        color: context.theme.primaryColor.withOpacity(.5),
+                        width: .8,
+                      ),
+                    ),
+                    collapsedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.r),
+                      side: BorderSide(
+                        color: context.theme.primaryColor.withOpacity(.5),
+                        width: .8,
+                      ),
+                    ),
+                    title: Text(
+                      'Sort',
+                      style: bold.copyWith(fontSize: 16.sp),
+                    ),
+                    subtitle: Obx(() {
+                      return Text(
+                        controller.sortValue.isEmpty
+                            ? 'Not chosen yet'
+                            : controller.sortValue.value,
+                        style: regular.copyWith(
+                          fontSize: 10.sp,
+                          color: context.theme.textTheme.bodyLarge!.color!
+                              .withOpacity(.7),
                         ),
-                      ),
-                      AdvancedSwitch(
-                        onChanged: (value) {
-                          controller.hasVinCode.value = value;
-                        },
-                        controller: hasVin,
-                        activeColor: AppColors.primary,
-                        inactiveColor: Colors.grey,
-                        width: 45.0,
-                        height: 25.h,
-                        enabled: true,
-                        disabledOpacity: 0.5,
-                      ),
+                      );
+                    }),
+                    children: [
+                      _shortTile(title: 'Default'),
+                      _shortTile(title: 'The newest'),
+                      _shortTile(title: 'The Cheaper price first'),
+                      _shortTile(title: 'The highest price first'),
+                      15.verticalSpace,
                     ],
                   ),
                 ],
@@ -856,6 +1188,43 @@ class _FilterViewState extends State<FilterView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  InkWell _shortTile({required String title}) {
+    return InkWell(
+      onTap: () {
+        controller.sortValue.value = title;
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 15.w,
+          vertical: 6.h,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: regular.copyWith(fontSize: 12.sp),
+              ),
+            ),
+            CircleAvatar(
+              radius: 10.r,
+              backgroundColor: AppColors.liteGray,
+              child: Obx(() {
+                return controller.sortValue.value == title
+                    ? Icon(
+                        Icons.check_circle,
+                        color: AppColors.primary,
+                        size: 20.r,
+                      )
+                    : const Center();
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

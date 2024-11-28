@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
+
 MqttMessageModel mqttMessageModelFromJson(String str) =>
     MqttMessageModel.fromJson(json.decode(str));
 
@@ -19,7 +21,7 @@ class MqttMessageModel {
   final Receiver? receiver;
   final String? chatId;
   final String? content;
-  final List<dynamic>? attachments;
+  final List<Attachment>? attachments;
   final String? status;
 
   MqttMessageModel({
@@ -44,7 +46,7 @@ class MqttMessageModel {
     Receiver? receiver,
     String? chatId,
     String? content,
-    List<dynamic>? attachments,
+    List<Attachment>? attachments,
     String? status,
   }) =>
       MqttMessageModel(
@@ -81,7 +83,8 @@ class MqttMessageModel {
         content: json["content"],
         attachments: json["attachments"] == null
             ? []
-            : List<dynamic>.from(json["attachments"]!.map((x) => x)),
+            : List<Attachment>.from(
+                json["attachments"]!.map((x) => Attachment.fromJson(x))),
         status: json["status"],
       );
 

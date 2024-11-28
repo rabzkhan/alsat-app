@@ -37,12 +37,16 @@ class FilterController extends GetxController {
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
-  Rxn<CarModel> model = Rxn<CarModel>();
+  RxList<Map<String, dynamic>> brandAndSelectedModel =
+      RxList<Map<String, dynamic>>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
   RxString transmission = "Not Chosen Yet".obs;
   RxList<String> color = <String>[].obs;
+  RxList<String> selectMobileBrand = <String>[].obs;
+  RxList<String> estateTtype = <String>[].obs;
+  RxString sortValue = RxString('Default');
 
   // Real state variables
 
@@ -56,8 +60,44 @@ class FilterController extends GetxController {
   RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
+  RxList<String> estateTtypeList = <String>["house"].obs;
   RxList<String> dcolor =
       <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
+  RxList<String> mobileBrand = <String>[
+    'Apple',
+    'Samsung',
+    'Huawei',
+    'Xiaomi',
+    'Oppo',
+    'Vivo',
+    'OnePlus',
+    'Realme',
+    'Google Pixel',
+    'Motorola',
+    'Sony',
+    'LG',
+    'Nokia',
+    'Asus',
+    'Lenovo',
+    'HTC',
+    'Honor',
+    'ZTE',
+    'Alcatel',
+    'Micromax',
+    'Infinix',
+    'Tecno',
+    'Panasonic',
+    'Lava',
+    'Karbonn',
+    'Meizu',
+    'Sharp',
+    'TCL',
+    'BlackBerry',
+    'Fairphone',
+    'Essential Phone',
+    'Razer Phone',
+    'Coolpad'
+  ].obs;
 
   Rx<TextEditingController> priceFrom = TextEditingController(text: "0").obs;
   Rx<TextEditingController> priceTo = TextEditingController(text: "300000").obs;
@@ -86,7 +126,7 @@ class FilterController extends GetxController {
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
       "brand": brand.value != "Not Chosen Yet" ? brand.value : '',
-      "model": model.value != "Not Chosen Yet" ? model.value : '',
+      "model": "Not Chosen Yet",
       "body_type": bodyType.value != "Not Chosen Yet" ? bodyType.value : '',
       //"drive_type": driveType.value != "Not Chosen Yet" ? driveType.value : '',
       //"engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',

@@ -12,8 +12,10 @@ class FilterOptionWidget extends StatelessWidget {
     required this.title,
     required this.subTitle,
     required this.onTap,
+    this.titleSub,
   });
   final String title;
+  final String? titleSub;
   final String subTitle;
   final VoidCallback? onTap;
   @override
@@ -35,11 +37,22 @@ class FilterOptionWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: bold.copyWith(
-                      fontSize: 14.sp,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        title,
+                        style: bold.copyWith(
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      Text(
+                        titleSub ?? "",
+                        style: regular.copyWith(
+                          fontSize: 10.sp,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
                   ),
                   2.verticalSpace,
                   ScrollingTextWidget(

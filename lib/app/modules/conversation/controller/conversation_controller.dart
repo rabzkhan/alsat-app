@@ -110,12 +110,6 @@ class ConversationController extends GetxController {
         selectConversationMessageList.value =
             conversationMessagesRes.value?.data?.messages ?? [];
         for (var element in selectConversationMessageList) {
-          Participant? auth = (selectConversation.value?.participants ?? [])
-              .firstWhere((e) => e.id == element.senderId);
-          log('auth: ${auth.toJson()}');
-          log('seleconversation: ${selectConversation.toJson()}');
-          log('message: ${element.toJson()}');
-
           var message = types.Message.fromJson({
             "author": {
               "firstName": element.senderId,
@@ -131,6 +125,31 @@ class ConversationController extends GetxController {
             "type": "text"
           });
           coverMessage.add(message);
+          if (element.attachments != null &&
+              (element.attachments ?? []).isNotEmpty) {
+            for (var e in element.attachments ?? []) {
+              var message = types.Message.fromJson({
+                "author": {
+                  "firstName": element.senderId,
+                  "id": element.senderId,
+                  "imageUrl": '',
+                  "lastName": ''
+                },
+                "createdAt":
+                    (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
+                "height": 1280,
+                "id": "${element.senderId}${e.data}",
+                "name": "madrid",
+                "size": 585000,
+                "status": "seen",
+                "type": "image",
+                "uri": e.data,
+                "width": 1920
+              });
+              log(e.toJson().toString());
+              coverMessage.add(message);
+            }
+          }
         }
 
         isConversationMessageLoading.value = false;
