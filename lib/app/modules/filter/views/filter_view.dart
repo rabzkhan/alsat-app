@@ -4,6 +4,7 @@ import 'package:alsat/app/components/scrolling_text.dart';
 import 'package:alsat/app/global/app_decoration.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
+import 'package:alsat/app/modules/filter/views/filter_results_view.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -62,6 +63,7 @@ class _FilterViewState extends State<FilterView> {
   @override
   void initState() {
     productController.getCurrentLocation();
+
     super.initState();
   }
 
@@ -390,7 +392,7 @@ class _FilterViewState extends State<FilterView> {
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      controller.condition.value == "All"
+                                      controller.condition.value == ""
                                           ? Colors.white
                                           : Colors.transparent,
                                   elevation: 0,
@@ -399,7 +401,7 @@ class _FilterViewState extends State<FilterView> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  controller.condition.value = "All";
+                                  controller.condition.value = "";
                                 },
                                 child: const Text(
                                   "All",
@@ -414,8 +416,7 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value ==
-                                                  "Brand New"
+                                          controller.condition.value == "new"
                                               ? Colors.white
                                               : Colors.transparent,
                                       elevation: 0,
@@ -423,7 +424,7 @@ class _FilterViewState extends State<FilterView> {
                                           borderRadius:
                                               BorderRadius.circular(8.r))),
                                   onPressed: () {
-                                    controller.condition.value = "Brand New";
+                                    controller.condition.value = "new";
                                   },
                                   child: const Text(
                                     "Brand New",
@@ -437,7 +438,7 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value == "Used"
+                                          controller.condition.value == "used"
                                               ? Colors.white
                                               : Colors.transparent,
                                       elevation: 0,
@@ -445,7 +446,7 @@ class _FilterViewState extends State<FilterView> {
                                           borderRadius:
                                               BorderRadius.circular(8.r))),
                                   onPressed: () {
-                                    controller.condition.value = "Used";
+                                    controller.condition.value = "used";
                                   },
                                   child: const Text(
                                     "Used",
@@ -1146,39 +1147,49 @@ class _FilterViewState extends State<FilterView> {
               padding: EdgeInsets.symmetric(horizontal: 16.w),
               child: SizedBox(
                 height: 60.h,
-                child: ElevatedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: AppColors.primary,
-                    padding: EdgeInsets.symmetric(vertical: 18.h),
-                    elevation: 0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
+                child: Obx(() {
+                  return ElevatedButton(
+                    style: OutlinedButton.styleFrom(
+                      backgroundColor: controller.category.value == null
+                          ? AppColors.liteGray
+                          : AppColors.primary,
+                      padding: EdgeInsets.symmetric(vertical: 18.h),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    controller.applyFilter();
-                  },
-                  child: Obx(() {
-                    if (controller.isFilterLoading.value) {
-                      return SizedBox(
-                        height: 20.h,
-                        width: 20.w,
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 1,
+                    onPressed: controller.category.value == null
+                        ? null
+                        : () {
+                            log('filter');
+                            controller.isFilterLoading.value = true;
+                            controller.applyFilter();
+                            Get.to(const FilterResultsView(),
+                                transition: Transition.rightToLeft);
+                          },
+                    child: Obx(() {
+                      if (controller.isFilterLoading.value) {
+                        return SizedBox(
+                          height: 20.h,
+                          width: 20.w,
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 1,
+                            ),
                           ),
+                        );
+                      }
+                      return const Text(
+                        "Filter",
+                        style: TextStyle(
+                          color: Colors.white,
                         ),
                       );
-                    }
-                    return const Text(
-                      "Filter",
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    );
-                  }),
-                ),
+                    }),
+                  );
+                }),
               ),
             ),
           ),
