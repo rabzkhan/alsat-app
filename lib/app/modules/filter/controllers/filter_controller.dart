@@ -12,6 +12,7 @@ import '../../app_home/models/car_brand_res.dart';
 import '../../app_home/models/category_model.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/model/product_post_list_res.dart';
+import '../models/location_model.dart';
 import '../views/filter_results_view.dart';
 
 class FilterController extends GetxController {
@@ -39,8 +40,7 @@ class FilterController extends GetxController {
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
-  RxList<Map<String, dynamic>> brandAndSelectedModel =
-      RxList<Map<String, dynamic>>();
+  RxList<Map<String, dynamic>> brandAndSelectedModel = RxList<Map<String, dynamic>>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
@@ -52,19 +52,12 @@ class FilterController extends GetxController {
 
   // Real state variables
 
-  RxList<String> dlocation = <String>["New York", "Texas"].obs;
-  RxList<String> dbrand =
-      <String>["Toyota", "Honda", "Bmw", "Volvo", "Audi", "Mercedes Benz"].obs;
-  RxList<String> dmodel =
-      <String>["Camry", "Corolla", "X3", "XC60", "A6", "C-Class"].obs;
-  RxList<String> dbodyType =
-      <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dbodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
   RxList<String> estateTtypeList = <String>["house"].obs;
-  RxList<String> dcolor =
-      <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
+  RxList<String> dcolor = <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
   RxList<String> mobileBrand = <String>[
     'Apple',
     'Samsung',
@@ -116,8 +109,74 @@ class FilterController extends GetxController {
 
   Rx<ItemModel> itemModel = ItemModel().obs;
 
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  //============ for location =================== //
+
+  // To track selected provinces
+  RxSet<String> selectedProvinces = <String>{}.obs;
+
+  // To track selected cities for each province
+  RxMap<String, List<String>> selectedCities = <String, List<String>>{}.obs;
+
+  // Toggle province selection with support for single or multiple selection
+  void toggleProvince(String provinceName, bool allowMultipleSelection) {
+    if (!allowMultipleSelection) {
+      // Single selection: clear all and select the new one
+      selectedProvinces.clear();
+      selectedCities.clear();
+      selectedProvinces.add(provinceName);
+      selectedCities[provinceName] = [];
+    } else {
+      // Multiple selection: toggle the province
+      if (selectedProvinces.contains(provinceName)) {
+        selectedProvinces.remove(provinceName);
+        selectedCities.remove(provinceName);
+      } else {
+        selectedProvinces.add(provinceName);
+        selectedCities[provinceName] = [];
+      }
+    }
+  }
+
+  // Toggle city selection with single or multiple selection
+  void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
+    if (!selectedProvinces.contains(provinceName)) return; // Province must be selected first
+
+    if (!allowMultipleSelection) {
+      // Single selection: clear all cities and select the new one
+      selectedCities[provinceName] = [cityName];
+    } else {
+      // Multiple selection: toggle the city
+      final cities = selectedCities[provinceName] ?? [];
+      if (cities.contains(cityName)) {
+        cities.remove(cityName);
+      } else {
+        cities.add(cityName);
+      }
+      selectedCities[provinceName] = cities; // Update the list
+    }
+  }
+
+  // Check if a province is selected
+  bool isProvinceSelected(String provinceName) {
+    return selectedProvinces.contains(provinceName);
+  }
+
+  // Check if a city is selected under a province
+  bool isCitySelected(String provinceName, String cityName) {
+    return selectedCities[provinceName]?.contains(cityName) ?? false;
+  }
+
+  // Generate the final data structure
+  List<Map<String, dynamic>> getSelectedLocationData() {
+    return selectedProvinces.map((province) {
+      final cities = selectedCities[province];
+      return {"province": province, if (cities != null && cities.isNotEmpty) "city": cities};
+    }).toList();
+  }
+
+  // ============== end of location ================== //
+
+  RefreshController refreshController = RefreshController(initialRefresh: false);
   void onRefresh() async {
     await applyFilter(
       refresh: true,
@@ -139,8 +198,7 @@ class FilterController extends GetxController {
 
   ProudctPostListRes userProductPostListRes = ProudctPostListRes();
   RxList<ProductModel> itemList = <ProductModel>[].obs;
-  Future<void> applyFilter(
-      {bool refresh = false, bool paginate = false, String? nextValue}) async {
+  Future<void> applyFilter({bool refresh = false, bool paginate = false, String? nextValue}) async {
     ProductController productController = Get.find();
     var filterData = {
       "category": (category.value?.name ?? '').toLowerCase(),

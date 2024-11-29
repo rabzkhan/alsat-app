@@ -82,21 +82,21 @@ class CustomAppBar extends StatelessWidget {
           Image.asset(logo),
           const Spacer(),
 
-          ///ll
-          if (isShowSearch)
-            InkWell(
-              onTap: () {
-                MySharedPref.clear();
-                homeController.isShowSearch.value = !homeController.isShowSearch.value;
-                homeController.isShowDrawer.value = false;
-              },
-              child: Image.asset(
-                searchIcon,
-                height: 23.h,
-                width: 23.w,
-              ),
-            ),
-          12.horizontalSpace,
+          // ///ll
+          // if (isShowSearch)
+          //   InkWell(
+          //     onTap: () {
+          //       MySharedPref.clear();
+          //       homeController.isShowSearch.value = !homeController.isShowSearch.value;
+          //       homeController.isShowDrawer.value = false;
+          //     },
+          //     child: Image.asset(
+          //       searchIcon,
+          //       height: 23.h,
+          //       width: 23.w,
+          //     ),
+          //   ),
+          20.horizontalSpace,
 
           ///ll
           if (isShowFilter)
