@@ -116,14 +116,26 @@ class FilterController extends GetxController {
   // To track selected cities for each province
   RxMap<String, List<String>> selectedCities = <String, List<String>>{}.obs;
 
-  // Toggle province selection with support for single or multiple selection
+// RxString for selected province
+  RxString selectedProvince = "".obs;
+
+// RxString for selected city
+  RxString selectedCity = "".obs;
+
+// Toggle province selection with support for single or multiple selection
   void toggleProvince(String provinceName, bool allowMultipleSelection) {
     if (!allowMultipleSelection) {
-      // Single selection: clear all and select the new one
-      selectedProvinces.clear();
-      selectedCities.clear();
-      selectedProvinces.add(provinceName);
-      selectedCities[provinceName] = [];
+      // Single selection: toggle the selected province
+      if (selectedProvince.value == provinceName) {
+        // If already selected, deselect it
+        selectedProvince.value = "";
+        selectedCity.value = "";
+      } else {
+        // If not selected, clear others and select the new one
+        selectedProvince.value = provinceName;
+        selectedCity.value = "";
+      }
+      Get.find<ProductController>().calculateFilledIndividualInfoFields();
     } else {
       // Multiple selection: toggle the province
       if (selectedProvinces.contains(provinceName)) {
@@ -136,12 +148,18 @@ class FilterController extends GetxController {
     }
   }
 
-  // Toggle city selection with single or multiple selection
+// Toggle city selection with single or multiple selection
   void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
-    if (!selectedProvinces.contains(provinceName)) return; // Province must be selected first
+    if (!selectedProvinces.contains(provinceName) && selectedProvince.value != provinceName)
+      return; // Province must be selected first
     if (!allowMultipleSelection) {
-      // Single selection: clear all cities and select the new one
-      selectedCities[provinceName] = [cityName];
+      // Single selection: update the selected city
+      if (selectedCity.value == cityName) {
+        selectedCity.value = ""; // Deselect if already selected
+      } else {
+        selectedCity.value = cityName; // Select new city
+      }
+      Get.find<ProductController>().calculateFilledIndividualInfoFields();
     } else {
       // Multiple selection: toggle the city
       final cities = selectedCities[provinceName] ?? [];
@@ -154,37 +172,55 @@ class FilterController extends GetxController {
     }
   }
 
-  // Check if a province is selected
+// Check if a province is selected
   bool isProvinceSelected(String provinceName) {
+    if (selectedProvince.value.isNotEmpty) {
+      return selectedProvince.value == provinceName;
+    }
     return selectedProvinces.contains(provinceName);
   }
 
-  // Check if a city is selected under a province
+// Check if a city is selected under a province
   bool isCitySelected(String provinceName, String cityName) {
+    if (selectedProvince.value == provinceName) {
+      return selectedCity.value == cityName;
+    }
     return selectedCities[provinceName]?.contains(cityName) ?? false;
   }
 
-  // Generate the final data structure
+// Generate the final data structure
   List<Map<String, dynamic>> getSelectedLocationData() {
+    if (selectedProvince.value.isNotEmpty) {
+      return [
+        {
+          "province": selectedProvince.value,
+          if (selectedCity.value.isNotEmpty) "city": selectedCity.value,
+        }
+      ];
+    }
     return selectedProvinces.map((province) {
       final cities = selectedCities[province];
       return {"province": province, if (cities != null && cities.isNotEmpty) "city": cities};
     }).toList();
   }
 
-  // Generate the final data structure (displayable text)
+// Generate the final data structure (displayable text)
   String getSelectedLocationText() {
+    if (selectedProvince.value.isNotEmpty) {
+      if (selectedCity.value.isNotEmpty) {
+        return '${selectedProvince.value}: ${selectedCity.value}';
+      }
+      return selectedProvince.value;
+    }
     List<String> locationTexts = [];
-    // For each selected province, check if cities are selected
     for (var province in selectedProvinces) {
       final cities = selectedCities[province] ?? [];
       if (cities.isNotEmpty) {
         locationTexts.add('$province: ${cities.join(', ')}');
       } else {
-        locationTexts.add(province); // Only show province if no cities are selected
+        locationTexts.add(province);
       }
     }
-    // Join all the selected provinces and cities into a single string
     return locationTexts.isNotEmpty ? locationTexts.join(', ') : 'Choose Location';
   }
 

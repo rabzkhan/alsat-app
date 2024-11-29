@@ -77,7 +77,11 @@ class LocationSelection extends StatelessWidget {
                               (city) {
                                 return InkWell(
                                   onTap: () {
-                                    filterController.toggleCity(province.name, city, canSelectMultiple);
+                                    filterController.toggleCity(
+                                      province.name,
+                                      city,
+                                      canSelectMultiple,
+                                    );
                                   },
                                   child: Padding(
                                     padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -95,7 +99,11 @@ class LocationSelection extends StatelessWidget {
                                           GestureDetector(
                                             onTap: () {
                                               // Toggle city selection
-                                              filterController.toggleCity(province.name, city, canSelectMultiple);
+                                              filterController.toggleCity(
+                                                province.name,
+                                                city,
+                                                canSelectMultiple,
+                                              );
                                             },
                                             child: CircleAvatar(
                                               radius: 8.r,
