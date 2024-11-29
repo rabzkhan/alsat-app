@@ -178,27 +178,48 @@ class _FilterViewState extends State<FilterView> {
                   horizontal: 12.w,
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Location",
-                          style: bold.copyWith(
-                            fontSize: 14.sp,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Location",
+                            style: bold.copyWith(
+                              fontSize: 14.sp,
+                            ),
                           ),
-                        ),
-                        2.verticalSpace,
-                        Text(
-                          "Choose Location",
-                          style: regular.copyWith(
-                            fontSize: 10.sp,
-                            color: context.theme.primaryColor,
-                          ),
-                        )
-                      ],
+                          2.verticalSpace,
+                          // Text(
+                          //   "Choose Location",
+                          //   style: regular.copyWith(
+                          //     fontSize: 10.sp,
+                          //     color: context.theme.primaryColor,
+                          //   ),
+                          // ),
+                          Obx(() {
+                            // Get the selected location text from the controller
+                            String selectedLocationText = Get.find<FilterController>().getSelectedLocationText();
+                            return Row(
+                              children: [
+                                Expanded(
+                                  child: ScrollingTextWidget(
+                                    child: Text(
+                                      selectedLocationText, // Display selected location text here
+                                      style: regular.copyWith(
+                                        fontSize: 10.sp,
+                                        color: context.theme.primaryColor,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        ],
+                      ),
                     ),
                     Icon(
                       Icons.keyboard_arrow_right,

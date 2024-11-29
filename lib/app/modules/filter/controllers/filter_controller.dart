@@ -113,7 +113,6 @@ class FilterController extends GetxController {
 
   // To track selected provinces
   RxSet<String> selectedProvinces = <String>{}.obs;
-
   // To track selected cities for each province
   RxMap<String, List<String>> selectedCities = <String, List<String>>{}.obs;
 
@@ -140,7 +139,6 @@ class FilterController extends GetxController {
   // Toggle city selection with single or multiple selection
   void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
     if (!selectedProvinces.contains(provinceName)) return; // Province must be selected first
-
     if (!allowMultipleSelection) {
       // Single selection: clear all cities and select the new one
       selectedCities[provinceName] = [cityName];
@@ -174,6 +172,22 @@ class FilterController extends GetxController {
     }).toList();
   }
 
+  // Generate the final data structure (displayable text)
+  String getSelectedLocationText() {
+    List<String> locationTexts = [];
+    // For each selected province, check if cities are selected
+    for (var province in selectedProvinces) {
+      final cities = selectedCities[province] ?? [];
+      if (cities.isNotEmpty) {
+        locationTexts.add('$province: ${cities.join(', ')}');
+      } else {
+        locationTexts.add(province); // Only show province if no cities are selected
+      }
+    }
+    // Join all the selected provinces and cities into a single string
+    return locationTexts.isNotEmpty ? locationTexts.join(', ') : 'Choose Location';
+  }
+
   // ============== end of location ================== //
 
   RefreshController refreshController = RefreshController(initialRefresh: false);
@@ -205,17 +219,7 @@ class FilterController extends GetxController {
       "condition": condition.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
-      // "location": [
-      //   ...List.generate(
-      //     productController.placemarks.length,
-      //     (index) {
-      //       return {
-      //         "province": "${productController.placemarks[index].locality}",
-      //         "city": [productController.placemarks[index].locality]
-      //       };
-      //     },
-      //   )
-      // ]
+      "location": getSelectedLocationData()
       //   "condition": condition.value,
       //   "price_from": int.parse(priceFrom.value.text),
       //   "price_to": int.parse(priceTo.value.text),
