@@ -683,14 +683,38 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         ),
                       ),
                     ),
-                    // more product
-                    // Text(
-                    //   'More Items From Saravanan B',
-                    //   style: semiBold.copyWith(
-                    //     fontSize: 14.sp,
-                    //   ),
-                    // ),
+                    12.verticalSpace,
+                    Text(
+                      'Contact With Seller',
+                      style: semiBold.copyWith(
+                        fontSize: 14.sp,
+                      ),
+                    ),
                     10.verticalSpace,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Colors.grey,
+                              ),
+                            ),
+                            child: CupertinoButton(
+                              onPressed: () {},
+                              child: const Text('Call'),
+                            ),
+                          ),
+                        ),
+                        Spacer(),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text('Chat'),
+                          ),
+                        ),
+                      ],
+                    )
                     // SizedBox(
                     //   height: 200.h,
                     //   child: ListView.separated(

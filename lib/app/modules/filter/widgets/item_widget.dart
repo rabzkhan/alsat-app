@@ -5,14 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/state_manager.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
-import '../models/item_model.dart';
+import '../../product/model/product_post_list_res.dart';
 
 class ItemWidget extends GetView<FilterController> {
   const ItemWidget({
     super.key,
     this.itemModel,
   });
-  final ItemModel? itemModel;
+  final ProductModel? itemModel;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -105,7 +105,7 @@ class ItemWidget extends GetView<FilterController> {
                     ),
                     Flexible(
                       child: Text(
-                        itemModel?.individualInfo?.location ?? '',
+                        itemModel?.individualInfo?.locationCity ?? '',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: medium.copyWith(

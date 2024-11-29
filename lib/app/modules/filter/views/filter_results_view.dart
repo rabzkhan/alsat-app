@@ -1,72 +1,78 @@
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_animate/flutter_animate.dart' as animate;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import '../../../components/product_list_tile.dart';
+import '../../product/model/product_post_list_res.dart';
 import '../controllers/filter_controller.dart';
-import '../widgets/item_widget.dart';
 
 class FilterResultsView extends GetView<FilterController> {
   const FilterResultsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    void onRefresh() async {
-      controller.applyFilter(
-        refresh: true,
-        paginate: false,
-      );
-    }
-
-    void onLoading() async {
-      controller.applyFilter(
-        paginate: true,
-        nextValue: controller.itemList.last.createdAt,
-      );
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Obx(() => Text(
-              "Results Found : ${controller.itemList.length}",
-              style: bold.copyWith(
-                fontSize: 16.sp,
-                color: Colors.grey,
-              ),
-            )),
-      ),
-      body: Obx(
-        () {
-          if (controller.itemList.isEmpty) {
-            return Center(
-              child: Text(
-                "No matching results found!",
-                style: medium.copyWith(color: Colors.grey),
+    return WillPopScope(
+      onWillPop: () async {
+        controller.itemList.clear();
+        controller.userProductPostListRes = ProudctPostListRes();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0,
+          title: Obx(() => Text(
+                "Results Found : ${controller.itemList.length}",
+                style: bold.copyWith(
+                  fontSize: 16.sp,
+                  color: Colors.grey,
+                ),
+              )),
+        ),
+        body: Obx(
+          () {
+            return SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: const WaterDropHeader(),
+              controller: controller.refreshController,
+              onRefresh: controller.onRefresh,
+              onLoading: controller.onLoading,
+              child: ListView.builder(
+                physics: const BouncingScrollPhysics(),
+                padding: EdgeInsets.only(top: 10.h),
+                itemCount: controller.isFilterLoading.value
+                    ? 10
+                    : controller.itemList.length,
+                scrollDirection: Axis.vertical,
+                itemBuilder: (BuildContext context, int index) {
+                  ProductModel? productModel = controller.isFilterLoading.value
+                      ? null
+                      : controller.itemList[index];
+                  return Padding(
+                    padding: EdgeInsets.only(
+                      bottom: 10.h,
+                    ),
+                    child: Skeletonizer(
+                      enabled: controller.isFilterLoading.value,
+                      effect: ShimmerEffect(
+                        baseColor: Get.theme.disabledColor.withOpacity(.2),
+                        highlightColor: Colors.white,
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      child: ProductListTile(
+                        productModel: productModel,
+                      ),
+                    ),
+                  );
+                },
               ),
             );
-          }
-          return SmartRefresher(
-            enablePullDown: true,
-            enablePullUp: true,
-            header: const WaterDropHeader(),
-            controller: controller.refreshController,
-            onRefresh: onRefresh,
-            onLoading: onLoading,
-            child: ListView.builder(
-              physics: const BouncingScrollPhysics(),
-              padding: EdgeInsets.only(top: 10.h),
-              itemCount: controller.itemList.length,
-              scrollDirection: Axis.vertical,
-              itemBuilder: (BuildContext context, int index) {
-                return ItemWidget(
-                  itemModel: controller.itemList[index],
-                ).animate().fadeIn();
-              },
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }

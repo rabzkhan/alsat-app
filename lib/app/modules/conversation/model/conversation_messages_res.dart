@@ -68,7 +68,7 @@ class MessageModel {
   final String? chatId;
   final String? content;
   final ReplyTo? replyTo;
-  final List<dynamic>? attachments;
+  final List<Attachment>? attachments;
   final String? status;
 
   MessageModel({
@@ -105,7 +105,8 @@ class MessageModel {
             : ReplyTo.fromJson(json["reply_to"]),
         attachments: json["attachments"] == null
             ? []
-            : List<dynamic>.from(json["attachments"]!.map((x) => x)),
+            : List<Attachment>.from(
+                json["attachments"]!.map((x) => Attachment.fromJson(x))),
         status: json["status"],
       );
 
@@ -121,8 +122,37 @@ class MessageModel {
         "reply_to": replyTo?.toJson(),
         "attachments": attachments == null
             ? []
-            : List<dynamic>.from(attachments!.map((x) => x)),
+            : List<dynamic>.from(attachments!.map((x) => x.toJson())),
         "status": status,
+      };
+}
+
+class Attachment {
+  final String? type;
+  final dynamic data;
+
+  Attachment({
+    this.type,
+    this.data,
+  });
+
+  Attachment copyWith({
+    String? type,
+    dynamic data,
+  }) =>
+      Attachment(
+        type: type ?? this.type,
+        data: data ?? this.data,
+      );
+
+  factory Attachment.fromJson(Map<String, dynamic> json) => Attachment(
+        type: json["type"],
+        data: json["data"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "type": type,
+        "data": data,
       };
 }
 

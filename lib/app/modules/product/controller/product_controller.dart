@@ -499,10 +499,10 @@ class ProductController extends GetxController {
   Rxn<LocationData> currentLocation = Rxn();
   RxList<geocoding.Placemark> placemarks = RxList([]);
 
-  void getCurrentLocation() async {
+  Future<void> getCurrentLocation() async {
     log("Call getCurrentLocation");
     Location location = Location();
-    location.getLocation().then(
+    await location.getLocation().then(
       (location) {
         currentLocation.value = location;
         getLatLngToAddress(
