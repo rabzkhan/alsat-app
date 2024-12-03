@@ -114,17 +114,16 @@ Future<Map<String, dynamic>> videoToBase64(String filePath) async {
       contentType = 'video/webm';
       break;
     default:
-      contentType =
-          'application/octet-stream'; // Default for unknown file types
+      contentType = 'application/octet-stream';
   }
 
   // Creating a JSON object for the video
   var jsonObject = {
     "name": base64String,
     "type": "video",
-    "size": File(filePath).lengthSync(), // Get file size in bytes
-    "hash": calculateHash(base64String), // Generate a hash of the Base64 string
-    "content_type": contentType // MIME type of the video
+    "size": File(filePath).lengthSync(),
+    "hash": calculateHash(base64String),
+    "content_type": contentType
   };
 
   return jsonObject;

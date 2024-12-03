@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
+import '../model/message_model.dart';
 import '../model/mqtt_message_model.dart';
 
 class ConversationController extends GetxController {
@@ -53,6 +56,7 @@ class ConversationController extends GetxController {
       },
       onError: (error) {
         isSendingMessage.value = false;
+        log('Error: $error');
       },
     );
   }
@@ -89,10 +93,12 @@ class ConversationController extends GetxController {
   Rxn<ConversationModel> selectConversation = Rxn<ConversationModel>();
   Rxn<ConversationMessagesRes> conversationMessagesRes =
       Rxn<ConversationMessagesRes>();
+  RxList<ChatMessage> coverMessage = RxList<ChatMessage>([]);
+  AuthController authController = Get.find<AuthController>();
+  Rxn<Participant> selectUserInfo = Rxn();
   //cover message model
-  RxList<types.Message> coverMessage = RxList<types.Message>([]);
-  Future<void> getConversationsMessages() async {
-    log('chatId: ${selectConversation.value?.id}');
+  Future<void> getConversationsMessages({String? next}) async {
+    log("selectConversation.value?.id ${selectConversation.value?.id}");
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.get,
@@ -100,72 +106,111 @@ class ConversationController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      queryParameters: {
-        'chat_id': selectConversation.value?.id,
-      },
+      queryParameters: next == null
+          ? {
+              'chat_id': selectConversation.value?.id,
+            }
+          : {
+              'chat_id': selectConversation.value?.id,
+              'next': next,
+            },
       onLoading: () {
-        isConversationMessageLoading.value = true;
-        selectConversationMessageList.value = [];
-        coverMessage.value = [];
+        if (next == null) {
+          isConversationMessageLoading.value = true;
+          selectConversationMessageList.value = [];
+          coverMessage.value = [];
+        }
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         conversationMessagesRes.value = ConversationMessagesRes.fromJson(data);
         selectConversationMessageList.value =
             conversationMessagesRes.value?.data?.messages ?? [];
-        for (var element in selectConversationMessageList) {
-          var message = types.Message.fromJson({
-            "author": {
-              "firstName": conversationMessagesRes.value?.data
-                      ?.participants?[element.senderId.toString()]?.userName ??
-                  'No Name',
-              "id": element.senderId,
-              "imageUrl": '',
-              "lastName": ''
-            },
-            "createdAt":
-                (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-            "id": element.id,
-            "status": element.status,
-            "text": element.content,
-            "type": "text"
-          });
-          coverMessage.add(message);
+        Map<String, Participant>? map =
+            conversationMessagesRes.value?.data?.participants;
+        map?.remove(authController.userDataModel.value.id.toString());
+        selectUserInfo.value = map?.values.toList().first;
 
+        for (var element in selectConversationMessageList) {
           if (element.attachments != null &&
               (element.attachments ?? []).isNotEmpty) {
             for (Attachment e in element.attachments ?? []) {
               if (e.type == 'image') {
-                var messageInner = types.Message.fromJson(
-                  {
-                    "author": {
-                      "firstName": conversationMessagesRes
-                              .value
-                              ?.data
-                              ?.participants?[element.senderId.toString()]
-                              ?.userName ??
-                          'No Name',
-                      "id": element.senderId,
-                      "imageUrl": '',
-                      "lastName": ''
-                    },
-                    "createdAt":
-                        (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/
-                            1000,
-                    "height": 1280,
-                    "id": "${element.senderId}${e.data}",
-                    "name": "madrid",
-                    "size": 585000,
-                    "status": element.status,
-                    "type": "image",
-                    "uri": "${e.data}",
-                    "width": 1920
-                  },
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.image,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
                 );
-                coverMessage.add(messageInner);
-                log(e.toJson().toString());
+              }
+              if (e.type == 'location') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.map,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if ((e.type ?? '').trim().isEmpty) {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: null,
+                  ),
+                );
               }
             }
+          } else {
+            coverMessage.add(
+              ChatMessage(
+                id: element.id ?? '0',
+                text: element.content ?? '',
+                messageType: ChatMessageType.text,
+                messageStatus: MessageStatus.viewed,
+                isSender:
+                    authController.userDataModel.value.id == element.senderId,
+                time: element.createdAt ?? DateTime.now(),
+                otherUser: ChatUser(
+                  id: selectUserInfo.value?.id ?? "",
+                  name: selectUserInfo.value?.userName ?? '',
+                  imageUrl: selectUserInfo.value?.picture ?? '',
+                ),
+                data: null,
+              ),
+            );
           }
         }
 
@@ -249,24 +294,23 @@ class ConversationController extends GetxController {
     //-- Check if conversation is selected --//
     if (selectConversation.value?.participants?.lastOrNull?.id ==
         mqttMessageModel.sender?.id) {
-      log('message is from selected conversation');
-      var message = types.Message.fromJson({
-        "author": {
-          "firstName": mqttMessageModel.sender?.userName,
-          "id": mqttMessageModel.sender?.id,
-          "imageUrl": mqttMessageModel.sender?.picture,
-          "lastName": ''
-        },
-        "createdAt":
-            (mqttMessageModel.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-        "id": mqttMessageModel.id,
-        "status": mqttMessageModel.status,
-        "text": mqttMessageModel.content,
-        "type": "text"
-      });
-      log('$message');
+      var newMessage = ChatMessage(
+        id: mqttMessageModel.sender?.id ?? '0',
+        text: mqttMessageModel.content ?? '',
+        messageType: ChatMessageType.text,
+        messageStatus: MessageStatus.notView,
+        isSender: authController.userDataModel.value.id ==
+            mqttMessageModel.sender?.id,
+        time: mqttMessageModel.createdAt ?? DateTime.now(),
+        otherUser: ChatUser(
+          id: selectUserInfo.value?.id ?? "",
+          name: selectUserInfo.value?.userName ?? '',
+          imageUrl: selectUserInfo.value?.picture ?? '',
+        ),
+        data: null,
+      );
 
-      coverMessage.insert(0, message);
+      coverMessage.insert(0, newMessage);
       coverMessage.refresh();
     }
     if (conversation != null) {
@@ -285,5 +329,64 @@ class ConversationController extends GetxController {
       conversation.lastMessage = message;
       conversationList.refresh();
     }
+  }
+  //
+
+  RxString typeMessageText = RxString('');
+  TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  sendMessage() async {
+    scrollToBottom();
+    coverMessage.insert(
+        0,
+        ChatMessage(
+          id: DateTime.now().millisecondsSinceEpoch.toString(),
+          text: typeMessageText.value,
+          messageType: ChatMessageType.text,
+          messageStatus: MessageStatus.viewed,
+          isSender: true,
+          time: DateTime.now(),
+          otherUser: ChatUser(
+            id: selectUserInfo.value?.id ?? "",
+            name: selectUserInfo.value?.userName ?? '',
+            imageUrl: selectUserInfo.value?.picture ?? '',
+          ),
+          data: null,
+        ));
+
+    sendMessages(messageController.text);
+    coverMessage.refresh();
+    typeMessageText.value = '';
+    messageController.clear();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scrollToBottom();
+    });
+  }
+
+  scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut, // Better curve for smooth scrolling
+      );
+    }
+  }
+
+  //-- refresh controller for conversation --//
+  RefreshController refreshMessageController =
+      RefreshController(initialRefresh: false);
+
+  void onRefreshMessage() async {
+    refreshMessageController.refreshCompleted();
+  }
+
+  void onLoadingMessage() async {
+    if (conversationMessagesRes.value?.hasMore ?? false) {
+      await getConversationsMessages(
+          next:
+              selectConversationMessageList.last.createdAt?.toIso8601String());
+    }
+    refreshMessageController.loadComplete();
   }
 }

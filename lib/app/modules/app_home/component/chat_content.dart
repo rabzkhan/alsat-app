@@ -10,6 +10,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/controller/conversation_controller.dart';
+import '../../conversation/view/message_view.dart';
 
 class ChatContent extends StatelessWidget {
   const ChatContent({super.key});
@@ -70,7 +71,7 @@ class ChatContent extends StatelessWidget {
                     child: ListTile(
                       onTap: () {
                         Get.to(
-                          ConversationView(
+                          MessagesScreen(
                             conversation: conversation!,
                           ),
                           transition: Transition.fadeIn,
