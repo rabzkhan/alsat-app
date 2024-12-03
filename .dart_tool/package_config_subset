@@ -10,10 +10,6 @@ analyzer
 3.3
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-6.7.0/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/analyzer-6.7.0/lib/
-any_link_preview
-3.1
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/any_link_preview-3.0.2/
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/any_link_preview-3.0.2/lib/
 archive
 3.0
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/archive-3.6.1/
@@ -26,10 +22,6 @@ async
 2.18
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/async-2.11.0/lib/
-audio_waveforms
-3.0
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/audio_waveforms-1.1.1/
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/audio_waveforms-1.1.1/lib/
 awesome_notifications
 2.19
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/awesome_notifications-0.10.0/
@@ -750,10 +742,6 @@ string_scanner
 2.18
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.2.0/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/string_scanner-1.2.0/lib/
-string_validator
-2.12
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/string_validator-1.1.0/
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/string_validator-1.1.0/lib/
 sync_http
 2.12
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/sync_http-0.3.1/
@@ -770,10 +758,6 @@ test_api
 3.2
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.2/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/test_api-0.7.2/lib/
-timeago
-2.12
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/timeago-3.7.0/
-file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/timeago-3.7.0/lib/
 timezone
 2.19
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/timezone-0.10.0/
@@ -938,10 +922,6 @@ alsat
 3.5
 file:///D:/Flutter/alsat-app/
 file:///D:/Flutter/alsat-app/lib/
-chatview
-3.2
-file:///D:/Flutter/alsat-app/packages/chatview/
-file:///D:/Flutter/alsat-app/packages/chatview/lib/
 flutter_chat_ui
 2.19
 file:///D:/Flutter/alsat-app/packages/flutter_chat_ui/

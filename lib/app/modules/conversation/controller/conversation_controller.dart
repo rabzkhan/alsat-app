@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:get/get.dart';
@@ -10,8 +11,6 @@ import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
 import '../model/mqtt_message_model.dart';
-
-const String userID = 'bc7eec8f-2a70-4c04-9566-39ead17e5909';
 
 class ConversationController extends GetxController {
   @override
@@ -23,16 +22,20 @@ class ConversationController extends GetxController {
 
   //-- sent messages --//
   RxBool isSendingMessage = false.obs;
-  Future<void> sendMessages(String messages) async {
+  Future<void> sendMessages(String messages,
+      {Map<String, dynamic>? map}) async {
+    AuthController authController = Get.find();
+    String uId = authController.userDataModel.value.id ?? "";
     Map<String, dynamic> messagesMap = {
-      "sender_id": userID,
+      "sender_id": uId,
       "receiver_id": (selectConversation.value?.participants ?? [])
-          .firstWhereOrNull((e) => e.id != userID)
+          .firstWhereOrNull((e) => e.id != uId)
           ?.id,
       "content": messages,
       "reply_to": "",
-      "attachments": []
+      "attachments": [map]
     };
+
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.post,
@@ -89,6 +92,7 @@ class ConversationController extends GetxController {
   //cover message model
   RxList<types.Message> coverMessage = RxList<types.Message>([]);
   Future<void> getConversationsMessages() async {
+    log('chatId: ${selectConversation.value?.id}');
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.get,
@@ -112,7 +116,9 @@ class ConversationController extends GetxController {
         for (var element in selectConversationMessageList) {
           var message = types.Message.fromJson({
             "author": {
-              "firstName": element.senderId,
+              "firstName": conversationMessagesRes.value?.data
+                      ?.participants?[element.senderId.toString()]?.userName ??
+                  'No Name',
               "id": element.senderId,
               "imageUrl": '',
               "lastName": ''
@@ -125,29 +131,40 @@ class ConversationController extends GetxController {
             "type": "text"
           });
           coverMessage.add(message);
+
           if (element.attachments != null &&
               (element.attachments ?? []).isNotEmpty) {
-            for (var e in element.attachments ?? []) {
-              var message = types.Message.fromJson({
-                "author": {
-                  "firstName": element.senderId,
-                  "id": element.senderId,
-                  "imageUrl": '',
-                  "lastName": ''
-                },
-                "createdAt":
-                    (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-                "height": 1280,
-                "id": "${element.senderId}${e.data}",
-                "name": "madrid",
-                "size": 585000,
-                "status": "seen",
-                "type": "image",
-                "uri": e.data,
-                "width": 1920
-              });
-              log(e.toJson().toString());
-              coverMessage.add(message);
+            for (Attachment e in element.attachments ?? []) {
+              if (e.type == 'image') {
+                var messageInner = types.Message.fromJson(
+                  {
+                    "author": {
+                      "firstName": conversationMessagesRes
+                              .value
+                              ?.data
+                              ?.participants?[element.senderId.toString()]
+                              ?.userName ??
+                          'No Name',
+                      "id": element.senderId,
+                      "imageUrl": '',
+                      "lastName": ''
+                    },
+                    "createdAt":
+                        (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/
+                            1000,
+                    "height": 1280,
+                    "id": "${element.senderId}${e.data}",
+                    "name": "madrid",
+                    "size": 585000,
+                    "status": element.status,
+                    "type": "image",
+                    "uri": "${e.data}",
+                    "width": 1920
+                  },
+                );
+                coverMessage.add(messageInner);
+                log(e.toJson().toString());
+              }
             }
           }
         }
@@ -163,11 +180,13 @@ class ConversationController extends GetxController {
   ///
   /// confire with MQTT server
   Future<void> connectToMqtt() async {
+    AuthController authController = Get.find();
+    String userID = authController.userDataModel.value.id ?? "";
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
 
     String clientID = 'user|${DateTime.now().millisecondsSinceEpoch}|$userID';
-    const String username = 'user|$userID';
+    String username = 'user|$userID';
     const String password = Constants.token1;
 
     final MqttServerClient client = MqttServerClient(host, clientID);
@@ -188,7 +207,7 @@ class ConversationController extends GetxController {
       }).catchError((error) {
         log('Connection failed: $error');
       });
-      const String topic = 'chat/users/$userID/inbox';
+      String topic = 'chat/users/$userID/inbox';
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
         //-- After Subscribe ---//
@@ -201,6 +220,7 @@ class ConversationController extends GetxController {
           final messageData = jsonDecode(messageJson);
           MqttMessageModel messageModel =
               MqttMessageModel.fromJson(messageData);
+          log("MqttMessageModel  ${messageModel.toJson()}");
           checkMessagesToPush(messageModel);
         } catch (e) {
           log("Error parsing message JSON: $e");

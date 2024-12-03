@@ -13,10 +13,10 @@ class AppBinding extends Bindings {
   void dependencies() {
     Get.put(AuthController());
     Get.put(ProductController());
+    Get.put(FilterController());
     Get.lazyPut<SplashController>(() => SplashController());
     //Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<HomeController>(() => HomeController());
-    Get.lazyPut<FilterController>(() => FilterController());
     Get.lazyPut<UserController>(() => UserController());
     Get.lazyPut<ProductController>(() => ProductController());
     Get.lazyPut<ConversationController>(() => ConversationController());

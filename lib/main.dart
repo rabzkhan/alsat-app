@@ -27,6 +27,7 @@ Future<void> main() async {
   //-- firebase init --//
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+    name: "alsat",
   );
   // init shared preference
   await MySharedPref.init();

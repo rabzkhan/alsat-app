@@ -52,14 +52,11 @@ class CategoryContent extends StatelessWidget {
                     ),
                     expandedAlignment: Alignment.centerLeft,
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                    childrenPadding:
-                        EdgeInsets.symmetric(horizontal: Get.width * .12),
+                    childrenPadding: EdgeInsets.symmetric(horizontal: Get.width * .12),
                     children: [
-                      ...(homeController.categories[index].subCategories ?? [])
-                          .map((subCategory) {
+                      ...(homeController.categories[index].subCategories ?? []).map((subCategory) {
                         return Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 8.h, horizontal: 10.w),
+                          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
                           child: Row(
                             children: [
                               Expanded(

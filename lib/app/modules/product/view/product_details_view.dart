@@ -829,7 +829,9 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
 
   @override
   dispose() {
-    controller.dispose();
+    if (controller.isInitialised) {
+      controller.dispose();
+    }
 
     super.dispose();
   }

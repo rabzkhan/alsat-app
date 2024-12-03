@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +20,9 @@ class CategorySelection extends StatelessWidget {
         navigationBar: CupertinoNavigationBar(
           middle: Text(
             'Select Ctaegory',
-            style: regular,
+            style: bold.copyWith(
+              fontSize: 16.sp,
+            ),
           ),
         ),
         child: SafeArea(
@@ -48,8 +48,7 @@ class CategorySelection extends StatelessWidget {
                         title: GestureDetector(
                           onTap: () {
                             if (!valueReturn) {
-                              productController.selectCategory.value =
-                                  homeController.categories[index];
+                              productController.selectCategory.value = homeController.categories[index];
                             }
                             Get.back(result: homeController.categories[index]);
                           },
@@ -57,8 +56,7 @@ class CategorySelection extends StatelessWidget {
                             children: [
                               6.horizontalSpace,
                               SvgPicture.network(
-                                homeController.categories[index].icon
-                                    .toString(),
+                                homeController.categories[index].icon.toString(),
                                 width: 35.w,
                                 height: 22.w,
                               ),

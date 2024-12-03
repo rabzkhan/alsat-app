@@ -1,14 +1,17 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:alsat/app/components/product_list_tile.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
+import 'package:alsat/utils/helper.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart';
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -104,30 +107,7 @@ class _ConversationViewState extends State<ConversationView> {
               )
             : Chat(
                 emojiPicker: () {},
-                productWiget: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.r),
-                    color: context.theme.primaryColor.withOpacity(.3),
-                  ),
-                  margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h)
-                      .copyWith(bottom: 0),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const ProductListTile(),
-                      5.verticalSpace,
-                      Text(
-                        'Hi there, is this still available?',
-                        style: regular.copyWith(
-                          fontSize: 18.sp,
-                        ),
-                      ),
-                      3.verticalSpace,
-                    ],
-                  ),
-                ),
+                productWiget: const Center(),
                 theme: DefaultChatTheme(
                   messageBorderRadius: 12.r,
                   messageInsetsVertical: 8.h,
@@ -301,13 +281,25 @@ class _ConversationViewState extends State<ConversationView> {
     _addMessage(textMessage);
   }
 
-  void _addMessage(types.Message message) {
+  Map<String, dynamic>? imageMap;
+  Future<void> _addMessage(types.Message message) async {
     // _messages.insert(0, message);
+    imageMap = null;
     conversationController.coverMessage.insert(0, message);
-    conversationController.sendMessages(message.toJson()['text']);
+    if (message.type == MessageType.image) {
+      imageMap = {
+        "type": "image",
+        "post": null,
+        "file": await imageToBase64(message.toJson()['uri'])
+      };
+    }
+    conversationController.sendMessages(message.toJson()['text'] ?? '',
+        map: imageMap);
   }
 
   void _loadMessages() async {
+    AuthController authController = Get.find();
+    String userID = authController.userDataModel.value.id ?? "";
     Participant? user = widget.conversation.participants
         ?.firstWhereOrNull((e) => e.id == userID);
     _user = types.User(
