@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class NewworkImagePreview extends StatelessWidget {
   final String url;
-  final double height;
+  final double? height;
   final double? width;
   final double? borderWidth;
   final double radius;
@@ -20,7 +20,7 @@ class NewworkImagePreview extends StatelessWidget {
   const NewworkImagePreview({
     super.key,
     required this.url,
-    required this.height,
+    this.height,
     this.width,
     this.radius = 0,
     this.fit = BoxFit.cover,
@@ -46,7 +46,7 @@ class NewworkImagePreview extends StatelessWidget {
         progressIndicatorBuilder: (context, url, downloadProgress) =>
             loading ??
             CupertinoActivityIndicator(
-              radius: progressIndicatorRadius ?? height / 4,
+              radius: (progressIndicatorRadius ?? height ?? 100) / 4,
               color: progressColor ?? Theme.of(context).primaryColor,
             ),
         errorWidget: (context, url, error) => ClipRRect(

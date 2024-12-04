@@ -1,6 +1,5 @@
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
-import 'package:alsat/app/modules/conversation/view/conversation_view.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

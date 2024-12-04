@@ -1,15 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import '../../../components/network_image_preview.dart';
 import '../model/message_model.dart';
+import 'package:voice_message_package/voice_message_package.dart';
 
-class ImageMessage extends StatelessWidget {
-  const ImageMessage({
+class AudioMessage extends StatelessWidget {
+  const AudioMessage({
     super.key,
     this.message,
   });
@@ -31,11 +28,28 @@ class ImageMessage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          message!.data.toString().toLowerCase().contains('http')
-              ? NewworkImagePreview(
-                  url: message!.data,
-                )
-              : Image.file(File(message!.data.toString())),
+          VoiceMessageView(
+            controller: VoiceController(
+              maxDuration: const Duration(seconds: 10),
+              isFile: false,
+              audioSrc:
+                  'https://dl.solahangs.com/Music/1403/02/H/128/Hiphopologist%20-%20Shakkak%20%28128%29.mp3',
+              onComplete: () {
+                /// do something on complete
+              },
+              onPause: () {
+                /// do something on pause
+              },
+              onPlaying: () {
+                /// do something on playing
+              },
+              onError: (err) {
+                /// do somethin on error
+              },
+            ),
+            innerPadding: 12,
+            cornerRadius: 20,
+          ),
           5.verticalSpace,
           Text(
             DateFormat('hh:mm').format(message!.time),

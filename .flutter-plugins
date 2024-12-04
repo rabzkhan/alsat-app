@@ -1,4 +1,6 @@
 # This is a generated file; do not edit or check into version control.
+audio_session=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\audio_session-0.1.21\\
+audio_waveforms=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\audio_waveforms-1.2.0\\
 awesome_notifications=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\awesome_notifications-0.10.0\\
 awesome_notifications_core=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\awesome_notifications_core-0.10.0\\
 emoji_picker_flutter=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\emoji_picker_flutter-2.1.1\\
@@ -31,6 +33,8 @@ image_picker_linux=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub
 image_picker_macos=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\image_picker_macos-0.2.1+1\\
 image_picker_windows=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\image_picker_windows-0.2.1+1\\
 integration_test=D:\\FlutterSDK\\flutter\\packages\\integration_test\\
+just_audio=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\just_audio-0.9.42\\
+just_audio_web=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\just_audio_web-0.4.13\\
 location=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\location-6.0.2\\
 location_web=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\location_web-5.0.0\\
 open_filex=C:\\Users\\Dev_Orpon\\AppData\\Local\\Pub\\Cache\\hosted\\pub.dev\\open_filex-4.5.0\\

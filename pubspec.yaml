@@ -98,6 +98,8 @@ dependencies:
     path: packages/video_trimmer-3.0.1
   simple_chips_input: ^1.2.0
   xml: ^6.5.0
+  voice_message_package: ^2.2.1
+  audio_waveforms: ^1.2.0
 
 
     

@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +22,16 @@ class LocationFromMapView extends StatefulWidget {
 class _LocationFromMapViewState extends State<LocationFromMapView> {
   Timer? _debounceTimer;
   final ProductController productController = Get.find();
+  final ConversationController conversationController = Get.find();
   void _onCameraMove(CameraPosition position) {
+    log('_debounceTimer ${productController.selectPosition}');
     if (_debounceTimer != null && _debounceTimer!.isActive) {
       _debounceTimer!.cancel();
     }
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       productController.selectPosition = position.target;
+
       productController.getLatLngToAddress(productController.selectPosition);
     });
   }
@@ -34,7 +39,9 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
   @override
   void initState() {
     if (productController.currentLocation.value == null) {
-      productController.getCurrentLocation();
+      productController.getCurrentLocation().then((value) {
+        setState(() {});
+      });
     }
     super.initState();
   }
@@ -102,11 +109,17 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
                                     );
                                   }),
                                   trailing: GestureDetector(
-                                    onTap: () {
-                                      Get.back();
-                                    },
+                                    onTap: productController.placemarks.isEmpty
+                                        ? null
+                                        : () {
+                                            conversationController.sendMessage(
+                                              location: productController
+                                                  .selectLatLon,
+                                            );
+                                            Get.back();
+                                          },
                                     child: Text(
-                                      'Ok',
+                                      'Send Location',
                                       style: TextStyle(
                                         fontSize: 16.sp,
                                         color: Colors.white,

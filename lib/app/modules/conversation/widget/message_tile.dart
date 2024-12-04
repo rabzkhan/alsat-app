@@ -2,6 +2,7 @@ import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/widget/message_dot.dart';
 import 'package:flutter/material.dart';
 import '../model/message_model.dart';
+import 'audio_message_tile.dart';
 import 'image_message_tile.dart';
 import 'map_message_tile.dart';
 import 'text_message_tile.dart';
@@ -24,6 +25,8 @@ class MessageTile extends StatelessWidget {
           return ImageMessage(message: message);
         case ChatMessageType.map:
           return MapMessage(message: message);
+        case ChatMessageType.audio:
+          return AudioMessage(message: message);
         default:
           return const SizedBox();
       }

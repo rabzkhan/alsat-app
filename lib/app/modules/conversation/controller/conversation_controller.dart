@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -16,6 +19,7 @@ import '../model/message_model.dart';
 import '../model/mqtt_message_model.dart';
 
 class ConversationController extends GetxController {
+  Rxn<Duration> recordTime = Rxn<Duration>();
   @override
   void onInit() {
     getConversations();
@@ -25,7 +29,7 @@ class ConversationController extends GetxController {
 
   //-- sent messages --//
   RxBool isSendingMessage = false.obs;
-  Future<void> sendMessages(String messages,
+  Future<void> sendMessageToServer(String messages,
       {Map<String, dynamic>? map}) async {
     AuthController authController = Get.find();
     String uId = authController.userDataModel.value.id ?? "";
@@ -38,6 +42,7 @@ class ConversationController extends GetxController {
       "reply_to": "",
       "attachments": [map]
     };
+    log('messagesMap: $messagesMap');
 
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
@@ -335,27 +340,58 @@ class ConversationController extends GetxController {
   RxString typeMessageText = RxString('');
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
-  sendMessage() async {
+  sendMessage({File? image, LatLng? location, String? audioPath}) async {
     scrollToBottom();
-    coverMessage.insert(
-        0,
-        ChatMessage(
-          id: DateTime.now().millisecondsSinceEpoch.toString(),
-          text: typeMessageText.value,
-          messageType: ChatMessageType.text,
-          messageStatus: MessageStatus.viewed,
-          isSender: true,
-          time: DateTime.now(),
-          otherUser: ChatUser(
-            id: selectUserInfo.value?.id ?? "",
-            name: selectUserInfo.value?.userName ?? '',
-            imageUrl: selectUserInfo.value?.picture ?? '',
-          ),
-          data: null,
-        ));
-
-    sendMessages(messageController.text);
+    ChatMessage message = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: typeMessageText.value,
+      messageType: image != null
+          ? ChatMessageType.image
+          : location != null
+              ? ChatMessageType.map
+              : audioPath != null
+                  ? ChatMessageType.audio
+                  : ChatMessageType.text,
+      messageStatus: MessageStatus.viewed,
+      isSender: true,
+      time: DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo.value?.id ?? "",
+        name: selectUserInfo.value?.userName ?? '',
+        imageUrl: selectUserInfo.value?.picture ?? '',
+      ),
+      data: image?.path ??
+          (location != null
+              ? [location.latitude, location.longitude]
+              : audioPath),
+    );
+    coverMessage.insert(0, message);
     coverMessage.refresh();
+    if (image != null) {
+      Map<String, dynamic> data = {
+        "type": "image",
+        "file": await imageToBase64(image.path),
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (location != null) {
+      Map<String, dynamic> data = {
+        "type": "location",
+        "location": {
+          "type": "point",
+          "coordinates": [location.latitude, location.longitude]
+        }
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (audioPath != null) {
+      Map<String, dynamic> map = {
+        "type": "audio",
+        "file": await audioToBase64(audioPath),
+      };
+      sendMessageToServer(messageController.text, map: map);
+    } else {
+      sendMessageToServer(messageController.text);
+    }
+
     typeMessageText.value = '';
     messageController.clear();
     Future.delayed(const Duration(milliseconds: 500), () {
