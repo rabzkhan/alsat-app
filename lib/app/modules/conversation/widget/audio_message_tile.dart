@@ -1,3 +1,4 @@
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -18,10 +19,8 @@ class AudioMessage extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0 * 0.75,
-        vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.isSender ? context.theme.primaryColor : Colors.white,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(
@@ -29,23 +28,31 @@ class AudioMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           VoiceMessageView(
+            activeSliderColor: Colors.white,
+            circlesColor: Colors.white,
+            refreshIcon: const Icon(Icons.refresh, color: AppColors.primary),
+            pauseIcon:
+                const Icon(Icons.pause_rounded, color: AppColors.primary),
+            playIcon:
+                const Icon(Icons.play_arrow_rounded, color: AppColors.primary),
+            stopDownloadingIcon:
+                const Icon(Icons.close, color: AppColors.primary),
+            circlesTextStyle: const TextStyle(
+                color: AppColors.primary,
+                fontSize: 10,
+                fontWeight: FontWeight.bold),
+            counterTextStyle: const TextStyle(
+                fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white),
+            backgroundColor:
+                message!.isSender ? context.theme.primaryColor : Colors.white,
             controller: VoiceController(
               maxDuration: const Duration(seconds: 10),
-              isFile: false,
-              audioSrc:
-                  'https://dl.solahangs.com/Music/1403/02/H/128/Hiphopologist%20-%20Shakkak%20%28128%29.mp3',
-              onComplete: () {
-                /// do something on complete
-              },
-              onPause: () {
-                /// do something on pause
-              },
-              onPlaying: () {
-                /// do something on playing
-              },
-              onError: (err) {
-                /// do somethin on error
-              },
+              isFile: message!.data.toString().contains('http') ? false : true,
+              audioSrc: message!.data.toString(),
+              onComplete: () {},
+              onPause: () {},
+              onPlaying: () {},
+              onError: (err) {},
             ),
             innerPadding: 12,
             cornerRadius: 20,

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:crypto/crypto.dart';
 
 final localLanguage = AppLocalizations.of(Get.context!)!;
 String timeAgo(DateTime date) {
@@ -137,7 +138,7 @@ Future<Map<String, dynamic>> audioToBase64(String filePath) async {
     Uint8List fileBytes = await file.readAsBytes();
     String base64String = base64Encode(fileBytes);
     int fileSize = file.lengthSync();
-    String hash = calculateHash(base64String);
+    String hash = calculateHashAudio(fileBytes);
     fileData = {
       "name": base64String,
       "type": "audio",
@@ -147,4 +148,9 @@ Future<Map<String, dynamic>> audioToBase64(String filePath) async {
     };
   }
   return fileData;
+}
+
+String calculateHashAudio(Uint8List fileBytes) {
+  var bytes = sha256.convert(fileBytes).bytes;
+  return base64Encode(bytes);
 }

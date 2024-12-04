@@ -42,7 +42,7 @@ class ConversationController extends GetxController {
       "reply_to": "",
       "attachments": [map]
     };
-    log('messagesMap: $messagesMap');
+    // log('messagesMap: $messagesMap');
 
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
@@ -165,6 +165,25 @@ class ConversationController extends GetxController {
                     id: element.id ?? '0',
                     text: element.content ?? '',
                     messageType: ChatMessageType.map,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'audio') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.audio,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
                         element.senderId,

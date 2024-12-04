@@ -19,12 +19,15 @@ class ImageMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: Get.width * .7,
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0 * 0.75,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.isSender ? context.theme.primaryColor : Colors.white,
+        color: message!.isSender
+            ? context.theme.primaryColor.withOpacity(.2)
+            : Colors.white,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(

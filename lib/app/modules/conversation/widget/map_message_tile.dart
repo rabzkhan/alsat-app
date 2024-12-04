@@ -1,3 +1,4 @@
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -16,12 +17,15 @@ class MapMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: Get.width * .7,
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0 * 0.75,
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.isSender ? context.theme.primaryColor : Colors.white,
+        color: message!.isSender
+            ? context.theme.primaryColor.withOpacity(.3)
+            : Colors.white,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(
@@ -53,7 +57,6 @@ class MapMessage extends StatelessWidget {
           Text(
             DateFormat('hh:mm').format(message!.time),
             style: context.theme.textTheme.bodySmall?.copyWith(
-              color: message!.isSender ? Colors.white : null,
               fontSize: 10.sp,
             ),
           ),
