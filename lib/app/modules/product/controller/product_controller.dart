@@ -10,7 +10,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as google_maps_flutter;
+import 'package:google_maps_flutter/google_maps_flutter.dart'
+    as google_maps_flutter;
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:get/get.dart';
@@ -158,12 +159,15 @@ class ProductController extends GetxController {
   }
 
   // PICK IMAGE FOR POST PRODUCT
-  Future<List<File>?> pickImage(BuildContext context, {bool external = false}) async {
-    List<AssetEntity>? pickImage = await AssetPicker.pickAssets(context,
-        pickerConfig: AssetPickerConfig(
-          maxAssets: external ? 1 : 10,
-          requestType: RequestType.image,
-        ));
+  Future<List<File>?> pickImage(BuildContext context,
+      {bool external = false, bool both = false}) async {
+    List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: AssetPickerConfig(
+        maxAssets: external ? 1 : 10,
+        requestType: both ? RequestType.all : RequestType.image,
+      ),
+    );
     if (pickImage != null) {
       if (external) {
         List<File> tempFile = [];
@@ -256,7 +260,8 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log(response.toString());
         isProductPosting.value = false;
-        CustomSnackBar.showCustomSnackBar(message: 'Product posted successfully', title: 'Success');
+        CustomSnackBar.showCustomSnackBar(
+            message: 'Product posted successfully', title: 'Success');
       },
       onError: (p0) {
         log("postProduct Error: ${p0.message} --${p0.response?.statusCode} ${p0.response?.data}");
@@ -310,7 +315,8 @@ class ProductController extends GetxController {
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController homeRefreshController = RefreshController(initialRefresh: false);
+  RefreshController homeRefreshController =
+      RefreshController(initialRefresh: false);
   void onHomeRefresh() async {
     final HomeController homeController = Get.find();
     homeController.getBanner();
@@ -334,7 +340,8 @@ class ProductController extends GetxController {
     AuthController authController = Get.find();
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url = '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
+      url =
+          '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
     } else {
       url = "$url?user=${authController.userDataModel.value.id}";
     }
@@ -374,7 +381,8 @@ class ProductController extends GetxController {
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController myListingRefreshController = RefreshController(initialRefresh: false);
+  RefreshController myListingRefreshController =
+      RefreshController(initialRefresh: false);
   void myListingRefresh() async {
     await fetchMyProducts();
     myListingRefreshController.refreshCompleted();
@@ -382,7 +390,8 @@ class ProductController extends GetxController {
 
   void myListingLoading() async {
     if (myProductPostListRes?.hasMore ?? false) {
-      await fetchMyProducts(nextPaginateDate: myProductList.value.last.createdAt);
+      await fetchMyProducts(
+          nextPaginateDate: myProductList.value.last.createdAt);
     }
     myListingRefreshController.loadComplete();
   }
@@ -435,7 +444,8 @@ class ProductController extends GetxController {
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController myLikePostRefreshController = RefreshController(initialRefresh: false);
+  RefreshController myLikePostRefreshController =
+      RefreshController(initialRefresh: false);
   void myLikePostRefresh() async {
     await fetchMyLikeProducts();
     myLikePostRefreshController.refreshCompleted();
@@ -443,7 +453,8 @@ class ProductController extends GetxController {
 
   void myLikePostLoading() async {
     if (productPostListRes?.hasMore ?? false) {
-      await fetchMyLikeProducts(nextPaginateDate: myLikeProductList.value.last.createdAt);
+      await fetchMyLikeProducts(
+          nextPaginateDate: myLikeProductList.value.last.createdAt);
     }
     myLikePostRefreshController.loadComplete();
   }
@@ -451,7 +462,8 @@ class ProductController extends GetxController {
   /// product like
   RxBool isProductLike = RxBool(false);
   RxString productLikeId = RxString('');
-  Future<void> addProductLike({required String productId, required bool likeValue}) async {
+  Future<void> addProductLike(
+      {required String productId, required bool likeValue}) async {
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
     log('$url ${Constants.token}');
@@ -470,7 +482,8 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         isProductLike.value = false;
-        CustomSnackBar.showCustomSnackBar(message: 'Product liked successfully', title: 'Success');
+        CustomSnackBar.showCustomSnackBar(
+            message: 'Product liked successfully', title: 'Success');
       },
       onError: (p0) {
         log("Product like failed: ${p0.response} ${p0.response?.data}");
@@ -482,8 +495,10 @@ class ProductController extends GetxController {
 
   //-- get my current location--//
   google_maps_flutter.LatLng? selectLatLon;
-  google_maps_flutter.LatLng selectPosition = const google_maps_flutter.LatLng(0, 0);
-  final Completer<google_maps_flutter.GoogleMapController> mapController = Completer();
+  google_maps_flutter.LatLng selectPosition =
+      const google_maps_flutter.LatLng(0, 0);
+  final Completer<google_maps_flutter.GoogleMapController> mapController =
+      Completer();
   Rxn<LocationData> currentLocation = Rxn();
   RxList<geocoding.Placemark> placemarks = RxList([]);
 
@@ -511,7 +526,8 @@ class ProductController extends GetxController {
 
   getLatLngToAddress(google_maps_flutter.LatLng latLng) async {
     selectLatLon = latLng;
-    placemarks.value = await geocoding.placemarkFromCoordinates(latLng.latitude, latLng.longitude);
+    placemarks.value = await geocoding.placemarkFromCoordinates(
+        latLng.latitude, latLng.longitude);
 
     calculateFilledIndividualInfoFields();
   }

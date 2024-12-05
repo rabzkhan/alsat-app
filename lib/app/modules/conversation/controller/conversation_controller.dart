@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:pod_player/pod_player.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
@@ -20,10 +21,22 @@ import '../model/mqtt_message_model.dart';
 
 class ConversationController extends GetxController {
   Rxn<Duration> recordTime = Rxn<Duration>();
+  late PodPlayerController messageVideoController;
   @override
   void onInit() {
     getConversations();
     connectToMqtt();
+    messageVideoController = PodPlayerController(
+        playVideoFrom: PlayVideoFrom.network(
+          '',
+        ),
+        podPlayerConfig: const PodPlayerConfig(
+          autoPlay: false,
+          isLooping: false,
+        ))
+      ..initialise().catchError((onError) {
+        log('videoError: $onError');
+      });
     super.onInit();
   }
 
@@ -146,6 +159,25 @@ class ConversationController extends GetxController {
                     id: element.id ?? '0',
                     text: element.content ?? '',
                     messageType: ChatMessageType.image,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'video') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.video,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
                         element.senderId,
@@ -359,7 +391,8 @@ class ConversationController extends GetxController {
   RxString typeMessageText = RxString('');
   TextEditingController messageController = TextEditingController();
   ScrollController scrollController = ScrollController();
-  sendMessage({File? image, LatLng? location, String? audioPath}) async {
+  sendMessage(
+      {File? image, File? video, LatLng? location, String? audioPath}) async {
     scrollToBottom();
     ChatMessage message = ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -370,7 +403,9 @@ class ConversationController extends GetxController {
               ? ChatMessageType.map
               : audioPath != null
                   ? ChatMessageType.audio
-                  : ChatMessageType.text,
+                  : video != null
+                      ? ChatMessageType.video
+                      : ChatMessageType.text,
       messageStatus: MessageStatus.viewed,
       isSender: true,
       time: DateTime.now(),
@@ -380,6 +415,7 @@ class ConversationController extends GetxController {
         imageUrl: selectUserInfo.value?.picture ?? '',
       ),
       data: image?.path ??
+          video?.path ??
           (location != null
               ? [location.latitude, location.longitude]
               : audioPath),
@@ -390,6 +426,12 @@ class ConversationController extends GetxController {
       Map<String, dynamic> data = {
         "type": "image",
         "file": await imageToBase64(image.path),
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (video != null) {
+      Map<String, dynamic> data = {
+        "type": "video",
+        "file": await videoToBase64(video.path),
       };
       sendMessageToServer(messageController.text, map: data);
     } else if (location != null) {

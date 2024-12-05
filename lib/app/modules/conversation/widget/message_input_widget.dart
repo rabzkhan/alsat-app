@@ -1,3 +1,4 @@
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
@@ -178,17 +179,33 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                           productController =
                                                           Get.find();
                                                       productController
-                                                          .pickImage(context,
-                                                              external: true)
-                                                          .then((value) async {
-                                                        if (value != null) {
-                                                          widget
-                                                              .messageController
-                                                              .sendMessage(
-                                                                  image: value
-                                                                      .first);
-                                                        }
-                                                      });
+                                                          .pickImage(
+                                                        context,
+                                                        external: true,
+                                                        both: true,
+                                                      )
+                                                          .then(
+                                                        (value) async {
+                                                          if (value != null) {
+                                                            if (isImage(
+                                                                value.first)) {
+                                                              widget
+                                                                  .messageController
+                                                                  .sendMessage(
+                                                                image:
+                                                                    value.first,
+                                                              );
+                                                            } else {
+                                                              widget
+                                                                  .messageController
+                                                                  .sendMessage(
+                                                                video:
+                                                                    value.first,
+                                                              );
+                                                            }
+                                                          }
+                                                        },
+                                                      );
                                                     },
                                                     child: Image.asset(
                                                       'assets/icons/attachment.png',
@@ -274,6 +291,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
             Offstage(
               offstage: !_emojiShowing,
               child: EmojiPicker(
+                onEmojiSelected: (category, emoji) {
+                  widget.messageController.typeMessageText.value = widget
+                      .messageController.messageController.text
+                      .toString();
+                },
                 textEditingController:
                     widget.messageController.messageController,
                 scrollController: _scrollController,

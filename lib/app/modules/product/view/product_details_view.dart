@@ -656,33 +656,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         ),
                       );
                     }),
-                    5.verticalSpace,
-                    SizedBox(
-                      height: 200,
-                      width: double.infinity,
-                      child: IgnorePointer(
-                        ignoring: true,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10.r),
-                          child: GoogleMap(
-                            mapToolbarEnabled: false,
-                            zoomControlsEnabled: false,
-                            mapType: MapType.normal,
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                  widget.productModel?.individualInfo
-                                          ?.locationGeo?.coordinates?.last ??
-                                      0,
-                                  widget.productModel?.individualInfo
-                                          ?.locationGeo?.coordinates?.first ??
-                                      0),
-                              zoom: 14.0,
-                            ),
-                            onMapCreated: (GoogleMapController controller) {},
-                          ),
-                        ),
-                      ),
-                    ),
+
                     12.verticalSpace,
                     Text(
                       'Contact With Seller',
@@ -694,91 +668,67 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     Row(
                       children: [
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.grey,
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              side: BorderSide(
+                                color: Get.theme.primaryColor,
                               ),
                             ),
-                            child: CupertinoButton(
-                              onPressed: () {},
-                              child: const Text('Call'),
+                            height: 45,
+                            color: Get.theme.scaffoldBackgroundColor,
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  color: Get.theme.primaryColor,
+                                  size: 20.r,
+                                ),
+                                5.horizontalSpace,
+                                Text(
+                                  'Call',
+                                  style: regular.copyWith(
+                                    color: Get.theme.primaryColor,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                        Spacer(),
+                        30.horizontalSpace,
                         Expanded(
-                          child: ElevatedButton(
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            height: 45,
+                            color: Get.theme.primaryColor,
                             onPressed: () {},
-                            child: Text('Chat'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.messenger_rounded,
+                                  color: Colors.white,
+                                  size: 20.r,
+                                ),
+                                5.horizontalSpace,
+                                Text(
+                                  'Mesaage',
+                                  style: regular.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
                     )
-                    // SizedBox(
-                    //   height: 200.h,
-                    //   child: ListView.separated(
-                    //     separatorBuilder: (context, index) =>
-                    //         10.horizontalSpace,
-                    //     scrollDirection: Axis.horizontal,
-                    //     itemCount: 6,
-                    //     itemBuilder: (context, index) => SizedBox(
-                    //         width: (Get.width * .5) - 20.w,
-                    //         child: const ProductGridTile()),
-                    //   ),
-                    // ),
-                    // 20.verticalSpace,
-                    // Row(
-                    //   children: [
-                    //     Expanded(
-                    //       flex: 2,
-                    //       child: MaterialButton(
-                    //         padding: EdgeInsets.symmetric(
-                    //           vertical: 14.h,
-                    //           horizontal: 20.w,
-                    //         ),
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(8.r),
-                    //           side: BorderSide(
-                    //             color: Theme.of(context).primaryColor,
-                    //           ),
-                    //         ),
-                    //         onPressed: () {
-                    //           Get.to(const ProductInsightsView(),
-                    //               transition: Transition.fadeIn);
-                    //         },
-                    //         child: Text(
-                    //           'Insights',
-                    //           style: regular.copyWith(
-                    //             color: Theme.of(context).primaryColor,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     10.horizontalSpace,
-                    //     Expanded(
-                    //       flex: 3,
-                    //       child: MaterialButton(
-                    //         padding: EdgeInsets.symmetric(
-                    //           vertical: 14.h,
-                    //           horizontal: 20.w,
-                    //         ),
-                    //         shape: RoundedRectangleBorder(
-                    //           borderRadius: BorderRadius.circular(8.r),
-                    //         ),
-                    //         elevation: 0,
-                    //         color: Theme.of(context).primaryColor,
-                    //         onPressed: () {},
-                    //         child: Text(
-                    //           'Boost Your Ad',
-                    //           style: regular.copyWith(
-                    //             color: Get.theme.scaffoldBackgroundColor,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     )
-                    //   ],
-                    // )
                   ],
                 ),
               ),

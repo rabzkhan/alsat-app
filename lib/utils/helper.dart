@@ -154,3 +154,9 @@ String calculateHashAudio(Uint8List fileBytes) {
   var bytes = sha256.convert(fileBytes).bytes;
   return base64Encode(bytes);
 }
+
+bool isImage(File file) {
+  List<String> imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+  String extension = file.uri.pathSegments.last.split('.').last.toLowerCase();
+  return imageExtensions.contains(extension);
+}
