@@ -1,38 +1,62 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/utils/helper.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:get/get.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:pod_player/pod_player.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
+import '../model/message_model.dart';
 import '../model/mqtt_message_model.dart';
 
-const String userID = 'bc7eec8f-2a70-4c04-9566-39ead17e5909';
-
 class ConversationController extends GetxController {
+  Rxn<Duration> recordTime = Rxn<Duration>();
+  late PodPlayerController messageVideoController;
   @override
   void onInit() {
     getConversations();
     connectToMqtt();
+    messageVideoController = PodPlayerController(
+        playVideoFrom: PlayVideoFrom.network(
+          '',
+        ),
+        podPlayerConfig: const PodPlayerConfig(
+          autoPlay: false,
+          isLooping: false,
+        ))
+      ..initialise().catchError((onError) {
+        log('videoError: $onError');
+      });
     super.onInit();
   }
 
   //-- sent messages --//
   RxBool isSendingMessage = false.obs;
-  Future<void> sendMessages(String messages) async {
+  Future<void> sendMessageToServer(String messages,
+      {Map<String, dynamic>? map}) async {
+    AuthController authController = Get.find();
+    String uId = authController.userDataModel.value.id ?? "";
     Map<String, dynamic> messagesMap = {
-      "sender_id": userID,
+      "sender_id": uId,
       "receiver_id": (selectConversation.value?.participants ?? [])
-          .firstWhereOrNull((e) => e.id != userID)
+          .firstWhereOrNull((e) => e.id != uId)
           ?.id,
       "content": messages,
       "reply_to": "",
-      "attachments": []
+      "attachments": [map]
     };
+    // log('messagesMap: $messagesMap');
+
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.post,
@@ -50,6 +74,7 @@ class ConversationController extends GetxController {
       },
       onError: (error) {
         isSendingMessage.value = false;
+        log('Error: $error');
       },
     );
   }
@@ -86,9 +111,12 @@ class ConversationController extends GetxController {
   Rxn<ConversationModel> selectConversation = Rxn<ConversationModel>();
   Rxn<ConversationMessagesRes> conversationMessagesRes =
       Rxn<ConversationMessagesRes>();
+  RxList<ChatMessage> coverMessage = RxList<ChatMessage>([]);
+  AuthController authController = Get.find<AuthController>();
+  Rxn<Participant> selectUserInfo = Rxn();
   //cover message model
-  RxList<types.Message> coverMessage = RxList<types.Message>([]);
-  Future<void> getConversationsMessages() async {
+  Future<void> getConversationsMessages({String? next}) async {
+    log("selectConversation.value?.id ${selectConversation.value?.id}");
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.get,
@@ -96,59 +124,149 @@ class ConversationController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      queryParameters: {
-        'chat_id': selectConversation.value?.id,
-      },
+      queryParameters: next == null
+          ? {
+              'chat_id': selectConversation.value?.id,
+            }
+          : {
+              'chat_id': selectConversation.value?.id,
+              'next': next,
+            },
       onLoading: () {
-        isConversationMessageLoading.value = true;
-        selectConversationMessageList.value = [];
-        coverMessage.value = [];
+        if (next == null) {
+          isConversationMessageLoading.value = true;
+          selectConversationMessageList.value = [];
+          coverMessage.value = [];
+        }
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         conversationMessagesRes.value = ConversationMessagesRes.fromJson(data);
         selectConversationMessageList.value =
             conversationMessagesRes.value?.data?.messages ?? [];
+        Map<String, Participant>? map =
+            conversationMessagesRes.value?.data?.participants;
+        map?.remove(authController.userDataModel.value.id.toString());
+        selectUserInfo.value = map?.values.toList().first;
+
         for (var element in selectConversationMessageList) {
-          var message = types.Message.fromJson({
-            "author": {
-              "firstName": element.senderId,
-              "id": element.senderId,
-              "imageUrl": '',
-              "lastName": ''
-            },
-            "createdAt":
-                (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-            "id": element.id,
-            "status": element.status,
-            "text": element.content,
-            "type": "text"
-          });
-          coverMessage.add(message);
           if (element.attachments != null &&
               (element.attachments ?? []).isNotEmpty) {
-            for (var e in element.attachments ?? []) {
-              var message = types.Message.fromJson({
-                "author": {
-                  "firstName": element.senderId,
-                  "id": element.senderId,
-                  "imageUrl": '',
-                  "lastName": ''
-                },
-                "createdAt":
-                    (element.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-                "height": 1280,
-                "id": "${element.senderId}${e.data}",
-                "name": "madrid",
-                "size": 585000,
-                "status": "seen",
-                "type": "image",
-                "uri": e.data,
-                "width": 1920
-              });
-              log(e.toJson().toString());
-              coverMessage.add(message);
+            for (Attachment e in element.attachments ?? []) {
+              if (e.type == 'image') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.image,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'video') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.video,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'location') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.map,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'audio') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.audio,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if ((e.type ?? '').trim().isEmpty) {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: null,
+                  ),
+                );
+              }
             }
+          } else {
+            coverMessage.add(
+              ChatMessage(
+                id: element.id ?? '0',
+                text: element.content ?? '',
+                messageType: ChatMessageType.text,
+                messageStatus: MessageStatus.viewed,
+                isSender:
+                    authController.userDataModel.value.id == element.senderId,
+                time: element.createdAt ?? DateTime.now(),
+                otherUser: ChatUser(
+                  id: selectUserInfo.value?.id ?? "",
+                  name: selectUserInfo.value?.userName ?? '',
+                  imageUrl: selectUserInfo.value?.picture ?? '',
+                ),
+                data: null,
+              ),
+            );
           }
         }
 
@@ -163,11 +281,13 @@ class ConversationController extends GetxController {
   ///
   /// confire with MQTT server
   Future<void> connectToMqtt() async {
+    AuthController authController = Get.find();
+    String userID = authController.userDataModel.value.id ?? "";
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
 
     String clientID = 'user|${DateTime.now().millisecondsSinceEpoch}|$userID';
-    const String username = 'user|$userID';
+    String username = 'user|$userID';
     const String password = Constants.token1;
 
     final MqttServerClient client = MqttServerClient(host, clientID);
@@ -188,7 +308,7 @@ class ConversationController extends GetxController {
       }).catchError((error) {
         log('Connection failed: $error');
       });
-      const String topic = 'chat/users/$userID/inbox';
+      String topic = 'chat/users/$userID/inbox';
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
         //-- After Subscribe ---//
@@ -201,6 +321,7 @@ class ConversationController extends GetxController {
           final messageData = jsonDecode(messageJson);
           MqttMessageModel messageModel =
               MqttMessageModel.fromJson(messageData);
+          log("MqttMessageModel  ${messageModel.toJson()}");
           checkMessagesToPush(messageModel);
         } catch (e) {
           log("Error parsing message JSON: $e");
@@ -229,24 +350,23 @@ class ConversationController extends GetxController {
     //-- Check if conversation is selected --//
     if (selectConversation.value?.participants?.lastOrNull?.id ==
         mqttMessageModel.sender?.id) {
-      log('message is from selected conversation');
-      var message = types.Message.fromJson({
-        "author": {
-          "firstName": mqttMessageModel.sender?.userName,
-          "id": mqttMessageModel.sender?.id,
-          "imageUrl": mqttMessageModel.sender?.picture,
-          "lastName": ''
-        },
-        "createdAt":
-            (mqttMessageModel.createdAt?.microsecondsSinceEpoch ?? 1) ~/ 1000,
-        "id": mqttMessageModel.id,
-        "status": mqttMessageModel.status,
-        "text": mqttMessageModel.content,
-        "type": "text"
-      });
-      log('$message');
+      var newMessage = ChatMessage(
+        id: mqttMessageModel.sender?.id ?? '0',
+        text: mqttMessageModel.content ?? '',
+        messageType: ChatMessageType.text,
+        messageStatus: MessageStatus.notView,
+        isSender: authController.userDataModel.value.id ==
+            mqttMessageModel.sender?.id,
+        time: mqttMessageModel.createdAt ?? DateTime.now(),
+        otherUser: ChatUser(
+          id: selectUserInfo.value?.id ?? "",
+          name: selectUserInfo.value?.userName ?? '',
+          imageUrl: selectUserInfo.value?.picture ?? '',
+        ),
+        data: null,
+      );
 
-      coverMessage.insert(0, message);
+      coverMessage.insert(0, newMessage);
       coverMessage.refresh();
     }
     if (conversation != null) {
@@ -265,5 +385,105 @@ class ConversationController extends GetxController {
       conversation.lastMessage = message;
       conversationList.refresh();
     }
+  }
+  //
+
+  RxString typeMessageText = RxString('');
+  TextEditingController messageController = TextEditingController();
+  ScrollController scrollController = ScrollController();
+  sendMessage(
+      {File? image, File? video, LatLng? location, String? audioPath}) async {
+    scrollToBottom();
+    ChatMessage message = ChatMessage(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      text: typeMessageText.value,
+      messageType: image != null
+          ? ChatMessageType.image
+          : location != null
+              ? ChatMessageType.map
+              : audioPath != null
+                  ? ChatMessageType.audio
+                  : video != null
+                      ? ChatMessageType.video
+                      : ChatMessageType.text,
+      messageStatus: MessageStatus.viewed,
+      isSender: true,
+      time: DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo.value?.id ?? "",
+        name: selectUserInfo.value?.userName ?? '',
+        imageUrl: selectUserInfo.value?.picture ?? '',
+      ),
+      data: image?.path ??
+          video?.path ??
+          (location != null
+              ? [location.latitude, location.longitude]
+              : audioPath),
+    );
+    coverMessage.insert(0, message);
+    coverMessage.refresh();
+    if (image != null) {
+      Map<String, dynamic> data = {
+        "type": "image",
+        "file": await imageToBase64(image.path),
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (video != null) {
+      Map<String, dynamic> data = {
+        "type": "video",
+        "file": await videoToBase64(video.path),
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (location != null) {
+      Map<String, dynamic> data = {
+        "type": "location",
+        "location": {
+          "type": "point",
+          "coordinates": [location.latitude, location.longitude]
+        }
+      };
+      sendMessageToServer(messageController.text, map: data);
+    } else if (audioPath != null) {
+      Map<String, dynamic> map = {
+        "type": "audio",
+        "file": await audioToBase64(audioPath),
+      };
+      sendMessageToServer(messageController.text, map: map);
+    } else {
+      sendMessageToServer(messageController.text);
+    }
+
+    typeMessageText.value = '';
+    messageController.clear();
+    Future.delayed(const Duration(milliseconds: 500), () {
+      scrollToBottom();
+    });
+  }
+
+  scrollToBottom() {
+    if (scrollController.hasClients) {
+      scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut, // Better curve for smooth scrolling
+      );
+    }
+  }
+
+  //-- refresh controller for conversation --//
+  RefreshController refreshMessageController =
+      RefreshController(initialRefresh: false);
+
+  void onRefreshMessage() async {
+    refreshMessageController.refreshCompleted();
+  }
+
+  void onLoadingMessage() async {
+    if (conversationMessagesRes.value?.hasMore ?? false) {
+      await getConversationsMessages(
+          next:
+              selectConversationMessageList.last.createdAt?.toIso8601String());
+    }
+    refreshMessageController.loadComplete();
   }
 }

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:crypto/crypto.dart';
 
 final localLanguage = AppLocalizations.of(Get.context!)!;
 String timeAgo(DateTime date) {
@@ -114,18 +116,47 @@ Future<Map<String, dynamic>> videoToBase64(String filePath) async {
       contentType = 'video/webm';
       break;
     default:
-      contentType =
-          'application/octet-stream'; // Default for unknown file types
+      contentType = 'application/octet-stream';
   }
 
   // Creating a JSON object for the video
   var jsonObject = {
     "name": base64String,
     "type": "video",
-    "size": File(filePath).lengthSync(), // Get file size in bytes
-    "hash": calculateHash(base64String), // Generate a hash of the Base64 string
-    "content_type": contentType // MIME type of the video
+    "size": File(filePath).lengthSync(),
+    "hash": calculateHash(base64String),
+    "content_type": contentType
   };
 
   return jsonObject;
+}
+
+Future<Map<String, dynamic>> audioToBase64(String filePath) async {
+  Map<String, dynamic> fileData = {};
+  File file = File(filePath);
+  if (await file.exists()) {
+    Uint8List fileBytes = await file.readAsBytes();
+    String base64String = base64Encode(fileBytes);
+    int fileSize = file.lengthSync();
+    String hash = calculateHashAudio(fileBytes);
+    fileData = {
+      "name": base64String,
+      "type": "audio",
+      "size": fileSize,
+      "hash": hash,
+      "content_type": "audio/m4a",
+    };
+  }
+  return fileData;
+}
+
+String calculateHashAudio(Uint8List fileBytes) {
+  var bytes = sha256.convert(fileBytes).bytes;
+  return base64Encode(bytes);
+}
+
+bool isImage(File file) {
+  List<String> imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'];
+  String extension = file.uri.pathSegments.last.split('.').last.toLowerCase();
+  return imageExtensions.contains(extension);
 }

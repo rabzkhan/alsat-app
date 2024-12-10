@@ -1,6 +1,5 @@
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
-import 'package:alsat/app/modules/conversation/view/conversation_view.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/controller/conversation_controller.dart';
+import '../../conversation/view/message_view.dart';
 
 class ChatContent extends StatelessWidget {
   const ChatContent({super.key});
@@ -70,7 +70,7 @@ class ChatContent extends StatelessWidget {
                     child: ListTile(
                       onTap: () {
                         Get.to(
-                          ConversationView(
+                          MessagesScreen(
                             conversation: conversation!,
                           ),
                           transition: Transition.fadeIn,

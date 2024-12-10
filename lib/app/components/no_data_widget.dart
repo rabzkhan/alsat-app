@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 class NoDataWidget extends StatelessWidget {
   final double? bottomHeight;
