@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -96,16 +97,18 @@ class _MessagesScreenState extends State<MessagesScreen> {
                 controller: conversationController.refreshMessageController,
                 onRefresh: conversationController.onRefreshMessage,
                 onLoading: conversationController.onLoadingMessage,
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  reverse: true,
-                  controller: conversationController.scrollController,
-                  physics: const BouncingScrollPhysics(),
-                  itemCount: conversationController.coverMessage.length,
-                  itemBuilder: (context, index) => MessageTile(
-                    message: conversationController.coverMessage[index],
-                  ),
-                ),
+                child: conversationController.isConversationMessageLoading.value
+                    ? const Center(child: CupertinoActivityIndicator())
+                    : ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        reverse: true,
+                        controller: conversationController.scrollController,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: conversationController.coverMessage.length,
+                        itemBuilder: (context, index) => MessageTile(
+                          message: conversationController.coverMessage[index],
+                        ),
+                      ),
               );
             }),
           ),

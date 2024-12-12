@@ -21,22 +21,12 @@ import '../model/mqtt_message_model.dart';
 
 class ConversationController extends GetxController {
   Rxn<Duration> recordTime = Rxn<Duration>();
-  late PodPlayerController messageVideoController;
+
   @override
   void onInit() {
     getConversations();
     connectToMqtt();
-    messageVideoController = PodPlayerController(
-        playVideoFrom: PlayVideoFrom.network(
-          '',
-        ),
-        podPlayerConfig: const PodPlayerConfig(
-          autoPlay: false,
-          isLooping: false,
-        ))
-      ..initialise().catchError((onError) {
-        log('videoError: $onError');
-      });
+
     super.onInit();
   }
 
@@ -216,6 +206,25 @@ class ConversationController extends GetxController {
                     id: element.id ?? '0',
                     text: element.content ?? '',
                     messageType: ChatMessageType.audio,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.senderId,
+                    time: element.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo.value?.id ?? "",
+                      name: selectUserInfo.value?.userName ?? '',
+                      imageUrl: selectUserInfo.value?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+                );
+              }
+              if (e.type == 'post') {
+                coverMessage.add(
+                  ChatMessage(
+                    id: element.id ?? '0',
+                    text: element.content ?? '',
+                    messageType: ChatMessageType.post,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
                         element.senderId,

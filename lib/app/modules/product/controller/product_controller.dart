@@ -81,7 +81,6 @@ class ProductController extends GetxController {
   //-- On Init Method --//
   @override
   void onInit() {
-    getCurrentLocation();
     fetchProducts();
     super.onInit();
   }

@@ -398,6 +398,10 @@ http_parser
 2.12
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.0.2/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/http_parser-4.0.2/lib/
+iconsax_flutter
+3.0
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/iconsax_flutter-1.0.0/
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/iconsax_flutter-1.0.0/lib/
 image
 2.15
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/image-4.3.0/
@@ -590,6 +594,10 @@ path_provider_windows
 3.2
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/path_provider_windows-2.3.0/lib/
+pausable_timer
+3.0
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/pausable_timer-3.1.0+3/
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/pausable_timer-3.1.0+3/lib/
 permission_handler
 2.15
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/permission_handler-11.3.1/
@@ -790,6 +798,10 @@ timezone
 2.19
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/timezone-0.10.0/
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/timezone-0.10.0/lib/
+toastification
+3.0
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/toastification-2.3.0/
+file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/toastification-2.3.0/lib/
 transparent_image
 2.12
 file:///C:/Users/Dev_Orpon/AppData/Local/Pub/Cache/hosted/pub.dev/transparent_image-2.0.1/

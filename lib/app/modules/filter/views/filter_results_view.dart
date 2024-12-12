@@ -23,13 +23,13 @@ class FilterResultsView extends GetView<FilterController> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 0,
-          title: Obx(() => Text(
-                "Results Found : ${controller.itemList.length}",
-                style: bold.copyWith(
-                  fontSize: 16.sp,
-                  color: Colors.grey,
-                ),
-              )),
+          title: Text(
+            "Results Found",
+            style: bold.copyWith(
+              fontSize: 16.sp,
+              color: Colors.grey,
+            ),
+          ),
         ),
         body: Obx(
           () {

@@ -43,9 +43,6 @@ class _PostProductViewState extends State<PostProductView> {
 
   @override
   void initState() {
-    if (productController.currentLocation.value == null) {
-      productController.getCurrentLocation();
-    }
     super.initState();
   }
 
@@ -1854,14 +1851,6 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['individual_info'] = {
       "location_province": filterController.selectedProvince.value,
       "location_city": filterController.selectedCity.value,
-      //no need to send geo for now.
-      "location_geo": {
-        "type": "Point",
-        "coordinates": [
-          productController.selectLatLon?.longitude ?? 0,
-          productController.selectLatLon?.latitude ?? 0
-        ],
-      },
       "phone_number": map['phoneNumber'],
       "free_to_call_from":
           "${productController.fromTime.value?.hour}:${productController.fromTime.value?.minute}",
