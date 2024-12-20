@@ -21,6 +21,7 @@ import '../../authentication/controller/auth_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/location_selection.dart';
 import '../controller/user_controller.dart';
+import 'widgets/location_selection.dart';
 import 'widgets/upgrade_to_premium_dialog.dart';
 
 class MySettings extends StatefulWidget {
@@ -276,17 +277,8 @@ class _MySettingsState extends State<MySettings> {
                       context: context,
                       backgroundColor: Colors.transparent,
                       builder: (context) =>
-                          const LocationSelection(canSelectMultiple: false),
-                    ).then((value) {
-                      authController.selectedCity.value =
-                          filterController.selectedCity.value;
-                      authController.selectedProvince.value =
-                          filterController.selectedProvince.value;
-                      authController.addressController.text =
-                          '${authController.selectedProvince.value}, ${authController.selectedCity.value}';
-                      authController.selectedCity.refresh();
-                      authController.selectedProvince.refresh();
-                    });
+                          const ProfileSingleLocationSelection(),
+                    );
                   },
                   child: FormBuilderTextField(
                     controller: authController.addressController,
