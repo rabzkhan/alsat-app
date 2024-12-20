@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:alsat/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import '../../app_home/models/follower_res.dart';
 
 class UserController extends GetxController {
   final userSettingsFormKey = GlobalKey<FormBuilderState>();
-  final userNameTextController = TextEditingController().obs;
 
   List<String> profileTab = [
     'My Listings',
@@ -20,6 +20,37 @@ class UserController extends GetxController {
   ];
   //-- Upgrade to premium--//
   RxBool isUpgradePreimumLoading = false.obs;
+  TextEditingController upgradeCodeController = TextEditingController();
+  Future<void> upgradeToPremium() async {
+    isUpgradePreimumLoading.value = true;
+    try {
+      return await BaseClient.safeApiCall(
+        Constants.baseUrl + Constants.upgradeToPremium,
+        DioRequestType.put,
+        data: {
+          'code': upgradeCodeController.text,
+        },
+        headers: {
+          //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+          'Authorization': Constants.token,
+        },
+        onSuccess: (response) async {
+          upgradeCodeController.clear();
+          log(response.toString());
+          isUpgradePreimumLoading.value = false;
+          Get.back();
+          return null;
+        },
+        onError: (error) {
+          isUpgradePreimumLoading.value = false;
+          CustomSnackBar.showCustomToast(message: error.message.toString());
+        },
+      );
+    } catch (e) {
+      isUpgradePreimumLoading.value = false;
+      CustomSnackBar.showCustomToast(message: e.toString());
+    }
+  }
 
   //-- Get user follower--//
   RxBool isFollowerLoading = true.obs;

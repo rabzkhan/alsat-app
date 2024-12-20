@@ -530,4 +530,30 @@ class ProductController extends GetxController {
 
     calculateFilledIndividualInfoFields();
   }
+
+  //-Get Product Details --//
+  RxBool isProductDetailsLoading = RxBool(true);
+  Rxn<ProductModel> selectPostProductModel = Rxn<ProductModel>();
+  Future<void> getSingleProductDetails(String pId) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$pId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductDetailsLoading.value = true;
+        selectPostProductModel.value = null;
+      },
+      onSuccess: (response) {
+        Map<String, dynamic> data = response.data;
+        selectPostProductModel.value = ProductModel.fromJson(data);
+        isProductDetailsLoading.value = false;
+      },
+      onError: (p0) {
+        isProductDetailsLoading.value = false;
+      },
+    );
+  }
 }

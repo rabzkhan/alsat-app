@@ -32,10 +32,17 @@ class ProductListTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: 1.h,
         ),
-        height: 95.h,
+        height: 105.h,
         decoration: BoxDecoration(
           color: Get.theme.appBarTheme.backgroundColor,
           borderRadius: BorderRadius.circular(10.r),
+          boxShadow: [
+            BoxShadow(
+              color: Get.theme.disabledColor.withOpacity(0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
         ),
         child: Stack(
           children: [
@@ -51,7 +58,7 @@ class ProductListTile extends StatelessWidget {
                           radius: 10.r,
                           url: productModel?.media?.firstOrNull?.name ?? '',
                           height: 90.h,
-                          width: 80.h,
+                          width: 90.h,
                           fit: BoxFit.cover,
                         )
                       : ClipRRect(

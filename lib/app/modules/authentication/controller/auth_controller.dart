@@ -1,5 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
+import 'package:dio/dio.dart' as dio;
+import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
@@ -164,4 +167,41 @@ class AuthController extends GetxController {
       },
     );
   }
+
+  RxBool isProfilePictureLoading = RxBool(false);
+
+  updateProfilePicture(File pickedFile) async {
+    // Prepare the URL with query parameter
+    List<int> fileBytes = await pickedFile.readAsBytes();
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.updateProfilePicture,
+      DioRequestType.put,
+      headers: {
+        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+        'Content-Type': 'application/octet-stream',
+      },
+      data: fileBytes,
+      onLoading: () {
+        isProfilePictureLoading.value = true;
+      },
+      onSuccess: (response) async {
+        getProfile();
+        isProfilePictureLoading.value = false;
+      },
+      onError: (error) {
+        isProfilePictureLoading.value = false;
+        log('profile $error <- error');
+        Logger().d("$error <- error");
+      },
+    );
+  }
+
+  //-- upgrate user info --//
+  RxList<CategoriesModel> selectUsewrCategoriesList = <CategoriesModel>[].obs;
+  TextEditingController addressController = TextEditingController();
+  // RxString for selected province
+  RxString selectedProvince = "".obs;
+  // RxString for selected city
+  RxString selectedCity = "".obs;
 }

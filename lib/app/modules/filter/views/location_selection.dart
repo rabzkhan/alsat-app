@@ -53,13 +53,15 @@ class LocationSelection extends StatelessWidget {
                               GestureDetector(
                                 onTap: () {
                                   // Toggle province selection
-                                  filterController.toggleProvince(province.name, canSelectMultiple);
+                                  filterController.toggleProvince(
+                                      province.name, canSelectMultiple);
                                 },
                                 child: CircleAvatar(
                                   radius: 10.r,
                                   backgroundColor: AppColors.liteGray,
                                   child: Icon(
-                                    filterController.isProvinceSelected(province.name)
+                                    filterController
+                                            .isProvinceSelected(province.name)
                                         ? Icons.check_circle
                                         : Icons.circle_outlined,
                                     color: AppColors.primary,
@@ -71,7 +73,8 @@ class LocationSelection extends StatelessWidget {
                           ),
                           expandedAlignment: Alignment.centerLeft,
                           expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                          childrenPadding: EdgeInsets.symmetric(horizontal: Get.width * .06, vertical: 10.h),
+                          childrenPadding: EdgeInsets.symmetric(
+                              horizontal: Get.width * .06, vertical: 10.h),
                           children: [
                             ...province.cities.map(
                               (city) {
@@ -84,7 +87,8 @@ class LocationSelection extends StatelessWidget {
                                     );
                                   },
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 14.h),
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 14.h),
                                     child: Row(
                                       children: [
                                         Text(
@@ -95,7 +99,8 @@ class LocationSelection extends StatelessWidget {
                                           ),
                                         ),
                                         const Spacer(),
-                                        if (filterController.isProvinceSelected(province.name))
+                                        if (filterController
+                                            .isProvinceSelected(province.name))
                                           GestureDetector(
                                             onTap: () {
                                               // Toggle city selection
@@ -107,9 +112,11 @@ class LocationSelection extends StatelessWidget {
                                             },
                                             child: CircleAvatar(
                                               radius: 8.r,
-                                              backgroundColor: AppColors.liteGray,
+                                              backgroundColor:
+                                                  AppColors.liteGray,
                                               child: Icon(
-                                                filterController.isCitySelected(province.name, city)
+                                                filterController.isCitySelected(
+                                                        province.name, city)
                                                     ? Icons.check_circle
                                                     : Icons.circle_outlined,
                                                 color: AppColors.primary,

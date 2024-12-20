@@ -26,6 +26,7 @@ class UserDataModel {
   bool? requestDeletion;
   num? followers;
   bool? followed;
+  bool? premium;
 
   UserDataModel({
     this.id,
@@ -43,10 +44,12 @@ class UserDataModel {
     this.requestDeletion,
     this.followers,
     this.followed,
+    this.premium,
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) => UserDataModel(
         id: json["_id"],
+        premium: json["premium"],
         messaging: json["messaging"] == null
             ? []
             : List<dynamic>.from(json["messaging"]!.map((x) => x)),
@@ -71,6 +74,7 @@ class UserDataModel {
 
   Map<String, dynamic> toJson() => {
         "_id": id,
+        "premium": premium,
         "followed": followed,
         "followers": followers,
         "messaging": messaging == null

@@ -134,6 +134,7 @@ class FilterController extends GetxController {
         selectedProvince.value = "";
         selectedCity.value = "";
       } else {
+        log.log("selectedProvince.value ${selectedProvince.value}");
         // If not selected, clear others and select the new one
         selectedProvince.value = provinceName;
         selectedCity.value = "";
@@ -271,17 +272,19 @@ class FilterController extends GetxController {
           "condition": condition.value.toLowerCase(),
           "price_from": int.parse(priceFrom.value.text),
           "price_to": int.parse(priceTo.value.text),
-          "location": getSelectedLocationData(),
-          "brand": brand.isEmpty ? '' : brandformate(),
+          "location": getSelectedLocationData().isEmpty
+              ? null
+              : getSelectedLocationData(),
+          "brand": brand.isEmpty ? [] : brandformate(),
           "body_type":
-              bodyType.value != "Not Chosen Yet" ? [bodyType.value] : '',
+              bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
           "drive_type":
-              driveType.value != "Not Chosen Yet" ? [driveType.value] : '',
+              driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
           "engine_type":
               engineType.value != "Not Chosen Yet" ? engineType.value : '',
           "transmission":
               transmission.value != "Not Chosen Yet" ? transmission.value : '',
-          "color": color.isNotEmpty ? color : '',
+          "color": color.isNotEmpty ? color : [],
           "credit": credit.value,
           "exchange": exchange.value,
           "has_vin_code": hasVinCode.value
