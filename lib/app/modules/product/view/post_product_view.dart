@@ -1798,7 +1798,7 @@ class _PostProductViewState extends State<PostProductView> {
     );
   }
 
-  Future<bool> addProductDataFormate(Map<String, dynamic> map) async {
+  Future<void> addProductDataFormate(Map<String, dynamic> map) async {
     Map<String, dynamic> productPostMap = {};
     productPostMap['title'] = map['productName'];
     productPostMap['type'] =
@@ -1886,7 +1886,7 @@ class _PostProductViewState extends State<PostProductView> {
             : null;
     resetForm();
     _formKey.currentState!.reset();
-    return await productController.postProduct(productPostMap);
+    await productController.postProduct(productPostMap);
   }
 
   resetForm() {

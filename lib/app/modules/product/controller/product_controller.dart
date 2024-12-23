@@ -121,10 +121,9 @@ class ProductController extends GetxController {
         if (estateTypeController.text.trim().isNotEmpty) filledCount++;
         if (floor.text.trim().isNotEmpty) filledCount++;
         if (room.text.trim().isNotEmpty) filledCount++;
-        //left count
         filledCount++;
-        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        if (productNameController.text.trim().isNotEmpty) filledCount++;
+        // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        // if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'phone') {
         if (selectCategory.value != null) filledCount++;
@@ -244,7 +243,7 @@ class ProductController extends GetxController {
 
   //--- POST PRODUCT ---//
   Future<bool> postProduct(Map<String, dynamic> body) async {
-    log('body: $body');
+    // log('body: $body');
     return await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,

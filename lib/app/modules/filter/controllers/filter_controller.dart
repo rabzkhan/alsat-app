@@ -50,6 +50,7 @@ class FilterController extends GetxController {
   RxList<String> selectMobileBrand = <String>[].obs;
   RxList<String> estateTtype = <String>[].obs;
   RxString sortValue = RxString('Default');
+  RxBool sortDonwnToUp = RxBool(true);
 
   // Real state variables
 
@@ -283,29 +284,30 @@ class FilterController extends GetxController {
     bool paginate = false,
     String? nextValue,
   }) async {
-    var filterData = filtermapPassed ??
-        {
-          "category": (category.value?.name ?? '').toLowerCase(),
-          "condition": condition.value.toLowerCase(),
-          "price_from": int.parse(priceFrom.value.text),
-          "price_to": int.parse(priceTo.value.text),
-          "location": getSelectedLocationData().isEmpty
-              ? null
-              : getSelectedLocationData(),
-          "brand": brand.isEmpty ? [] : brandformate(),
-          "body_type":
-              bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
-          "drive_type":
-              driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
-          "engine_type":
-              engineType.value != "Not Chosen Yet" ? engineType.value : '',
-          "transmission":
-              transmission.value != "Not Chosen Yet" ? transmission.value : '',
-          "color": color.isNotEmpty ? color : [],
-          "credit": credit.value,
-          "exchange": exchange.value,
-          "has_vin_code": hasVinCode.value
-        };
+    var map = {
+      "category": (category.value?.name ?? '').toLowerCase(),
+      "condition": condition.value.toLowerCase(),
+      "price_from": int.parse(priceFrom.value.text),
+      "price_to": int.parse(priceTo.value.text),
+      "location":
+          getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
+      "brand": brand.isEmpty ? [] : brandformate(),
+      "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
+      "drive_type":
+          driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
+      "engine_type":
+          engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      "transmission":
+          transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      "color": color.isNotEmpty ? color : [],
+      "credit": credit.value,
+      "exchange": exchange.value,
+      "has_vin_code": hasVinCode.value,
+      'sort_price': sortDonwnToUp.value ? '1' : '-1',
+    };
+
+    final filterData = Map<String, dynamic>.from(map);
+    filterData.addAll(filtermapPassed ?? {});
 
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextValue != null) {

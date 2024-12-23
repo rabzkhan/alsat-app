@@ -98,7 +98,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                     ),
                     // App drawer
                     const AppDrawer(),
-                    const SearchView(),
+                    // const SearchView(),
                   ],
                 ),
               ),

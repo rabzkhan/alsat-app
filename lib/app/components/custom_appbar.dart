@@ -101,17 +101,17 @@ class CustomAppBar extends StatelessWidget {
 
           ///ll
           if (isShowFilter)
-            InkWell(
-              onTap: () {
-                Get.to(const FilterView(), transition: Transition.fadeIn);
-              },
-              child: Image.asset(
-                filterIcon,
-                height: 23.h,
-                width: 23.w,
-              ),
-            ),
-          if (!isShowFilter && !isShowSearch) const Spacer()
+            // InkWell(
+            //   onTap: () {
+            //     Get.to(const FilterView(), transition: Transition.fadeIn);
+            //   },
+            //   child: Image.asset(
+            //     filterIcon,
+            //     height: 23.h,
+            //     width: 23.w,
+            //   ),
+            // ),
+            if (!isShowFilter && !isShowSearch) const Spacer()
         ],
       ),
     );
