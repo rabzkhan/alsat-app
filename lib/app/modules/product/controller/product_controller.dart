@@ -43,7 +43,7 @@ class ProductController extends GetxController {
   RxString selectedBodyType = RxString("");
   RxString selectedTransmission = RxString("");
   RxString selectedEngineType = RxString("");
-  RxString selectedColor = RxString("");
+  RxList<String> selectedColor = RxList<String>([]);
   RxString selectedYear = RxString('20000');
   RxString selectedPassed = RxString('1999');
   //-- post product count --//
@@ -59,17 +59,16 @@ class ProductController extends GetxController {
   TextEditingController estateDealTypeController = TextEditingController();
   TextEditingController estateAddressController = TextEditingController();
   TextEditingController estateTypeController = TextEditingController();
-  TextEditingController phoneBrandController = TextEditingController();
+
   TextEditingController productNameController = TextEditingController();
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController vinCode = TextEditingController();
   TextEditingController floor = TextEditingController();
   TextEditingController room = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
   ///Individual Info
-  //RxString selectedLocation = RxString("");
+  RxString selectedPhoneBrand = RxString("");
   RxBool allowCall = RxBool(true);
   RxBool contactOnlyWithChat = RxBool(true);
 
@@ -81,7 +80,6 @@ class ProductController extends GetxController {
   //-- On Init Method --//
   @override
   void onInit() {
-    getCurrentLocation();
     fetchProducts();
     super.onInit();
   }
@@ -111,12 +109,10 @@ class ProductController extends GetxController {
         if (selectedEngineType.value.isNotEmpty) filledCount++;
         if (selectedPassed.value.isNotEmpty) filledCount++;
         if (selectedYear.value.isNotEmpty) filledCount++;
-        if (selectedColor.value.isNotEmpty) filledCount++;
-        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        if (productNameController.text.trim().isNotEmpty) filledCount++;
+        if (selectedColor.isNotEmpty) filledCount++;
+        // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        // if (productNameController.text.trim().isNotEmpty) filledCount++;
         if (vinCode.text.trim().isNotEmpty) filledCount++;
-        // car condition
-        filledCount++;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         if (selectCategory.value != null) filledCount++;
@@ -125,16 +121,15 @@ class ProductController extends GetxController {
         if (estateTypeController.text.trim().isNotEmpty) filledCount++;
         if (floor.text.trim().isNotEmpty) filledCount++;
         if (room.text.trim().isNotEmpty) filledCount++;
-        //left count
         filledCount++;
-        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        if (productNameController.text.trim().isNotEmpty) filledCount++;
+        // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        // if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'phone') {
         if (selectCategory.value != null) filledCount++;
         if (productNameController.text.trim().isNotEmpty) filledCount++;
         if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        if (phoneBrandController.text.trim().isNotEmpty) filledCount++;
+        if (selectedPhoneBrand.isNotEmpty) filledCount++;
       } else {
         if (selectCategory.value != null) filledCount++;
         if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
@@ -149,10 +144,10 @@ class ProductController extends GetxController {
 
   // field calculated in individual info
   calculateFilledIndividualInfoFields() {
-    int filledCount = 2;
+    int filledCount = 3;
     if (Get.find<FilterController>().selectedProvince.value != "" &&
         Get.find<FilterController>().selectedCity.value != "") filledCount++;
-    if (phoneNumberController.text.trim().isNotEmpty) filledCount++;
+
     if (toTime.value != null) filledCount++;
     if (fromTime.value != null) filledCount++;
     individualInfoFiledCount.value = filledCount;
@@ -247,8 +242,9 @@ class ProductController extends GetxController {
   }
 
   //--- POST PRODUCT ---//
-  Future<void> postProduct(Map<String, dynamic> body) async {
-    await BaseClient.safeApiCall(
+  Future<bool> postProduct(Map<String, dynamic> body) async {
+    // log('body: $body');
+    return await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,
       headers: {
@@ -260,13 +256,16 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log(response.toString());
         isProductPosting.value = false;
-        CustomSnackBar.showCustomSnackBar(
+        CustomSnackBar.showCustomToast(
             message: 'Product posted successfully', title: 'Success');
+        return true;
       },
       onError: (p0) {
         log("postProduct Error: ${p0.message} --${p0.response?.statusCode} ${p0.response?.data}");
         isProductPosting.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Product posting failed');
+        CustomSnackBar.showCustomToast(
+            color: Colors.red, message: 'Product posting failed');
+        return false;
       },
     );
   }
@@ -530,5 +529,31 @@ class ProductController extends GetxController {
         latLng.latitude, latLng.longitude);
 
     calculateFilledIndividualInfoFields();
+  }
+
+  //-Get Product Details --//
+  RxBool isProductDetailsLoading = RxBool(true);
+  Rxn<ProductModel> selectPostProductModel = Rxn<ProductModel>();
+  Future<void> getSingleProductDetails(String pId) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$pId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isProductDetailsLoading.value = true;
+        selectPostProductModel.value = null;
+      },
+      onSuccess: (response) {
+        Map<String, dynamic> data = response.data;
+        selectPostProductModel.value = ProductModel.fromJson(data);
+        isProductDetailsLoading.value = false;
+      },
+      onError: (p0) {
+        isProductDetailsLoading.value = false;
+      },
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
@@ -45,11 +46,13 @@ upgradeToPremiumDialog() {
                 Text(
                   "Upgrade to premium by entering your 8-digit code.",
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
                   child: Pinput(
+                    controller: userController.upgradeCodeController,
                     length: 8,
                     forceErrorState: true,
                     pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
@@ -83,9 +86,9 @@ upgradeToPremiumDialog() {
                         ),
                       ],
                     ),
-                    validator: (pin) {
-                      if (pin == '2224') return null;
-                      return 'Code is incorrect';
+                    onCompleted: (value) async {
+                      log("onCompleted: $value");
+                      await userController.upgradeToPremium();
                     },
                   ),
                 ),
@@ -97,7 +100,8 @@ upgradeToPremiumDialog() {
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -132,15 +136,18 @@ upgradeToPremiumDialog() {
                                   borderRadius: BorderRadius.circular(10.r),
                                 ),
                               ),
-                              onPressed: () {},
-                              child: userController.isUpgradePreimumLoading.value
-                                  ? const CupertinoActivityIndicator()
-                                  : Text(
-                                      "Apply",
-                                      style: regular.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              onPressed: () async {
+                                await userController.upgradeToPremium();
+                              },
+                              child:
+                                  userController.isUpgradePreimumLoading.value
+                                      ? const CupertinoActivityIndicator()
+                                      : Text(
+                                          "Apply",
+                                          style: regular.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
                             );
                           },
                         ),
@@ -152,7 +159,8 @@ upgradeToPremiumDialog() {
                 Text(
                   "Don\’t have a code? Contact support to learn more about premium features.",
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 )
               ],
             ),

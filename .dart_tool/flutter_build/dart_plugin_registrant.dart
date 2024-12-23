@@ -22,12 +22,14 @@ import 'package:geocoding_ios/geocoding_ios.dart';
 import 'package:google_maps_flutter_ios/google_maps_flutter_ios.dart';
 import 'package:image_picker_ios/image_picker_ios.dart';
 import 'package:path_provider_foundation/path_provider_foundation.dart';
+import 'package:pointer_interceptor_ios/pointer_interceptor_ios.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
 import 'package:sqflite_darwin/sqflite_darwin.dart';
 import 'package:url_launcher_ios/url_launcher_ios.dart';
 import 'package:video_player_avfoundation/video_player_avfoundation.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_linux/file_selector_linux.dart';
+import 'package:flutter_keyboard_visibility_linux/flutter_keyboard_visibility_linux.dart';
 import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
 import 'package:image_picker_linux/image_picker_linux.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -37,6 +39,7 @@ import 'package:url_launcher_linux/url_launcher_linux.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_macos/file_selector_macos.dart';
+import 'package:flutter_keyboard_visibility_macos/flutter_keyboard_visibility_macos.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_picker_macos/image_picker_macos.dart';
 import 'package:path_provider_foundation/path_provider_foundation.dart';
@@ -47,6 +50,7 @@ import 'package:video_player_avfoundation/video_player_avfoundation.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
+import 'package:flutter_keyboard_visibility_windows/flutter_keyboard_visibility_windows.dart';
 import 'package:image_picker_windows/image_picker_windows.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider_windows/path_provider_windows.dart';
@@ -206,6 +210,15 @@ class _PluginRegistrant {
       }
 
       try {
+        PointerInterceptorIOS.registerWith();
+      } catch (err) {
+        print(
+          '`pointer_interceptor_ios` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         SharedPreferencesFoundation.registerWith();
       } catch (err) {
         print(
@@ -256,6 +269,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`file_selector_linux` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        FlutterKeyboardVisibilityPluginLinux.registerWith();
+      } catch (err) {
+        print(
+          '`flutter_keyboard_visibility_linux` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -338,6 +360,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`file_selector_macos` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        FlutterKeyboardVisibilityPluginMacos.registerWith();
+      } catch (err) {
+        print(
+          '`flutter_keyboard_visibility_macos` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }
@@ -429,6 +460,15 @@ class _PluginRegistrant {
       } catch (err) {
         print(
           '`file_selector_windows` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
+        FlutterKeyboardVisibilityPluginWindows.registerWith();
+      } catch (err) {
+        print(
+          '`flutter_keyboard_visibility_windows` threw an error: $err. '
           'The app may not function as expected until you remove this plugin from pubspec.yaml'
         );
       }

@@ -7,6 +7,7 @@ import '../model/message_model.dart';
 import 'audio_message_tile.dart';
 import 'image_message_tile.dart';
 import 'map_message_tile.dart';
+import 'post_message_tile.dart';
 import 'text_message_tile.dart';
 import 'video_message_tile.dart';
 
@@ -31,9 +32,9 @@ class MessageTile extends StatelessWidget {
         case ChatMessageType.audio:
           return AudioMessage(message: message);
         case ChatMessageType.video:
-          return VideoMessage(
-            message: message,
-          );
+          return VideoMessage(message: message);
+        case ChatMessageType.post:
+          return PostMessageTile(message: message);
         default:
           return const SizedBox();
       }

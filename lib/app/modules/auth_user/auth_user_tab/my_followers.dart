@@ -97,9 +97,10 @@ class _MyFollowersState extends State<MyFollowers> {
                       tileColor: const Color(0xFFD9D9D9),
                       contentPadding: EdgeInsets.zero,
                       leading: CircleAvatar(
+                        backgroundColor: context.theme.cardColor,
                         radius: 22.r,
                         child: NewworkImagePreview(
-                          radius: 22.r,
+                          radius: 50.r,
                           url: user?.follower?.picture ?? '',
                           height: 44.h,
                           width: 44.w,

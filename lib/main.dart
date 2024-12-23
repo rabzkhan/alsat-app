@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:toastification/toastification.dart';
 import 'app/data/local/my_shared_pref.dart';
 import 'app/routes/app_pages.dart';
 import 'app/services/firebase_messaging_services.dart';
@@ -40,40 +41,42 @@ Future<void> main() async {
       useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
-        return GetMaterialApp(
-            title: "ALSAT",
-            useInheritedMediaQuery: true,
-            debugShowCheckedModeBanner: false,
-            builder: (context, widget) {
-              return Theme(
-                data: appTheme(),
-                child: MediaQuery(
-                  data: MediaQuery.of(context).copyWith(
-                    textScaler: const TextScaler.linear(1.0),
+        return ToastificationWrapper(
+          child: GetMaterialApp(
+              title: "ALSAT",
+              useInheritedMediaQuery: true,
+              debugShowCheckedModeBanner: false,
+              builder: (context, widget) {
+                return Theme(
+                  data: appTheme(),
+                  child: MediaQuery(
+                    data: MediaQuery.of(context).copyWith(
+                      textScaler: const TextScaler.linear(1.0),
+                    ),
+                    child: widget!,
                   ),
-                  child: widget!,
-                ),
-              );
-            },
-            initialRoute: AppPages.INITIAL,
-            getPages: AppPages.routes,
-            themeMode: ThemeMode.light,
-            // home: const OnboardingPage(),
-            initialBinding: AppBinding(),
-            theme: appTheme(),
-            // locale: MySharedPref.getCurrentLocal(),
-            // translations: LocalizationService.getInstance(),
-            locale: Get.deviceLocale,
-            localizationsDelegates: const [
-              AppLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en'), // English
-              Locale('ar'), // English
-            ]);
+                );
+              },
+              initialRoute: AppPages.INITIAL,
+              getPages: AppPages.routes,
+              themeMode: ThemeMode.light,
+              // home: const OnboardingPage(),
+              initialBinding: AppBinding(),
+              theme: appTheme(),
+              // locale: MySharedPref.getCurrentLocal(),
+              // translations: LocalizationService.getInstance(),
+              locale: Get.deviceLocale,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en'), // English
+                Locale('ar'), // English
+              ]),
+        );
       },
     ),
   );

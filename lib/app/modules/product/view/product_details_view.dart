@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
 
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 
@@ -18,9 +19,11 @@ import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../components/network_image_preview.dart';
+import '../../conversation/view/message_view.dart';
 import '../controller/product_details_controller.dart';
 import '../model/product_post_list_res.dart';
 import 'product_comments_view.dart';
@@ -39,6 +42,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   @override
   void initState() {
+    Future.delayed(Duration.zero, () {
+      if (widget.productModel?.id == null) {
+        Get.back();
+        CustomSnackBar.showCustomToast(message: 'Product Not Found');
+      }
+    });
     productDetailsController =
         Get.put(ProductDetailsController(), tag: widget.productModel?.id);
     initMethod();
@@ -149,11 +158,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           CrossAxisAlignment.center,
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Image.asset(
-                                          shareIcon,
-                                          height: 30.h,
-                                        ),
-                                        8.horizontalSpace,
                                         InkWell(
                                           onTap: () async {
                                             await productController
@@ -188,7 +192,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                                             ?.liked ??
                                                         false)
                                                     ? Colors.red
-                                                    : Colors.transparent,
+                                                    : Colors.white,
                                                 border: Border.all(
                                                   color: (productDetailsController
                                                               .selectPostProductModel
@@ -665,67 +669,108 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                     ),
                     10.verticalSpace,
+                    // Text(
+                    //     '${compareTimeFrom(widget.productModel?.individualInfo?.freeToCallFrom)}${(widget.productModel?.individualInfo?.freeToCallFrom)} -- ${DateTime.now().hour}:${DateTime.now().minute}'),
+                    // Text(
+                    //     '${compareTimeTo(widget.productModel?.individualInfo?.freeToCallTo)} ${widget.productModel?.individualInfo?.freeToCallTo}  -- ${DateTime.now().hour}:${DateTime.now().minute}'),
                     Row(
                       children: [
-                        Expanded(
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                              side: BorderSide(
-                                color: Get.theme.primaryColor,
+                        if ((widget.productModel?.individualInfo?.allowToCall ??
+                            false))
+                          Expanded(
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                                side: BorderSide(
+                                  color: Get.theme.primaryColor,
+                                ),
+                              ),
+                              height: 45,
+                              color: Get.theme.scaffoldBackgroundColor,
+                              onPressed: () async {
+                                final url =
+                                    'tel:${widget.productModel?.individualInfo?.phoneNumber}';
+                                if (await canLaunchUrl(Uri.parse(url))) {
+                                  await launchUrl(Uri.parse(url));
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.phone,
+                                    color: Get.theme.primaryColor,
+                                    size: 20.r,
+                                  ),
+                                  5.horizontalSpace,
+                                  Text(
+                                    'Call ',
+                                    style: regular.copyWith(
+                                      color: Get.theme.primaryColor,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            height: 45,
-                            color: Get.theme.scaffoldBackgroundColor,
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.phone,
-                                  color: Get.theme.primaryColor,
-                                  size: 20.r,
-                                ),
-                                5.horizontalSpace,
-                                Text(
-                                  'Call',
-                                  style: regular.copyWith(
-                                    color: Get.theme.primaryColor,
-                                    fontSize: 14.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
                         30.horizontalSpace,
                         Expanded(
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            height: 45,
-                            color: Get.theme.primaryColor,
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.messenger_rounded,
-                                  color: Colors.white,
-                                  size: 20.r,
-                                ),
-                                5.horizontalSpace,
-                                Text(
-                                  'Mesaage',
-                                  style: regular.copyWith(
-                                    color: Colors.white,
-                                    fontSize: 14.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          child: Obx(() {
+                            return MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                              height: 45,
+                              color: Get.theme.primaryColor,
+                              onPressed: productDetailsController
+                                      .isFetchUserConversationLoading.value
+                                  ? null
+                                  : () {
+                                      productDetailsController
+                                          .getConversationInfoByUserId(
+                                              productDetailsController
+                                                      .postUserModel
+                                                      .value
+                                                      ?.id ??
+                                                  "")
+                                          .then((value) {
+                                        Get.to(
+                                          MessagesScreen(
+                                            conversation:
+                                                productDetailsController
+                                                    .conversationInfo.value!,
+                                          ),
+                                          transition: Transition.fadeIn,
+                                        );
+                                      });
+                                    },
+                              child: productDetailsController
+                                      .isFetchUserConversationLoading.value
+                                  ? const CupertinoActivityIndicator()
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.messenger_rounded,
+                                          color: Colors.white,
+                                          size: 20.r,
+                                        ),
+                                        5.horizontalSpace,
+                                        Text(
+                                          'Mesaage',
+                                          style: regular.copyWith(
+                                            color: Colors.white,
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            );
+                          }),
                         ),
                       ],
                     )
@@ -829,4 +874,56 @@ Padding infoTile({required String name, required String value}) {
       ],
     ),
   );
+}
+
+bool compareTimeFrom(String? freeToCallFrom) {
+  DateTime now = DateTime.now();
+  if (freeToCallFrom != null && freeToCallFrom.isNotEmpty) {
+    List<String> parts = freeToCallFrom.split(':');
+    if (parts.length == 2) {
+      int freeToCallFromHour = int.parse(parts[0]);
+      int freeToCallFromMinute = int.parse(parts[1]);
+      DateTime parsedTime = DateTime(now.year, now.month, now.day,
+          freeToCallFromHour, freeToCallFromMinute);
+      if (now.isAfter(parsedTime)) {
+        log('Current time is after the freeToCallFrom time.');
+        return true;
+      } else if (now.isBefore(parsedTime)) {
+        log('Current time is before the freeToCallFrom time.');
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+bool compareTimeTo(String? freeToCallTo) {
+  DateTime now = DateTime.now();
+  if (freeToCallTo != null && freeToCallTo.isNotEmpty) {
+    List<String> parts = freeToCallTo.split(':');
+    if (parts.length == 2) {
+      int freeToCallFromHour = int.parse(parts[0]);
+      int freeToCallFromMinute = int.parse(parts[1]);
+      DateTime parsedTime = DateTime(now.year, now.month, now.day,
+          freeToCallFromHour, freeToCallFromMinute);
+      if (now.isBefore(parsedTime)) {
+        log('Current time is after the freeToCallFrom time.');
+        return true;
+      } else if (now.isBefore(parsedTime)) {
+        log('Current time is before the freeToCallFrom time.');
+        return false;
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
 }

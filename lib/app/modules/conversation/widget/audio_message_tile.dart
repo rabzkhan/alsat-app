@@ -6,13 +6,43 @@ import 'package:intl/intl.dart';
 import '../model/message_model.dart';
 import 'package:voice_message_package/voice_message_package.dart';
 
-class AudioMessage extends StatelessWidget {
+class AudioMessage extends StatefulWidget {
   const AudioMessage({
     super.key,
     this.message,
   });
 
   final ChatMessage? message;
+
+  @override
+  State<AudioMessage> createState() => _AudioMessageState();
+}
+
+class _AudioMessageState extends State<AudioMessage> {
+  AudioPlayerControllerManager audioPlayerControllerManager =
+      Get.put(AudioPlayerControllerManager());
+  late VoiceController voiceController;
+
+  @override
+  void initState() {
+    initController();
+    super.initState();
+  }
+
+  initController() {
+    voiceController = VoiceController(
+      maxDuration: const Duration(seconds: 10),
+      isFile: widget.message!.data.toString().contains('http') ? false : true,
+      audioSrc: widget.message!.data.toString(),
+      onComplete: () {},
+      onPause: () {},
+      onPlaying: () {
+        audioPlayerControllerManager.playAudio(voiceController);
+      },
+      onError: (err) {},
+    );
+    audioPlayerControllerManager.addController(voiceController);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,45 +58,75 @@ class AudioMessage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           VoiceMessageView(
-            activeSliderColor: Colors.white,
-            circlesColor: Colors.white,
+            activeSliderColor:
+                widget.message!.isSender ? Colors.white : AppColors.primary,
+            circlesColor:
+                widget.message!.isSender ? Colors.white : AppColors.primary,
             refreshIcon: const Icon(Icons.refresh, color: AppColors.primary),
-            pauseIcon:
-                const Icon(Icons.pause_rounded, color: AppColors.primary),
-            playIcon:
-                const Icon(Icons.play_arrow_rounded, color: AppColors.primary),
-            stopDownloadingIcon:
-                const Icon(Icons.close, color: AppColors.primary),
-            circlesTextStyle: const TextStyle(
-                color: AppColors.primary,
+            pauseIcon: Icon(
+              Icons.pause_rounded,
+              color:
+                  !widget.message!.isSender ? Colors.white : AppColors.primary,
+            ),
+            playIcon: Icon(
+              Icons.play_arrow_rounded,
+              color:
+                  !widget.message!.isSender ? Colors.white : AppColors.primary,
+            ),
+            stopDownloadingIcon: Icon(
+              Icons.close,
+              color:
+                  !widget.message!.isSender ? Colors.white : AppColors.primary,
+            ),
+            circlesTextStyle: TextStyle(
+                color: !widget.message!.isSender
+                    ? Colors.white
+                    : AppColors.primary,
                 fontSize: 10,
                 fontWeight: FontWeight.bold),
-            counterTextStyle: const TextStyle(
-                fontSize: 11, fontWeight: FontWeight.w500, color: Colors.white),
-            backgroundColor:
-                message!.isSender ? context.theme.primaryColor : Colors.white,
-            controller: VoiceController(
-              maxDuration: const Duration(seconds: 10),
-              isFile: message!.data.toString().contains('http') ? false : true,
-              audioSrc: message!.data.toString(),
-              onComplete: () {},
-              onPause: () {},
-              onPlaying: () {},
-              onError: (err) {},
+            counterTextStyle: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w500,
+              color:
+                  widget.message!.isSender ? Colors.white : AppColors.primary,
             ),
+            backgroundColor: widget.message!.isSender
+                ? context.theme.primaryColor
+                : Colors.white,
+            controller: voiceController,
             innerPadding: 12,
             cornerRadius: 20,
           ),
           5.verticalSpace,
           Text(
-            DateFormat('hh:mm').format(message!.time),
+            DateFormat('hh:mm').format(widget.message!.time),
             style: context.theme.textTheme.bodySmall?.copyWith(
-              color: message!.isSender ? Colors.white : null,
+              color: widget.message!.isSender ? Colors.white : null,
               fontSize: 10.sp,
             ),
           ),
         ],
       ),
     );
+  }
+}
+
+class AudioPlayerControllerManager extends GetxController {
+  List<VoiceController> controllers = [];
+
+  void playAudio(VoiceController controller) {
+    for (var ctrl in controllers) {
+      if (ctrl != controller) {
+        ctrl.stopPlaying();
+      }
+    }
+  }
+
+  void addController(VoiceController controller) {
+    controllers.add(controller);
+  }
+
+  void removeController(VoiceController controller) {
+    controllers.remove(controller);
   }
 }

@@ -1,6 +1,8 @@
 import 'package:alsat/app/components/network_image_preview.dart';
+import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +13,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/custom_appbar.dart';
 import '../../../components/product_grid_tile.dart';
+import '../../conversation/view/message_view.dart';
 import '../widget/rate_bottom_sheet.dart';
 
 class ClientProfileView extends StatefulWidget {
@@ -264,7 +267,31 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 10.horizontalSpace,
                                 Expanded(
                                   child: OutlinedButton(
-                                    onPressed: () {},
+                                    onPressed: widget
+                                            .productDetailsController
+                                            .isFetchUserConversationLoading
+                                            .value
+                                        ? null
+                                        : () {
+                                            widget.productDetailsController
+                                                .getConversationInfoByUserId(widget
+                                                        .productDetailsController
+                                                        .postUserModel
+                                                        .value
+                                                        ?.id ??
+                                                    "")
+                                                .then((value) {
+                                              Get.to(
+                                                MessagesScreen(
+                                                  conversation: widget
+                                                      .productDetailsController
+                                                      .conversationInfo
+                                                      .value!,
+                                                ),
+                                                transition: Transition.fadeIn,
+                                              );
+                                            });
+                                          },
                                     style: OutlinedButton.styleFrom(
                                       side: BorderSide(
                                         color: Get.theme.primaryColor,
@@ -275,12 +302,17 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                             BorderRadius.circular(12.r),
                                       ),
                                     ),
-                                    child: Text(
-                                      'Message',
-                                      style: regular.copyWith(
-                                        color: Get.theme.primaryColor,
-                                      ),
-                                    ),
+                                    child: widget
+                                            .productDetailsController
+                                            .isFetchUserConversationLoading
+                                            .value
+                                        ? const CupertinoActivityIndicator()
+                                        : Text(
+                                            'Message',
+                                            style: regular.copyWith(
+                                              color: Get.theme.primaryColor,
+                                            ),
+                                          ),
                                   ),
                                 ),
                                 10.horizontalSpace,
@@ -331,34 +363,43 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                   controller: userProductRefreshController,
                   onRefresh: userProductRefresh,
                   onLoading: userProductLoading,
-                  child: GridView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20.w,
-                    ),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10.h,
-                      crossAxisSpacing: 10.w,
-                      mainAxisExtent: 200.h,
-                    ),
-                    itemBuilder: (context, index) {
-                      return ProductGridTile(
-                        loading: widget
-                            .productDetailsController.isFetchUserProduct.value,
-                        productModel: widget.productDetailsController
-                                .isFetchUserProduct.value
-                            ? null
-                            : widget.productDetailsController
-                                .userProductList[index],
-                      );
-                    },
-                    itemCount:
-                        widget.productDetailsController.isFetchUserProduct.value
-                            ? 10
-                            : widget.productDetailsController.userProductList
-                                .length,
-                  ),
+                  child: !widget.productDetailsController.isFetchUserProduct
+                              .value &&
+                          widget
+                              .productDetailsController.userProductList.isEmpty
+                      ? NoDataWidget(
+                          title: 'No Product Found',
+                          bottomHeight: 100.h,
+                        )
+                      : GridView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                          ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 10.h,
+                            crossAxisSpacing: 10.w,
+                            mainAxisExtent: 200.h,
+                          ),
+                          itemBuilder: (context, index) {
+                            return ProductGridTile(
+                              loading: widget.productDetailsController
+                                  .isFetchUserProduct.value,
+                              productModel: widget.productDetailsController
+                                      .isFetchUserProduct.value
+                                  ? null
+                                  : widget.productDetailsController
+                                      .userProductList[index],
+                            );
+                          },
+                          itemCount: widget.productDetailsController
+                                  .isFetchUserProduct.value
+                              ? 10
+                              : widget.productDetailsController.userProductList
+                                  .length,
+                        ),
                 );
               },
             ),

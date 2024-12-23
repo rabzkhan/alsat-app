@@ -40,7 +40,8 @@ class FilterController extends GetxController {
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
-  RxList<Map<String, dynamic>> brandAndSelectedModel = RxList<Map<String, dynamic>>();
+  RxList<Map<String, dynamic>> brandAndSelectedModel =
+      RxList<Map<String, dynamic>>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
@@ -49,15 +50,35 @@ class FilterController extends GetxController {
   RxList<String> selectMobileBrand = <String>[].obs;
   RxList<String> estateTtype = <String>[].obs;
   RxString sortValue = RxString('Default');
+  RxBool sortDonwnToUp = RxBool(true);
 
   // Real state variables
 
-  RxList<String> dbodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dbodyType =
+      <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
   RxList<String> estateTtypeList = <String>["house"].obs;
-  RxList<String> dcolor = <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
+  RxList<Map<String, Color>> dcolor = RxList<Map<String, Color>>([
+    {"Red": Colors.red},
+    {"Black": Colors.black},
+    {"Silver": Colors.grey}, // Usually, Silver is a shade of grey
+    {"Blue": Colors.blue},
+    {"White": Colors.white},
+    {"Yellow": Colors.yellow},
+    {"Magenta": const Color(0xFFFF00FF)},
+    {"Pink": Colors.pink},
+    {"Brown": Colors.brown},
+    {"Green": Colors.green},
+    {"Cyan": Colors.cyan},
+    {"Wheat": const Color(0xFFF5DEB3)},
+    {"Orange": Colors.orange},
+    {"Purple": Colors.purple},
+    {"Teal": Colors.teal},
+    {"Indigo": Colors.indigo},
+  ]);
+
   RxList<String> mobileBrand = <String>[
     'Apple',
     'Samsung',
@@ -131,6 +152,7 @@ class FilterController extends GetxController {
         selectedProvince.value = "";
         selectedCity.value = "";
       } else {
+        log.log("selectedProvince.value ${selectedProvince.value}");
         // If not selected, clear others and select the new one
         selectedProvince.value = provinceName;
         selectedCity.value = "";
@@ -149,8 +171,10 @@ class FilterController extends GetxController {
   }
 
 // Toggle city selection with single or multiple selection
-  void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
-    if (!selectedProvinces.contains(provinceName) && selectedProvince.value != provinceName)
+  void toggleCity(
+      String provinceName, String cityName, bool allowMultipleSelection) {
+    if (!selectedProvinces.contains(provinceName) &&
+        selectedProvince.value != provinceName)
       return; // Province must be selected first
     if (!allowMultipleSelection) {
       // Single selection: update the selected city
@@ -200,7 +224,10 @@ class FilterController extends GetxController {
     }
     return selectedProvinces.map((province) {
       final cities = selectedCities[province];
-      return {"province": province, if (cities != null && cities.isNotEmpty) "city": cities};
+      return {
+        "province": province,
+        if (cities != null && cities.isNotEmpty) "city": cities
+      };
     }).toList();
   }
 
@@ -221,12 +248,15 @@ class FilterController extends GetxController {
         locationTexts.add(province);
       }
     }
-    return locationTexts.isNotEmpty ? locationTexts.join(', ') : 'Choose Location';
+    return locationTexts.isNotEmpty
+        ? locationTexts.join(', ')
+        : 'Choose Location';
   }
 
   // ============== end of location ================== //
 
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
   void onRefresh() async {
     await applyFilter(
       refresh: true,
@@ -248,33 +278,36 @@ class FilterController extends GetxController {
 
   ProudctPostListRes userProductPostListRes = ProudctPostListRes();
   RxList<ProductModel> itemList = <ProductModel>[].obs;
-  Future<void> applyFilter({bool refresh = false, bool paginate = false, String? nextValue}) async {
-    ProductController productController = Get.find();
-    var filterData = {
+  Map<String, dynamic>? filtermapPassed;
+  Future<void> applyFilter({
+    bool refresh = false,
+    bool paginate = false,
+    String? nextValue,
+  }) async {
+    var map = {
       "category": (category.value?.name ?? '').toLowerCase(),
       "condition": condition.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
-      "location": getSelectedLocationData()
-      //   "condition": condition.value,
-      //   "price_from": int.parse(priceFrom.value.text),
-      //   "price_to": int.parse(priceTo.value.text),
-      //   "brand": brand.value != "Not Chosen Yet" ? brand.value : '',
-      //   "model": "Not Chosen Yet",
-      //   "body_type": bodyType.value != "Not Chosen Yet" ? bodyType.value : '',
-      //   //"drive_type": driveType.value != "Not Chosen Yet" ? driveType.value : '',
-      //   //"engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
-      //   "transmission":
-      //       transmission.value != "Not Chosen Yet" ? transmission.value : '',
-      //   // "year_from": 2000,
-      //   // "year_to": 2024,
-      //   //"color": color.value != "Not Chosen Yet" ? color.value : '',
-      //   // "mileage_from": 0,
-      //   // "mileage_to": 100000,
-      //   "credit": credit.value,
-      //   // "exchange": exchange.value,
-      //   // "has_vin_code": hasVinCode.value
+      "location":
+          getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
+      "brand": brand.isEmpty ? [] : brandformate(),
+      "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
+      "drive_type":
+          driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
+      "engine_type":
+          engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      "transmission":
+          transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      "color": color.isNotEmpty ? color : [],
+      "credit": credit.value,
+      "exchange": exchange.value,
+      "has_vin_code": hasVinCode.value,
+      'sort_price': sortDonwnToUp.value ? '1' : '-1',
     };
+
+    final filterData = Map<String, dynamic>.from(map);
+    filterData.addAll(filtermapPassed ?? {});
 
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextValue != null) {
@@ -310,5 +343,27 @@ class FilterController extends GetxController {
         Logger().d("$error <- error");
       },
     );
+  }
+
+  // ============== end of filter ================== //
+  List<Map<String, dynamic>> brandformate() {
+    List<Map<String, dynamic>> brandList = [];
+    for (var brandAndModel in brandAndSelectedModel) {
+      BrandModel brandSelected = brandAndModel["brand"];
+      List<CarModel> brandModelSelected = brandAndModel["model"];
+      Map<String, dynamic> tamp = {"brand": brandSelected.brand};
+      if (brandModelSelected.isNotEmpty) {
+        for (var model in brandModelSelected) {
+          tamp["model"] = [
+            {
+              "name": model.name,
+              "class": model.modelClass,
+            }
+          ];
+        }
+      }
+      brandList.add(tamp);
+    }
+    return brandList;
   }
 }

@@ -35,48 +35,49 @@ class CustomAppBar extends StatelessWidget {
           !isShowBackButton
               ? IconButton(
                   onPressed: () {
-                    homeController.isShowDrawer.value = !homeController.isShowDrawer.value;
+                    homeController.isShowDrawer.value =
+                        !homeController.isShowDrawer.value;
                     homeController.isShowSearch.value = false;
                   },
                   icon: const Icon(Icons.menu),
                 )
               : const BackButton(),
           4.horizontalSpace,
-          isShowNotification
-              ? InkWell(
-                  onTap: () {
-                    homeController.getCategories();
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 6.w,
-                          vertical: 6.h,
-                        ),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Get.theme.shadowColor.withOpacity(.1),
-                          ),
-                        ),
-                        child: Image.asset(
-                          notificationBell,
-                          height: 22.h,
-                          width: 22.w,
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.red,
-                          radius: 5.r,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              : const SizedBox(),
+          // isShowNotification
+          //     ? InkWell(
+          //         onTap: () {
+          //           homeController.getCategories();
+          //         },
+          //         child: Stack(
+          //           children: [
+          //             Container(
+          //               padding: EdgeInsets.symmetric(
+          //                 horizontal: 6.w,
+          //                 vertical: 6.h,
+          //               ),
+          //               decoration: BoxDecoration(
+          //                 shape: BoxShape.circle,
+          //                 border: Border.all(
+          //                   color: Get.theme.shadowColor.withOpacity(.1),
+          //                 ),
+          //               ),
+          //               child: Image.asset(
+          //                 notificationBell,
+          //                 height: 22.h,
+          //                 width: 22.w,
+          //               ),
+          //             ),
+          //             Positioned(
+          //               right: 0,
+          //               child: CircleAvatar(
+          //                 backgroundColor: Colors.red,
+          //                 radius: 5.r,
+          //               ),
+          //             )
+          //           ],
+          //         ),
+          //       )
+          //     : const SizedBox(),
 
           const Spacer(),
           Image.asset(logo),
@@ -100,17 +101,17 @@ class CustomAppBar extends StatelessWidget {
 
           ///ll
           if (isShowFilter)
-            InkWell(
-              onTap: () {
-                Get.to(const FilterView(), transition: Transition.fadeIn);
-              },
-              child: Image.asset(
-                filterIcon,
-                height: 23.h,
-                width: 23.w,
-              ),
-            ),
-          if (!isShowFilter && !isShowSearch) const Spacer()
+            // InkWell(
+            //   onTap: () {
+            //     Get.to(const FilterView(), transition: Transition.fadeIn);
+            //   },
+            //   child: Image.asset(
+            //     filterIcon,
+            //     height: 23.h,
+            //     width: 23.w,
+            //   ),
+            // ),
+            if (!isShowFilter && !isShowSearch) const Spacer()
         ],
       ),
     );

@@ -17,6 +17,8 @@ const String eyeIcon = 'assets/icons/eye.png';
 const String heartIcon = 'assets/icons/heart.png';
 const String messageIcon = 'assets/icons/message.png';
 const String xmarkIcon = 'assets/icons/xmark.png';
+const String sortDown = 'assets/icons/sort_down.png';
+const String sortUp = 'assets/icons/sort_up.png';
 // bottom Icon
 const String homeIcon = 'assets/icons/home.png';
 const String categoryIcon = 'assets/icons/category.png';

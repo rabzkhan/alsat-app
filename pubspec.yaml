@@ -77,7 +77,7 @@ dependencies:
   flutter_chat_ui:
     path: packages/flutter_chat_ui
   permission_handler: ^11.3.1
-  url_launcher: ^6.3.0
+  url_launcher: ^6.3.1
   fl_chart: ^0.69.0
   get: ^4.6.6
   logger: ^2.3.0
@@ -101,6 +101,9 @@ dependencies:
   voice_message_package: ^2.2.1
   audio_waveforms: ^1.2.0
   crypto: ^3.0.6
+  photo_view: ^0.15.0
+  toastification: ^2.3.0
+  form_builder_extra_fields: ^11.0.0
 
 
     

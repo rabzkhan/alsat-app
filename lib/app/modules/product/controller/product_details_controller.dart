@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -345,7 +346,39 @@ class ProductDetailsController extends GetxController {
     );
   }
 
+  //--Get User Conversation Info--//
+  Rxn<ConversationModel> conversationInfo = Rxn<ConversationModel>();
+  RxBool isFetchUserConversationLoading = RxBool(false);
+  Future<void> getConversationInfoByUserId(String userId) async {
+    log("${Constants.baseUrl}/chats?user=$userId");
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}/chats?user=$userId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isFetchUserConversationLoading.value = true;
+      },
+      onSuccess: (response) {
+        Map<String, dynamic> data = response.data;
+        ConversationListRes conversationListRes =
+            ConversationListRes.fromJson(data);
+        conversationInfo.value = conversationListRes.data?.firstOrNull;
+        isFetchUserConversationLoading.value = false;
+      },
+      onError: (p0) {
+        log('${p0.message}${p0.url} ${Constants.token}');
+        isFetchUserConversationLoading.value = false;
+        CustomSnackBar.showCustomErrorToast(
+            message: 'Failed to get conversation info');
+      },
+    );
+  }
+
   //-- dispose --//
+
   @override
   void onClose() {
     commentController.dispose();

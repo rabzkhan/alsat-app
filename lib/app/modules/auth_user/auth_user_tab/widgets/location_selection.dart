@@ -1,22 +1,21 @@
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import '../../../../config/theme/app_colors.dart';
-import '../../../../config/theme/app_text_theme.dart';
-import '../../filter/controllers/filter_controller.dart';
-import '../../filter/models/location_model.dart';
 
-class LocationSelection extends StatelessWidget {
-  final bool canSelectMultiple;
-  const LocationSelection({
+import '../../../../../config/theme/app_colors.dart';
+import '../../../../../config/theme/app_text_theme.dart';
+import '../../../filter/models/location_model.dart';
+
+class ProfileSingleLocationSelection extends StatelessWidget {
+  const ProfileSingleLocationSelection({
     super.key,
-    this.canSelectMultiple = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final FilterController filterController = Get.find();
+    final AuthController authController = Get.find();
 
     return Material(
       child: CupertinoPageScaffold(
@@ -53,15 +52,16 @@ class LocationSelection extends StatelessWidget {
                               GestureDetector(
                                 onTap: () {
                                   // Toggle province selection
-                                  filterController.toggleProvince(
-                                      province.name, canSelectMultiple);
+                                  authController.selectedProvince.value =
+                                      province.name;
+                                  authController.selectedCity.value = '';
                                 },
                                 child: CircleAvatar(
                                   radius: 10.r,
                                   backgroundColor: AppColors.liteGray,
                                   child: Icon(
-                                    filterController
-                                            .isProvinceSelected(province.name)
+                                    authController.selectedProvince.value ==
+                                            province.name
                                         ? Icons.check_circle
                                         : Icons.circle_outlined,
                                     color: AppColors.primary,
@@ -80,11 +80,7 @@ class LocationSelection extends StatelessWidget {
                               (city) {
                                 return InkWell(
                                   onTap: () {
-                                    filterController.toggleCity(
-                                      province.name,
-                                      city,
-                                      canSelectMultiple,
-                                    );
+                                    authController.selectedCity.value = city;
                                   },
                                   child: Padding(
                                     padding:
@@ -99,31 +95,25 @@ class LocationSelection extends StatelessWidget {
                                           ),
                                         ),
                                         const Spacer(),
-                                        if (filterController
-                                            .isProvinceSelected(province.name))
-                                          GestureDetector(
-                                            onTap: () {
-                                              // Toggle city selection
-                                              filterController.toggleCity(
-                                                province.name,
-                                                city,
-                                                canSelectMultiple,
-                                              );
-                                            },
-                                            child: CircleAvatar(
-                                              radius: 8.r,
-                                              backgroundColor:
-                                                  AppColors.liteGray,
-                                              child: Icon(
-                                                filterController.isCitySelected(
-                                                        province.name, city)
-                                                    ? Icons.check_circle
-                                                    : Icons.circle_outlined,
-                                                color: AppColors.primary,
-                                                size: 14.r,
-                                              ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            authController.selectedCity.value =
+                                                city;
+                                          },
+                                          child: CircleAvatar(
+                                            radius: 8.r,
+                                            backgroundColor: AppColors.liteGray,
+                                            child: Icon(
+                                              authController
+                                                          .selectedCity.value ==
+                                                      city
+                                                  ? Icons.check_circle
+                                                  : Icons.circle_outlined,
+                                              color: AppColors.primary,
+                                              size: 14.r,
                                             ),
                                           ),
+                                        ),
                                         20.horizontalSpace,
                                       ],
                                     ),
