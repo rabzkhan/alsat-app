@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
@@ -21,6 +22,8 @@ import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/location_selection.dart';
 import '../../filter/widgets/car_brand_sheet.dart';
 import '../../filter/widgets/car_model_sheet.dart';
+import '../../filter/widgets/color_picker_sheet.dart';
+import '../../filter/widgets/engine_type_sheet.dart';
 import '../../filter/widgets/filter_bottom_sheet.dart';
 import '../controller/product_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -37,6 +40,7 @@ class PostProductView extends StatefulWidget {
 
 class _PostProductViewState extends State<PostProductView> {
   ProductController productController = Get.find();
+  AuthController authController = Get.find();
   HomeController homeController = Get.find();
   FilterController filterController = Get.find();
   final _formKey = GlobalKey<FormBuilderState>();
@@ -120,7 +124,7 @@ class _PostProductViewState extends State<PostProductView> {
                         ),
                         onPressed: productController.isProductPosting.value
                             ? null
-                            : () {
+                            : () async {
                                 _formKey.currentState!.saveAndValidate();
                                 if (_formKey.currentState!.validate()) {
                                   FocusScope.of(context).unfocus();
@@ -134,21 +138,21 @@ class _PostProductViewState extends State<PostProductView> {
                                               .individualInfoFiled.value !=
                                           productController
                                               .individualInfoFiledCount.value) {
-                                    CustomSnackBar.showCustomErrorToast(
+                                    CustomSnackBar.showCustomToast(
+                                        color: Colors.red,
                                         message: "Please fill all the fields");
                                   }
                                   if (productController.pickImageList.isEmpty) {
-                                    CustomSnackBar.showCustomErrorToast(
-                                        message:
-                                            "Please select at least one image");
+                                    CustomSnackBar.showCustomToast(
+                                      color: Colors.red,
+                                      message:
+                                          "Please select at least one image",
+                                    );
                                   } else {
                                     productController.isProductPosting.value =
                                         true;
-                                    addProductDataFormate(
-                                            _formKey.currentState!.value)
-                                        .then((_) {
-                                      _formKey.currentState!.reset();
-                                    });
+                                    await addProductDataFormate(
+                                        _formKey.currentState!.value);
                                   }
                                 }
                               },
@@ -873,8 +877,9 @@ class _PostProductViewState extends State<PostProductView> {
                                       .calculateFilledIndividualInfoFields();
                                 },
                                 name: 'phoneNumber',
-                                controller:
-                                    productController.phoneNumberController,
+                                enabled: false,
+                                initialValue:
+                                    "${authController.userDataModel.value.phone}",
                                 decoration: InputDecoration(
                                   hintText: 'Phone Number',
                                   hintStyle: TextStyle(
@@ -1106,59 +1111,59 @@ class _PostProductViewState extends State<PostProductView> {
                             Padding(
                               padding: EdgeInsets.symmetric(
                                   horizontal: 20.w, vertical: 4.h),
-                              child: Row(
-                                children: [
-                                  Text('Price, \$', style: regular),
-                                  5.horizontalSpace,
-                                  Expanded(
-                                    child: FormBuilderTextField(
-                                      onChanged: (value) {
-                                        if ((value ?? '').isEmpty) {
-                                          productController
-                                              .productPriceFiledCount.value = 2;
-                                        } else {
-                                          productController
-                                              .productPriceFiledCount.value = 3;
-                                        }
-                                      },
-                                      keyboardType: TextInputType.number,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp(r'^\d*\.?\d*')),
-                                      ],
-                                      validator: FormBuilderValidators.compose([
-                                        FormBuilderValidators.required(),
-                                      ]),
-                                      name: 'price',
-                                      controller:
-                                          productController.priceController,
-                                      decoration: InputDecoration(
-                                        hintText: '',
-                                        hintStyle: TextStyle(
-                                          fontSize: 12.sp,
-                                        ),
-                                        border: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: context.theme.shadowColor
-                                                .withOpacity(.3),
-                                          ),
-                                        ),
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: context.theme.shadowColor
-                                                .withOpacity(.3),
-                                          ),
-                                        ),
-                                        enabledBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: context.theme.shadowColor
-                                                .withOpacity(.3),
-                                          ),
-                                        ),
-                                      ),
+                              child: FormBuilderTextField(
+                                onChanged: (value) {
+                                  if ((value ?? '').isEmpty) {
+                                    productController
+                                        .productPriceFiledCount.value = 2;
+                                  } else {
+                                    productController
+                                        .productPriceFiledCount.value = 3;
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d*\.?\d*')),
+                                ],
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                ]),
+                                name: 'price',
+                                controller: productController.priceController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Container(
+                                    width: 70.w,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      'Price, \$',
+                                      style: regular,
                                     ),
                                   ),
-                                ],
+                                  hintText: '',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12.sp,
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             Padding(
@@ -1561,52 +1566,21 @@ class _PostProductViewState extends State<PostProductView> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: FormBuilderTextField(
-            validator: FormBuilderValidators.compose([
-              FormBuilderValidators.required(),
-            ]),
-            name: 'brand',
-            onChanged: (newValue) {
-              productController.calculateFilledProductFields();
+        Obx(
+          () => _tile(
+            "Brand",
+            productController.selectedPhoneBrand.value,
+            onTap: () {
+              Get.bottomSheet(
+                FilterBottomSheet(
+                  title: "Brand",
+                  data: filterController.mobileBrand,
+                  selectedData: productController.selectedPhoneBrand,
+                ),
+              ).then((_) {
+                productController.calculateFilledProductFields();
+              });
             },
-            controller: productController.phoneBrandController,
-            textAlign: TextAlign.right,
-            textAlignVertical: TextAlignVertical.center,
-            style: regular.copyWith(
-              // fontSize: 12.sp,
-              color: context.theme.primaryColor,
-            ),
-            decoration: InputDecoration(
-              prefixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Brand',
-                    style: bold.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  10.horizontalSpace,
-                ],
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-            ),
           ),
         ),
       ],
@@ -1707,7 +1681,7 @@ class _PostProductViewState extends State<PostProductView> {
                           productController.selectedEngineType.value,
                           onTap: () {
                             Get.bottomSheet(
-                              FilterBottomSheet(
+                              EngineTypeSheet(
                                 title: "Engine Type",
                                 data: filterController.dengineType,
                                 selectedData:
@@ -1728,12 +1702,16 @@ class _PostProductViewState extends State<PostProductView> {
                         )),
                     Obx(() => _tile(
                           "Color",
-                          productController.selectedColor.value,
+                          productController.selectedColor.value.firstOrNull ??
+                              '',
                           onTap: () {
+                            productController.selectedColor.clear();
                             Get.bottomSheet(
-                              FilterBottomSheet(
+                              isScrollControlled: true,
+                              ColorPickerSheet(
                                 title: "Color",
                                 data: filterController.dcolor,
+                                isMulti: false,
                                 selectedData: productController.selectedColor,
                               ),
                             ).then((_) {
@@ -1820,7 +1798,7 @@ class _PostProductViewState extends State<PostProductView> {
     );
   }
 
-  Future<void> addProductDataFormate(Map<String, dynamic> map) async {
+  Future<bool> addProductDataFormate(Map<String, dynamic> map) async {
     Map<String, dynamic> productPostMap = {};
     productPostMap['title'] = map['productName'];
     productPostMap['type'] =
@@ -1851,6 +1829,11 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['individual_info'] = {
       "location_province": filterController.selectedProvince.value,
       "location_city": filterController.selectedCity.value,
+      //demo
+      "location_geo": {
+        "type": "Point", // point
+        "coordinates": [10, -10]
+      },
       "phone_number": map['phoneNumber'],
       "free_to_call_from":
           "${productController.fromTime.value?.hour}:${productController.fromTime.value?.minute}",
@@ -1879,7 +1862,7 @@ class _PostProductViewState extends State<PostProductView> {
                 "passed_km":
                     num.parse(productController.selectedPassed.value).toInt(),
                 "year": num.parse(productController.selectedYear.value).toInt(),
-                "color": productController.selectedColor.value,
+                "color": productController.selectedColor.first,
                 "vin_code": map['vinCode'],
               }
             : null;
@@ -1899,10 +1882,10 @@ class _PostProductViewState extends State<PostProductView> {
             : null;
     productPostMap['phone_info'] =
         productController.selectCategory.value?.name?.toLowerCase() == 'phone'
-            ? {"brand": map['brand']}
+            ? {"brand": productController.selectedPhoneBrand.value}
             : null;
-
     resetForm();
+    _formKey.currentState!.reset();
     return await productController.postProduct(productPostMap);
   }
 
@@ -1911,14 +1894,14 @@ class _PostProductViewState extends State<PostProductView> {
     productController.estateDealTypeController.clear();
     productController.estateAddressController.clear();
     productController.estateTypeController.clear();
-    productController.phoneBrandController.clear();
+    productController.selectedPhoneBrand.value = '';
     productController.productNameController.clear();
     productController.productDescriptionController.clear();
     productController.vinCode.clear();
     productController.floor.clear();
     productController.priceController.clear();
     productController.room.clear();
-    productController.phoneNumberController.clear();
+
     productController.pickImageList.clear();
     productController.selectCategory.value = null;
     productController.selectedBrand.value = null;
@@ -1926,7 +1909,7 @@ class _PostProductViewState extends State<PostProductView> {
     productController.selectedBodyType.value = '';
     productController.selectedTransmission.value = '';
     productController.selectedEngineType.value = '';
-    productController.selectedColor.value = '';
+    productController.selectedColor.value = [];
     productController.fromTime.value = null;
     productController.toTime.value = null;
   }

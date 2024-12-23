@@ -25,6 +25,7 @@ import '../../product/widget/category_selection.dart';
 import '../widgets/car_model_sheet.dart';
 import '../widgets/car_multi_brand_sheet.dart';
 import '../widgets/car_multi_model_sheet.dart';
+import '../widgets/color_picker_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
@@ -858,7 +859,7 @@ class _FilterViewState extends State<FilterView> {
                                             .join(', '),
                                     onTap: () {
                                       Get.bottomSheet(
-                                        MultiFilterBottomSheet(
+                                        ColorPickerSheet(
                                           title: "Color",
                                           data: controller.dcolor,
                                           selectedData: controller.color,

@@ -59,8 +59,25 @@ class FilterController extends GetxController {
   RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
   RxList<String> estateTtypeList = <String>["house"].obs;
-  RxList<String> dcolor =
-      <String>["Red", "Black", "Silver", "Blue", "White", "Maroon"].obs;
+  RxList<Map<String, Color>> dcolor = RxList<Map<String, Color>>([
+    {"Red": Colors.red},
+    {"Black": Colors.black},
+    {"Silver": Colors.grey}, // Usually, Silver is a shade of grey
+    {"Blue": Colors.blue},
+    {"White": Colors.white},
+    {"Yellow": Colors.yellow},
+    {"Magenta": const Color(0xFFFF00FF)},
+    {"Pink": Colors.pink},
+    {"Brown": Colors.brown},
+    {"Green": Colors.green},
+    {"Cyan": Colors.cyan},
+    {"Wheat": const Color(0xFFF5DEB3)},
+    {"Orange": Colors.orange},
+    {"Purple": Colors.purple},
+    {"Teal": Colors.teal},
+    {"Indigo": Colors.indigo},
+  ]);
+
   RxList<String> mobileBrand = <String>[
     'Apple',
     'Samsung',
