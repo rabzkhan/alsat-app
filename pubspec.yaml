@@ -49,8 +49,6 @@ dependencies:
   path_provider: ^2.1.4
   image_picker: ^1.1.2
   file_picker: ^8.1.2
-  open_filex: ^4.5.0
-  mime: ^1.0.6
   emoji_picker_flutter: ^3.1.0
   modal_bottom_sheet: ^3.0.0
   mqtt_client: ^9.6.8
@@ -74,8 +72,7 @@ dependencies:
   form_builder_validators: ^11.0.0
   glassmorphism: ^3.0.0
   carousel_slider: ^5.0.0
-  flutter_chat_ui:
-    path: packages/flutter_chat_ui
+  
   permission_handler: ^11.3.1
   url_launcher: ^6.3.1
   fl_chart: ^0.69.0

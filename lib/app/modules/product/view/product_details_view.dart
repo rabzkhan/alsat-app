@@ -669,14 +669,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                     ),
                     10.verticalSpace,
-                    Text(
-                        '${compareTimeFrom(widget.productModel?.individualInfo?.freeToCallFrom)}${(widget.productModel?.individualInfo?.freeToCallFrom)} -- ${DateTime.now().hour}:${DateTime.now().minute}'),
-                    Text(
-                        '${compareTimeTo(widget.productModel?.individualInfo?.freeToCallTo)} ${widget.productModel?.individualInfo?.freeToCallTo}  -- ${DateTime.now().hour}:${DateTime.now().minute}'),
+
                     Row(
                       children: [
-                        if ((widget.productModel?.individualInfo?.allowToCall ??
-                            false))
+                        if (isCallAvailable(
+                            widget.productModel?.individualInfo?.freeToCallFrom,
+                            widget.productModel?.individualInfo?.freeToCallTo))
                           Expanded(
                             child: MaterialButton(
                               shape: RoundedRectangleBorder(
@@ -716,7 +714,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               ),
                             ),
                           ),
-                        30.horizontalSpace,
+                        if (isCallAvailable(
+                            widget.productModel?.individualInfo?.freeToCallFrom,
+                            widget.productModel?.individualInfo?.freeToCallTo))
+                          30.horizontalSpace,
                         Expanded(
                           child: Obx(() {
                             return MaterialButton(
@@ -824,7 +825,7 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
 
   @override
   dispose() {
-    if (controller.isInitialised) {
+    if (controller.isInitialised && controller.isVideoPlaying) {
       controller.dispose();
     }
 
@@ -876,54 +877,29 @@ Padding infoTile({required String name, required String value}) {
   );
 }
 
-bool compareTimeFrom(String? freeToCallFrom) {
-  DateTime now = DateTime.now();
-  if (freeToCallFrom != null && freeToCallFrom.isNotEmpty) {
-    List<String> parts = freeToCallFrom.split(':');
-    if (parts.length == 2) {
-      int freeToCallFromHour = int.tryParse(parts[0]) ?? 0;
-      int freeToCallFromMinute = int.tryParse(parts[1]) ?? 0;
-      DateTime parsedTime = DateTime(now.year, now.month, now.day,
-          freeToCallFromHour, freeToCallFromMinute);
-      if (now.isAfter(parsedTime)) {
-        log('Current time is after the freeToCallFrom time.');
-        return true;
-      } else if (now.isBefore(parsedTime)) {
-        log('Current time is before the freeToCallFrom time.');
-        return false;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
-  } else {
-    return false;
-  }
-}
+bool isCallAvailable(String? freeFrom, String? freeTo) {
+  bool isAvailable = false;
+  if (freeFrom == null || freeTo == null) return false;
+  List<String> fromParts = freeFrom.split(":");
+  List<String> toParts = freeTo.split(":");
 
-bool compareTimeTo(String? freeToCallTo) {
+  int fromHour = int.tryParse(fromParts[0]) ?? 0;
+  int fromMinute = int.tryParse(fromParts[1]) ?? 0;
+
+  int toHour = int.tryParse(toParts[0]) ?? 0;
+  int toMinute = int.tryParse(toParts[1]) ?? 0;
   DateTime now = DateTime.now();
-  if (freeToCallTo != null && freeToCallTo.isNotEmpty) {
-    List<String> parts = freeToCallTo.split(':');
-    if (parts.length == 2) {
-      int freeToCallFromHour = int.tryParse(parts[0]) ?? 0;
-      int freeToCallFromMinute = int.tryParse(parts[1]) ?? 0;
-      DateTime parsedTime = DateTime(now.year, now.month, now.day,
-          freeToCallFromHour, freeToCallFromMinute);
-      if (now.isBefore(parsedTime)) {
-        log('Current time is after the freeToCallFrom time.');
-        return true;
-      } else if (now.isAfter(parsedTime)) {
-        log('Current time is before the freeToCallFrom time.');
-        return false;
-      } else {
-        return false;
-      }
-    } else {
-      return false;
-    }
+  int currentHour = now.hour;
+  int currentMinute = now.minute;
+  int fromTimeInMinutes = fromHour * 60 + fromMinute;
+  int toTimeInMinutes = toHour * 60 + toMinute;
+  int currentTimeInMinutes = currentHour * 60 + currentMinute;
+  if (fromTimeInMinutes <= currentTimeInMinutes &&
+      currentTimeInMinutes <= toTimeInMinutes) {
+    isAvailable = true;
   } else {
-    return false;
+    isAvailable = false;
   }
+  log('freeFrom: $freeFrom freeTo $freeTo ==  $isAvailable');
+  return isAvailable;
 }
