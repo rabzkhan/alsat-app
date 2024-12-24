@@ -669,10 +669,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                     ),
                     10.verticalSpace,
-                    // Text(
-                    //     '${compareTimeFrom(widget.productModel?.individualInfo?.freeToCallFrom)}${(widget.productModel?.individualInfo?.freeToCallFrom)} -- ${DateTime.now().hour}:${DateTime.now().minute}'),
-                    // Text(
-                    //     '${compareTimeTo(widget.productModel?.individualInfo?.freeToCallTo)} ${widget.productModel?.individualInfo?.freeToCallTo}  -- ${DateTime.now().hour}:${DateTime.now().minute}'),
+                    Text(
+                        '${compareTimeFrom(widget.productModel?.individualInfo?.freeToCallFrom)}${(widget.productModel?.individualInfo?.freeToCallFrom)} -- ${DateTime.now().hour}:${DateTime.now().minute}'),
+                    Text(
+                        '${compareTimeTo(widget.productModel?.individualInfo?.freeToCallTo)} ${widget.productModel?.individualInfo?.freeToCallTo}  -- ${DateTime.now().hour}:${DateTime.now().minute}'),
                     Row(
                       children: [
                         if ((widget.productModel?.individualInfo?.allowToCall ??
@@ -881,8 +881,8 @@ bool compareTimeFrom(String? freeToCallFrom) {
   if (freeToCallFrom != null && freeToCallFrom.isNotEmpty) {
     List<String> parts = freeToCallFrom.split(':');
     if (parts.length == 2) {
-      int freeToCallFromHour = int.parse(parts[0]);
-      int freeToCallFromMinute = int.parse(parts[1]);
+      int freeToCallFromHour = int.tryParse(parts[0]) ?? 0;
+      int freeToCallFromMinute = int.tryParse(parts[1]) ?? 0;
       DateTime parsedTime = DateTime(now.year, now.month, now.day,
           freeToCallFromHour, freeToCallFromMinute);
       if (now.isAfter(parsedTime)) {
@@ -892,7 +892,7 @@ bool compareTimeFrom(String? freeToCallFrom) {
         log('Current time is before the freeToCallFrom time.');
         return false;
       } else {
-        return true;
+        return false;
       }
     } else {
       return false;
@@ -907,18 +907,18 @@ bool compareTimeTo(String? freeToCallTo) {
   if (freeToCallTo != null && freeToCallTo.isNotEmpty) {
     List<String> parts = freeToCallTo.split(':');
     if (parts.length == 2) {
-      int freeToCallFromHour = int.parse(parts[0]);
-      int freeToCallFromMinute = int.parse(parts[1]);
+      int freeToCallFromHour = int.tryParse(parts[0]) ?? 0;
+      int freeToCallFromMinute = int.tryParse(parts[1]) ?? 0;
       DateTime parsedTime = DateTime(now.year, now.month, now.day,
           freeToCallFromHour, freeToCallFromMinute);
       if (now.isBefore(parsedTime)) {
         log('Current time is after the freeToCallFrom time.');
         return true;
-      } else if (now.isBefore(parsedTime)) {
+      } else if (now.isAfter(parsedTime)) {
         log('Current time is before the freeToCallFrom time.');
         return false;
       } else {
-        return true;
+        return false;
       }
     } else {
       return false;
