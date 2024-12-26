@@ -102,7 +102,7 @@ class HomeContent extends StatelessWidget {
                                 child: Stack(
                                   clipBehavior: Clip.none,
                                   children: [
-                                    NewworkImagePreview(
+                                    NetworkImagePreview(
                                       radius: 10.r,
                                       url: homeController.isBannerLoading.value
                                           ? ''
@@ -176,7 +176,7 @@ class HomeContent extends StatelessWidget {
                             },
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 8.h),
-                              child: NewworkImagePreview(
+                              child: NetworkImagePreview(
                                 radius: 10.r,
                                 url: homeController.isBannerLoading.value
                                     ? ''

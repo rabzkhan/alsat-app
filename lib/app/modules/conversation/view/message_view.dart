@@ -67,7 +67,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey.shade300,
-                child: NewworkImagePreview(
+                child: NetworkImagePreview(
                   radius: 30.r,
                   url: conversationController.selectConversation.value
                           ?.participants?.firstOrNull?.picture ??

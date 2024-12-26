@@ -12,11 +12,9 @@ class MessageController extends GetxController {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
-
     String clientID = 'user|$fcmToken|$userID';
     String username = 'user|$userID';
     const String password = Constants.token1;
-
     final MqttServerClient client = MqttServerClient(host, clientID);
     client.port = port;
     client.logging(on: true);

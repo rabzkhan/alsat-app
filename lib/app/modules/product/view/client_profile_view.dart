@@ -90,7 +90,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       children: [
                         CircleAvatar(
                           radius: 28.r,
-                          child: NewworkImagePreview(
+                          child: NetworkImagePreview(
                             radius: 26.r,
                             url: widget.productDetailsController.postUserModel
                                     .value?.picture ??

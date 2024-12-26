@@ -624,7 +624,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           contentPadding: EdgeInsets.zero,
                           leading: CircleAvatar(
                             radius: 22.r,
-                            child: NewworkImagePreview(
+                            child: NetworkImagePreview(
                               radius: 22.r,
                               url: productDetailsController
                                       .postUserModel.value?.picture ??
@@ -835,7 +835,7 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
   @override
   Widget build(BuildContext context) {
     return (widget.e.contentType ?? '').toLowerCase().contains('image')
-        ? NewworkImagePreview(
+        ? NetworkImagePreview(
             radius: 10.r,
             url: widget.e.name ?? '',
             height: 90.h,

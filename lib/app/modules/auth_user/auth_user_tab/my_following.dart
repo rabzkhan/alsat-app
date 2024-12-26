@@ -98,7 +98,7 @@ class _MyFollowingState extends State<MyFollowing> {
                       contentPadding: EdgeInsets.zero,
                       leading: CircleAvatar(
                         radius: 22.r,
-                        child: NewworkImagePreview(
+                        child: NetworkImagePreview(
                           radius: 22.r,
                           url: user?.follower?.picture ?? '',
                           height: 44.h,

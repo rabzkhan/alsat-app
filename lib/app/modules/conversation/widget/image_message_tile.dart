@@ -47,7 +47,7 @@ class ImageMessage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             message!.data.toString().toLowerCase().contains('http')
-                ? NewworkImagePreview(
+                ? NetworkImagePreview(
                     url: message!.data,
                   )
                 : Image.file(File(message!.data.toString())),
