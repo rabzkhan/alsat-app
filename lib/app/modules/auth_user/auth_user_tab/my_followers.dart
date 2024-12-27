@@ -99,7 +99,7 @@ class _MyFollowersState extends State<MyFollowers> {
                       leading: CircleAvatar(
                         backgroundColor: context.theme.cardColor,
                         radius: 22.r,
-                        child: NewworkImagePreview(
+                        child: NetworkImagePreview(
                           radius: 50.r,
                           url: user?.follower?.picture ?? '',
                           height: 44.h,

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class NewworkImagePreview extends StatelessWidget {
+class NetworkImagePreview extends StatelessWidget {
   final String url;
   final double? height;
   final double? width;
@@ -17,7 +17,7 @@ class NewworkImagePreview extends StatelessWidget {
   final Color? imageColor;
   final bool repeat;
 
-  const NewworkImagePreview({
+  const NetworkImagePreview({
     super.key,
     required this.url,
     this.height,

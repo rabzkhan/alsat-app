@@ -54,6 +54,8 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                                   // Toggle province selection
                                   authController.selectedProvince.value =
                                       province.name;
+                                  authController.addressController.text =
+                                      province.name;
                                   authController.selectedCity.value = '';
                                 },
                                 child: CircleAvatar(
@@ -81,6 +83,8 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                                 return InkWell(
                                   onTap: () {
                                     authController.selectedCity.value = city;
+                                    authController.addressController.text =
+                                        '$city, ${province.name}';
                                   },
                                   child: Padding(
                                     padding:

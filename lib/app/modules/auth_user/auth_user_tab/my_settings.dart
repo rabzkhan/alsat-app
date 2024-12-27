@@ -85,7 +85,7 @@ class _MySettingsState extends State<MySettings> {
                                             height: 140.h,
                                             width: 140.h,
                                           )
-                                        : NewworkImagePreview(
+                                        : NetworkImagePreview(
                                             url: authController.userDataModel
                                                     .value.picture ??
                                                 '',
@@ -217,7 +217,7 @@ class _MySettingsState extends State<MySettings> {
                     initialValue: authController.userDataModel.value.userName,
                     enabled:
                         (authController.userDataModel.value.premium ?? false),
-                    name: 'userName',
+                    name: 'user_name',
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
                       suffix: GestureDetector(
@@ -265,7 +265,9 @@ class _MySettingsState extends State<MySettings> {
                       focusedBorder: outlineBorder,
                     ),
                     validator: FormBuilderValidators.compose(
-                      [],
+                      [
+                        FormBuilderValidators.required(),
+                      ],
                     ),
                   );
                 }),
@@ -305,7 +307,9 @@ class _MySettingsState extends State<MySettings> {
                       focusedBorder: outlineBorder,
                     ),
                     validator: FormBuilderValidators.compose(
-                      [],
+                      [
+                        FormBuilderValidators.required(),
+                      ],
                     ),
                   ),
                 ),
@@ -313,7 +317,7 @@ class _MySettingsState extends State<MySettings> {
                 FormBuilderSearchableDropdown<CategoriesModel>(
                   dropdownBuilder: (context, selectedItem) {
                     return Text(
-                      authController.selectUsewrCategoriesList
+                      authController.selectUserCategoriesList
                           .map((e) => e.name)
                           .toList()
                           .join(","),
@@ -334,7 +338,7 @@ class _MySettingsState extends State<MySettings> {
                           child: Obx(() {
                             return Icon(
                               Icons.check,
-                              color: authController.selectUsewrCategoriesList
+                              color: authController.selectUserCategoriesList
                                       .contains(item)
                                   ? AppColors.primary
                                   : Colors.transparent,
@@ -349,13 +353,13 @@ class _MySettingsState extends State<MySettings> {
                   ),
                   name: 'category',
                   onChanged: (value) {
-                    if (authController.selectUsewrCategoriesList
+                    if (authController.selectUserCategoriesList
                         .contains(value)) {
-                      authController.selectUsewrCategoriesList.remove(value);
+                      authController.selectUserCategoriesList.remove(value);
                     } else {
-                      authController.selectUsewrCategoriesList.add(value!);
+                      authController.selectUserCategoriesList.add(value!);
                     }
-                    authController.selectUsewrCategoriesList.refresh();
+                    authController.selectUserCategoriesList.refresh();
                   },
                   decoration: InputDecoration(
                     isDense: true,
@@ -371,7 +375,11 @@ class _MySettingsState extends State<MySettings> {
                     errorBorder: outlineBorder,
                     focusedBorder: outlineBorder,
                   ),
-                  // validator: FormBuilderValidators.compose(),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
                 ),
                 20.verticalSpace,
                 Text(
@@ -404,9 +412,9 @@ class _MySettingsState extends State<MySettings> {
                     errorBorder: outlineBorder,
                     focusedBorder: outlineBorder,
                   ),
-                  validator: FormBuilderValidators.compose(
-                    [],
-                  ),
+                  // validator: FormBuilderValidators.compose(
+                  //   [],
+                  // ),
                 ),
                 20.verticalSpace,
                 FormBuilderTextField(
@@ -432,9 +440,9 @@ class _MySettingsState extends State<MySettings> {
                     errorBorder: outlineBorder,
                     focusedBorder: outlineBorder,
                   ),
-                  validator: FormBuilderValidators.compose(
-                    [],
-                  ),
+                  // validator: FormBuilderValidators.compose(
+                  //   [],
+                  // ),
                 ),
                 20.verticalSpace,
                 FormBuilderTextField(
@@ -460,33 +468,86 @@ class _MySettingsState extends State<MySettings> {
                     errorBorder: outlineBorder,
                     focusedBorder: outlineBorder,
                   ),
-                  validator: FormBuilderValidators.compose(
-                    [],
-                  ),
+                  // validator: FormBuilderValidators.compose(
+                  //   [],
+                  // ),
                 ),
                 40.verticalSpace,
                 Row(
                   children: [
                     Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          fixedSize: const Size.fromHeight(48),
-                          backgroundColor: Get.theme.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
+                      child: Obx(() {
+                        return ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            fixedSize: const Size.fromHeight(48),
+                            backgroundColor: Get.theme.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
                           ),
-                        ),
-                        onPressed: () {},
-                        child: false
-                            ? const CupertinoActivityIndicator()
-                            : Text(
-                                "Save",
-                                style: regular.copyWith(
-                                  color: Colors.white,
+                          onPressed: authController.isUpdateLoading.value
+                              ? null
+                              : () {
+                                  if (userController
+                                      .userSettingsFormKey.currentState!
+                                      .saveAndValidate()) {
+                                    Map formData = userController
+                                        .userSettingsFormKey
+                                        .currentState!
+                                        .value;
+                                    Map<String, dynamic> data = {
+                                      "messaging": [
+                                        {
+                                          "id":
+                                              formData['youtube'] ?? "No Link",
+                                          "type": "youtube"
+                                        },
+                                        {
+                                          "id": formData['tiktok'] ?? "No Link",
+                                          "type": "tiktok"
+                                        },
+                                        {
+                                          "id": formData['twitch'] ?? "No Link",
+                                          "type": "twitch"
+                                        }
+                                      ], // max 3
+                                      "location": {
+                                        "province": authController
+                                                .selectedProvince.value ??
+                                            'No Address',
+                                        "city":
+                                            authController.selectedCity.value ??
+                                                'No Address',
+                                        "geo": {
+                                          "type": "point",
+                                          "coordinates": [45, 5]
+                                        }
+                                      },
+                                      "user_name": formData['user_name'] ?? "",
+                                      "categories": authController
+                                          .selectUserCategoriesList
+                                          .map((e) => e.name)
+                                          .toList(),
+                                      "email": authController
+                                              .userDataModel.value.email ??
+                                          "",
+                                    };
+                                    log("$data");
+                                    authController.updateUserInformation(
+                                        data: data);
+                                  }
+                                },
+                          child: authController.isUpdateLoading.value
+                              ? const CupertinoActivityIndicator()
+                              : Text(
+                                  "Save",
+                                  style: regular.copyWith(
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                      ),
+                        );
+                      }),
                     )
                   ],
                 ),

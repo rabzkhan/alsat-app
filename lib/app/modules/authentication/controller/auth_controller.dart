@@ -198,10 +198,35 @@ class AuthController extends GetxController {
   }
 
   //-- upgrate user info --//
-  RxList<CategoriesModel> selectUsewrCategoriesList = <CategoriesModel>[].obs;
+  RxList<CategoriesModel> selectUserCategoriesList = <CategoriesModel>[].obs;
   TextEditingController addressController = TextEditingController();
   // RxString for selected province
   RxString selectedProvince = "".obs;
   // RxString for selected city
   RxString selectedCity = "".obs;
+  RxBool isUpdateLoading = false.obs;
+
+  updateUserInformation({required Map<String, dynamic> data}) async {
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.user,
+      DioRequestType.put,
+      headers: {
+        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: data,
+      onLoading: () {
+        isUpdateLoading.value = true;
+      },
+      onSuccess: (response) async {
+        getProfile();
+        isUpdateLoading.value = false;
+      },
+      onError: (error) {
+        isUpdateLoading.value = false;
+        log('profile $error <- error');
+        Logger().d("$error <- error");
+      },
+    );
+  }
 }

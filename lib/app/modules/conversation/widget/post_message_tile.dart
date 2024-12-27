@@ -40,7 +40,7 @@ class PostMessageTile extends StatelessWidget {
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(10.r),
-                      child: NewworkImagePreview(
+                      child: NetworkImagePreview(
                         radius: 10.r,
                         url: message?.data?['media'][0]['name'] ?? "",
                         height: 50.h,
