@@ -159,7 +159,7 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
-                                    leading: NewworkImagePreview(
+                                    leading: NetworkImagePreview(
                                       radius: 40.r,
                                       url: comment?.user?.picture ?? '',
                                       height: 40.h,

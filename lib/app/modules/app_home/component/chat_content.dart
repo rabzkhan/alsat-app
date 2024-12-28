@@ -84,7 +84,7 @@ class ChatContent extends StatelessWidget {
                         radius: 20.r,
                         child: CircleAvatar(
                           radius: 18.r,
-                          child: NewworkImagePreview(
+                          child: NetworkImagePreview(
                             radius: 30.r,
                             url: participant?.picture ?? "",
                             height: 44.h,

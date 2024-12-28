@@ -54,7 +54,7 @@ class ProductListTile extends StatelessWidget {
                     horizontal: 10.w,
                   ),
                   child: productModel?.media?.firstOrNull?.name != null
-                      ? NewworkImagePreview(
+                      ? NetworkImagePreview(
                           radius: 10.r,
                           url: productModel?.media?.firstOrNull?.name ?? '',
                           height: 90.h,

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +47,7 @@ class ImageMessage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             message!.data.toString().toLowerCase().contains('http')
-                ? NewworkImagePreview(
+                ? NetworkImagePreview(
                     url: message!.data,
                   )
                 : Image.file(File(message!.data.toString())),

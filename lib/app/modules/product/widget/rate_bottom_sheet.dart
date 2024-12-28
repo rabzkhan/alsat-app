@@ -130,7 +130,7 @@ showRateBottomSheet(
               child: CircleAvatar(
                 radius: 50.r,
                 backgroundColor: Colors.white,
-                child: NewworkImagePreview(
+                child: NetworkImagePreview(
                   radius: 48.r,
                   url: productDetailsController.postUserModel.value?.picture ??
                       '',

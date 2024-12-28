@@ -2,6 +2,7 @@ import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/message_dot.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../model/message_model.dart';
 import 'audio_message_tile.dart';
@@ -49,8 +50,11 @@ class MessageTile extends StatelessWidget {
           if (!message.isSender) ...[
             CircleAvatar(
               radius: 20,
-              child: NewworkImagePreview(
-                  url: message.otherUser.imageUrl, height: 40),
+              child: NetworkImagePreview(
+                radius: 40.r,
+                url: message.otherUser.imageUrl,
+                height: 40.r,
+              ),
             ),
             const SizedBox(width: 16.0 / 2),
           ],

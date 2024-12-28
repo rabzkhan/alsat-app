@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/utils/helper.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
@@ -11,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
-import 'package:pod_player/pod_player.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../services/base_client.dart';
@@ -291,11 +291,12 @@ class ConversationController extends GetxController {
   /// confire with MQTT server
   Future<void> connectToMqtt() async {
     AuthController authController = Get.find();
+    final fcmToken = await FirebaseMessaging.instance.getToken();
     String userID = authController.userDataModel.value.id ?? "";
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
 
-    String clientID = 'user|${DateTime.now().millisecondsSinceEpoch}|$userID';
+    String clientID = 'user|$fcmToken|$userID';
     String username = 'user|$userID';
     const String password = Constants.token1;
 

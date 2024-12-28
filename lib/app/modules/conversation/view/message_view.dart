@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +10,8 @@ import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/network_image_preview.dart';
 import '../../authentication/controller/auth_controller.dart';
 import '../controller/conversation_controller.dart';
+import '../controller/message_controller.dart';
+import '../model/conversation_messages_res.dart';
 import '../model/conversations_res.dart';
 import '../widget/message_input_widget.dart';
 import '../widget/message_tile.dart';
@@ -22,10 +26,19 @@ class MessagesScreen extends StatefulWidget {
 
 class _MessagesScreenState extends State<MessagesScreen> {
   final ConversationController conversationController = Get.find();
-
+  late MessageController messageController;
   AuthController authController = Get.find();
   @override
   void initState() {
+    messageController =
+        Get.put(MessageController(), tag: '${widget.conversation.id}');
+
+    Participant? participant =
+        (widget.conversation.participants ?? []).firstWhereOrNull((e) {
+      return e.id != authController.userDataModel.value.id;
+    });
+    log('participant: ${participant?.id}');
+    messageController.checkUserActiveLive(userID: participant?.id ?? "");
     conversationController.selectConversation.value = widget.conversation;
     conversationController.getConversationsMessages();
     conversationController.typeMessageText.value = '';
@@ -54,7 +67,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: Colors.grey.shade300,
-                child: NewworkImagePreview(
+                child: NetworkImagePreview(
                   radius: 30.r,
                   url: conversationController.selectConversation.value
                           ?.participants?.firstOrNull?.picture ??

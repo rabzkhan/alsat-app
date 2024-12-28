@@ -55,7 +55,7 @@ class ProductGridTile extends StatelessWidget {
                       horizontal: 10.w,
                     ),
                     child: productModel?.media?.firstOrNull?.name != null
-                        ? NewworkImagePreview(
+                        ? NetworkImagePreview(
                             fit: BoxFit.cover,
                             radius: 10.r,
                             url: productModel?.media?.firstOrNull?.name ?? '',
