@@ -48,7 +48,8 @@ class CategorySelection extends StatelessWidget {
                         title: GestureDetector(
                           onTap: () {
                             if (!valueReturn) {
-                              productController.selectCategory.value = homeController.categories[index];
+                              productController.selectCategory.value =
+                                  homeController.categories[index];
                             }
                             Get.back(result: homeController.categories[index]);
                           },
@@ -56,7 +57,8 @@ class CategorySelection extends StatelessWidget {
                             children: [
                               6.horizontalSpace,
                               SvgPicture.network(
-                                homeController.categories[index].icon.toString(),
+                                homeController.categories[index].icon
+                                    .toString(),
                                 width: 35.w,
                                 height: 22.w,
                               ),

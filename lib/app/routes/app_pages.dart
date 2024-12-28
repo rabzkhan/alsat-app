@@ -9,17 +9,11 @@ class AppPages {
   AppPages._();
 
   static const INITIAL = Routes.INITIAL;
-  static const FILTER = Routes.FILTER;
 
   static final routes = [
     GetPage(
       name: _Paths.INITIAL,
       page: () => const SplashView(),
-      binding: FilterBinding(),
-    ),
-    GetPage(
-      name: _Paths.FILTER,
-      page: () => const FilterView(),
       binding: FilterBinding(),
     ),
   ];

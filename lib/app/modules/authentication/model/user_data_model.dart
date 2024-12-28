@@ -11,7 +11,8 @@ String userDataModelToJson(UserDataModel data) => json.encode(data.toJson());
 
 class UserDataModel {
   String? id;
-
+  String? createdAt;
+  String? updatedAt;
   List<dynamic>? messaging;
   String? picture;
   Location? location;
@@ -27,9 +28,14 @@ class UserDataModel {
   num? followers;
   bool? followed;
   bool? premium;
+  DateTime? planExpiration;
+  bool? protectionLabel;
 
+  bool? flag;
   UserDataModel({
     this.id,
+    this.createdAt,
+    this.updatedAt,
     this.messaging,
     this.picture,
     this.location,
@@ -45,10 +51,14 @@ class UserDataModel {
     this.followers,
     this.followed,
     this.premium,
+    this.planExpiration,
+    this.protectionLabel,
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) => UserDataModel(
         id: json["_id"],
+        createdAt: json["created_at"],
+        updatedAt: json["updated_at"],
         premium: json["premium"],
         messaging: json["messaging"] == null
             ? []
@@ -70,10 +80,16 @@ class UserDataModel {
         rating: json["rating"],
         votes: json["votes"],
         requestDeletion: json["request_deletion"],
+        planExpiration: json["plan_expiration"] == null
+            ? null
+            : DateTime.parse(json["plan_expiration"]),
+        protectionLabel: json["protection_label"],
       );
 
   Map<String, dynamic> toJson() => {
         "_id": id,
+        "created_at": createdAt,
+        "updated_at": updatedAt,
         "premium": premium,
         "followed": followed,
         "followers": followers,
@@ -93,6 +109,8 @@ class UserDataModel {
         "rating": rating,
         "votes": votes,
         "request_deletion": requestDeletion,
+        "plan_expiration": planExpiration?.toIso8601String(),
+        "protection_label": protectionLabel,
       };
 }
 

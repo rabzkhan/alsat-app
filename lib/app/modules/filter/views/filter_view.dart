@@ -31,7 +31,9 @@ import '../widgets/filter_option_widget.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
 
 class FilterView extends StatefulWidget {
-  const FilterView({super.key});
+  final bool isBack;
+  final Map<String, dynamic>? preData;
+  const FilterView({super.key, required this.isBack, this.preData});
 
   @override
   State<FilterView> createState() => _FilterViewState();
@@ -65,7 +67,17 @@ class _FilterViewState extends State<FilterView> {
 
   @override
   void initState() {
+    initData();
     super.initState();
+  }
+
+  initData() {
+    log('preData: ${widget.preData}');
+    controller.category.value = homeController.categories.firstWhereOrNull(
+      (element) =>
+          element.name?.toLowerCase() ==
+          (widget.preData?['category'] ?? '').toLowerCase(),
+    );
   }
 
   @override
@@ -199,13 +211,6 @@ class _FilterViewState extends State<FilterView> {
                             ),
                           ),
                           2.verticalSpace,
-                          // Text(
-                          //   "Choose Location",
-                          //   style: regular.copyWith(
-                          //     fontSize: 10.sp,
-                          //     color: context.theme.primaryColor,
-                          //   ),
-                          // ),
                           Obx(() {
                             // Get the selected location text from the controller
                             String selectedLocationText =
@@ -1200,8 +1205,12 @@ class _FilterViewState extends State<FilterView> {
                             controller.isFilterLoading.value = true;
                             controller.filtermapPassed = null;
                             controller.applyFilter();
-                            Get.to(const FilterResultsView(),
-                                transition: Transition.rightToLeft);
+                            if (widget.isBack) {
+                              Get.back();
+                            } else {
+                              Get.to(const FilterResultsView(),
+                                  transition: Transition.rightToLeft);
+                            }
                           },
                     child: Obx(() {
                       if (controller.isFilterLoading.value) {
