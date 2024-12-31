@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
@@ -32,9 +34,14 @@ class _ClientProfileViewState extends State<ClientProfileView> {
   AuthController authController = Get.find();
   @override
   void initState() {
+    widget.productDetailsController.selectUserId = widget.userId;
     if (widget.productDetailsController.userProductList.isEmpty) {
       widget.productDetailsController.fetchUserProducts();
     }
+    Future.delayed(Duration.zero, () {
+      widget.productDetailsController.isFetchUserLoading.value = true;
+      widget.productDetailsController.getUserByUId(userId: widget.userId);
+    });
     super.initState();
   }
 

@@ -10,12 +10,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/all_user_tile.dart';
 import '../../conversation/controller/conversation_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/filter_results_view.dart';
+import '../../filter/views/user_filter_result_view.dart';
 import '../../filter/views/user_filter_view.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/controller/product_details_controller.dart';
@@ -168,14 +168,11 @@ class PremiumContent extends StatelessWidget {
                             : homeController.categories[index];
                     return GestureDetector(
                       onTap: () {
-                        filterController.isFilterLoading.value = true;
-                        filterController.filtermapPassed = {
-                          "category":
-                              (categoriesModel.name ?? '').toLowerCase(),
-                        };
-                        filterController.applyFilter();
+                        homeController.category.value =
+                            homeController.categories[index];
+                        homeController.fetchPremiumUser(isFilter: true);
                         Get.to(
-                          const FilterResultsView(),
+                          const UserFilterResultView(isBackFilter: false),
                           transition: Transition.rightToLeft,
                         );
                       },

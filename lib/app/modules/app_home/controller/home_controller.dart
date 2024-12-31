@@ -160,13 +160,27 @@ class HomeController extends GetxController {
   RxList<UserDataModel> premiumUserList = <UserDataModel>[].obs;
   RxList<UserDataModel> filterUserList = <UserDataModel>[].obs;
   RxBool isPremiumLoading = true.obs;
+  RxBool isFilterLoading = true.obs;
   Future<void> fetchPremiumUser(
       {String? nextPaginateDate, bool isFilter = false}) async {
     String url = '${Constants.baseUrl}/users?limit=10';
     if (nextPaginateDate != null) {
       url = "$url&next=$nextPaginateDate";
     }
-    log('Premium User: $url');
+    Map<String, dynamic> data = isFilter
+        ? {
+            "category": category.value?.name,
+            "online": isActiveUser.value,
+            "premium": buyerProtection.value,
+            "location":
+                selectedLocation.isEmpty ? null : selectedLocation.value,
+            "sorting": {
+              "follower": followersValue.value == 'Max To Min' ? -1 : 1,
+              "registration": registrationValue.value == 'Old To New' ? 1 : -1,
+            }
+          }
+        : {"online": false, "premium": false};
+    log('Premium User: Date: $data-- $url');
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
@@ -174,23 +188,15 @@ class HomeController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: isFilter
-          ? {
-              "category": category.value?.name,
-              "online": isActiveUser.value,
-              "premium": buyerProtection.value,
-              "location": selectedLocation.value,
-              "sorting": {
-                "follower": followersValue.value == 'Max To Min' ? -1 : 1,
-                "registration":
-                    registrationValue.value == 'Old To New' ? 1 : -1,
-              }
-            }
-          : {"online": false, "premium": false},
+      data: data,
       onLoading: () {
-        if (nextPaginateDate == null) {
+        if (nextPaginateDate == null && !isFilter) {
           isPremiumLoading.value = true;
           premiumUserList.clear();
+        }
+        if (isFilter && nextPaginateDate == null) {
+          isFilterLoading.value = true;
+          filterUserList.clear();
         }
       },
       onSuccess: (response) async {
@@ -210,12 +216,14 @@ class HomeController extends GetxController {
           }
         }
         isPremiumLoading.value = false;
-        log("fetchPremiumUser List: ${premiumUserList.value.length}");
+        isFilterLoading.value = false;
+        log("fetchPremiumUser List: ${premiumUserList.value.length} ${filterUserList.length} ${response.requestOptions.data}");
         return;
       },
       onError: (error) {
-        log('premiumRefreshController:${Constants.baseUrl}${Constants.user}?limit=20 ${error.message}');
+        log('premiumRefreshController:${Constants.baseUrl}${Constants.user}?limit=20 ${error.message}  ${error.response?.requestOptions.data}');
         isPremiumLoading.value = false;
+        isFilterLoading.value = false;
         Logger().d("$error <- error");
         return;
       },
@@ -233,5 +241,19 @@ class HomeController extends GetxController {
   void onPremiumLoading() async {
     await fetchPremiumUser(nextPaginateDate: premiumUserList.last.createdAt);
     premiumRefreshController.loadComplete();
+  }
+
+  ///===========================================================================================================
+  RefreshController userFilterRefreshController = RefreshController();
+  void onUserFilterRefresh() async {
+    filterUserList.clear();
+    fetchPremiumUser(isFilter: true);
+    userFilterRefreshController.refreshCompleted();
+  }
+
+  void onUserFilterLoading() async {
+    await fetchPremiumUser(
+        nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
+    userFilterRefreshController.loadComplete();
   }
 }

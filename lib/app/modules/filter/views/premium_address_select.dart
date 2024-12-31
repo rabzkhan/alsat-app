@@ -85,7 +85,10 @@ class PremiumAddressSelection extends StatelessWidget {
                                       leading: (homeController.selectedLocation
                                               .any((element) =>
                                                   element['province'] ==
-                                                  provinces[index].name))
+                                                      provinces[index].name &&
+                                                  element['city'].contains(
+                                                      provinces[index]
+                                                          .cities[i])))
                                           ? const Icon(
                                               Icons.check,
                                               color: AppColors.primary,
@@ -95,20 +98,43 @@ class PremiumAddressSelection extends StatelessWidget {
                                         if (homeController.selectedLocation.any(
                                             (element) =>
                                                 element['province'] ==
-                                                provinces[index].name)) {
-                                          // Remove the item with the same province and city
+                                                    provinces[index].name &&
+                                                element['city'].contains(
+                                                    provinces[index]
+                                                        .cities[i]))) {
                                           homeController.selectedLocation
                                               .removeWhere((element) =>
                                                   element['province'] ==
                                                   provinces[index].name);
                                         } else {
-                                          // Add the item with the province and city
-                                          homeController.selectedLocation.add({
-                                            'province': provinces[index].name,
-                                            'city': [
-                                              provinces[index].cities[i]
-                                            ],
-                                          });
+                                          if (homeController.selectedLocation
+                                              .any((element) =>
+                                                  element['province'] ==
+                                                  provinces[index].name)) {
+                                            // need to add city under province
+                                            homeController.selectedLocation
+                                                .forEach((element) {
+                                              if (element['province'] ==
+                                                  provinces[index].name) {
+                                                // Check if the city is already in the list
+                                                if (!element['city'].contains(
+                                                    provinces[index]
+                                                        .cities[i])) {
+                                                  element['city'].add(
+                                                      provinces[index]
+                                                          .cities[i]);
+                                                }
+                                              }
+                                            });
+                                          } else {
+                                            homeController.selectedLocation
+                                                .add({
+                                              'province': provinces[index].name,
+                                              'city': [
+                                                provinces[index].cities[i]
+                                              ],
+                                            });
+                                          }
                                         }
 
                                         homeController.selectedLocation

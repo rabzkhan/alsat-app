@@ -2,6 +2,7 @@ import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/app/modules/filter/views/location_selection.dart';
 import 'package:alsat/app/modules/filter/views/premium_address_select.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,7 @@ import '../../../components/custom_appbar.dart';
 import '../../../components/scrolling_text.dart';
 import '../../../global/app_decoration.dart';
 import '../../product/widget/category_selection.dart';
+import 'user_filter_result_view.dart';
 
 class UserFilterView extends StatelessWidget {
   const UserFilterView({super.key});
@@ -428,6 +430,8 @@ class UserFilterView extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
+                          Get.to(const UserFilterResultView(),
+                              transition: Transition.cupertino);
                           homeController.fetchPremiumUser(isFilter: true);
                         },
                         child: Obx(() {
@@ -436,9 +440,8 @@ class UserFilterView extends StatelessWidget {
                               height: 20.h,
                               width: 20.w,
                               child: const Center(
-                                child: CircularProgressIndicator(
+                                child: CupertinoActivityIndicator(
                                   color: Colors.white,
-                                  strokeWidth: 1,
                                 ),
                               ),
                             );
