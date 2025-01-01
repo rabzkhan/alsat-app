@@ -13,6 +13,7 @@ class NetworkImagePreview extends StatelessWidget {
   final double? progressIndicatorRadius;
   final BoxFit fit;
   final Widget? loading;
+  final Widget? error;
   final Color? progressColor;
   final Color? imageColor;
   final bool repeat;
@@ -30,6 +31,7 @@ class NetworkImagePreview extends StatelessWidget {
     this.progressColor,
     this.repeat = false,
     this.imageColor,
+    this.error,
   });
 
   @override
@@ -49,9 +51,9 @@ class NetworkImagePreview extends StatelessWidget {
               radius: (progressIndicatorRadius ?? height ?? 100) / 4,
               color: progressColor ?? Theme.of(context).primaryColor,
             ),
-        errorWidget: (context, url, error) => ClipRRect(
+        errorWidget: (context, url, e) => ClipRRect(
           borderRadius: BorderRadius.circular(radius).r,
-          child: Image.asset(logo),
+          child: error ?? Image.asset(logo),
         ),
       ),
     );

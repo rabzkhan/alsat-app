@@ -27,7 +27,12 @@ class FilterResultsView extends GetView<FilterController> {
           actions: [
             IconButton(
               onPressed: () {
-                Get.to(const FilterView(), transition: Transition.fadeIn);
+                Get.to(
+                    FilterView(
+                      isBack: true,
+                      preData: controller.filtermapPassed,
+                    ),
+                    transition: Transition.fadeIn);
               },
               icon: Image.asset(
                 filterIcon,

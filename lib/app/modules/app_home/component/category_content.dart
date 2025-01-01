@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -39,7 +40,12 @@ class CategoryContent extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Get.to(() => const FilterView());
+                    Get.to(
+                      () => const FilterView(
+                        isBack: false,
+                        preData: {},
+                      ),
+                    );
                   },
                   child: Container(
                     margin: EdgeInsets.only(top: 10.h),
@@ -55,12 +61,13 @@ class CategoryContent extends StatelessWidget {
                       ),
                     ),
                     child: Row(
-                      spacing: 10.w,
+                      // spacing: 10.w,
                       children: [
                         Image.asset(
                           searchIcon,
                           color: Get.theme.disabledColor,
                         ),
+                        10.horizontalSpace,
                         Text(
                           "Search Your Product",
                           style: TextStyle(
@@ -70,6 +77,7 @@ class CategoryContent extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
+                        10.horizontalSpace,
                         Image.asset(
                           filterIcon,
                           color: Get.theme.disabledColor,
@@ -99,6 +107,9 @@ class CategoryContent extends StatelessWidget {
                         children: [
                           6.horizontalSpace,
                           SvgPicture.network(
+                            placeholderBuilder: (context) =>
+                                const CupertinoActivityIndicator
+                                    .partiallyRevealed(),
                             homeController.categories[index].icon.toString(),
                             width: 35.w,
                             height: 22.w,

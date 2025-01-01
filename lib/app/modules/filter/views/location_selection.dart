@@ -25,6 +25,17 @@ class LocationSelection extends StatelessWidget {
             'Select Location',
             style: bold.copyWith(fontSize: 16.sp),
           ),
+          trailing: IconButton(
+            icon: const Icon(
+              Icons.check,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Get.back(
+                  result:
+                      Get.find<FilterController>().getSelectedLocationText());
+            },
+          ),
         ),
         child: SafeArea(
           bottom: false,

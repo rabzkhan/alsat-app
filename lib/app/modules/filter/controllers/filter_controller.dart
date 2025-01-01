@@ -303,11 +303,12 @@ class FilterController extends GetxController {
       "credit": credit.value,
       "exchange": exchange.value,
       "has_vin_code": hasVinCode.value,
-      'sort_price': sortDonwnToUp.value ? '1' : '-1',
+      'sort_price': sortDonwnToUp.value ? 1 : -1,
     };
 
     final filterData = Map<String, dynamic>.from(map);
     filterData.addAll(filtermapPassed ?? {});
+    filtermapPassed = filterData;
 
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextValue != null) {
@@ -340,6 +341,7 @@ class FilterController extends GetxController {
       onError: (error) {
         isFilterLoading.value = false;
         log.log("error: $error");
+        log.log("error: ${error.response?.data}");
         Logger().d("$error <- error");
       },
     );

@@ -186,11 +186,13 @@ class ProductDetailsController extends GetxController {
       onLoading: () {},
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
+        log("${response.data}");
         postUserModel.value = UserDataModel.fromJson(data);
         selectUserId = postUserModel.value?.id ?? '';
         isFetchUserLoading.value = false;
       },
       onError: (p0) {
+        log('${p0.response?.data} ${"${Constants.baseUrl}${Constants.user}/$userId"}');
         isFetchUserLoading.value = false;
       },
     );
@@ -267,7 +269,7 @@ class ProductDetailsController extends GetxController {
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
-        log('${p0.message}${p0.url} ${Constants.token}');
+        log('${p0.message} ${"${Constants.baseUrl}${Constants.user}/$selectUserId/rate"}');
         isRateUserLoading.value = false;
         CustomSnackBar.showCustomErrorToast(message: 'Rate Failed');
       },
@@ -307,7 +309,7 @@ class ProductDetailsController extends GetxController {
     required bool isFollow,
   }) async {
     AuthController authController = Get.find();
-
+    selectUserId = userId;
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.user}/follow",
       DioRequestType.post,
@@ -324,8 +326,8 @@ class ProductDetailsController extends GetxController {
         isRateUserLoading.value = true;
       },
       onSuccess: (response) {
+        log("Follow Successfully: ${response.data} ${response.requestOptions.data}-- $selectUserId");
         isRateUserLoading.value = false;
-
         CustomSnackBar.showCustomToast(
             message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
         getUserByUId(userId: selectUserId);

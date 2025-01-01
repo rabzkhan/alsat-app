@@ -11,12 +11,14 @@ class CustomAppBar extends StatelessWidget {
   final bool isShowFilter;
   final bool isShowNotification;
   final bool isShowBackButton;
+  final Widget? action;
   const CustomAppBar(
       {super.key,
       this.isShowSearch = true,
       this.isShowFilter = true,
       this.isShowNotification = true,
-      this.isShowBackButton = false});
+      this.isShowBackButton = false,
+      this.action});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +99,7 @@ class CustomAppBar extends StatelessWidget {
           //       width: 23.w,
           //     ),
           //   ),
-          20.horizontalSpace,
+          // 20.horizontalSpace,
 
           ///ll
           if (isShowFilter)
@@ -111,7 +113,8 @@ class CustomAppBar extends StatelessWidget {
             //     width: 23.w,
             //   ),
             // ),
-            if (!isShowFilter && !isShowSearch) const Spacer()
+            if (!isShowFilter && !isShowSearch) const Spacer(),
+          action ?? const Center()
         ],
       ),
     );
