@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
+import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/message_dot.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../model/message_model.dart';
@@ -43,24 +47,41 @@ class MessageTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Row(
-        mainAxisAlignment:
-            message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
-        children: [
-          if (!message.isSender) ...[
-            CircleAvatar(
-              radius: 20,
-              child: NetworkImagePreview(
-                radius: 40.r,
-                url: message.otherUser.imageUrl,
-                height: 40.r,
+      child: GestureDetector(
+        onLongPress: () {
+          HapticFeedback.heavyImpact();
+          MessageController messageController = Get.put(MessageController(),
+              tag:
+                  '${Get.find<ConversationController>().selectConversation.value?.id}');
+          messageController.selectMessageId.value = message.id;
+        },
+        onTap: () {
+          MessageController messageController = Get.put(MessageController(),
+              tag:
+                  '${Get.find<ConversationController>().selectConversation.value?.id}');
+          messageController.selectMessageId.value = null;
+        },
+        child: Row(
+          mainAxisAlignment: message.isSender
+              ? MainAxisAlignment.end
+              : MainAxisAlignment.start,
+          children: [
+            if (!message.isSender) ...[
+              CircleAvatar(
+                radius: 20,
+                child: NetworkImagePreview(
+                  radius: 40.r,
+                  url: message.otherUser.imageUrl,
+                  height: 40.r,
+                ),
               ),
-            ),
-            const SizedBox(width: 16.0 / 2),
+              const SizedBox(width: 16.0 / 2),
+            ],
+            Flexible(child: messageConvert(message)),
+            if (message.isSender)
+              MessageStatusDot(status: message.messageStatus)
           ],
-          Flexible(child: messageConvert(message)),
-          if (message.isSender) MessageStatusDot(status: message.messageStatus)
-        ],
+        ),
       ),
     );
   }

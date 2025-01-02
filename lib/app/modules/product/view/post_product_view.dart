@@ -1695,6 +1695,18 @@ class _PostProductViewState extends State<PostProductView> {
                     Obx(() => _tile(
                           "Passed, km",
                           productController.selectedPassed.value,
+                          onTap: () {
+                            Get.bottomSheet(
+                              EngineTypeSheet(
+                                title: "Passed, km",
+                                data: RxList.generate(
+                                    200, (index) => (index * 100).toString()),
+                                selectedData: productController.selectedPassed,
+                              ),
+                            ).then((_) {
+                              productController.calculateFilledProductFields();
+                            });
+                          },
                         )),
                     Obx(() => _tile(
                           "Year",
@@ -1915,7 +1927,7 @@ class _PostProductViewState extends State<PostProductView> {
   }
 
   _tile(String title, String value, {Function()? onTap}) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
       child: SizedBox(
         width: Get.width,

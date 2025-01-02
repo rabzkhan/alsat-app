@@ -836,6 +836,7 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
   Widget build(BuildContext context) {
     return (widget.e.contentType ?? '').toLowerCase().contains('image')
         ? NetworkImagePreview(
+            previewImage: true,
             radius: 10.r,
             url: widget.e.name ?? '',
             height: 90.h,

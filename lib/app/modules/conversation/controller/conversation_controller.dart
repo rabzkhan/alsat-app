@@ -496,4 +496,34 @@ class ConversationController extends GetxController {
     }
     refreshMessageController.loadComplete();
   }
+
+  //-- delete message --//
+  deleteMessage(String messageId) async {
+    coverMessage.removeWhere((element) => element.id == messageId);
+    coverMessage.refresh();
+    deleteMessageFromServer(messageId);
+  }
+
+  //-- delete message From server --//
+  deleteMessageFromServer(String messageId) async {
+    ///messages/:messageID
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.conversationMessages}/$messageId?userID=${authController.userDataModel.value.id}",
+      DioRequestType.delete,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) async {
+        log('deleteMessageFromServer: $response');
+      },
+      onError: (error) {
+        log('deleteMessageFromServer: $error');
+        log(
+          "${Constants.baseUrl}${Constants.conversationMessages}/$messageId?userID:${authController.userDataModel.value.id}",
+        );
+      },
+    );
+  }
 }
