@@ -108,24 +108,29 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
                                       ),
                                     );
                                   }),
-                                  trailing: GestureDetector(
-                                    onTap: productController.placemarks.isEmpty
-                                        ? null
-                                        : () {
-                                            conversationController.sendMessage(
-                                              location: productController
-                                                  .selectLatLon,
-                                            );
-                                            Get.back();
-                                          },
-                                    child: Text(
-                                      'Send Location',
-                                      style: TextStyle(
-                                        fontSize: 16.sp,
-                                        color: Colors.white,
+                                  trailing: Obx(() {
+                                    return GestureDetector(
+                                      onTap:
+                                          productController.placemarks.isEmpty
+                                              ? null
+                                              : () {
+                                                  log('${productController.selectPosition}');
+                                                  conversationController
+                                                      .sendMessage(
+                                                    location: productController
+                                                        .selectLatLon,
+                                                  );
+                                                  Get.back();
+                                                },
+                                      child: Text(
+                                        'Send Location',
+                                        style: TextStyle(
+                                          fontSize: 16.sp,
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                  ),
+                                    );
+                                  }),
                                   subtitle: Obx(() {
                                     return Text(
                                       productController.placemarks.isEmpty

@@ -8,6 +8,7 @@ import '../../../../utils/constants.dart';
 import '../../authentication/controller/auth_controller.dart';
 
 class MessageController extends GetxController {
+  RxnString selectMessageId = RxnString();
   Future<void> checkUserActiveLive({required String userID}) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';

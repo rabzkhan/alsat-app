@@ -69,41 +69,61 @@ class _ChatInputFieldState extends State<ChatInputField> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.r),
                           ),
-                          child: Stack(
+                          child: Row(
                             children: [
-                              AudioWaveforms(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  color: Colors.white,
-                                ),
-                                waveStyle: const WaveStyle(
-                                  showHourInDuration: true,
-                                  waveColor: AppColors.primary,
-                                  labelSpacing: 0,
-                                  extendWaveform: true,
-                                  showMiddleLine: false,
-                                ),
-                                // backgroundColor: Colors.white,
-                                recorderController: recorderController,
-                                size: const Size.fromHeight(55),
-                                margin: EdgeInsets.zero,
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w,
+                              15.horizontalSpace,
+                              Obx(() {
+                                return Text(
+                                  "${widget.messageController.recordTime.value?.inSeconds ?? 0} s",
+                                  style: regular.copyWith(
+                                    fontSize: 10.sp,
+                                    fontWeight: FontWeight.w500,
+                                    color: AppColors.primary,
+                                  ),
+                                );
+                              }),
+                              Expanded(
+                                child: AudioWaveforms(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.r),
+                                    color: Colors.white,
+                                  ),
+                                  waveStyle: const WaveStyle(
+                                      showHourInDuration: true,
+                                      waveColor: AppColors.primary,
+                                      labelSpacing: 0,
+                                      extendWaveform: true,
+                                      showMiddleLine: false,
+                                      scaleFactor: 100),
+                                  // backgroundColor: Colors.white,
+                                  recorderController: recorderController,
+                                  size: const Size.fromHeight(55),
+                                  margin: EdgeInsets.zero,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 8.w,
+                                  ).copyWith(right: 0),
                                 ),
                               ),
-                              Positioned(
-                                top: 5.h,
-                                left: 20.w,
-                                child: Obx(() {
-                                  return Text(
-                                    "${widget.messageController.recordTime.value?.inSeconds ?? 0} s",
-                                    style: regular.copyWith(
-                                      fontSize: 10.sp,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  );
-                                }),
-                              )
+                              InkWell(
+                                onTap: () {
+                                  recorderController.stop();
+                                  setState(() {
+                                    isRecording = false;
+                                  });
+                                  widget.messageController.recordTime.value =
+                                      Duration.zero;
+                                },
+                                child: CircleAvatar(
+                                  radius: 11.r,
+                                  backgroundColor: AppColors.primary,
+                                  child: Icon(
+                                    Icons.pause,
+                                    size: 15.sp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              10.horizontalSpace,
                             ],
                           ),
                         ),
@@ -264,7 +284,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                         }
                       }
                     },
-                    child: widget.messageController.typeMessageText.isEmpty
+                    child: widget.messageController.typeMessageText.isEmpty &&
+                            !isRecording
                         ? CircleAvatar(
                             radius: 27,
                             backgroundColor: Theme.of(context).primaryColor,
