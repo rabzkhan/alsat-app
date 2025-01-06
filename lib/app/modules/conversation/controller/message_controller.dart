@@ -6,9 +6,11 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../../../utils/constants.dart';
 import '../../authentication/controller/auth_controller.dart';
+import '../model/message_model.dart';
 
 class MessageController extends GetxController {
-  RxnString selectMessageId = RxnString();
+  Rxn<ChatMessage> selectMessage = Rxn<ChatMessage>();
+  Rxn<ChatMessage> selectReplyMessage = Rxn<ChatMessage>();
   Future<void> checkUserActiveLive({required String userID}) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';

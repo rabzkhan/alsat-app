@@ -4,9 +4,11 @@ import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/message_dot.dart';
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import '../model/message_model.dart';
 import 'audio_message_tile.dart';
@@ -26,20 +28,23 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget messageConvert(ChatMessage message) {
+    MessageController messageController = Get.put(MessageController(),
+        tag:
+            '${Get.find<ConversationController>().selectConversation.value?.id}');
+    Widget messageConvert(ChatMessage message, {bool isReply = false}) {
       switch (message.messageType) {
         case ChatMessageType.text:
-          return TextMessage(message: message);
+          return TextMessage(message: message, isReply: isReply);
         case ChatMessageType.image:
-          return ImageMessage(message: message);
+          return ImageMessage(message: message, isReply: isReply);
         case ChatMessageType.map:
-          return MapMessage(message: message);
+          return MapMessage(message: message, isReply: isReply);
         case ChatMessageType.audio:
-          return AudioMessage(message: message);
+          return AudioMessage(message: message, isReply: isReply);
         case ChatMessageType.video:
-          return VideoMessage(message: message);
+          return VideoMessage(message: message, isReply: isReply);
         case ChatMessageType.post:
-          return PostMessageTile(message: message);
+          return PostMessageTile(message: message, isReply: isReply);
         default:
           return const SizedBox();
       }
@@ -47,40 +52,72 @@ class MessageTile extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: GestureDetector(
-        onLongPress: () {
-          HapticFeedback.heavyImpact();
-          MessageController messageController = Get.put(MessageController(),
-              tag:
-                  '${Get.find<ConversationController>().selectConversation.value?.id}');
-          messageController.selectMessageId.value = message.id;
-        },
-        onTap: () {
-          MessageController messageController = Get.put(MessageController(),
-              tag:
-                  '${Get.find<ConversationController>().selectConversation.value?.id}');
-          messageController.selectMessageId.value = null;
-        },
-        child: Row(
-          mainAxisAlignment: message.isSender
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
+      child: Slidable(
+        key: const ValueKey(0),
+        endActionPane: ActionPane(
+          motion: const ScrollMotion(),
           children: [
-            if (!message.isSender) ...[
-              CircleAvatar(
-                radius: 20,
-                child: NetworkImagePreview(
-                  radius: 40.r,
-                  url: message.otherUser.imageUrl,
-                  height: 40.r,
-                ),
-              ),
-              const SizedBox(width: 16.0 / 2),
-            ],
-            Flexible(child: messageConvert(message)),
-            if (message.isSender)
-              MessageStatusDot(status: message.messageStatus)
+            SlidableAction(
+              flex: 2,
+              onPressed: (context) {
+                messageController.selectReplyMessage.value = message;
+              },
+              backgroundColor: Colors.transparent,
+              foregroundColor: AppColors.primary,
+              icon: Icons.reply,
+              label: 'Reply',
+            ),
           ],
+        ),
+        child: GestureDetector(
+          onLongPress: () {
+            HapticFeedback.heavyImpact();
+            messageController.selectMessage.value = message;
+          },
+          onTap: () {
+            messageController.selectMessage.value = null;
+          },
+          child: Row(
+            mainAxisAlignment: message.isSender
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
+            children: [
+              if (!message.isSender) ...[
+                CircleAvatar(
+                  radius: 20,
+                  child: NetworkImagePreview(
+                    radius: 40.r,
+                    url: message.otherUser.imageUrl,
+                    height: 40.r,
+                  ),
+                ),
+                const SizedBox(width: 16.0 / 2),
+              ],
+              Flexible(
+                  child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (message.replyMessage != null)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        vertical: 5.h,
+                        horizontal: 10.w,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
+                      child:
+                          messageConvert(message.replyMessage!, isReply: true),
+                    ),
+                  messageConvert(message),
+                ],
+              )),
+              if (message.isSender)
+                MessageStatusDot(status: message.messageStatus)
+            ],
+          ),
         ),
       ),
     );

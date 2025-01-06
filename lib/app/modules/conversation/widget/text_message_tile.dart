@@ -8,9 +8,11 @@ class TextMessage extends StatelessWidget {
   const TextMessage({
     super.key,
     this.message,
+    this.isReply = false,
   });
 
   final ChatMessage? message;
+  final bool isReply;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,11 @@ class TextMessage extends StatelessWidget {
         vertical: 10,
       ),
       decoration: BoxDecoration(
-        color: message!.isSender ? context.theme.primaryColor : Colors.white,
+        color: isReply
+            ? Colors.transparent
+            : message!.isSender
+                ? context.theme.primaryColor
+                : Colors.white,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(
@@ -30,7 +36,11 @@ class TextMessage extends StatelessWidget {
           Text(
             message!.text,
             style: context.theme.textTheme.bodyLarge?.copyWith(
-              color: message!.isSender ? Colors.white : null,
+              color: isReply
+                  ? Colors.black45
+                  : message!.isSender
+                      ? Colors.white
+                      : null,
               fontSize: 16.sp,
             ),
           ),
@@ -38,7 +48,11 @@ class TextMessage extends StatelessWidget {
           Text(
             DateFormat('hh:mm').format(message!.time),
             style: context.theme.textTheme.bodySmall?.copyWith(
-              color: message!.isSender ? Colors.white : null,
+              color: isReply
+                  ? Colors.black38
+                  : message!.isSender
+                      ? Colors.white
+                      : null,
               fontSize: 10.sp,
             ),
           ),

@@ -53,8 +53,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (messageController.selectMessageId.value != null) {
-          messageController.selectMessageId.value = null;
+        if (messageController.selectMessage.value != null) {
+          messageController.selectMessage.value = null;
           return false;
         } else {
           return true;
@@ -156,7 +156,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
         ),
         body: GestureDetector(
           onTap: () {
-            messageController.selectMessageId.value = null;
+            messageController.selectMessage.value = null;
             FocusScope.of(context).unfocus();
           },
           child: Column(
@@ -193,9 +193,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
               Obx(() {
                 return AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: messageController.selectMessageId.value == null
+                  child: messageController.selectMessage.value == null
                       ? ChatInputField(
-                          messageController: conversationController)
+                          messageController: messageController,
+                          conversationController: conversationController)
                       : Container(
                           height: 70.h,
                           padding: const EdgeInsets.symmetric(
@@ -208,22 +209,28 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Column(
-                                  children: [
-                                    Icon(
-                                      Icons.reply_outlined,
-                                      color: Colors.white,
-                                      size: 25.r,
-                                    ),
-                                    4.verticalSpace,
-                                    Text(
-                                      'Reply',
-                                      style: TextStyle(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    messageController.selectReplyMessage.value =
+                                        messageController.selectMessage.value;
+                                  },
+                                  child: Column(
+                                    children: [
+                                      Icon(
+                                        Icons.reply_outlined,
                                         color: Colors.white,
-                                        fontSize: 12.sp,
+                                        size: 25.r,
                                       ),
-                                    )
-                                  ],
+                                      4.verticalSpace,
+                                      Text(
+                                        'Reply',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12.sp,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                               Expanded(
@@ -231,8 +238,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   onTap: () {
                                     conversationController.deleteMessage(
                                         messageController
-                                            .selectMessageId.value!);
-                                    messageController.selectMessageId.value =
+                                            .selectMessage.value!.id);
+                                    messageController.selectMessage.value =
                                         null;
                                   },
                                   child: Column(

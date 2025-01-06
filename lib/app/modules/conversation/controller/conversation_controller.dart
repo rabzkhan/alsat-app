@@ -20,6 +20,7 @@ import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
 import '../model/message_model.dart';
 import '../model/mqtt_message_model.dart';
+import 'message_controller.dart';
 
 class ConversationController extends GetxController {
   Rxn<Duration> recordTime = Rxn<Duration>();
@@ -37,6 +38,8 @@ class ConversationController extends GetxController {
   RxBool isSendingMessage = false.obs;
   Future<void> sendMessageToServer(String messages,
       {Map<String, dynamic>? map}) async {
+    MessageController messageController =
+        Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     AuthController authController = Get.find();
     String uId = authController.userDataModel.value.id ?? "";
     Map<String, dynamic> messagesMap = {
@@ -45,9 +48,10 @@ class ConversationController extends GetxController {
           .firstWhereOrNull((e) => e.id != uId)
           ?.id,
       "content": messages,
-      "reply_to": "",
+      "reply_to": messageController.selectReplyMessage.value?.id ?? '',
       "attachments": [map]
     };
+    messageController.selectReplyMessage.value = null;
     // log('messagesMap: $messagesMap');
 
     await BaseClient.safeApiCall(
@@ -162,6 +166,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -181,6 +202,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -200,6 +238,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -219,6 +274,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -238,6 +310,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -257,6 +346,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: null,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }

@@ -38,12 +38,16 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
 
   @override
   void initState() {
+    intitLocation();
+    super.initState();
+  }
+
+  intitLocation() {
     if (productController.currentLocation.value == null) {
       productController.getCurrentLocation().then((value) {
         setState(() {});
       });
     }
-    super.initState();
   }
 
   @override
@@ -62,7 +66,9 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
                 children: [
                   productController.currentLocation.value == null
                       ? const Center(
-                          child: CupertinoActivityIndicator(),
+                          child: CupertinoActivityIndicator(
+                            color: AppColors.primary,
+                          ),
                         )
                       : GoogleMap(
                           zoomControlsEnabled: false,
@@ -112,7 +118,9 @@ class _LocationFromMapViewState extends State<LocationFromMapView> {
                                     return GestureDetector(
                                       onTap:
                                           productController.placemarks.isEmpty
-                                              ? null
+                                              ? () {
+                                                  intitLocation();
+                                                }
                                               : () {
                                                   log('${productController.selectPosition}');
                                                   conversationController

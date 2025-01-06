@@ -10,7 +10,9 @@ class AudioMessage extends StatefulWidget {
   const AudioMessage({
     super.key,
     this.message,
+    this.isReply = false,
   });
+  final bool isReply;
 
   final ChatMessage? message;
 
@@ -90,9 +92,11 @@ class _AudioMessageState extends State<AudioMessage> {
               color:
                   widget.message!.isSender ? Colors.white : AppColors.primary,
             ),
-            backgroundColor: widget.message!.isSender
-                ? context.theme.primaryColor
-                : Colors.white,
+            backgroundColor: widget.isReply
+                ? Colors.transparent
+                : widget.message!.isSender
+                    ? context.theme.primaryColor
+                    : Colors.white,
             controller: voiceController,
             innerPadding: 12,
             cornerRadius: 20,

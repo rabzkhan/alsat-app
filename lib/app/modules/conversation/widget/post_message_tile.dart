@@ -11,7 +11,9 @@ class PostMessageTile extends StatelessWidget {
   const PostMessageTile({
     super.key,
     this.message,
+    this.isReply = false,
   });
+  final bool isReply;
 
   final ChatMessage? message;
 
@@ -27,9 +29,11 @@ class PostMessageTile extends StatelessWidget {
             ),
             width: Get.width * 0.7,
             decoration: BoxDecoration(
-              color: message!.isSender
-                  ? (context.theme.primaryColor.withOpacity(.4))
-                  : Colors.white,
+              color: isReply
+                  ? Colors.transparent
+                  : message!.isSender
+                      ? (context.theme.primaryColor.withOpacity(.4))
+                      : Colors.white,
               borderRadius: BorderRadius.circular(10.r),
             ),
             child: Column(
@@ -102,7 +106,11 @@ class PostMessageTile extends StatelessWidget {
                     Text(
                       DateFormat('hh:mm').format(message!.time),
                       style: context.theme.textTheme.bodySmall?.copyWith(
-                        color: message!.isSender ? Colors.white : null,
+                        color: isReply
+                            ? Colors.black
+                            : message!.isSender
+                                ? Colors.white
+                                : null,
                         fontSize: 10.sp,
                       ),
                     ),

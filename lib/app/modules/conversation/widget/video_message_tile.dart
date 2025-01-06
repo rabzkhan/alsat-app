@@ -11,7 +11,9 @@ class VideoMessage extends StatefulWidget {
   const VideoMessage({
     super.key,
     this.message,
+    this.isReply = false,
   });
+  final bool isReply;
 
   final ChatMessage? message;
 
@@ -56,9 +58,11 @@ class _VideoMessageState extends State<VideoMessage> {
       padding:
           const EdgeInsets.symmetric(horizontal: 16.0 * 0.75, vertical: 10),
       decoration: BoxDecoration(
-        color: widget.message!.isSender
-            ? context.theme.primaryColor.withOpacity(.1)
-            : Colors.white,
+        color: widget.isReply
+            ? Colors.transparent
+            : widget.message!.isSender
+                ? context.theme.primaryColor.withOpacity(.1)
+                : Colors.white,
         borderRadius: BorderRadius.circular(10.r),
       ),
       child: Column(
