@@ -118,18 +118,22 @@ class ChatContent extends StatelessWidget {
                         ],
                       ),
                       //   title: Text('Alexander'),
-                      subtitle:
-                          conversationController.isConversationLoading.value
-                              ? const Text('Last Message Loading')
-                              : conversation?.lastMessage == null
-                                  ? null
-                                  : Text(
-                                      '${conversation?.lastMessage?.content}',
-                                      style: regular.copyWith(
-                                        fontSize: 12.sp,
-                                        color: Get.theme.disabledColor,
-                                      ),
-                                    ),
+                      subtitle: conversationController
+                              .isConversationLoading.value
+                          ? const Text('Last Message Loading')
+                          : conversation?.lastMessage == null
+                              ? null
+                              : Text(
+                                  (conversation?.lastMessage?.content ?? '')
+                                          .isEmpty
+                                      ? 'No Message'
+                                      : conversation?.lastMessage?.content ??
+                                          "",
+                                  style: regular.copyWith(
+                                    fontSize: 12.sp,
+                                    color: Get.theme.disabledColor,
+                                  ),
+                                ),
                     ),
                   );
                 },

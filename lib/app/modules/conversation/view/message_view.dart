@@ -146,6 +146,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
           }),
         ),
         endDrawer: MessageSideOption(
+          conversationController: conversationController,
+          authController: authController,
           _key,
           participant: (conversationController
               .selectConversation.value?.participants

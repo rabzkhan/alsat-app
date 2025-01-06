@@ -8,12 +8,14 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
 import '../model/message_model.dart';
@@ -21,6 +23,7 @@ import '../model/mqtt_message_model.dart';
 
 class ConversationController extends GetxController {
   Rxn<Duration> recordTime = Rxn<Duration>();
+  final reportFromKey = GlobalKey<FormBuilderState>();
 
   @override
   void onInit() {
@@ -523,6 +526,66 @@ class ConversationController extends GetxController {
         log(
           "${Constants.baseUrl}${Constants.conversationMessages}/$messageId?userID:${authController.userDataModel.value.id}",
         );
+      },
+    );
+  }
+
+  //--- Block User --//
+  RxBool isBlockUser = false.obs;
+  Future<bool> blockUser(String id) async {
+    log('blockUser: $id ${'${Constants.baseUrl}${Constants.userConversationList}/$id/block'}');
+    isBlockUser.value = true;
+    return await BaseClient.safeApiCall(
+      '${Constants.baseUrl}${Constants.userConversationList}/$id/block',
+      DioRequestType.put,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) async {
+        isBlockUser.value = false;
+        log('blockUser: $response');
+        getConversations();
+        return true;
+      },
+      onError: (error) {
+        isBlockUser.value = false;
+        log('blockUser Error: $error');
+        return false;
+      },
+    );
+  }
+
+  //-- sendReport --//
+  RxBool isReport = false.obs;
+  Future<bool> sendReport(Map<String, dynamic> data) async {
+    return BaseClient.safeApiCall(
+      '${Constants.baseUrl}/reports',
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: data,
+      onLoading: () {
+        isReport.value = true;
+      },
+      onSuccess: (response) async {
+        log('sendReport: $response');
+        isReport.value = false;
+        Get.back();
+        CustomSnackBar.showCustomToast(
+            title: 'Reported', message: 'User Reported Successfully');
+        return true;
+      },
+      onError: (error) {
+        log('sendReport Error: $error');
+        isReport.value = false;
+        Get.back();
+        CustomSnackBar.showCustomErrorToast(
+            title: 'Error', message: 'Something went wrong');
+        return false;
       },
     );
   }
