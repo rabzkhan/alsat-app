@@ -4,6 +4,7 @@ import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../config/translations/localization_service.dart';
 import '../common/const/image_path.dart';
 
 class CustomAppBar extends StatelessWidget {
@@ -114,7 +115,18 @@ class CustomAppBar extends StatelessWidget {
             //   ),
             // ),
             if (!isShowFilter && !isShowSearch) const Spacer(),
-          action ?? const Center()
+          action ?? const Center(),
+          IconButton(
+              onPressed: () {
+                LocalizationService localizationService =
+                    Get.put(LocalizationService());
+                if (Get.locale == const Locale('ar')) {
+                  localizationService.changeLocale(const Locale('en'));
+                } else {
+                  localizationService.changeLocale(const Locale('ar'));
+                }
+              },
+              icon: Icon(Icons.language_rounded))
         ],
       ),
     );

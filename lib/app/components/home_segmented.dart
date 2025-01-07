@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../config/theme/app_text_theme.dart';
+import '../../utils/helper.dart';
 import '../common/const/image_path.dart';
 
 class HomeSegmented extends StatelessWidget {
@@ -45,7 +46,7 @@ class HomeSegmented extends StatelessWidget {
                       height: 45.h,
                       child: Text(
                         textAlign: TextAlign.center,
-                        "Product",
+                        localLanguage.product,
                         style: regular.copyWith(
                           fontSize: 17.sp,
                           color: !homeController.showPremium.value
@@ -101,7 +102,7 @@ class HomeSegmented extends StatelessWidget {
                           5.horizontalSpace,
                           Text(
                             textAlign: TextAlign.center,
-                            "Premium",
+                            localLanguage.premium,
                             style: regular.copyWith(
                               fontSize: 17.sp,
                               color: homeController.showPremium.value
