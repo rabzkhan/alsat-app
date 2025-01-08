@@ -13,6 +13,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../common/const/image_path.dart';
 import '../../../components/custom_appbar.dart';
 import '../../../components/product_grid_tile.dart';
 import '../../conversation/view/message_view.dart';
@@ -35,6 +36,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
   @override
   void initState() {
     widget.productDetailsController.selectUserId = widget.userId;
+
     if (widget.productDetailsController.userProductList.isEmpty) {
       widget.productDetailsController.fetchUserProducts();
     }
@@ -74,6 +76,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
             isShowBackButton: true,
             isShowFilter: false,
             isShowSearch: false,
+            isShowLogo: false,
           ),
           // user information
           Obx(() {
@@ -104,6 +107,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 '',
                             height: 52.h,
                             width: 52.w,
+                            error: Image.asset(userDefaulticon),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -116,20 +120,11 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                               Text(
                                 '${widget.productDetailsController.postUserModel.value?.userName}',
                                 style: regular.copyWith(
-                                  fontSize: 16.sp,
+                                  fontSize: 17.sp,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
-                              3.verticalSpace,
-                              if ('${widget.productDetailsController.postUserModel.value?.email}'
-                                  .isNotEmpty)
-                                Text(
-                                  '${widget.productDetailsController.postUserModel.value?.email}',
-                                  style: regular.copyWith(
-                                    fontSize: 11.sp,
-                                  ),
-                                ),
-                              3.verticalSpace,
+                              6.verticalSpace,
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -143,14 +138,14 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                       color: Colors.amber,
                                     ),
                                     itemCount: 5,
-                                    itemSize: 13.r,
+                                    itemSize: 15.r,
                                     direction: Axis.horizontal,
                                   ),
                                   3.horizontalSpace,
                                   Text(
-                                    '(${(widget.productDetailsController.postUserModel.value?.rating ?? 0).toStringAsFixed(1)})',
+                                    '(${(widget.productDetailsController.postUserModel.value?.rating ?? 0).toStringAsFixed(1)}) ${(widget.productDetailsController.postUserModel.value?.votes ?? 0)}',
                                     style: regular.copyWith(
-                                      fontSize: 8.sp,
+                                      fontSize: 12.sp,
                                     ),
                                   )
                                 ],
@@ -163,36 +158,19 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           children: [
                             Text(
                               '${widget.productDetailsController.postUserModel.value?.followers ?? 0}',
-                              style: regular.copyWith(
-                                fontSize: 14.sp,
+                              style: bold.copyWith(
+                                fontSize: 16.sp,
                               ),
                             ),
                             Text(
                               'Followers',
                               style: regular.copyWith(
-                                fontSize: 13.sp,
+                                fontSize: 14.sp,
                               ),
                             ),
                           ],
                         ),
                         10.horizontalSpace,
-                        // Column(
-                        //   mainAxisSize: MainAxisSize.min,
-                        //   children: [
-                        //     Text(
-                        //       '120',
-                        //       style: regular.copyWith(
-                        //         fontSize: 14.sp,
-                        //       ),
-                        //     ),
-                        //     Text(
-                        //       'Following',
-                        //       style: regular.copyWith(
-                        //         fontSize: 13.sp,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
                       ],
                     ),
                     //-- Follow and chat buttons--//

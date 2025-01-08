@@ -81,47 +81,35 @@ class ProductGridTile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 8.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           RichText(
+                              maxLines: 1,
                               text: TextSpan(children: [
-                            TextSpan(
-                              text: productModel?.title ?? 'Hyundai santa fe ',
-                              style: regular.copyWith(
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                            // TextSpan(
-                            //   text:productModel?.type ?? '2014',
-                            //   style: medium.copyWith(
-                            //     fontSize: 15.sp,
-                            //     color: Get.theme.primaryColor,
-                            //   ),
-                            // ),
-                          ])),
+                                TextSpan(
+                                  text:
+                                      productModel?.title ?? 'No Product Name',
+                                  style: bold.copyWith(
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ])),
                           Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             productModel?.description ??
-                                'Lorem ipsum is placeholder text  ',
+                                'There Has No Description',
                             style: regular.copyWith(
-                              fontSize: 10.sp,
+                              fontSize: 13.sp,
                             ),
                           ),
                           RichText(
                               text: TextSpan(children: [
                             TextSpan(
                               text:
-                                  "\$${productModel?.priceInfo?.price ?? 96.00}/",
+                                  "\$${productModel?.priceInfo?.price ?? 00.00}",
                               style: bold.copyWith(
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' day',
-                              style: regular.copyWith(
-                                fontSize: 11.sp,
-                                color: Get.theme.disabledColor,
+                                fontSize: 17.sp,
                               ),
                             ),
                           ])),
@@ -131,15 +119,20 @@ class ProductGridTile extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    CupertinoIcons.checkmark_alt,
+                                    (productModel?.priceInfo?.credit ?? false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
                                     size: 15.r,
-                                    color: Get.theme.disabledColor,
+                                    color: (productModel?.priceInfo?.credit ??
+                                            false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
+                                  3.horizontalSpace,
                                   Text(
                                     'Credit',
                                     style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
+                                      fontSize: 12.sp,
                                     ),
                                   )
                                 ],
@@ -149,21 +142,30 @@ class ProductGridTile extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    CupertinoIcons.checkmark_alt,
+                                    (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
                                     size: 15.r,
-                                    color: Get.theme.disabledColor,
+                                    color: (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
+                                  3.horizontalSpace,
                                   Text(
                                     'exchange',
                                     style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
+                                      fontSize: 12.sp,
                                     ),
                                   )
                                 ],
                               ),
                             ],
-                          )
+                          ),
+                          5.verticalSpace,
                         ],
                       ),
                     ),

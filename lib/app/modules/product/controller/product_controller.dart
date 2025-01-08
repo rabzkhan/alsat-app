@@ -481,8 +481,9 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         isProductLike.value = false;
-        CustomSnackBar.showCustomSnackBar(
-            message: 'Product liked successfully', title: 'Success');
+        CustomSnackBar.showCustomToast(
+            message: 'Product ${likeValue ? "liked" : "Unliked"} Successfully',
+            title: 'Success');
       },
       onError: (p0) {
         log("Product like failed: ${p0.response} ${p0.response?.data}");

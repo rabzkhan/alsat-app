@@ -13,9 +13,13 @@ import '../modules/product/model/product_post_list_res.dart';
 
 class ProductListTile extends StatelessWidget {
   final ProductModel? productModel;
+  final bool showBorder;
   final bool isShowLikeButton;
   const ProductListTile(
-      {super.key, this.productModel, this.isShowLikeButton = false});
+      {super.key,
+      this.productModel,
+      this.isShowLikeButton = false,
+      this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +41,11 @@ class ProductListTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: Get.theme.appBarTheme.backgroundColor,
           borderRadius: BorderRadius.circular(5.r),
-          border: Border.all(
-            color: Get.theme.disabledColor.withOpacity(0.2),
-          ),
+          border: showBorder
+              ? Border.all(
+                  color: Get.theme.disabledColor.withOpacity(0.2),
+                )
+              : null,
           boxShadow: [
             BoxShadow(
               color: Get.theme.disabledColor.withOpacity(0.03),

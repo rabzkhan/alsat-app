@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,7 @@ showRateBottomSheet(
     isDismissible: true,
     context: context,
     builder: (context) {
-      return SizedBox(
+      return Container(
         child: Stack(
           alignment: Alignment.bottomCenter,
           clipBehavior: Clip.none,
@@ -39,12 +40,8 @@ showRateBottomSheet(
               height: Get.height * .4,
               width: Get.width,
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.r),
-                  topRight: Radius.circular(20.r),
-                ),
               ),
               child: Column(
                 children: [
@@ -125,21 +122,27 @@ showRateBottomSheet(
                 ],
               ),
             ),
-            Positioned(
-              top: -50.h,
-              child: CircleAvatar(
-                radius: 50.r,
-                backgroundColor: Colors.white,
-                child: NetworkImagePreview(
-                  radius: 48.r,
-                  url: productDetailsController.postUserModel.value?.picture ??
-                      '',
-                  height: 96.h,
-                  width: 96.w,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
+            Obx(() {
+              return (!productDetailsController.isRateUserLoading.value)
+                  ? Positioned(
+                      top: -50.h,
+                      child: CircleAvatar(
+                        radius: 50.r,
+                        backgroundColor: Colors.white,
+                        child: NetworkImagePreview(
+                          radius: 48.r,
+                          url: productDetailsController
+                                  .postUserModel.value?.picture ??
+                              '',
+                          height: 96.h,
+                          width: 96.w,
+                          error: Image.asset(userDefaulticon),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    )
+                  : Text("");
+            }),
             Obx(() {
               return productDetailsController.isRateUserLoading.value
                   ? Container(
@@ -147,10 +150,6 @@ showRateBottomSheet(
                       width: Get.width,
                       decoration: BoxDecoration(
                         color: Colors.black.withOpacity(.5),
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20.r),
-                          topRight: Radius.circular(20.r),
-                        ),
                       ),
                       child: Center(
                         child: CupertinoActivityIndicator(

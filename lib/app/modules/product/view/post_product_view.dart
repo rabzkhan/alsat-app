@@ -761,7 +761,184 @@ class _PostProductViewState extends State<PostProductView> {
                             ),
                           ],
                         ),
+                        10.verticalSpace,
 
+                        ///Price
+                        ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                          initiallyExpanded: true,
+                          iconColor: context.theme.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            side: BorderSide(
+                              color: context.theme.shadowColor.withOpacity(.4),
+                              width: .7,
+                            ),
+                          ),
+                          collapsedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            side: BorderSide(
+                              color: context.theme.shadowColor.withOpacity(.4),
+                              width: .7,
+                            ),
+                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .productPriceFiledCount.value /
+                                      productController.productPriceFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .productPriceFiledCount.value ==
+                                          productController
+                                              .productPriceFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
+                          title: Text(
+                            'Price',
+                            style: bold.copyWith(
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 4.h),
+                              child: FormBuilderTextField(
+                                onChanged: (value) {
+                                  if ((value ?? '').isEmpty) {
+                                    productController
+                                        .productPriceFiledCount.value = 2;
+                                  } else {
+                                    productController
+                                        .productPriceFiledCount.value = 3;
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d*\.?\d*')),
+                                ],
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                ]),
+                                name: 'price',
+                                controller: productController.priceController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Container(
+                                    width: 70.w,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      'Price, \$',
+                                      style: regular,
+                                    ),
+                                  ),
+                                  hintText: '',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12.sp,
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Possible Exchange',
+                                    style: regular,
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.7,
+                                    child: Obx(() {
+                                      return CupertinoSwitch(
+                                        value:
+                                            productController.isExchange.value,
+                                        onChanged: (value) {
+                                          productController.isExchange.value =
+                                              value;
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Credit',
+                                    style: regular,
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.7,
+                                    child: Obx(() {
+                                      return CupertinoSwitch(
+                                        value: productController.isCredit.value,
+                                        onChanged: (value) {
+                                          productController.isCredit.value =
+                                              value;
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            10.verticalSpace,
+                          ],
+                        ),
                         10.verticalSpace,
                         //Individual info
                         ExpansionTile(
@@ -1042,184 +1219,6 @@ class _PostProductViewState extends State<PostProductView> {
                             10.verticalSpace,
                           ],
                         ),
-                        10.verticalSpace,
-
-                        ///Price
-                        ExpansionTile(
-                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                          initiallyExpanded: true,
-                          iconColor: context.theme.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                            side: BorderSide(
-                              color: context.theme.shadowColor.withOpacity(.4),
-                              width: .7,
-                            ),
-                          ),
-                          collapsedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                            side: BorderSide(
-                              color: context.theme.shadowColor.withOpacity(.4),
-                              width: .7,
-                            ),
-                          ),
-                          leading: Obx(() {
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CircularProgressIndicator(
-                                  value: productController
-                                          .productPriceFiledCount.value /
-                                      productController.productPriceFiled.value,
-                                  strokeAlign: .1,
-                                  strokeWidth: 2,
-                                  backgroundColor: Colors.grey.shade300,
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  child: productController
-                                              .productPriceFiledCount.value ==
-                                          productController
-                                              .productPriceFiled.value
-                                      ? Icon(
-                                          Icons.check,
-                                          size: 30.0,
-                                          color: Theme.of(context).primaryColor,
-                                          key: const ValueKey('checked'),
-                                        ).animate().fadeIn(duration: 300.ms)
-                                      : const SizedBox
-                                          .shrink(), // Empty widget when not checked
-                                ),
-                              ],
-                            );
-                          }),
-                          subtitle: Obx(() {
-                            return Text(
-                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
-                              style: regular.copyWith(
-                                fontSize: 10.sp,
-                              ),
-                            );
-                          }),
-                          title: Text(
-                            'Price',
-                            style: bold.copyWith(
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w, vertical: 4.h),
-                              child: FormBuilderTextField(
-                                onChanged: (value) {
-                                  if ((value ?? '').isEmpty) {
-                                    productController
-                                        .productPriceFiledCount.value = 2;
-                                  } else {
-                                    productController
-                                        .productPriceFiledCount.value = 3;
-                                  }
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d*\.?\d*')),
-                                ],
-                                validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(),
-                                ]),
-                                name: 'price',
-                                controller: productController.priceController,
-                                decoration: InputDecoration(
-                                  prefixIcon: Container(
-                                    width: 70.w,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      textAlign: TextAlign.center,
-                                      'Price, \$',
-                                      style: regular,
-                                    ),
-                                  ),
-                                  hintText: '',
-                                  hintStyle: TextStyle(
-                                    fontSize: 12.sp,
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Possible Exchange',
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value:
-                                            productController.isExchange.value,
-                                        onChanged: (value) {
-                                          productController.isExchange.value =
-                                              value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Credit',
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value: productController.isCredit.value,
-                                        onChanged: (value) {
-                                          productController.isCredit.value =
-                                              value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            10.verticalSpace,
-                          ],
-                        )
                       ],
                     )),
               )

@@ -73,7 +73,7 @@ class HomeContent extends StatelessWidget {
                                   options: CarouselOptions(
                                     height: 190.h,
                                     aspectRatio: 16 / 9,
-                                    viewportFraction: 0.7,
+                                    viewportFraction: 0.9,
                                     initialPage: 0,
                                     enableInfiniteScroll: false,
                                     reverse: false,
@@ -118,6 +118,7 @@ class HomeContent extends StatelessWidget {
                                                           ?.name ??
                                                       '',
                                               height: 200.h,
+                                              width: double.infinity,
                                               fit: BoxFit.cover,
                                             ),
                                             Positioned(

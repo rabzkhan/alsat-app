@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../common/const/image_path.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/controller/conversation_controller.dart';
 import '../../conversation/view/message_view.dart';
@@ -78,7 +79,7 @@ class ChatContent extends StatelessWidget {
                         // Get.to(const ConversationView());
                       },
                       contentPadding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
+                        horizontal: 10.w,
                       ),
                       leading: CircleAvatar(
                         radius: 20.r,
@@ -88,6 +89,7 @@ class ChatContent extends StatelessWidget {
                             radius: 30.r,
                             url: participant?.picture ?? "",
                             height: 44.h,
+                            error: Image.asset(userDefaulticon),
                           ),
                         ),
                       ),
