@@ -24,6 +24,7 @@ class _SplashViewState extends State<SplashView> {
     Future.delayed(
       const Duration(seconds: 3),
       () {
+        // MySharedPref.clear();
         bool onboardingCompleted = MySharedPref.isOnboardingComplete();
         Logger().d(onboardingCompleted); // Check if onboarding is completed
         bool isLoggedIn =

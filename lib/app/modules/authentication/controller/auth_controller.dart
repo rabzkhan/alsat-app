@@ -22,7 +22,7 @@ class AuthController extends GetxController {
   final signUpFormKey = GlobalKey<FormBuilderState>();
   final loginFormKey = GlobalKey<FormBuilderState>();
 
-  RxString countryCode = "+993".obs;
+  RxString countryCode = "+88".obs;
   final phoneNumberController = TextEditingController().obs;
 
   RxBool isLoading = false.obs;

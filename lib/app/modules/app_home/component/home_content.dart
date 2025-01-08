@@ -65,15 +65,13 @@ class HomeContent extends StatelessWidget {
                             child: Skeletonizer(
                               enabled: homeController.isBannerLoading.value,
                               effect: ShimmerEffect(
-                                baseColor:
-                                    Get.theme.disabledColor.withOpacity(.2),
-                                highlightColor: Colors.white,
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
+                                baseColor: AppColors.primary.withOpacity(.2),
+                                highlightColor:
+                                    AppColors.primary.withOpacity(.5),
                               ),
                               child: CarouselSlider(
                                   options: CarouselOptions(
-                                    height: 160.h,
+                                    height: 190.h,
                                     aspectRatio: 16 / 9,
                                     viewportFraction: 0.7,
                                     initialPage: 0,
@@ -104,55 +102,59 @@ class HomeContent extends StatelessWidget {
                                           homeController.mainBanner[index],
                                         );
                                       },
-                                      child: Stack(
-                                        clipBehavior: Clip.none,
-                                        children: [
-                                          NetworkImagePreview(
-                                            radius: 10.r,
-                                            url: homeController
-                                                    .isBannerLoading.value
-                                                ? ''
-                                                : homeController
-                                                        .mainBanner[index]
-                                                        .media
-                                                        ?.name ??
-                                                    '',
-                                            height: 160.h,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          Positioned(
-                                            top: 10.h,
-                                            child: Container(
-                                              height: 20.h,
-                                              // width: 60.w,
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 10.w,
-                                              ),
-                                              alignment: Alignment.center,
-                                              decoration: BoxDecoration(
-                                                color: context.theme
-                                                    .scaffoldBackgroundColor
-                                                    .withOpacity(.8),
-                                                borderRadius: BorderRadius.only(
-                                                  topRight:
-                                                      Radius.circular(5.r),
-                                                  bottomRight:
-                                                      Radius.circular(5.r),
-                                                ),
-                                              ),
-                                              child: Text(
-                                                homeController
-                                                        .isBannerLoading.value
-                                                    ? ""
-                                                    : '${homeController.mainBanner[index].type}'
-                                                        .toUpperCase(),
-                                                style: regular.copyWith(
-                                                  fontSize: 10.sp,
-                                                ),
-                                              ),
+                                      child: SizedBox(
+                                        height: 190.h,
+                                        child: Stack(
+                                          clipBehavior: Clip.none,
+                                          children: [
+                                            NetworkImagePreview(
+                                              radius: 3.r,
+                                              url: homeController
+                                                      .isBannerLoading.value
+                                                  ? ''
+                                                  : homeController
+                                                          .mainBanner[index]
+                                                          .media
+                                                          ?.name ??
+                                                      '',
+                                              height: 200.h,
+                                              fit: BoxFit.cover,
                                             ),
-                                          )
-                                        ],
+                                            Positioned(
+                                              top: 10.h,
+                                              child: Container(
+                                                height: 20.h,
+                                                // width: 60.w,
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: 10.w,
+                                                ),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: context.theme
+                                                      .scaffoldBackgroundColor
+                                                      .withOpacity(.8),
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(5.r),
+                                                    bottomRight:
+                                                        Radius.circular(5.r),
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  homeController
+                                                          .isBannerLoading.value
+                                                      ? ""
+                                                      : '${homeController.mainBanner[index].type}'
+                                                          .toUpperCase(),
+                                                  style: regular.copyWith(
+                                                    fontSize: 10.sp,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   )),
@@ -216,23 +218,17 @@ class HomeContent extends StatelessWidget {
                                   productController.isFetchProduct.value
                                       ? null
                                       : productController.productList[index];
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 5.h,
+                              return Skeletonizer(
+                                enabled: productController.isFetchProduct.value,
+                                effect: ShimmerEffect(
+                                  baseColor:
+                                      Get.theme.disabledColor.withOpacity(.2),
+                                  highlightColor: Colors.white,
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
                                 ),
-                                child: Skeletonizer(
-                                  enabled:
-                                      productController.isFetchProduct.value,
-                                  effect: ShimmerEffect(
-                                    baseColor:
-                                        Get.theme.disabledColor.withOpacity(.2),
-                                    highlightColor: Colors.white,
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
-                                  ),
-                                  child: ProductListTile(
-                                    productModel: productModel,
-                                  ),
+                                child: ProductListTile(
+                                  productModel: productModel,
                                 ),
                               );
                             },

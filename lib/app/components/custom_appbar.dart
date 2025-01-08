@@ -116,17 +116,7 @@ class CustomAppBar extends StatelessWidget {
             // ),
             if (!isShowFilter && !isShowSearch) const Spacer(),
           action ?? const Center(),
-          IconButton(
-              onPressed: () {
-                LocalizationService localizationService =
-                    Get.put(LocalizationService());
-                if (Get.locale == const Locale('ar')) {
-                  localizationService.changeLocale(const Locale('en'));
-                } else {
-                  localizationService.changeLocale(const Locale('ar'));
-                }
-              },
-              icon: Icon(Icons.language_rounded))
+          // I
         ],
       ),
     );

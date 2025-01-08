@@ -34,16 +34,9 @@ class ImagePreviewView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Get.theme.appBarTheme.backgroundColor,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Get.back(),
-          icon: const Icon(Icons.close),
-        ),
-        title: Text(
-          'Image Preview',
-          style: context.textTheme.titleSmall,
-        ),
       ),
       body: Container(
         color: Get.theme.appBarTheme.backgroundColor,

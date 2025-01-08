@@ -42,7 +42,10 @@ class ProductGridTile extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: Get.theme.appBarTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: Get.theme.disabledColor.withOpacity(0.2),
+            ),
           ),
           child: Stack(
             children: [
@@ -57,7 +60,7 @@ class ProductGridTile extends StatelessWidget {
                     child: productModel?.media?.firstOrNull?.name != null
                         ? NetworkImagePreview(
                             fit: BoxFit.cover,
-                            radius: 10.r,
+                            radius: 2.r,
                             url: productModel?.media?.firstOrNull?.name ?? '',
                             height: 90.h,
                             width: double.infinity,
