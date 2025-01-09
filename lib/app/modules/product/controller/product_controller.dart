@@ -72,10 +72,12 @@ class ProductController extends GetxController {
   RxBool allowCall = RxBool(true);
   RxBool contactOnlyWithChat = RxBool(true);
 
+  RxBool checkTermsAndConditions = RxBool(false);
+
   //price
 
-  RxBool isExchange = RxBool(true);
-  RxBool isCredit = RxBool(true);
+  RxBool isExchange = RxBool(false);
+  RxBool isCredit = RxBool(false);
   RxBool isLeftAvalable = RxBool(true);
   //-- On Init Method --//
   @override
@@ -89,7 +91,7 @@ class ProductController extends GetxController {
     //-- Category check to find the total field --//
     if (selectCategory.value != null) {
       if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
-        totalProductFiled.value = 13;
+        totalProductFiled.value = 11;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         totalProductFiled.value = 9;
@@ -112,7 +114,7 @@ class ProductController extends GetxController {
         if (selectedColor.isNotEmpty) filledCount++;
         // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         // if (productNameController.text.trim().isNotEmpty) filledCount++;
-        if (vinCode.text.trim().isNotEmpty) filledCount++;
+        // if (vinCode.text.trim().isNotEmpty) filledCount++;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         if (selectCategory.value != null) filledCount++;
@@ -136,7 +138,7 @@ class ProductController extends GetxController {
         if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
     } else {
-      if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+      // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
       if (productNameController.text.trim().isNotEmpty) filledCount++;
     }
     totalProductFiledCount.value = filledCount;

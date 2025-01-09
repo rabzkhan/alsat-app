@@ -47,7 +47,7 @@ Future<void> main() async {
         return ToastificationWrapper(
           child: Obx(() {
             return GetMaterialApp(
-                title: "ALSAT ${localizationService.locale.value.languageCode}",
+                title: "ALSAT",
                 useInheritedMediaQuery: true,
                 debugShowCheckedModeBanner: false,
                 builder: (context, widget) {

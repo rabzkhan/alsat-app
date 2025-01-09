@@ -62,22 +62,42 @@ class _PostProductViewState extends State<PostProductView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               6.verticalSpace,
-              RichText(
-                text: TextSpan(
-                    style: regular.copyWith(
-                      fontSize: 10.sp,
-                    ),
-                    children: const [
-                      TextSpan(
-                          text:
-                              'By Posting, you confirm the agreement with terms and conditions of'),
-                      TextSpan(
-                        text: ' Alsat',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                        ),
+              Row(
+                children: [
+                  Obx(() {
+                    return Transform.scale(
+                      scale: 1.3,
+                      child: CupertinoCheckbox(
+                        value: productController.checkTermsAndConditions.value,
+                        onChanged: (value) {
+                          productController.checkTermsAndConditions.value =
+                              value!;
+                        },
                       ),
-                    ]),
+                    );
+                  }),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: regular.copyWith(
+                          fontSize: 12.sp,
+                          height: 1.5,
+                        ),
+                        children: const [
+                          TextSpan(
+                              text:
+                                  'By Posting, you confirm the agreement with terms and conditions of'),
+                          TextSpan(
+                            text: ' Alsat',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               6.verticalSpace,
               Row(
@@ -122,40 +142,47 @@ class _PostProductViewState extends State<PostProductView> {
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
-                        onPressed: productController.isProductPosting.value
+                        onPressed: !productController
+                                .checkTermsAndConditions.value
                             ? null
-                            : () async {
-                                _formKey.currentState!.saveAndValidate();
-                                if (_formKey.currentState!.validate()) {
-                                  FocusScope.of(context).unfocus();
+                            : productController.isProductPosting.value
+                                ? null
+                                : () async {
+                                    _formKey.currentState!.saveAndValidate();
+                                    if (_formKey.currentState!.validate()) {
+                                      FocusScope.of(context).unfocus();
 
-                                  if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
-                                      productController
-                                              .productPriceFiled.value !=
+                                      if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
                                           productController
-                                              .productPriceFiledCount.value ||
-                                      productController
-                                              .individualInfoFiled.value !=
+                                                  .productPriceFiled.value !=
+                                              productController
+                                                  .productPriceFiledCount
+                                                  .value ||
                                           productController
-                                              .individualInfoFiledCount.value) {
-                                    CustomSnackBar.showCustomToast(
-                                        color: Colors.red,
-                                        message: "Please fill all the fields");
-                                  }
-                                  if (productController.pickImageList.isEmpty) {
-                                    CustomSnackBar.showCustomToast(
-                                      color: Colors.red,
-                                      message:
-                                          "Please select at least one image",
-                                    );
-                                  } else {
-                                    productController.isProductPosting.value =
-                                        true;
-                                    await addProductDataFormate(
-                                        _formKey.currentState!.value);
-                                  }
-                                }
-                              },
+                                                  .individualInfoFiled.value !=
+                                              productController
+                                                  .individualInfoFiledCount
+                                                  .value) {
+                                        CustomSnackBar.showCustomToast(
+                                            color: Colors.red,
+                                            message:
+                                                "Please fill all the fields");
+                                      }
+                                      if (productController
+                                          .pickImageList.isEmpty) {
+                                        CustomSnackBar.showCustomToast(
+                                          color: Colors.red,
+                                          message:
+                                              "Please select at least one image",
+                                        );
+                                      } else {
+                                        productController
+                                            .isProductPosting.value = true;
+                                        await addProductDataFormate(
+                                            _formKey.currentState!.value);
+                                      }
+                                    }
+                                  },
                         child: productController.isProductPosting.value
                             ? const CupertinoActivityIndicator()
                             : Text(
@@ -684,6 +711,7 @@ class _PostProductViewState extends State<PostProductView> {
                                         'Product Name',
                                         style: bold.copyWith(
                                           fontWeight: FontWeight.w500,
+                                          color: context.theme.primaryColor,
                                         ),
                                       ),
                                       10.horizontalSpace,
@@ -751,10 +779,67 @@ class _PostProductViewState extends State<PostProductView> {
                                       errorBorder: outlineBorder,
                                       focusedBorder: outlineBorder,
                                     ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
-                                    ]),
-                                  )
+                                  ),
+                                  Obx(() {
+                                    return productController
+                                                .selectCategory.value?.name
+                                                ?.toLowerCase() ==
+                                            'automobile'
+                                        ? Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10.h,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'VIN code',
+                                                  style: bold,
+                                                ),
+                                                10.horizontalSpace,
+                                                Expanded(
+                                                    child: FormBuilderTextField(
+                                                  controller:
+                                                      productController.vinCode,
+                                                  name: 'vinCode',
+                                                  onChanged: (newValue) {
+                                                    productController
+                                                        .calculateFilledProductFields();
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    color: Get
+                                                        .theme.primaryColor
+                                                        .withOpacity(.6),
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    isDense: true,
+                                                    alignLabelWithHint: true,
+                                                    floatingLabelBehavior:
+                                                        FloatingLabelBehavior
+                                                            .always,
+                                                    labelText: '',
+                                                    labelStyle: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      color: Get
+                                                          .theme.primaryColor
+                                                          .withOpacity(.6),
+                                                    ),
+                                                    border:
+                                                        outlineBorderPrimary,
+                                                    enabledBorder:
+                                                        outlineBorderPrimary,
+                                                    errorBorder:
+                                                        outlineBorderPrimary,
+                                                    focusedBorder:
+                                                        outlineBorderPrimary,
+                                                  ),
+                                                ))
+                                              ],
+                                            ),
+                                          )
+                                        : const Center();
+                                  })
                                 ],
                               ),
                             ),
@@ -1182,6 +1267,14 @@ class _PostProductViewState extends State<PostProductView> {
                                         onChanged: (value) {
                                           productController.allowCall.value =
                                               value;
+                                          if (!productController
+                                                  .allowCall.value &&
+                                              !productController
+                                                  .contactOnlyWithChat.value) {
+                                            productController
+                                                .contactOnlyWithChat
+                                                .value = true;
+                                          }
                                         },
                                       );
                                     }),
@@ -1208,6 +1301,13 @@ class _PostProductViewState extends State<PostProductView> {
                                         onChanged: (value) {
                                           productController.contactOnlyWithChat
                                               .value = value;
+                                          if (!productController
+                                                  .allowCall.value &&
+                                              !productController
+                                                  .contactOnlyWithChat.value) {
+                                            productController.allowCall.value =
+                                                true;
+                                          }
                                         },
                                       );
                                     }),
@@ -1729,52 +1829,6 @@ class _PostProductViewState extends State<PostProductView> {
                             });
                           },
                         )),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'VIN code',
-                            style: bold,
-                          ),
-                          10.horizontalSpace,
-                          Expanded(
-                              child: FormBuilderTextField(
-                            controller: productController.vinCode,
-                            name: 'vinCode',
-                            onChanged: (newValue) {
-                              productController.calculateFilledProductFields();
-                            },
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Get.theme.primaryColor.withOpacity(.6),
-                            ),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              labelText: '',
-                              labelStyle: TextStyle(
-                                fontSize: 12.sp,
-                                color: Get.theme.primaryColor.withOpacity(.6),
-                              ),
-                              border: outlineBorderPrimary,
-                              enabledBorder: outlineBorderPrimary,
-                              errorBorder: outlineBorderPrimary,
-                              focusedBorder: outlineBorderPrimary,
-                            ),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(),
-                            ]),
-                          ))
-                        ],
-                      ),
-                    )
                   ],
                 );
         }),
