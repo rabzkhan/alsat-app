@@ -63,7 +63,14 @@ class SubCategories {
   String? filter;
   String? icon;
 
-  SubCategories({this.sId, this.createdAt, this.updatedAt, this.accessedAt, this.name, this.filter, this.icon});
+  SubCategories(
+      {this.sId,
+      this.createdAt,
+      this.updatedAt,
+      this.accessedAt,
+      this.name,
+      this.filter,
+      this.icon});
 
   SubCategories.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];

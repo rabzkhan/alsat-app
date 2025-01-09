@@ -173,22 +173,21 @@ class _PostProductViewState extends State<PostProductView> {
             ],
           ),
         ),
+        appBar: AppBar(
+          backgroundColor: Get.theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            'Add Your Stuff',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.black,
+            ),
+          ),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: Column(
             children: [
-              //custom appbar
-              const CustomAppBar(
-                isShowFilter: false,
-                isShowSearch: false,
-                isShowNotification: false,
-              ),
-              Text(
-                'Add Your Stuff',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                ),
-              ),
-              8.verticalSpace,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -1734,33 +1733,7 @@ class _PostProductViewState extends State<PostProductView> {
                       padding: EdgeInsets.symmetric(
                         horizontal: 16.w,
                         vertical: 10.h,
-                      ).copyWith(bottom: 0),
-                      child: FormBuilderRadioGroup(
-                        initialValue: 'New',
-                        decoration: InputDecoration(
-                          isDense: true,
-                          // isCollapsed: true,
-                          border: InputBorder.none,
-                          labelText: 'Car Condition',
-                          labelStyle: bold.copyWith(
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                        name: 'condition',
-                        validator: FormBuilderValidators.required(),
-                        options: [
-                          'New',
-                          'Used',
-                        ]
-                            .map((lang) => FormBuilderFieldOption(value: lang))
-                            .toList(growable: false),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ).copyWith(top: 0),
                       child: Row(
                         children: [
                           Text(
@@ -1934,21 +1907,22 @@ class _PostProductViewState extends State<PostProductView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title,
                     style: regular.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                       color: value.isEmpty
                           ? Colors.red
                           : context.theme.primaryColor,

@@ -67,17 +67,7 @@ class _FilterViewState extends State<FilterView> {
 
   @override
   void initState() {
-    initData();
     super.initState();
-  }
-
-  initData() {
-    log('preData: ${widget.preData}');
-    controller.category.value = homeController.categories.firstWhereOrNull(
-      (element) =>
-          element.name?.toLowerCase() ==
-          (widget.preData?['category'] ?? '').toLowerCase(),
-    );
   }
 
   @override
@@ -1127,50 +1117,6 @@ class _FilterViewState extends State<FilterView> {
                           )
                         : const Center();
                   }),
-                  //Sort
-                  10.verticalSpace,
-                  ExpansionTile(
-                    dense: true,
-                    iconColor: context.theme.primaryColor,
-                    collapsedIconColor: context.theme.primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      side: BorderSide(
-                        color: context.theme.primaryColor.withOpacity(.5),
-                        width: .8,
-                      ),
-                    ),
-                    collapsedShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.r),
-                      side: BorderSide(
-                        color: context.theme.primaryColor.withOpacity(.5),
-                        width: .8,
-                      ),
-                    ),
-                    title: Text(
-                      'Sort',
-                      style: bold.copyWith(fontSize: 16.sp),
-                    ),
-                    subtitle: Obx(() {
-                      return Text(
-                        controller.sortValue.isEmpty
-                            ? 'Not chosen yet'
-                            : controller.sortValue.value,
-                        style: regular.copyWith(
-                          fontSize: 10.sp,
-                          color: context.theme.textTheme.bodyLarge!.color!
-                              .withOpacity(.7),
-                        ),
-                      );
-                    }),
-                    children: [
-                      _shortTile(title: 'Default'),
-                      _shortTile(title: 'The newest'),
-                      _shortTile(title: 'The Cheaper price first'),
-                      _shortTile(title: 'The highest price first'),
-                      15.verticalSpace,
-                    ],
-                  ),
                 ],
               ),
             ),
@@ -1243,43 +1189,6 @@ class _FilterViewState extends State<FilterView> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  InkWell _shortTile({required String title}) {
-    return InkWell(
-      onTap: () {
-        controller.sortValue.value = title;
-      },
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 15.w,
-          vertical: 6.h,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: regular.copyWith(fontSize: 12.sp),
-              ),
-            ),
-            CircleAvatar(
-              radius: 10.r,
-              backgroundColor: AppColors.liteGray,
-              child: Obx(() {
-                return controller.sortValue.value == title
-                    ? Icon(
-                        Icons.check_circle,
-                        color: AppColors.primary,
-                        size: 20.r,
-                      )
-                    : const Center();
-              }),
-            ),
-          ],
-        ),
       ),
     );
   }

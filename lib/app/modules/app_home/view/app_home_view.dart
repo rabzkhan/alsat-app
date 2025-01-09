@@ -56,7 +56,11 @@ class _AppHomeViewState extends State<AppHomeView> {
           child: Column(
             children: [
               // Custom appbar
-              const CustomAppBar(),
+              Obx(() {
+                return CustomAppBar(
+                  isShowLogo: homeController.homeBottomIndex.value == 0,
+                );
+              }),
               // Body
               Expanded(
                 child: Stack(
