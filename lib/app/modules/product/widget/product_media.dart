@@ -92,7 +92,11 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
           )
         : InkWell(
             onTap: () {
-              showVideoDialog(context, widget.e.name ?? '').then((onValue) {
+              showVideoDialog(
+                context,
+                controller: controller,
+                videoPlayerController: videoPlayerController,
+              ).then((onValue) {
                 if (controller.isInitialised) {
                   controller.pause();
                 }
@@ -130,24 +134,28 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
             ),
           );
   }
+}
 
-  Future showVideoDialog(BuildContext context, String url) {
-    return showDialog(
-      context: context,
-      barrierDismissible: true, // Allows closing the dialog by tapping outside
-      builder: (BuildContext context) {
-        return SizedBox(
-          width: Get.width,
-          height: Get.height,
-          child: PodVideoPlayer(
-            videoAspectRatio: videoPlayerController.value.aspectRatio,
-            controller: controller,
-            onLoading: (context) => const CupertinoActivityIndicator(
-              color: Colors.white,
-            ),
+Future showVideoDialog(
+  BuildContext context, {
+  required VideoPlayerController videoPlayerController,
+  required PodPlayerController controller,
+}) {
+  return showDialog(
+    context: context,
+    barrierDismissible: true, // Allows closing the dialog by tapping outside
+    builder: (BuildContext context) {
+      return SizedBox(
+        width: Get.width,
+        height: Get.height,
+        child: PodVideoPlayer(
+          videoAspectRatio: videoPlayerController.value.aspectRatio,
+          controller: controller,
+          onLoading: (context) => const CupertinoActivityIndicator(
+            color: Colors.white,
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
 }

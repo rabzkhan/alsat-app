@@ -1,3 +1,4 @@
+import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/auth_user/controller/user_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +105,7 @@ class _MyFollowingState extends State<MyFollowing> {
                           height: 44.h,
                           width: 44.w,
                           fit: BoxFit.cover,
+                          error: Image.asset(userDefaulticon),
                         ),
                       ),
                       title: Text(

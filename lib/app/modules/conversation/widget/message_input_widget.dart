@@ -1,4 +1,10 @@
+import 'dart:async';
+import 'dart:developer' as log;
+import 'dart:io';
+import 'dart:math';
+
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
+import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -9,8 +15,9 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 import '../../product/controller/product_controller.dart';
-
+import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
 import '../view/map_address_picker_view.dart';
 
@@ -31,19 +38,61 @@ class _ChatInputFieldState extends State<ChatInputField> {
   bool _emojiShowing = false;
   String? recordedFilePath;
   bool isRecording = false;
-  final RecorderController recorderController = RecorderController();
-  @override
-  void dispose() {
-    recorderController.dispose();
-    super.dispose();
+  int _elapsedSeconds = 0;
+  Timer? _timer;
+  final record = AudioRecorder();
+
+  String audioFilePath = "";
+  Future<void> startRecording() async {
+    Directory? appDirectory = await getExternalStorageDirectory();
+    audioFilePath =
+        '${appDirectory?.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+    if (!await appDirectory!.exists()) {
+      await appDirectory.create(recursive: true);
+    }
+    try {
+      bool isRecordingAvailable = await record.hasPermission();
+      if (isRecordingAvailable) {
+        String path = audioFilePath;
+        await record.start(
+          const RecordConfig(
+            encoder: AudioEncoder.wav,
+          ),
+          path: path,
+        );
+
+        setState(() {
+          isRecording = true;
+          audioFilePath = path;
+        });
+        _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+          setState(() {
+            _elapsedSeconds++;
+          });
+          _processAudioData(_elapsedSeconds);
+        });
+      }
+    } catch (e) {}
+  }
+
+  // Stop recording
+  Future<void> stopRecording() async {
+    try {
+      _elapsedSeconds = 0;
+      await record.stop();
+      _timer?.cancel();
+      setState(() {
+        isRecording = false;
+      });
+    } catch (e) {
+      print("Error stopping recording: $e");
+    }
   }
 
   @override
-  void initState() {
-    recorderController.onCurrentDuration.listen((duration) {
-      widget.conversationController.recordTime.value = duration;
-    });
-    super.initState();
+  void dispose() {
+    _timer?.cancel(); // Clean up the timer when the widget is disposed
+    super.dispose();
   }
 
   @override
@@ -145,62 +194,54 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.r),
                             ),
-                            child: Row(
-                              children: [
-                                15.horizontalSpace,
-                                Obx(() {
-                                  return Text(
-                                    "${widget.conversationController.recordTime.value?.inSeconds ?? 0} s",
+                            child: SizedBox(
+                              height: 60,
+                              child: Row(
+                                children: [
+                                  15.horizontalSpace,
+                                  Text(
+                                    "${convertSecondsToTime(_elapsedSeconds)} ",
                                     style: regular.copyWith(
                                       fontSize: 10.sp,
                                       fontWeight: FontWeight.w500,
                                       color: AppColors.primary,
                                     ),
-                                  );
-                                }),
-                                Expanded(
-                                  child: AudioWaveforms(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20.r),
-                                      color: Colors.white,
-                                    ),
-                                    waveStyle: const WaveStyle(
-                                        showHourInDuration: true,
-                                        waveColor: AppColors.primary,
-                                        labelSpacing: 0,
-                                        extendWaveform: true,
-                                        showMiddleLine: false,
-                                        scaleFactor: 100),
-                                    // backgroundColor: Colors.white,
-                                    recorderController: recorderController,
-                                    size: const Size.fromHeight(55),
-                                    margin: EdgeInsets.zero,
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 8.w,
-                                    ).copyWith(right: 0),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    recorderController.stop();
-                                    setState(() {
-                                      isRecording = false;
-                                    });
-                                    widget.conversationController.recordTime
-                                        .value = Duration.zero;
-                                  },
-                                  child: CircleAvatar(
-                                    radius: 11.r,
-                                    backgroundColor: AppColors.primary,
-                                    child: Icon(
-                                      Icons.pause,
-                                      size: 15.sp,
-                                      color: Colors.white,
+                                  7.horizontalSpace,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 10),
+                                      child: CustomPaint(
+                                        size: const Size(double.infinity, 50),
+                                        painter: WaveformPainter(
+                                          waveformData: _waveformData,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                10.horizontalSpace,
-                              ],
+                                  7.horizontalSpace,
+                                  InkWell(
+                                    onTap: () {
+                                      stopRecording();
+                                      setState(() {
+                                        isRecording = false;
+                                      });
+                                      widget.conversationController.recordTime
+                                          .value = Duration.zero;
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 11.r,
+                                      backgroundColor: AppColors.primary,
+                                      child: Icon(
+                                        Icons.pause,
+                                        size: 15.sp,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                  10.horizontalSpace,
+                                ],
+                              ),
                             ),
                           ),
                         )
@@ -354,22 +395,19 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             .isNotEmpty) {
                           widget.conversationController.sendMessage();
                         } else {
-                          if (recorderController.hasPermission) {
-                            if (isRecording) {
-                              recordedFilePath =
-                                  await recorderController.stop();
-                              isRecording = false;
-                              setState(() {});
+                          if (isRecording) {
+                            stopRecording();
 
-                              widget.conversationController
-                                  .sendMessage(audioPath: recordedFilePath);
-                            } else {
-                              recorderController.record();
-                              isRecording = true;
-                              setState(() {});
-                            }
+                            isRecording = false;
+                            setState(() {});
+
+                            widget.conversationController
+                                .sendMessage(audioPath: audioFilePath);
                           } else {
-                            recorderController.checkPermission();
+                            startRecording();
+
+                            isRecording = true;
+                            setState(() {});
                           }
                         }
                       },
@@ -437,5 +475,50 @@ class _ChatInputFieldState extends State<ChatInputField> {
         ),
       );
     });
+  }
+
+  final List<double> _waveformData = [
+    ...List.generate(40, (index) {
+      return Random().nextDouble();
+    })
+  ];
+
+  void _processAudioData(int duration) {
+    double amplitude = Random().nextDouble();
+    log.log('amplitude: $amplitude');
+    _waveformData.add(amplitude);
+    log.log('waveformData: ${_waveformData.length}');
+    // setState(() {
+    //   _waveformData.add(amplitude);
+    // });
+    if (_waveformData.length > 40) {
+      _waveformData.removeAt(0);
+    }
+  }
+}
+
+class WaveformPainter extends CustomPainter {
+  final List<double> waveformData;
+  WaveformPainter({required this.waveformData});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.blue
+      ..strokeWidth = 2;
+
+    double xInterval = size.width / waveformData.length;
+    double centerY = size.height / 2;
+
+    for (int i = 0; i < waveformData.length; i++) {
+      double x = i * xInterval;
+      double y = centerY - (waveformData[i] * size.height / 2);
+      canvas.drawLine(Offset(x, centerY), Offset(x, y), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) {
+    return true;
   }
 }

@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../common/const/image_path.dart';
 import '../../../components/network_image_preview.dart';
 import '../../authentication/controller/auth_controller.dart';
 import '../controller/conversation_controller.dart';
@@ -119,6 +120,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               ?.picture ??
                           "",
                       height: 44.h,
+                      error: Image.asset(userDefaulticon),
                     ),
                   ),
                   8.horizontalSpace,

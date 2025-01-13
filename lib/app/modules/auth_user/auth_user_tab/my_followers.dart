@@ -9,6 +9,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../common/const/image_path.dart';
 import '../../../components/network_image_preview.dart';
 import '../../product/view/client_profile_view.dart';
 
@@ -105,6 +106,7 @@ class _MyFollowersState extends State<MyFollowers> {
                           height: 44.h,
                           width: 44.w,
                           fit: BoxFit.cover,
+                          error: Image.asset(userDefaulticon),
                         ),
                       ),
                       title: Text(

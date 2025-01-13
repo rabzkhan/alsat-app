@@ -12,6 +12,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:pod_player/pod_player.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -148,38 +149,48 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //price and name
-                  8.verticalSpace,
-                  ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                        // padding: EdgeInsets.all(value),
-                        side: BorderSide(
-                          color: Get.theme.primaryColor,
-                          width: .5,
-                        ),
-                        backgroundColor: Get.theme.primaryColor.withOpacity(.1),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4.r),
-                        )),
-                    onPressed: () {},
-                    label: Text(
-                      widget.productModel?.createdAt != null
-                          ? timeAgo(DateTime.parse(
-                              widget.productModel?.createdAt ?? ''))
-                          : '0 Days Ago',
-                      style: regular.copyWith(
-                        fontSize: 12.sp,
+                  15.verticalSpace,
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.calendar_month,
+                        size: 25.r,
                         color: Get.theme.primaryColor,
                       ),
-                    ),
-                    icon: Icon(
-                      Icons.calendar_month,
-                      size: 20.r,
-                      color: Get.theme.primaryColor,
-                    ),
+                      10.horizontalSpace,
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            DateFormat('hh a dd MMM yyyy').format(
+                              DateTime.parse(
+                                widget.productModel?.createdAt ?? '',
+                              ),
+                            ),
+                            style: TextStyle(
+                              fontSize: 14.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            widget.productModel?.createdAt != null
+                                ? timeAgo(DateTime.parse(
+                                    widget.productModel?.createdAt ?? ''))
+                                : '0 Days Ago',
+                            style: regular.copyWith(
+                              fontSize: 12.sp,
+                              color: Colors.black38,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
 
-                  2.verticalSpace,
+                  10.verticalSpace,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -209,145 +220,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ),
                     ],
                   ),
-                  10.verticalSpace,
-                  //  information
-                  Text(
-                    'Information',
-                    style: bold.copyWith(
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  10.verticalSpace,
-                  Container(
-                      padding: REdgeInsets.symmetric(
-                        horizontal: 10.w,
-                        vertical: 8.h,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5.r),
-                        border: Border.all(
-                          color: Get.theme.disabledColor.withOpacity(.06),
-                        ),
-                        color: Get.theme.disabledColor.withOpacity(.03),
-                      ),
-                      child: widget.productModel?.carInfo != null
-                          ? Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                infoTile(
-                                    name: 'Brand',
-                                    value:
-                                        widget.productModel?.carInfo?.brand ??
-                                            ''),
-                                infoTile(
-                                    name: 'Model Type',
-                                    value:
-                                        widget.productModel?.carInfo?.model ??
-                                            ''),
-                                infoTile(
-                                    name: 'Body Type',
-                                    value: widget
-                                            .productModel?.carInfo?.bodyType ??
-                                        ''),
-                                infoTile(
-                                    name: 'Year',
-                                    value:
-                                        "${widget.productModel?.carInfo?.year ?? ''}"),
-                                infoTile(
-                                    name: 'Engine',
-                                    value: widget.productModel?.carInfo
-                                            ?.engineType ??
-                                        ''),
-                                infoTile(
-                                    name: 'Color',
-                                    value:
-                                        widget.productModel?.carInfo?.color ??
-                                            ''),
-                                infoTile(
-                                    name: 'Condition',
-                                    value: widget
-                                            .productModel?.carInfo?.condition ??
-                                        ''),
-                                infoTile(
-                                    name: 'Passed  KM',
-                                    value:
-                                        "${widget.productModel?.carInfo?.passedKm ?? ''}"),
-                              ],
-                            )
-                          : widget.productModel?.estateInfo != null
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    infoTile(
-                                        name: 'Address',
-                                        value: widget.productModel?.estateInfo
-                                                ?.address ??
-                                            ''),
-                                    infoTile(
-                                        name: 'Type',
-                                        value: widget.productModel?.estateInfo
-                                                ?.type ??
-                                            ''),
-                                    infoTile(
-                                        name: 'Floor',
-                                        value:
-                                            "${widget.productModel?.estateInfo?.floor ?? ''}"),
-                                    infoTile(
-                                        name: 'Floor Type',
-                                        value:
-                                            "${widget.productModel?.estateInfo?.floorType ?? ''}"),
-                                    infoTile(
-                                        name: 'Rooom',
-                                        value:
-                                            "${widget.productModel?.estateInfo?.room ?? ''}"),
-                                    infoTile(
-                                        name: 'Lift',
-                                        value: (widget.productModel?.estateInfo
-                                                    ?.lift ??
-                                                false)
-                                            ? 'Avalable'
-                                            : 'No'),
-                                  ],
-                                )
-                              : widget.productModel?.phoneInfo != null
-                                  ? Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        infoTile(
-                                            name: 'Brand',
-                                            value: widget.productModel
-                                                    ?.phoneInfo?.brand ??
-                                                ''),
-                                      ],
-                                    )
-                                  : Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        infoTile(
-                                            name: 'Location',
-                                            value: widget
-                                                    .productModel
-                                                    ?.individualInfo
-                                                    ?.locationCity ??
-                                                ''),
-                                      ],
-                                    )),
-                  20.verticalSpace,
-                  //  discription
-                  Text(
-                    'Discription',
-                    style: bold.copyWith(
-                      fontSize: 18.sp,
-                    ),
-                  ),
-                  6.verticalSpace,
-                  Text(
-                    textAlign: TextAlign.justify,
-                    widget.productModel?.description ?? '',
-                    style: regular.copyWith(
-                      fontSize: 15.sp,
-                    ),
-                  ),
+                  7.verticalSpace,
 
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10.h),
@@ -576,26 +449,154 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         8.horizontalSpace,
                         //--share Button---
                         Expanded(
-                          flex: 2,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                CupertinoIcons.arrowshape_turn_up_right,
-                                size: 22.r,
-                              ),
-                              4.horizontalSpace,
-                              Text(
-                                'Share',
-                                style: regular.copyWith(
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
+                          flex: 1,
+                          child: Icon(
+                            CupertinoIcons.arrowshape_turn_up_right,
+                            size: 22.r,
                           ),
                         ),
+                        8.horizontalSpace,
                       ],
+                    ),
+                  ),
+
+                  7.verticalSpace,
+                  //  information
+                  Text(
+                    'Information',
+                    style: bold.copyWith(
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  10.verticalSpace,
+                  Container(
+                      padding: REdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 8.h,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.r),
+                        border: Border.all(
+                          color: Get.theme.disabledColor.withOpacity(.06),
+                        ),
+                        color: Get.theme.disabledColor.withOpacity(.03),
+                      ),
+                      child: widget.productModel?.carInfo != null
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                infoTile(
+                                    name: 'Brand',
+                                    value:
+                                        widget.productModel?.carInfo?.brand ??
+                                            ''),
+                                infoTile(
+                                    name: 'Model Type',
+                                    value:
+                                        widget.productModel?.carInfo?.model ??
+                                            ''),
+                                infoTile(
+                                    name: 'Body Type',
+                                    value: widget
+                                            .productModel?.carInfo?.bodyType ??
+                                        ''),
+                                infoTile(
+                                    name: 'Year',
+                                    value:
+                                        "${widget.productModel?.carInfo?.year ?? ''}"),
+                                infoTile(
+                                    name: 'Engine',
+                                    value: widget.productModel?.carInfo
+                                            ?.engineType ??
+                                        ''),
+                                infoTile(
+                                    name: 'Color',
+                                    value:
+                                        widget.productModel?.carInfo?.color ??
+                                            ''),
+                                infoTile(
+                                    name: 'Condition',
+                                    value: widget
+                                            .productModel?.carInfo?.condition ??
+                                        ''),
+                                infoTile(
+                                    name: 'Passed  KM',
+                                    value:
+                                        "${widget.productModel?.carInfo?.passedKm ?? ''}"),
+                              ],
+                            )
+                          : widget.productModel?.estateInfo != null
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    infoTile(
+                                        name: 'Address',
+                                        value: widget.productModel?.estateInfo
+                                                ?.address ??
+                                            ''),
+                                    infoTile(
+                                        name: 'Type',
+                                        value: widget.productModel?.estateInfo
+                                                ?.type ??
+                                            ''),
+                                    infoTile(
+                                        name: 'Floor',
+                                        value:
+                                            "${widget.productModel?.estateInfo?.floor ?? ''}"),
+                                    infoTile(
+                                        name: 'Floor Type',
+                                        value:
+                                            "${widget.productModel?.estateInfo?.floorType ?? ''}"),
+                                    infoTile(
+                                        name: 'Rooom',
+                                        value:
+                                            "${widget.productModel?.estateInfo?.room ?? ''}"),
+                                    infoTile(
+                                        name: 'Lift',
+                                        value: (widget.productModel?.estateInfo
+                                                    ?.lift ??
+                                                false)
+                                            ? 'Avalable'
+                                            : 'No'),
+                                  ],
+                                )
+                              : widget.productModel?.phoneInfo != null
+                                  ? Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        infoTile(
+                                            name: 'Brand',
+                                            value: widget.productModel
+                                                    ?.phoneInfo?.brand ??
+                                                ''),
+                                      ],
+                                    )
+                                  : Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        infoTile(
+                                            name: 'Location',
+                                            value: widget
+                                                    .productModel
+                                                    ?.individualInfo
+                                                    ?.locationCity ??
+                                                ''),
+                                      ],
+                                    )),
+                  20.verticalSpace,
+                  //  discription
+                  Text(
+                    'Discription',
+                    style: bold.copyWith(
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  6.verticalSpace,
+                  Text(
+                    textAlign: TextAlign.justify,
+                    widget.productModel?.description ?? '',
+                    style: regular.copyWith(
+                      fontSize: 15.sp,
                     ),
                   ),
 
