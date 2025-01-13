@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
@@ -89,6 +90,7 @@ class MessageTile extends StatelessWidget {
                     radius: 40.r,
                     url: message.otherUser.imageUrl,
                     height: 40.r,
+                    error: Image.asset(userDefaultIcon),
                   ),
                 ),
                 const SizedBox(width: 16.0 / 2),

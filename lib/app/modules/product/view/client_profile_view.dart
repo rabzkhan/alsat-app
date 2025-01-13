@@ -107,7 +107,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 '',
                             height: 52.h,
                             width: 52.w,
-                            error: Image.asset(userDefaulticon),
+                            error: Image.asset(userDefaultIcon),
                             fit: BoxFit.cover,
                           ),
                         ),

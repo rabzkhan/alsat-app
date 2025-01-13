@@ -136,7 +136,7 @@ showRateBottomSheet(
                               '',
                           height: 96.h,
                           width: 96.w,
-                          error: Image.asset(userDefaulticon),
+                          error: Image.asset(userDefaultIcon),
                           fit: BoxFit.cover,
                         ),
                       ),

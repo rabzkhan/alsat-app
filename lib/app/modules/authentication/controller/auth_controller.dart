@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
@@ -135,6 +136,10 @@ class AuthController extends GetxController {
         UserDataModel? user = UserDataModel.fromJson(response.data);
         userDataModel.value = user;
         log('login User Info --- :${userDataModel.value.id}');
+        if (addressController.text.isEmpty) {
+          addressController.text =
+              "${userDataModel.value.location?.province ?? ''} ${userDataModel.value.location?.province ?? ""}";
+        }
         if (user.active == true) {
           saveFcmToken();
         }
@@ -221,9 +226,11 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         getProfile();
         isUpdateLoading.value = false;
+        CustomSnackBar.showCustomToast(message: 'Updated Successfully');
       },
       onError: (error) {
         isUpdateLoading.value = false;
+        CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
         log('profile $error <- error');
         Logger().d("$error <- error");
       },

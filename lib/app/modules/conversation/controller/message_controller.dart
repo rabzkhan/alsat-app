@@ -5,12 +5,13 @@ import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../../../utils/constants.dart';
-import '../../authentication/controller/auth_controller.dart';
 import '../model/message_model.dart';
 
 class MessageController extends GetxController {
   Rxn<ChatMessage> selectMessage = Rxn<ChatMessage>();
   Rxn<ChatMessage> selectReplyMessage = Rxn<ChatMessage>();
+  RxBool isOnlineUser = RxBool(false);
+  Rxn<DateTime> lastSeen = Rxn<DateTime>();
   Future<void> checkUserActiveLive({required String userID}) async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
@@ -44,9 +45,12 @@ class MessageController extends GetxController {
             messages[0].payload as MqttPublishMessage;
         final String messageJson = MqttPublishPayload.bytesToStringAsString(
             recMessage.payload.message);
-        log("UserOnline Status: $messageJson");
+
         try {
-          final messageData = jsonDecode(messageJson);
+          final Map<String, dynamic> decodedJson = jsonDecode(messageJson);
+          lastSeen.value = DateTime.parse(decodedJson["last_seen_at"]);
+          isOnlineUser.value = decodedJson["online"];
+          log("UserOnline Status: ${isOnlineUser.value}-- ${lastSeen.value}");
         } catch (e) {
           log("Error parsing message JSON: $e");
         }

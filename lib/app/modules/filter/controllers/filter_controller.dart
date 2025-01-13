@@ -276,7 +276,7 @@ class FilterController extends GetxController {
     refreshController.loadComplete();
   }
 
-  ProudctPostListRes userProductPostListRes = ProudctPostListRes();
+  ProductPostListRes userProductPostListRes = ProductPostListRes();
   RxList<ProductModel> itemList = <ProductModel>[].obs;
   Map<String, dynamic>? filtermapPassed;
   Future<void> applyFilter({
@@ -330,7 +330,7 @@ class FilterController extends GetxController {
       },
       onSuccess: (response) {
         Map<String, dynamic> responseData = response.data;
-        userProductPostListRes = ProudctPostListRes.fromJson(responseData);
+        userProductPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextValue != null) {
           itemList.addAll(userProductPostListRes.data ?? []);
         } else {

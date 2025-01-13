@@ -128,7 +128,7 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                           height: 40.h,
                                           width: 40.w,
                                           fit: BoxFit.cover,
-                                          error: Image.asset(userDefaulticon),
+                                          error: Image.asset(userDefaultIcon),
                                         ),
                                       ),
                                       6.horizontalSpace,

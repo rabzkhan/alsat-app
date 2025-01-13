@@ -59,7 +59,7 @@ class _ProfileContentState extends State<ProfileContent> {
                   fit: BoxFit.cover,
                   radius: 28.r,
                   url: authController.userDataModel.value.picture ?? '',
-                  error: Image.asset(userDefaulticon),
+                  error: Image.asset(userDefaultIcon),
                 ),
               ),
               title: Obx(() => Text(

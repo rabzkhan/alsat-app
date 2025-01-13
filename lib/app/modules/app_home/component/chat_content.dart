@@ -89,7 +89,7 @@ class ChatContent extends StatelessWidget {
                             radius: 30.r,
                             url: participant?.picture ?? "",
                             height: 44.h,
-                            error: Image.asset(userDefaulticon),
+                            error: Image.asset(userDefaultIcon),
                           ),
                         ),
                       ),

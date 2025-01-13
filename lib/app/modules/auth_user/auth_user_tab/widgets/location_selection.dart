@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +22,22 @@ class ProfileSingleLocationSelection extends StatelessWidget {
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text(
-            'Select Location',
-            style: bold.copyWith(fontSize: 16.sp),
-          ),
-        ),
+            middle: Text(
+              'Select Location',
+              style: bold.copyWith(fontSize: 16.sp),
+            ),
+            trailing: CupertinoButton(
+              onPressed: () {
+                Get.back();
+              },
+              padding: EdgeInsets.zero,
+              child: Text(
+                'Select',
+                style: regular.copyWith(
+                  fontSize: 16.sp,
+                ),
+              ),
+            )),
         child: SafeArea(
           bottom: false,
           child: SingleChildScrollView(
@@ -39,26 +52,26 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                       (provinceIndex) {
                         final province = provinces[provinceIndex];
                         return ExpansionTile(
-                          title: Row(
-                            children: [
-                              Text(
-                                province.name,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
+                          title: InkWell(
+                            onTap: () {
+                              // Toggle province selection
+                              authController.selectedProvince.value =
+                                  province.name;
+                              authController.addressController.text =
+                                  province.name;
+                              authController.selectedCity.value = '';
+                            },
+                            child: Row(
+                              children: [
+                                Text(
+                                  province.name,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  // Toggle province selection
-                                  authController.selectedProvince.value =
-                                      province.name;
-                                  authController.addressController.text =
-                                      province.name;
-                                  authController.selectedCity.value = '';
-                                },
-                                child: CircleAvatar(
+                                const Spacer(),
+                                CircleAvatar(
                                   radius: 10.r,
                                   backgroundColor: AppColors.liteGray,
                                   child: Icon(
@@ -70,8 +83,8 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                                     size: 20.r,
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                           expandedAlignment: Alignment.centerLeft,
                           expandedCrossAxisAlignment: CrossAxisAlignment.start,
@@ -82,9 +95,13 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                               (city) {
                                 return InkWell(
                                   onTap: () {
+                                    authController.selectedProvince.value =
+                                        province.name;
                                     authController.selectedCity.value = city;
                                     authController.addressController.text =
                                         '$city, ${province.name}';
+
+                                    log("${'$city, ${province.name}'}");
                                   },
                                   child: Padding(
                                     padding:
@@ -99,23 +116,16 @@ class ProfileSingleLocationSelection extends StatelessWidget {
                                           ),
                                         ),
                                         const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            authController.selectedCity.value =
-                                                city;
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 8.r,
-                                            backgroundColor: AppColors.liteGray,
-                                            child: Icon(
-                                              authController
-                                                          .selectedCity.value ==
-                                                      city
-                                                  ? Icons.check_circle
-                                                  : Icons.circle_outlined,
-                                              color: AppColors.primary,
-                                              size: 14.r,
-                                            ),
+                                        CircleAvatar(
+                                          radius: 8.r,
+                                          backgroundColor: AppColors.liteGray,
+                                          child: Icon(
+                                            authController.selectedCity.value ==
+                                                    city
+                                                ? Icons.check_circle
+                                                : Icons.circle_outlined,
+                                            color: AppColors.primary,
+                                            size: 14.r,
                                           ),
                                         ),
                                         20.horizontalSpace,

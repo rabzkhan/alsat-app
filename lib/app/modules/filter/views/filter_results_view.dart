@@ -21,7 +21,7 @@ class FilterResultsView extends GetView<FilterController> {
     return WillPopScope(
       onWillPop: () async {
         controller.itemList.clear();
-        controller.userProductPostListRes = ProudctPostListRes();
+        controller.userProductPostListRes = ProductPostListRes();
         return true;
       },
       child: Scaffold(

@@ -106,7 +106,7 @@ class _MyFollowersState extends State<MyFollowers> {
                           height: 44.h,
                           width: 44.w,
                           fit: BoxFit.cover,
-                          error: Image.asset(userDefaulticon),
+                          error: Image.asset(userDefaultIcon),
                         ),
                       ),
                       title: Text(

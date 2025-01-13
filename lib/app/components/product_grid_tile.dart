@@ -14,7 +14,12 @@ import '../modules/product/model/product_post_list_res.dart';
 class ProductGridTile extends StatelessWidget {
   final ProductModel? productModel;
   final bool loading;
-  const ProductGridTile({super.key, this.productModel, required this.loading});
+  final bool isShowFavoriteButton;
+  const ProductGridTile(
+      {super.key,
+      this.productModel,
+      required this.loading,
+      this.isShowFavoriteButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -172,28 +177,29 @@ class ProductGridTile extends StatelessWidget {
                   )
                 ],
               ),
-              Positioned(
-                right: 10.w,
-                top: 4.h,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Get.theme.disabledColor.withOpacity(.06),
-                      width: 1,
+              if (isShowFavoriteButton)
+                Positioned(
+                  right: 10.w,
+                  top: 4.h,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 5.h,
+                    ),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Get.theme.disabledColor.withOpacity(.06),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20.r,
                     ),
                   ),
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 20.r,
-                  ),
-                ),
-              )
+                )
             ],
           ),
         ).animate().fadeIn(duration: 400.ms),

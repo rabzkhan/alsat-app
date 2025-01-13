@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
@@ -120,7 +121,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               ?.picture ??
                           "",
                       height: 44.h,
-                      error: Image.asset(userDefaulticon),
+                      error: Image.asset(userDefaultIcon),
                     ),
                   ),
                   8.horizontalSpace,
@@ -134,12 +135,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         ),
                       ),
                       1.verticalSpace,
-                      Text(
-                        'Active Now',
-                        style: regular.copyWith(
-                          fontSize: 11.sp,
-                        ),
-                      )
+                      Obx(() {
+                        return Text(
+                          messageController.isOnlineUser.value
+                              ? 'Active Now'
+                              : 'Last seen ${DateFormat('hh:mm a dd MMM').format(messageController.lastSeen.value ?? DateTime.now())}',
+                          style: regular.copyWith(
+                            fontSize: 11.sp,
+                          ),
+                        );
+                      })
                     ],
                   )
                 ],

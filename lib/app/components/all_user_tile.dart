@@ -46,7 +46,7 @@ class AllUserTile extends StatelessWidget {
                 height: 100.h,
                 fit: BoxFit.cover,
                 url: premiumUserModel.picture ?? '',
-                error: Image.asset(userDefaulticon),
+                error: Image.asset(userDefaultIcon),
               ),
             ),
             10.horizontalSpace,
