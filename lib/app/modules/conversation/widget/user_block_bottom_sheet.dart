@@ -39,33 +39,36 @@ showUserBlockBottomSheet(
                     'We won\'t tell the, if you block them. Uncblock them to send messages'),
               ),
               20.verticalSpace,
-              CupertinoButton(
-                color: Colors.red,
-                onPressed: conversationController.isBlockUser.value
-                    ? null
-                    : () {
-                        conversationController
-                            .blockUser(conversationController
-                                    .selectConversation.value?.id ??
-                                '')
-                            .then(
-                          (value) {
-                            Get.snackbar(
-                              'Success',
-                              'User blocked successfully',
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.green,
-                            );
-                          },
-                        );
-                      },
-                child: conversationController.isBlockUser.value
-                    ? const CupertinoActivityIndicator()
-                    : Text(
-                        'Block',
-                        style: TextStyle(color: Colors.white, fontSize: 14.sp),
-                      ),
-              ),
+              Obx(() {
+                return CupertinoButton(
+                  color: Colors.red,
+                  onPressed: conversationController.isBlockUser.value
+                      ? null
+                      : () {
+                          conversationController
+                              .blockUser(conversationController
+                                      .selectConversation.value?.id ??
+                                  '')
+                              .then(
+                            (value) {
+                              Get.snackbar(
+                                'Success',
+                                'User blocked successfully',
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.green,
+                              );
+                            },
+                          );
+                        },
+                  child: conversationController.isBlockUser.value
+                      ? const CupertinoActivityIndicator()
+                      : Text(
+                          'Block',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 14.sp),
+                        ),
+                );
+              }),
               10.verticalSpace,
               CupertinoButton(
                 child: Text(

@@ -1,3 +1,4 @@
+import 'package:alsat/app/common/const/image_path.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,6 +46,7 @@ class MessageSideOption extends StatelessWidget {
                 radius: 49.r,
                 url: participant?.picture ?? "",
                 height: 80.h,
+                error: Image.asset(userDefaultIcon),
               ),
             ),
             10.verticalSpace,
@@ -54,20 +56,14 @@ class MessageSideOption extends StatelessWidget {
                 fontSize: 15.sp,
               ),
             ),
-            1.verticalSpace,
-            Text(
-              'Active Now',
-              style: regular.copyWith(
-                fontSize: 11.sp,
-              ),
-            ),
             10.verticalSpace,
             OutlinedButton(
               style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.black12,
                   textStyle: regular.copyWith(
-                fontSize: 13.sp,
-                color: Colors.grey,
-              )),
+                    fontSize: 13.sp,
+                    color: Colors.black87,
+                  )),
               onPressed: () {
                 Get.back();
                 ProductDetailsController productDetailsController =
@@ -86,7 +82,7 @@ class MessageSideOption extends StatelessWidget {
                 'Profile',
                 style: regular.copyWith(
                   fontSize: 13.sp,
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               ),
             ),

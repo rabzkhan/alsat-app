@@ -15,7 +15,6 @@ import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
 
 class HomeController extends GetxController {
-  RxBool isShowDrawer = false.obs;
   RxBool isShowSearch = false.obs;
   RxBool showPremium = false.obs;
   //home page variable

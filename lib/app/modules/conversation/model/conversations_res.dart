@@ -35,7 +35,7 @@ class ConversationListRes {
 
 class ConversationModel {
   final String? id;
-  final DateTime? createdAt;
+  final String? createdAt;
   final DateTime? updatedAt;
   final DateTime? accessedAt;
   final List<Participant>? participants;
@@ -66,9 +66,7 @@ class ConversationModel {
   factory ConversationModel.fromJson(Map<String, dynamic> json) =>
       ConversationModel(
         id: json["_id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
+        createdAt: json["created_at"],
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
@@ -90,7 +88,7 @@ class ConversationModel {
 
   Map<String, dynamic> toJson() => {
         "_id": id,
-        "created_at": createdAt?.toIso8601String(),
+        "created_at": createdAt,
         "updated_at": updatedAt?.toIso8601String(),
         "accessed_at": accessedAt?.toIso8601String(),
         "participants": participants == null

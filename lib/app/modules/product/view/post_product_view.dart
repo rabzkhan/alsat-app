@@ -30,6 +30,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../video_edit/crop_video.dart';
 import '../widget/category_selection.dart';
+import '../widget/post_category_selection.dart';
 
 class PostProductView extends StatefulWidget {
   const PostProductView({super.key});
@@ -660,13 +661,35 @@ class _PostProductViewState extends State<PostProductView> {
                                       context: context,
                                       backgroundColor: Colors.transparent,
                                       builder: (context) =>
-                                          const CategorySelection(),
+                                          const PostCategorySelection(),
                                     ).then((_) {
                                       productController
                                           .calculateFilledProductFields();
                                     });
                                   },
                                 )),
+                            Obx(() => productController
+                                        .selectSubCategory.value?.name ==
+                                    null
+                                ? const Center()
+                                : _tile(
+                                    "Sub Category",
+                                    productController
+                                            .selectSubCategory.value?.name ??
+                                        "Not choosen yet",
+                                    onTap: () {
+                                      showCupertinoModalBottomSheet(
+                                        expand: true,
+                                        context: context,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) =>
+                                            const PostCategorySelection(),
+                                      ).then((_) {
+                                        productController
+                                            .calculateFilledProductFields();
+                                      });
+                                    },
+                                  )),
                             Obx(() => productController
                                         .selectCategory.value?.name
                                         ?.toLowerCase() ==
@@ -1604,55 +1627,6 @@ class _PostProductViewState extends State<PostProductView> {
                   ],
                 ),
               ),
-              // 10.horizontalSpace,
-              // Expanded(
-              //   flex: 2,
-              //   child: Row(
-              //     children: [
-              //       Text(
-              //         'Room',
-              //         style: bold.copyWith(
-              //           fontWeight: FontWeight.w500,
-              //         ),
-              //       ),
-              //       10.horizontalSpace,
-              //       Expanded(
-              //         child: FormBuilderTextField(
-              //           controller: productController.room,
-              //           name: 'room',
-              //           onChanged: (newValue) {
-              //             productController.calculateFilledFields();
-              //           },
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //             fontSize: 12.sp,
-              //             color: Get.theme.primaryColor.withOpacity(.6),
-              //           ),
-              //           decoration: InputDecoration(
-              //             contentPadding: const EdgeInsets.symmetric(
-              //               vertical: 10,
-              //             ),
-              //             isDense: true,
-              //             alignLabelWithHint: true,
-              //             floatingLabelBehavior: FloatingLabelBehavior.always,
-              //             labelText: '',
-              //             labelStyle: TextStyle(
-              //               fontSize: 12.sp,
-              //               color: Get.theme.primaryColor.withOpacity(.6),
-              //             ),
-              //             border: outlineBorderPrimary,
-              //             enabledBorder: outlineBorderPrimary,
-              //             errorBorder: outlineBorderPrimary,
-              //             focusedBorder: outlineBorderPrimary,
-              //           ),
-              //           validator: FormBuilderValidators.compose([
-              //             FormBuilderValidators.required(),
-              //           ]),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         )

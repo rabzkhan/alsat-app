@@ -28,6 +28,7 @@ class ProductCommentsView extends StatefulWidget {
 
 class _ProductCommentsViewState extends State<ProductCommentsView> {
   final _formKey = GlobalKey<FormState>();
+  TextEditingController commentController = TextEditingController();
   @override
   void initState() {
     initMethod();
@@ -199,73 +200,73 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                 ],
               ),
             ),
-            Form(
-              key: _formKey,
-              child: Container(
-                decoration: BoxDecoration(
-                    color: const Color(0xFFD9D9D9).withOpacity(.2),
-                    border: Border.all(
-                      color: const Color(0xFFD9D9D9),
-                      width: 1,
-                    )),
-                child: Row(
-                  children: [
-                    5.horizontalSpace,
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 10.w, vertical: 10.h),
-                        child: TextFormField(
-                          maxLines: 1,
-                          controller:
-                              widget.productDetailsController.commentController,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter comment';
-                            }
-                            return null;
-                          },
-                          decoration: InputDecoration(
-                            hintText: 'Write a comment',
-                            hintStyle: regular.copyWith(
-                              fontSize: 14.sp,
-                              color: context.theme.textTheme.bodyLarge?.color
-                                  ?.withOpacity(.6),
-                            ),
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                              onPressed: widget.productDetailsController
-                                      .isProductCommentAdd.value
-                                  ? null
-                                  : () {
-                                      if (_formKey.currentState!.validate()) {
-                                        _formKey.currentState!.save();
-                                        widget.productDetailsController
-                                            .addProductComment(
-                                          productId:
-                                              (widget.productModel.id ?? 0)
-                                                  .toString(),
-                                          comment: widget
-                                              .productDetailsController
-                                              .commentController
-                                              .text
-                                              .trim(),
-                                        );
-                                      }
-                                    },
-                              icon: Icon(
-                                Icons.send,
-                                size: 30.r,
+            if (widget.productModel.individualInfo?.canComment ?? true)
+              Form(
+                key: _formKey,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFD9D9D9).withOpacity(.2),
+                      border: Border.all(
+                        color: const Color(0xFFD9D9D9),
+                        width: 1,
+                      )),
+                  child: Row(
+                    children: [
+                      5.horizontalSpace,
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.h),
+                          child: TextFormField(
+                            maxLines: 1,
+                            controller: commentController,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter comment';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: 'Write a comment',
+                              hintStyle: regular.copyWith(
+                                fontSize: 14.sp,
+                                color: context.theme.textTheme.bodyLarge?.color
+                                    ?.withOpacity(.6),
+                              ),
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                onPressed: widget.productDetailsController
+                                        .isProductCommentAdd.value
+                                    ? null
+                                    : () {
+                                        if (_formKey.currentState!.validate()) {
+                                          _formKey.currentState!.save();
+                                          widget.productDetailsController
+                                              .addProductComment(
+                                            productId:
+                                                (widget.productModel.id ?? 0)
+                                                    .toString(),
+                                            comment:
+                                                commentController.text.trim(),
+                                          )
+                                              .then((onValue) {
+                                            commentController.clear();
+                                          });
+                                        }
+                                      },
+                                icon: Icon(
+                                  Icons.send,
+                                  size: 30.r,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

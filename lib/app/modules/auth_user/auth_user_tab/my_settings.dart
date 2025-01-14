@@ -82,7 +82,7 @@ class _MySettingsState extends State<MySettings> {
                                                 .userDataModel.value.picture ==
                                             null
                                         ? Image.asset(
-                                            "assets/images/user-avatar.png",
+                                            userDefaultIcon,
                                             height: 140.h,
                                             width: 140.h,
                                           )

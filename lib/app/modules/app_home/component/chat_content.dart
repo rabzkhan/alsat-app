@@ -4,6 +4,7 @@ import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
@@ -19,10 +20,18 @@ class ChatContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final ConversationController conversationController = Get.find();
     final AuthController authController = Get.find();
-    return RefreshIndicator(
-      onRefresh: () async {
-        conversationController.getConversations();
-      },
+    return SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: true,
+      header: WaterDropHeader(
+        waterDropColor: context.theme.primaryColor,
+      ),
+      controller: conversationController.conversationRefreshController,
+      onRefresh: conversationController.conversationRefresh,
+      onLoading: conversationController.conversationLoading,
+      // onRefresh: () async {
+      // conversationController.getConversations();
+      // },
       child: ListView(
         // physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(
@@ -93,48 +102,74 @@ class ChatContent extends StatelessWidget {
                           ),
                         ),
                       ),
-                      title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '${participant?.userName}',
-                            style: regular.copyWith(
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                          5.horizontalSpace,
-                          CircleAvatar(
-                            radius: 2.r,
-                            backgroundColor:
-                                Get.theme.textTheme.bodyLarge!.color,
-                          ),
-                          5.horizontalSpace,
-                          Text(
-                            timeAgo(conversation?.lastMessage?.createdAt ??
-                                DateTime.now()),
-                            style: regular.copyWith(
-                              fontSize: 10.sp,
-                              color: Get.theme.primaryColor,
-                            ),
-                          ),
-                        ],
+                      title: Text(
+                        '${participant?.userName}',
+                        style: regular.copyWith(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                      //   title: Text('Alexander'),
+                      trailing: CircleAvatar(
+                          radius: 14.r,
+                          backgroundColor:
+                              Get.theme.primaryColor.withOpacity(.5),
+                          child: CircleAvatar(
+                            radius: 13.r,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              radius: 13.r,
+                              backgroundColor:
+                                  Get.theme.disabledColor.withOpacity(.05),
+                              child: Text(
+                                (conversation?.notReadedCount ?? 0).toString(),
+                                style: regular.copyWith(
+                                  fontSize: 10.sp,
+                                  fontWeight: FontWeight.w500,
+                                  color: Get.theme.primaryColor,
+                                ),
+                              ),
+                            ),
+                          )),
                       subtitle: conversationController
                               .isConversationLoading.value
                           ? const Text('Last Message Loading')
-                          : conversation?.lastMessage == null
-                              ? null
-                              : Text(
-                                  (conversation?.lastMessage?.content ?? '')
-                                          .isEmpty
-                                      ? 'No Message'
-                                      : conversation?.lastMessage?.content ??
-                                          "",
+                          : conversation?.lastMessage == null ||
+                                  ((conversation?.lastMessage?.content ?? "")
+                                          .isEmpty &&
+                                      (conversation?.lastMessage?.attachments
+                                              ?.isEmpty ??
+                                          true))
+                              ? Text(
+                                  "Join at ${timeAgo(DateTime.tryParse(conversation?.createdAt ?? "") ?? DateTime.now())}",
                                   style: regular.copyWith(
-                                    fontSize: 12.sp,
+                                    fontSize: 11.sp,
                                     color: Get.theme.disabledColor,
-                                  ),
+                                  ))
+                              : RichText(
+                                  text: TextSpan(children: [
+                                    TextSpan(
+                                      text: (conversation
+                                                      ?.lastMessage?.content ??
+                                                  '')
+                                              .isEmpty
+                                          ? "${conversation?.lastMessage?.attachments?.firstOrNull?.type ?? 'No'} Message Sent"
+                                          : conversation
+                                                  ?.lastMessage?.content ??
+                                              "",
+                                      style: regular.copyWith(
+                                        fontSize: 11.sp,
+                                        color: Get.theme.disabledColor,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text:
+                                          " at ${timeAgo(conversation?.lastMessage?.createdAt ?? DateTime.now())}",
+                                      style: regular.copyWith(
+                                        fontSize: 11.sp,
+                                        color: Get.theme.disabledColor,
+                                      ),
+                                    ),
+                                  ]),
                                 ),
                     ),
                   );

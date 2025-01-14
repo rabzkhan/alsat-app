@@ -14,6 +14,7 @@ class CustomAppBar extends StatelessWidget {
   final bool isShowNotification;
   final bool isShowBackButton;
   final Widget? action;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
   const CustomAppBar(
       {super.key,
       this.isShowSearch = true,
@@ -21,7 +22,8 @@ class CustomAppBar extends StatelessWidget {
       this.isShowNotification = true,
       this.isShowBackButton = false,
       this.action,
-      this.isShowLogo = true});
+      this.isShowLogo = true,
+      this.scaffoldKey});
 
   @override
   Widget build(BuildContext context) {
@@ -38,14 +40,14 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         children: [
           !isShowBackButton
-              ? IconButton(
-                  onPressed: () {
-                    homeController.isShowDrawer.value =
-                        !homeController.isShowDrawer.value;
-                    homeController.isShowSearch.value = false;
-                  },
-                  icon: const Icon(Icons.menu),
-                )
+              ? scaffoldKey == null
+                  ? const Center()
+                  : IconButton(
+                      onPressed: () {
+                        scaffoldKey!.currentState?.openDrawer();
+                      },
+                      icon: const Icon(Icons.menu),
+                    )
               : const BackButton(),
           4.horizontalSpace,
           const Spacer(),

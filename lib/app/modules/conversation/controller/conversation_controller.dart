@@ -79,27 +79,53 @@ class ConversationController extends GetxController {
   // get user conversation List
   RxBool isConversationLoading = true.obs;
   RxList<ConversationModel> conversationList = RxList<ConversationModel>();
-  Future<void> getConversations() async {
+  Future<void> getConversations({String? paginate}) async {
+    String url = Constants.baseUrl + Constants.userConversationList;
+    if (paginate != null) {
+      url = "$url?next=$paginate";
+    }
     await BaseClient.safeApiCall(
-      Constants.baseUrl + Constants.userConversationList,
+      url,
       DioRequestType.get,
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
       onLoading: () {
-        isConversationLoading.value = true;
-        conversationList.value = [];
+        if (paginate == null) {
+          isConversationLoading.value = true;
+          conversationList.value = [];
+        }
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
-        conversationList.value = ConversationListRes.fromJson(data).data ?? [];
+        if (paginate == null) {
+          conversationList.value =
+              ConversationListRes.fromJson(data).data ?? [];
+        } else {
+          conversationList
+              .addAll(ConversationListRes.fromJson(data).data ?? []);
+        }
+        conversationList.refresh();
         isConversationLoading.value = false;
       },
       onError: (error) {
         isConversationLoading.value = false;
       },
     );
+  }
+
+  //--- Coversation List Pagenation ---//
+  RefreshController conversationRefreshController =
+      RefreshController(initialRefresh: false);
+  void conversationRefresh() async {
+    await getConversations();
+    conversationRefreshController.refreshCompleted();
+  }
+
+  void conversationLoading() async {
+    await getConversations(paginate: conversationList.last.createdAt);
+    conversationRefreshController.loadComplete();
   }
 
   /// messages
@@ -656,6 +682,8 @@ class ConversationController extends GetxController {
         return true;
       },
       onError: (error) {
+        CustomSnackBar.showCustomToast(
+            message: 'Something went wrong', color: Colors.red);
         isBlockUser.value = false;
         log('blockUser Error: $error');
         return false;

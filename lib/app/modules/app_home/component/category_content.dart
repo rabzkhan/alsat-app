@@ -39,55 +39,6 @@ class CategoryContent extends StatelessWidget {
             }
             return Column(
               children: [
-                // InkWell(
-                //   onTap: () {
-                //     Get.to(
-                //       () => const FilterView(
-                //         isBack: false,
-                //         preData: {},
-                //       ),
-                //     );
-                //   },
-                //   child: Container(
-                //     margin: EdgeInsets.only(top: 10.h),
-                //     width: Get.width,
-                //     height: 50.h,
-                //     padding:
-                //         EdgeInsets.symmetric(horizontal: 16.w, vertical: 15.h),
-                //     decoration: BoxDecoration(
-                //       color: Get.theme.disabledColor.withOpacity(.03),
-                //       borderRadius: BorderRadius.circular(10.r),
-                //       border: Border.all(
-                //         color: Get.theme.disabledColor.withOpacity(.1),
-                //       ),
-                //     ),
-                //     child: Row(
-                //       // spacing: 10.w,
-                //       children: [
-                //         Image.asset(
-                //           searchIcon,
-                //           color: Get.theme.disabledColor,
-                //         ),
-                //         10.horizontalSpace,
-                //         Text(
-                //           "Search Your Product",
-                //           style: TextStyle(
-                //             fontSize: 12.sp,
-                //             fontWeight: FontWeight.w400,
-                //             color: Get.theme.disabledColor.withOpacity(.5),
-                //           ),
-                //         ),
-                //         const Spacer(),
-                //         10.horizontalSpace,
-                //         Image.asset(
-                //           filterIcon,
-                //           color: Get.theme.disabledColor,
-                //         ),
-                //       ],
-                //     ),
-                //   ),
-                // ),
-
                 ...List.generate(
                   homeController.categories.length,
                   (index) => ExpansionTile(

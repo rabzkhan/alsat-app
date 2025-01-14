@@ -142,7 +142,7 @@ class ProductDetailsController extends GetxController {
 
   //-- Add Product Comment --//
   RxBool isProductCommentAdd = RxBool(false);
-  TextEditingController commentController = TextEditingController();
+
   Future<void> addProductComment(
       {required String productId, required String comment}) async {
     await BaseClient.safeApiCall(
@@ -158,7 +158,6 @@ class ProductDetailsController extends GetxController {
         isProductCommentAdd.value = true;
       },
       onSuccess: (response) {
-        commentController.clear();
         getProductComments(productId: productId);
         isProductCommentAdd.value = false;
       },
@@ -377,13 +376,5 @@ class ProductDetailsController extends GetxController {
             message: 'Failed to get conversation info');
       },
     );
-  }
-
-  //-- dispose --//
-
-  @override
-  void onClose() {
-    commentController.dispose();
-    super.onClose();
   }
 }

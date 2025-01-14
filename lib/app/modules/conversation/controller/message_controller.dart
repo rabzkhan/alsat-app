@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -13,11 +14,12 @@ class MessageController extends GetxController {
   RxBool isOnlineUser = RxBool(false);
   Rxn<DateTime> lastSeen = Rxn<DateTime>();
   Future<void> checkUserActiveLive({required String userID}) async {
+    final AuthController authController = Get.find<AuthController>();
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
-    String clientID = 'user|$fcmToken|$userID';
-    String username = 'user|$userID';
+    String clientID = 'user|$fcmToken|${authController.userDataModel.value.id}';
+    String username = 'user|${authController.userDataModel.value.id}';
     const String password = Constants.token1;
     final MqttServerClient client = MqttServerClient(host, clientID);
     client.port = port;
@@ -32,11 +34,7 @@ class MessageController extends GetxController {
     client.connectionMessage = connMessage;
 
     try {
-      await client.connect().then((onValue) {
-        log('Connected to MQTT server $onValue');
-      }).catchError((error) {
-        log('Connection failed: $error');
-      });
+      await client.connect().then((onValue) {}).catchError((error) {});
       String topic = 'chat/users/$userID/online';
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
@@ -50,13 +48,11 @@ class MessageController extends GetxController {
           final Map<String, dynamic> decodedJson = jsonDecode(messageJson);
           lastSeen.value = DateTime.parse(decodedJson["last_seen_at"]);
           isOnlineUser.value = decodedJson["online"];
-          log("UserOnline Status: ${isOnlineUser.value}-- ${lastSeen.value}");
         } catch (e) {
           log("Error parsing message JSON: $e");
         }
       });
     } catch (e) {
-      log('Connection failed: $e');
       client.disconnect();
     }
   }

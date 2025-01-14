@@ -35,6 +35,7 @@ class ProductController extends GetxController {
 
   /// post product
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>();
+  Rxn<SubCategories> selectSubCategory = Rxn<SubCategories>();
   Rxn<BrandModel> selectedBrand = Rxn<BrandModel>();
   Rxn<CarModel> selectedModel = Rxn<CarModel>();
   RxList<String> selectModelCarClass = RxList([]);
