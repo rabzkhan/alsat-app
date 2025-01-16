@@ -20,6 +20,8 @@ import '../model/conversations_res.dart';
 import '../widget/message_input_widget.dart';
 import '../widget/message_side_option.dart';
 import '../widget/message_tile.dart';
+import '../widget/user_block_bottom_sheet.dart';
+import '../widget/user_report_bottom_sheet.dart';
 
 class MessagesScreen extends StatefulWidget {
   final ConversationModel conversation;
@@ -70,9 +72,11 @@ class _MessagesScreenState extends State<MessagesScreen> {
           toolbarHeight: 60.h,
           actions: [
             IconButton(
-              onPressed: () {
-                _key.currentState!.openEndDrawer();
-              },
+              onPressed: (widget.conversation.haveBlocked ?? false)
+                  ? null
+                  : () {
+                      _key.currentState!.openEndDrawer();
+                    },
               icon: Icon(
                 Icons.more_vert_sharp,
                 size: 30.r,
@@ -160,6 +164,10 @@ class _MessagesScreenState extends State<MessagesScreen> {
               .selectConversation.value?.participants
               ?.firstWhereOrNull(
                   (e) => e.id != authController.userDataModel.value.id)),
+          onBlock: () {
+            widget.conversation.haveBlocked = true;
+            setState(() {});
+          },
         ),
         body: GestureDetector(
           onTap: () {
@@ -197,82 +205,167 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   );
                 }),
               ),
-              Obx(() {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: messageController.selectMessage.value == null
-                      ? ChatInputField(
-                          messageController: messageController,
-                          conversationController: conversationController)
-                      : Container(
-                          height: 70.h,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 16.0 / 2,
+              (widget.conversation.haveBlocked ?? false)
+                  ? Container(
+                      margin: EdgeInsets.only(top: 10.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 30.w,
+                        vertical: 12.h,
+                      ),
+                      color: Colors.grey.shade300,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'You have blocked this user',
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                          2.verticalSpace,
+                          Text(
+                            "You can't send message to this user",
+                            style: TextStyle(
+                              fontSize: 12.sp,
+                              fontWeight: FontWeight.w400,
+                            ),
                           ),
-                          child: Row(
+                          10.verticalSpace,
+                          Row(
                             children: [
                               Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    messageController.selectReplyMessage.value =
-                                        messageController.selectMessage.value;
+                                child: CupertinoButton(
+                                  color: Colors.grey,
+                                  child: const Text('UnBlock'),
+                                  onPressed: () {
+                                    showUserBlockBottomSheet(
+                                      isBlocked: false,
+                                      participant: (conversationController
+                                          .selectConversation
+                                          .value
+                                          ?.participants
+                                          ?.firstWhereOrNull((e) =>
+                                              e.id !=
+                                              authController
+                                                  .userDataModel.value.id))!,
+                                      conversationController:
+                                          conversationController,
+                                    ).then((value) {
+                                      widget.conversation.haveBlocked = false;
+                                      setState(() {});
+                                    });
                                   },
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.reply_outlined,
-                                        color: Colors.white,
-                                        size: 25.r,
-                                      ),
-                                      4.verticalSpace,
-                                      Text(
-                                        'Reply',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: InkWell(
-                                  onTap: () {
-                                    conversationController.deleteMessage(
-                                        messageController
-                                            .selectMessage.value!.id);
-                                    messageController.selectMessage.value =
-                                        null;
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        Icons.delete_sharp,
-                                        color: Colors.white,
-                                        size: 25.r,
-                                      ),
-                                      4.verticalSpace,
-                                      Text(
-                                        'Delete',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 12.sp,
-                                        ),
-                                      )
-                                    ],
-                                  ),
                                 ),
                               )
                             ],
                           ),
-                        ),
-                );
-              })
+                          10.verticalSpace,
+                          Row(
+                            children: [
+                              Expanded(
+                                child: CupertinoButton(
+                                  color: Colors.grey,
+                                  child: const Text('Report'),
+                                  onPressed: () {
+                                    showUserReportBottomSheet(
+                                      participant: (conversationController
+                                          .selectConversation
+                                          .value
+                                          ?.participants
+                                          ?.firstWhereOrNull((e) =>
+                                              e.id !=
+                                              authController
+                                                  .userDataModel.value.id))!,
+                                      conversationController:
+                                          conversationController,
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  : Obx(() {
+                      return AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: messageController.selectMessage.value == null
+                            ? ChatInputField(
+                                messageController: messageController,
+                                conversationController: conversationController)
+                            : Container(
+                                height: 70.h,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 16.0 / 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          messageController
+                                                  .selectReplyMessage.value =
+                                              messageController
+                                                  .selectMessage.value;
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.reply_outlined,
+                                              color: Colors.white,
+                                              size: 25.r,
+                                            ),
+                                            4.verticalSpace,
+                                            Text(
+                                              'Reply',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          conversationController.deleteMessage(
+                                              messageController
+                                                  .selectMessage.value!.id);
+                                          messageController
+                                              .selectMessage.value = null;
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.delete_sharp,
+                                              color: Colors.white,
+                                              size: 25.r,
+                                            ),
+                                            4.verticalSpace,
+                                            Text(
+                                              'Delete',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                      );
+                    })
             ],
           ),
         ),

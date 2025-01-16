@@ -19,11 +19,13 @@ class MessageSideOption extends StatelessWidget {
   final Participant? participant;
   final ConversationController conversationController;
   final AuthController authController;
+  final Function() onBlock;
   const MessageSideOption(this.scaffold,
       {super.key,
       required this.participant,
       required this.conversationController,
-      required this.authController});
+      required this.authController,
+      required this.onBlock});
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +94,9 @@ class MessageSideOption extends StatelessWidget {
                 showUserBlockBottomSheet(
                   participant: participant!,
                   conversationController: conversationController,
-                );
+                ).then((onValue) {
+                  onBlock();
+                });
               },
               title: Text(
                 'Block User',

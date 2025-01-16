@@ -664,12 +664,13 @@ class ConversationController extends GetxController {
 
   //--- Block User --//
   RxBool isBlockUser = false.obs;
-  Future<bool> blockUser(String id) async {
+  Future<bool> blockUser(String id, String uId, {bool isBlock = true}) async {
     log('blockUser: $id ${'${Constants.baseUrl}${Constants.userConversationList}/$id/block'}');
     isBlockUser.value = true;
     return await BaseClient.safeApiCall(
       '${Constants.baseUrl}${Constants.userConversationList}/$id/block',
       DioRequestType.put,
+      data: {"user_id": uId, "block": isBlock},
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
@@ -677,8 +678,10 @@ class ConversationController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         isBlockUser.value = false;
-        log('blockUser: $response');
+        CustomSnackBar.showCustomToast(message: 'User Blocked Successfully');
         getConversations();
+        if (isBlock) Get.back();
+        Get.back();
         return true;
       },
       onError: (error) {

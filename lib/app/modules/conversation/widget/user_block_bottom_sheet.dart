@@ -7,9 +7,11 @@ import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../controller/conversation_controller.dart';
 
-showUserBlockBottomSheet(
-    {required Participant participant,
-    required ConversationController conversationController}) {
+Future<void> showUserBlockBottomSheet({
+  required Participant participant,
+  required ConversationController conversationController,
+  bool isBlocked = true,
+}) {
   return showModalBottomSheet(
       isScrollControlled: true,
       barrierColor: Colors.black.withOpacity(.1),
@@ -27,15 +29,18 @@ showUserBlockBottomSheet(
                 height: 80.h,
               ),
               10.verticalSpace,
-              const ListTile(
-                leading: Icon(Icons.block_rounded),
-                title: Text('Prevents unwanted contact'),
-                subtitle: Text('They won\'t be able to send you messages'),
+              ListTile(
+                leading: Icon(
+                    isBlocked ? Icons.block_rounded : Icons.messenger_outline),
+                title: Text(
+                    'Prevents ${isBlocked ? "unwanted" : "wanted"} contact'),
+                subtitle:
+                    const Text('They won\'t be able to send you messages'),
               ),
-              const ListTile(
-                leading: Icon(Icons.miscellaneous_services_sharp),
-                title: Text('They won\'t be notified'),
-                subtitle: Text(
+              ListTile(
+                leading: const Icon(Icons.miscellaneous_services_sharp),
+                title: Text('They ${isBlocked ? "won't" : 'want'} be notified'),
+                subtitle: const Text(
                     'We won\'t tell the, if you block them. Uncblock them to send messages'),
               ),
               20.verticalSpace,
@@ -45,25 +50,18 @@ showUserBlockBottomSheet(
                   onPressed: conversationController.isBlockUser.value
                       ? null
                       : () {
-                          conversationController
-                              .blockUser(conversationController
-                                      .selectConversation.value?.id ??
-                                  '')
-                              .then(
-                            (value) {
-                              Get.snackbar(
-                                'Success',
-                                'User blocked successfully',
-                                snackPosition: SnackPosition.BOTTOM,
-                                backgroundColor: Colors.green,
-                              );
-                            },
+                          conversationController.blockUser(
+                            conversationController
+                                    .selectConversation.value?.id ??
+                                '',
+                            participant.id ?? '',
+                            isBlock: isBlocked,
                           );
                         },
                   child: conversationController.isBlockUser.value
                       ? const CupertinoActivityIndicator()
                       : Text(
-                          'Block',
+                          isBlocked ? 'Block' : "Unblock",
                           style:
                               TextStyle(color: Colors.white, fontSize: 14.sp),
                         ),

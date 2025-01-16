@@ -34,16 +34,16 @@ class ConversationListRes {
 }
 
 class ConversationModel {
-  final String? id;
-  final String? createdAt;
-  final DateTime? updatedAt;
-  final DateTime? accessedAt;
-  final List<Participant>? participants;
+  String? id;
+  String? createdAt;
+  DateTime? updatedAt;
+  DateTime? accessedAt;
+  List<Participant>? participants;
   MessageModel? lastMessage;
-  final int? notReadedCount;
-  final bool? haveBlocked;
-  final bool? isBlocked;
-  final bool? isAdminChat;
+  int? notReadedCount;
+  bool? haveBlocked; // Now mutable
+  bool? isBlocked;
+  bool? isAdminChat;
 
   ConversationModel({
     this.id,
