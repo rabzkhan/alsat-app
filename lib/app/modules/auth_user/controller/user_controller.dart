@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alsat/app/components/custom_snackbar.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:alsat/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,8 @@ class UserController extends GetxController {
           upgradeCodeController.clear();
           log(response.toString());
           isUpgradePreimumLoading.value = false;
+          AuthController authController = Get.find();
+          await authController.getProfile();
           Get.back();
           return null;
         },

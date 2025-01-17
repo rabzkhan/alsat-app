@@ -1,6 +1,7 @@
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/product_details_view.dart';
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,9 +13,13 @@ import '../modules/product/model/product_post_list_res.dart';
 
 class ProductListTile extends StatelessWidget {
   final ProductModel? productModel;
+  final bool showBorder;
   final bool isShowLikeButton;
   const ProductListTile(
-      {super.key, this.productModel, this.isShowLikeButton = false});
+      {super.key,
+      this.productModel,
+      this.isShowLikeButton = false,
+      this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +37,15 @@ class ProductListTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           vertical: 1.h,
         ),
-        height: 105.h,
+        height: 110.h,
         decoration: BoxDecoration(
           color: Get.theme.appBarTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(10.r),
+          borderRadius: BorderRadius.circular(5.r),
+          border: showBorder
+              ? Border.all(
+                  color: Get.theme.disabledColor.withOpacity(0.2),
+                )
+              : null,
           boxShadow: [
             BoxShadow(
               color: Get.theme.disabledColor.withOpacity(0.03),
@@ -55,18 +65,18 @@ class ProductListTile extends StatelessWidget {
                   ),
                   child: productModel?.media?.firstOrNull?.name != null
                       ? NetworkImagePreview(
-                          radius: 10.r,
+                          radius: 5.r,
                           url: productModel?.media?.firstOrNull?.name ?? '',
-                          height: 90.h,
-                          width: 90.h,
+                          height: 110.h,
+                          width: 100.h,
                           fit: BoxFit.cover,
                         )
                       : ClipRRect(
                           borderRadius: BorderRadius.circular(10.r),
                           child: Image.asset(
                             carImage,
-                            height: 90.h,
-                            width: 80.h,
+                            height: 110.h,
+                            width: 100.h,
                             fit: BoxFit.cover,
                             // fit: BoxFit.cover,
                           ),
@@ -81,21 +91,25 @@ class ProductListTile extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
                             text: TextSpan(children: [
-                          TextSpan(
-                            text: productModel?.title ?? 'Hyundai santa fe ',
-                            style: regular.copyWith(
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        ])),
+                              TextSpan(
+                                text:
+                                    productModel?.title ?? 'Hyundai santa fe ',
+                                style: regular.copyWith(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ])),
                         Text(
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           productModel?.description ??
                               'Lorem ipsum is placeholder text  ',
                           style: regular.copyWith(
-                            fontSize: 10.sp,
+                            fontSize: 12.sp,
                           ),
                         ),
                         RichText(
@@ -104,67 +118,66 @@ class ProductListTile extends StatelessWidget {
                             text:
                                 "\$${productModel?.priceInfo?.price ?? 96.00}  ",
                             style: bold.copyWith(
-                              fontSize: 15.sp,
+                              fontSize: 16.sp,
                             ),
                           ),
-                          // TextSpan(
-                          //   text: ' day',
-                          //   style: regular.copyWith(
-                          //     fontSize: 11.sp,
-                          //     color: Get.theme.disabledColor,
-                          //   ),
-                          // ),
-
                           TextSpan(
                             text:
                                 '${productModel?.individualInfo?.locationCity} ${(productModel?.individualInfo?.locationCity ?? '').isEmpty ? "" : ' /'} ${productModel?.individualInfo?.locationProvince}',
                             style: regular.copyWith(
-                              fontSize: 11.sp,
+                              fontSize: 12.sp,
                             ),
                           ),
                         ])),
                         Row(
                           children: [
-                            if (productModel?.priceInfo?.credit ?? false)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.checkmark_alt,
-                                    size: 15.r,
-                                    color: Get.theme.disabledColor,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  (productModel?.priceInfo?.credit ?? false)
+                                      ? CupertinoIcons.checkmark_alt
+                                      : CupertinoIcons.xmark,
+                                  size: 15.r,
+                                  color:
+                                      (productModel?.priceInfo?.credit ?? false)
+                                          ? Get.theme.primaryColor
+                                          : Colors.red,
+                                ),
+                                3.horizontalSpace,
+                                Text(
+                                  'Credit',
+                                  style: regular.copyWith(
+                                    fontSize: 12.sp,
                                   ),
-                                  Text(
-                                    'Credit',
-                                    style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            if (productModel?.priceInfo?.possibleExchange ??
-                                false)
-                              5.horizontalSpace,
-                            if (productModel?.priceInfo?.possibleExchange ??
-                                false)
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    CupertinoIcons.checkmark_alt,
-                                    size: 15.r,
-                                    color: Get.theme.disabledColor,
+                                )
+                              ],
+                            ),
+                            5.horizontalSpace,
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  (productModel?.priceInfo?.possibleExchange ??
+                                          false)
+                                      ? CupertinoIcons.checkmark_alt
+                                      : CupertinoIcons.xmark,
+                                  size: 15.r,
+                                  color: (productModel
+                                              ?.priceInfo?.possibleExchange ??
+                                          false)
+                                      ? Get.theme.primaryColor
+                                      : Colors.red,
+                                ),
+                                3.horizontalSpace,
+                                Text(
+                                  'exchange',
+                                  style: regular.copyWith(
+                                    fontSize: 12.sp,
                                   ),
-                                  Text(
-                                    'exchange',
-                                    style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
-                                    ),
-                                  )
-                                ],
-                              ),
+                                )
+                              ],
+                            ),
                           ],
                         )
                       ],

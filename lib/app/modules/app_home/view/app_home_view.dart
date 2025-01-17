@@ -24,6 +24,7 @@ class _AppHomeViewState extends State<AppHomeView> {
   HomeController homeController = Get.find<HomeController>();
   FilterController filterController = Get.find<FilterController>();
   final UserController userController = Get.find();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<bool> _onWillPop() async {
     return await showDialog(
@@ -51,55 +52,52 @@ class _AppHomeViewState extends State<AppHomeView> {
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        key: _scaffoldKey,
         backgroundColor: Get.theme.secondaryHeaderColor,
+        drawerScrimColor: Colors.transparent,
+        drawer: const Drawer(
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          child: AppDrawer(),
+        ),
         body: SafeArea(
           child: Column(
             children: [
               // Custom appbar
-              const CustomAppBar(),
+              Obx(() {
+                return CustomAppBar(
+                  isShowLogo: homeController.homeBottomIndex.value == 0,
+                  scaffoldKey: _scaffoldKey,
+                );
+              }),
               // Body
               Expanded(
-                child: Stack(
-                  children: [
-                    NotificationListener(
-                      onNotification: (notification) {
-                        if (notification is ScrollStartNotification) {
-                          if (homeController.isShowDrawer.value) {
-                            homeController.isShowDrawer.value = false;
-                          }
-                        }
-                        return true;
-                      },
-                      child: Container(
-                        color: Get.theme.secondaryHeaderColor,
-                        child: Column(
-                          children: [
-                            // HOME TAB
-                            Expanded(
-                              child: PageView(
-                                physics: const NeverScrollableScrollPhysics(),
-                                controller: homeController.homePageController,
-                                onPageChanged: (value) {
-                                  homeController.homeBottomIndex.value = value;
-                                },
-                                children: const [
-                                  HomeContent(),
-                                  CategoryContent(),
-                                  AddPostContent(),
-                                  ChatContent(),
-                                  ProfileContent(),
-                                ],
-                              ),
-                            ),
-                            const AppBottomNavigationBar(),
+                child: Container(
+                  color: Get.theme.secondaryHeaderColor,
+                  child: Column(
+                    children: [
+                      // HOME TAB
+                      Expanded(
+                        child: PageView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          controller: homeController.homePageController,
+                          onPageChanged: (value) {
+                            homeController.homeBottomIndex.value = value;
+                          },
+                          children: const [
+                            HomeContent(),
+                            CategoryContent(),
+                            AddPostContent(),
+                            ChatContent(),
+                            ProfileContent(),
                           ],
                         ),
                       ),
-                    ),
-                    // App drawer
-                    const AppDrawer(),
-                    // const SearchView(),
-                  ],
+                      const AppBottomNavigationBar(),
+                    ],
+                  ),
                 ),
               ),
             ],

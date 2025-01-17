@@ -14,7 +14,12 @@ import '../modules/product/model/product_post_list_res.dart';
 class ProductGridTile extends StatelessWidget {
   final ProductModel? productModel;
   final bool loading;
-  const ProductGridTile({super.key, this.productModel, required this.loading});
+  final bool isShowFavoriteButton;
+  const ProductGridTile(
+      {super.key,
+      this.productModel,
+      required this.loading,
+      this.isShowFavoriteButton = false});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +47,10 @@ class ProductGridTile extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: Get.theme.appBarTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(10.r),
+            borderRadius: BorderRadius.circular(5.r),
+            border: Border.all(
+              color: Get.theme.disabledColor.withOpacity(0.2),
+            ),
           ),
           child: Stack(
             children: [
@@ -57,7 +65,7 @@ class ProductGridTile extends StatelessWidget {
                     child: productModel?.media?.firstOrNull?.name != null
                         ? NetworkImagePreview(
                             fit: BoxFit.cover,
-                            radius: 10.r,
+                            radius: 2.r,
                             url: productModel?.media?.firstOrNull?.name ?? '',
                             height: 90.h,
                             width: double.infinity,
@@ -78,47 +86,35 @@ class ProductGridTile extends StatelessWidget {
                       padding: EdgeInsets.symmetric(horizontal: 8.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           RichText(
+                              maxLines: 1,
                               text: TextSpan(children: [
-                            TextSpan(
-                              text: productModel?.title ?? 'Hyundai santa fe ',
-                              style: regular.copyWith(
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                            // TextSpan(
-                            //   text:productModel?.type ?? '2014',
-                            //   style: medium.copyWith(
-                            //     fontSize: 15.sp,
-                            //     color: Get.theme.primaryColor,
-                            //   ),
-                            // ),
-                          ])),
+                                TextSpan(
+                                  text:
+                                      productModel?.title ?? 'No Product Name',
+                                  style: bold.copyWith(
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ])),
                           Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             productModel?.description ??
-                                'Lorem ipsum is placeholder text  ',
+                                'There Has No Description',
                             style: regular.copyWith(
-                              fontSize: 10.sp,
+                              fontSize: 13.sp,
                             ),
                           ),
                           RichText(
                               text: TextSpan(children: [
                             TextSpan(
                               text:
-                                  "\$${productModel?.priceInfo?.price ?? 96.00}/",
+                                  "\$${productModel?.priceInfo?.price ?? 00.00}",
                               style: bold.copyWith(
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' day',
-                              style: regular.copyWith(
-                                fontSize: 11.sp,
-                                color: Get.theme.disabledColor,
+                                fontSize: 17.sp,
                               ),
                             ),
                           ])),
@@ -128,15 +124,20 @@ class ProductGridTile extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    CupertinoIcons.checkmark_alt,
+                                    (productModel?.priceInfo?.credit ?? false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
                                     size: 15.r,
-                                    color: Get.theme.disabledColor,
+                                    color: (productModel?.priceInfo?.credit ??
+                                            false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
+                                  3.horizontalSpace,
                                   Text(
                                     'Credit',
                                     style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
+                                      fontSize: 12.sp,
                                     ),
                                   )
                                 ],
@@ -146,49 +147,59 @@ class ProductGridTile extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    CupertinoIcons.checkmark_alt,
+                                    (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
                                     size: 15.r,
-                                    color: Get.theme.disabledColor,
+                                    color: (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
+                                  3.horizontalSpace,
                                   Text(
                                     'exchange',
                                     style: regular.copyWith(
-                                      color: Get.theme.disabledColor,
-                                      fontSize: 10.sp,
+                                      fontSize: 12.sp,
                                     ),
                                   )
                                 ],
                               ),
                             ],
-                          )
+                          ),
+                          5.verticalSpace,
                         ],
                       ),
                     ),
                   )
                 ],
               ),
-              Positioned(
-                right: 10.w,
-                top: 4.h,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 5.w,
-                    vertical: 5.h,
-                  ),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Get.theme.disabledColor.withOpacity(.06),
-                      width: 1,
+              if (isShowFavoriteButton)
+                Positioned(
+                  right: 10.w,
+                  top: 4.h,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 5.h,
+                    ),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Get.theme.disabledColor.withOpacity(.06),
+                        width: 1,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.favorite,
+                      color: Colors.red,
+                      size: 20.r,
                     ),
                   ),
-                  child: Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                    size: 20.r,
-                  ),
-                ),
-              )
+                )
             ],
           ),
         ).animate().fadeIn(duration: 400.ms),

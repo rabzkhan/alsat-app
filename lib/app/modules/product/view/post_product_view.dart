@@ -30,6 +30,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../video_edit/crop_video.dart';
 import '../widget/category_selection.dart';
+import '../widget/post_category_selection.dart';
 
 class PostProductView extends StatefulWidget {
   const PostProductView({super.key});
@@ -62,22 +63,42 @@ class _PostProductViewState extends State<PostProductView> {
             mainAxisSize: MainAxisSize.min,
             children: [
               6.verticalSpace,
-              RichText(
-                text: TextSpan(
-                    style: regular.copyWith(
-                      fontSize: 10.sp,
-                    ),
-                    children: const [
-                      TextSpan(
-                          text:
-                              'By Posting, you confirm the agreement with terms and conditions of'),
-                      TextSpan(
-                        text: ' Alsat',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                        ),
+              Row(
+                children: [
+                  Obx(() {
+                    return Transform.scale(
+                      scale: 1.3,
+                      child: CupertinoCheckbox(
+                        value: productController.checkTermsAndConditions.value,
+                        onChanged: (value) {
+                          productController.checkTermsAndConditions.value =
+                              value!;
+                        },
                       ),
-                    ]),
+                    );
+                  }),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: regular.copyWith(
+                          fontSize: 12.sp,
+                          height: 1.5,
+                        ),
+                        children: const [
+                          TextSpan(
+                              text:
+                                  'By Posting, you confirm the agreement with terms and conditions of'),
+                          TextSpan(
+                            text: ' Alsat',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
               6.verticalSpace,
               Row(
@@ -122,40 +143,47 @@ class _PostProductViewState extends State<PostProductView> {
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                         ),
-                        onPressed: productController.isProductPosting.value
+                        onPressed: !productController
+                                .checkTermsAndConditions.value
                             ? null
-                            : () async {
-                                _formKey.currentState!.saveAndValidate();
-                                if (_formKey.currentState!.validate()) {
-                                  FocusScope.of(context).unfocus();
+                            : productController.isProductPosting.value
+                                ? null
+                                : () async {
+                                    _formKey.currentState!.saveAndValidate();
+                                    if (_formKey.currentState!.validate()) {
+                                      FocusScope.of(context).unfocus();
 
-                                  if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
-                                      productController
-                                              .productPriceFiled.value !=
+                                      if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
                                           productController
-                                              .productPriceFiledCount.value ||
-                                      productController
-                                              .individualInfoFiled.value !=
+                                                  .productPriceFiled.value !=
+                                              productController
+                                                  .productPriceFiledCount
+                                                  .value ||
                                           productController
-                                              .individualInfoFiledCount.value) {
-                                    CustomSnackBar.showCustomToast(
-                                        color: Colors.red,
-                                        message: "Please fill all the fields");
-                                  }
-                                  if (productController.pickImageList.isEmpty) {
-                                    CustomSnackBar.showCustomToast(
-                                      color: Colors.red,
-                                      message:
-                                          "Please select at least one image",
-                                    );
-                                  } else {
-                                    productController.isProductPosting.value =
-                                        true;
-                                    await addProductDataFormate(
-                                        _formKey.currentState!.value);
-                                  }
-                                }
-                              },
+                                                  .individualInfoFiled.value !=
+                                              productController
+                                                  .individualInfoFiledCount
+                                                  .value) {
+                                        CustomSnackBar.showCustomToast(
+                                            color: Colors.red,
+                                            message:
+                                                "Please fill all the fields");
+                                      }
+                                      if (productController
+                                          .pickImageList.isEmpty) {
+                                        CustomSnackBar.showCustomToast(
+                                          color: Colors.red,
+                                          message:
+                                              "Please select at least one image",
+                                        );
+                                      } else {
+                                        productController
+                                            .isProductPosting.value = true;
+                                        await addProductDataFormate(
+                                            _formKey.currentState!.value);
+                                      }
+                                    }
+                                  },
                         child: productController.isProductPosting.value
                             ? const CupertinoActivityIndicator()
                             : Text(
@@ -173,22 +201,21 @@ class _PostProductViewState extends State<PostProductView> {
             ],
           ),
         ),
+        appBar: AppBar(
+          backgroundColor: Get.theme.scaffoldBackgroundColor,
+          elevation: 0,
+          title: Text(
+            'Add Your Stuff',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.black,
+            ),
+          ),
+          centerTitle: true,
+        ),
         body: SafeArea(
           child: Column(
             children: [
-              //custom appbar
-              const CustomAppBar(
-                isShowFilter: false,
-                isShowSearch: false,
-                isShowNotification: false,
-              ),
-              Text(
-                'Add Your Stuff',
-                style: TextStyle(
-                  fontSize: 16.sp,
-                ),
-              ),
-              8.verticalSpace,
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -634,13 +661,35 @@ class _PostProductViewState extends State<PostProductView> {
                                       context: context,
                                       backgroundColor: Colors.transparent,
                                       builder: (context) =>
-                                          const CategorySelection(),
+                                          const PostCategorySelection(),
                                     ).then((_) {
                                       productController
                                           .calculateFilledProductFields();
                                     });
                                   },
                                 )),
+                            Obx(() => productController
+                                        .selectSubCategory.value?.name ==
+                                    null
+                                ? const Center()
+                                : _tile(
+                                    "Sub Category",
+                                    productController
+                                            .selectSubCategory.value?.name ??
+                                        "Not choosen yet",
+                                    onTap: () {
+                                      showCupertinoModalBottomSheet(
+                                        expand: true,
+                                        context: context,
+                                        backgroundColor: Colors.transparent,
+                                        builder: (context) =>
+                                            const PostCategorySelection(),
+                                      ).then((_) {
+                                        productController
+                                            .calculateFilledProductFields();
+                                      });
+                                    },
+                                  )),
                             Obx(() => productController
                                         .selectCategory.value?.name
                                         ?.toLowerCase() ==
@@ -685,6 +734,7 @@ class _PostProductViewState extends State<PostProductView> {
                                         'Product Name',
                                         style: bold.copyWith(
                                           fontWeight: FontWeight.w500,
+                                          color: context.theme.primaryColor,
                                         ),
                                       ),
                                       10.horizontalSpace,
@@ -752,16 +802,250 @@ class _PostProductViewState extends State<PostProductView> {
                                       errorBorder: outlineBorder,
                                       focusedBorder: outlineBorder,
                                     ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required(),
-                                    ]),
-                                  )
+                                  ),
+                                  Obx(() {
+                                    return productController
+                                                .selectCategory.value?.name
+                                                ?.toLowerCase() ==
+                                            'automobile'
+                                        ? Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10.h,
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'VIN code',
+                                                  style: bold,
+                                                ),
+                                                10.horizontalSpace,
+                                                Expanded(
+                                                    child: FormBuilderTextField(
+                                                  controller:
+                                                      productController.vinCode,
+                                                  name: 'vinCode',
+                                                  onChanged: (newValue) {
+                                                    productController
+                                                        .calculateFilledProductFields();
+                                                  },
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 12.sp,
+                                                    color: Get
+                                                        .theme.primaryColor
+                                                        .withOpacity(.6),
+                                                  ),
+                                                  decoration: InputDecoration(
+                                                    isDense: true,
+                                                    alignLabelWithHint: true,
+                                                    floatingLabelBehavior:
+                                                        FloatingLabelBehavior
+                                                            .always,
+                                                    labelText: '',
+                                                    labelStyle: TextStyle(
+                                                      fontSize: 12.sp,
+                                                      color: Get
+                                                          .theme.primaryColor
+                                                          .withOpacity(.6),
+                                                    ),
+                                                    border:
+                                                        outlineBorderPrimary,
+                                                    enabledBorder:
+                                                        outlineBorderPrimary,
+                                                    errorBorder:
+                                                        outlineBorderPrimary,
+                                                    focusedBorder:
+                                                        outlineBorderPrimary,
+                                                  ),
+                                                ))
+                                              ],
+                                            ),
+                                          )
+                                        : const Center();
+                                  })
                                 ],
                               ),
                             ),
                           ],
                         ),
+                        10.verticalSpace,
 
+                        ///Price
+                        ExpansionTile(
+                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                          initiallyExpanded: true,
+                          iconColor: context.theme.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            side: BorderSide(
+                              color: context.theme.shadowColor.withOpacity(.4),
+                              width: .7,
+                            ),
+                          ),
+                          collapsedShape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.r),
+                            side: BorderSide(
+                              color: context.theme.shadowColor.withOpacity(.4),
+                              width: .7,
+                            ),
+                          ),
+                          leading: Obx(() {
+                            return Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircularProgressIndicator(
+                                  value: productController
+                                          .productPriceFiledCount.value /
+                                      productController.productPriceFiled.value,
+                                  strokeAlign: .1,
+                                  strokeWidth: 2,
+                                  backgroundColor: Colors.grey.shade300,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 300),
+                                  child: productController
+                                              .productPriceFiledCount.value ==
+                                          productController
+                                              .productPriceFiled.value
+                                      ? Icon(
+                                          Icons.check,
+                                          size: 30.0,
+                                          color: Theme.of(context).primaryColor,
+                                          key: const ValueKey('checked'),
+                                        ).animate().fadeIn(duration: 300.ms)
+                                      : const SizedBox
+                                          .shrink(), // Empty widget when not checked
+                                ),
+                              ],
+                            );
+                          }),
+                          subtitle: Obx(() {
+                            return Text(
+                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            );
+                          }),
+                          title: Text(
+                            'Price',
+                            style: bold.copyWith(
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.w, vertical: 4.h),
+                              child: FormBuilderTextField(
+                                onChanged: (value) {
+                                  if ((value ?? '').isEmpty) {
+                                    productController
+                                        .productPriceFiledCount.value = 2;
+                                  } else {
+                                    productController
+                                        .productPriceFiledCount.value = 3;
+                                  }
+                                },
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp(r'^\d*\.?\d*')),
+                                ],
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(),
+                                ]),
+                                name: 'price',
+                                controller: productController.priceController,
+                                decoration: InputDecoration(
+                                  prefixIcon: Container(
+                                    width: 70.w,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      'Price, \$',
+                                      style: regular,
+                                    ),
+                                  ),
+                                  hintText: '',
+                                  hintStyle: TextStyle(
+                                    fontSize: 12.sp,
+                                  ),
+                                  border: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: context.theme.shadowColor
+                                          .withOpacity(.3),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Possible Exchange',
+                                    style: regular,
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.7,
+                                    child: Obx(() {
+                                      return CupertinoSwitch(
+                                        value:
+                                            productController.isExchange.value,
+                                        onChanged: (value) {
+                                          productController.isExchange.value =
+                                              value;
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Credit',
+                                    style: regular,
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.7,
+                                    child: Obx(() {
+                                      return CupertinoSwitch(
+                                        value: productController.isCredit.value,
+                                        onChanged: (value) {
+                                          productController.isCredit.value =
+                                              value;
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            10.verticalSpace,
+                          ],
+                        ),
                         10.verticalSpace,
                         //Individual info
                         ExpansionTile(
@@ -1006,6 +1290,14 @@ class _PostProductViewState extends State<PostProductView> {
                                         onChanged: (value) {
                                           productController.allowCall.value =
                                               value;
+                                          if (!productController
+                                                  .allowCall.value &&
+                                              !productController
+                                                  .contactOnlyWithChat.value) {
+                                            productController
+                                                .contactOnlyWithChat
+                                                .value = true;
+                                          }
                                         },
                                       );
                                     }),
@@ -1032,6 +1324,13 @@ class _PostProductViewState extends State<PostProductView> {
                                         onChanged: (value) {
                                           productController.contactOnlyWithChat
                                               .value = value;
+                                          if (!productController
+                                                  .allowCall.value &&
+                                              !productController
+                                                  .contactOnlyWithChat.value) {
+                                            productController.allowCall.value =
+                                                true;
+                                          }
                                         },
                                       );
                                     }),
@@ -1042,184 +1341,6 @@ class _PostProductViewState extends State<PostProductView> {
                             10.verticalSpace,
                           ],
                         ),
-                        10.verticalSpace,
-
-                        ///Price
-                        ExpansionTile(
-                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                          initiallyExpanded: true,
-                          iconColor: context.theme.primaryColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                            side: BorderSide(
-                              color: context.theme.shadowColor.withOpacity(.4),
-                              width: .7,
-                            ),
-                          ),
-                          collapsedShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.r),
-                            side: BorderSide(
-                              color: context.theme.shadowColor.withOpacity(.4),
-                              width: .7,
-                            ),
-                          ),
-                          leading: Obx(() {
-                            return Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                CircularProgressIndicator(
-                                  value: productController
-                                          .productPriceFiledCount.value /
-                                      productController.productPriceFiled.value,
-                                  strokeAlign: .1,
-                                  strokeWidth: 2,
-                                  backgroundColor: Colors.grey.shade300,
-                                ),
-                                AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  child: productController
-                                              .productPriceFiledCount.value ==
-                                          productController
-                                              .productPriceFiled.value
-                                      ? Icon(
-                                          Icons.check,
-                                          size: 30.0,
-                                          color: Theme.of(context).primaryColor,
-                                          key: const ValueKey('checked'),
-                                        ).animate().fadeIn(duration: 300.ms)
-                                      : const SizedBox
-                                          .shrink(), // Empty widget when not checked
-                                ),
-                              ],
-                            );
-                          }),
-                          subtitle: Obx(() {
-                            return Text(
-                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
-                              style: regular.copyWith(
-                                fontSize: 10.sp,
-                              ),
-                            );
-                          }),
-                          title: Text(
-                            'Price',
-                            style: bold.copyWith(
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w, vertical: 4.h),
-                              child: FormBuilderTextField(
-                                onChanged: (value) {
-                                  if ((value ?? '').isEmpty) {
-                                    productController
-                                        .productPriceFiledCount.value = 2;
-                                  } else {
-                                    productController
-                                        .productPriceFiledCount.value = 3;
-                                  }
-                                },
-                                keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp(r'^\d*\.?\d*')),
-                                ],
-                                validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(),
-                                ]),
-                                name: 'price',
-                                controller: productController.priceController,
-                                decoration: InputDecoration(
-                                  prefixIcon: Container(
-                                    width: 70.w,
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      textAlign: TextAlign.center,
-                                      'Price, \$',
-                                      style: regular,
-                                    ),
-                                  ),
-                                  hintText: '',
-                                  hintStyle: TextStyle(
-                                    fontSize: 12.sp,
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor
-                                          .withOpacity(.3),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Possible Exchange',
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value:
-                                            productController.isExchange.value,
-                                        onChanged: (value) {
-                                          productController.isExchange.value =
-                                              value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    'Credit',
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value: productController.isCredit.value,
-                                        onChanged: (value) {
-                                          productController.isCredit.value =
-                                              value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            10.verticalSpace,
-                          ],
-                        )
                       ],
                     )),
               )
@@ -1506,55 +1627,6 @@ class _PostProductViewState extends State<PostProductView> {
                   ],
                 ),
               ),
-              // 10.horizontalSpace,
-              // Expanded(
-              //   flex: 2,
-              //   child: Row(
-              //     children: [
-              //       Text(
-              //         'Room',
-              //         style: bold.copyWith(
-              //           fontWeight: FontWeight.w500,
-              //         ),
-              //       ),
-              //       10.horizontalSpace,
-              //       Expanded(
-              //         child: FormBuilderTextField(
-              //           controller: productController.room,
-              //           name: 'room',
-              //           onChanged: (newValue) {
-              //             productController.calculateFilledFields();
-              //           },
-              //           textAlign: TextAlign.center,
-              //           style: TextStyle(
-              //             fontSize: 12.sp,
-              //             color: Get.theme.primaryColor.withOpacity(.6),
-              //           ),
-              //           decoration: InputDecoration(
-              //             contentPadding: const EdgeInsets.symmetric(
-              //               vertical: 10,
-              //             ),
-              //             isDense: true,
-              //             alignLabelWithHint: true,
-              //             floatingLabelBehavior: FloatingLabelBehavior.always,
-              //             labelText: '',
-              //             labelStyle: TextStyle(
-              //               fontSize: 12.sp,
-              //               color: Get.theme.primaryColor.withOpacity(.6),
-              //             ),
-              //             border: outlineBorderPrimary,
-              //             enabledBorder: outlineBorderPrimary,
-              //             errorBorder: outlineBorderPrimary,
-              //             focusedBorder: outlineBorderPrimary,
-              //           ),
-              //           validator: FormBuilderValidators.compose([
-              //             FormBuilderValidators.required(),
-              //           ]),
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
             ],
           ),
         )
@@ -1731,78 +1803,6 @@ class _PostProductViewState extends State<PostProductView> {
                             });
                           },
                         )),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ).copyWith(bottom: 0),
-                      child: FormBuilderRadioGroup(
-                        initialValue: 'New',
-                        decoration: InputDecoration(
-                          isDense: true,
-                          // isCollapsed: true,
-                          border: InputBorder.none,
-                          labelText: 'Car Condition',
-                          labelStyle: bold.copyWith(
-                            fontSize: 18.sp,
-                          ),
-                        ),
-                        name: 'condition',
-                        validator: FormBuilderValidators.required(),
-                        options: [
-                          'New',
-                          'Used',
-                        ]
-                            .map((lang) => FormBuilderFieldOption(value: lang))
-                            .toList(growable: false),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ).copyWith(top: 0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'VIN code',
-                            style: bold,
-                          ),
-                          10.horizontalSpace,
-                          Expanded(
-                              child: FormBuilderTextField(
-                            controller: productController.vinCode,
-                            name: 'vinCode',
-                            onChanged: (newValue) {
-                              productController.calculateFilledProductFields();
-                            },
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 12.sp,
-                              color: Get.theme.primaryColor.withOpacity(.6),
-                            ),
-                            decoration: InputDecoration(
-                              isDense: true,
-                              alignLabelWithHint: true,
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.always,
-                              labelText: '',
-                              labelStyle: TextStyle(
-                                fontSize: 12.sp,
-                                color: Get.theme.primaryColor.withOpacity(.6),
-                              ),
-                              border: outlineBorderPrimary,
-                              enabledBorder: outlineBorderPrimary,
-                              errorBorder: outlineBorderPrimary,
-                              focusedBorder: outlineBorderPrimary,
-                            ),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(),
-                            ]),
-                          ))
-                        ],
-                      ),
-                    )
                   ],
                 );
         }),
@@ -1935,21 +1935,22 @@ class _PostProductViewState extends State<PostProductView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     title,
                     style: regular.copyWith(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Text(
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
                       color: value.isEmpty
                           ? Colors.red
                           : context.theme.primaryColor,

@@ -11,6 +11,7 @@ class ChatMessage {
   final DateTime time;
   final ChatUser otherUser;
   final dynamic data;
+  final ChatMessage? replyMessage;
 
   ChatMessage({
     this.text = '',
@@ -21,6 +22,7 @@ class ChatMessage {
     required this.time,
     required this.otherUser,
     required this.data,
+    this.replyMessage,
   });
 }
 

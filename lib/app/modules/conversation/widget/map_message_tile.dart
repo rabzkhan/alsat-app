@@ -12,7 +12,9 @@ class MapMessage extends StatelessWidget {
   const MapMessage({
     super.key,
     this.message,
+    this.isReply = false,
   });
+  final bool isReply;
 
   final ChatMessage? message;
 
@@ -29,9 +31,11 @@ class MapMessage extends StatelessWidget {
           vertical: 10,
         ),
         decoration: BoxDecoration(
-          color: message!.isSender
-              ? context.theme.primaryColor.withOpacity(.3)
-              : Colors.white,
+          color: isReply
+              ? Colors.transparent
+              : message!.isSender
+                  ? context.theme.primaryColor.withOpacity(.3)
+                  : Colors.white,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Column(

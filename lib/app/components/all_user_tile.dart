@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -15,8 +17,9 @@ class AllUserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
+        log('premiumUserModel.id: ${premiumUserModel.id}');
         ProductDetailsController productDetailsController =
             Get.put(ProductDetailsController(), tag: premiumUserModel.id);
         productDetailsController.postUserModel.value = premiumUserModel;
@@ -46,7 +49,7 @@ class AllUserTile extends StatelessWidget {
                 height: 100.h,
                 fit: BoxFit.cover,
                 url: premiumUserModel.picture ?? '',
-                error: Image.asset(userDefaulticon),
+                error: Image.asset(userDefaultIcon),
               ),
             ),
             10.horizontalSpace,

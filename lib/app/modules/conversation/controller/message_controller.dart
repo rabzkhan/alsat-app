@@ -1,20 +1,25 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../../../utils/constants.dart';
-import '../../authentication/controller/auth_controller.dart';
+import '../model/message_model.dart';
 
 class MessageController extends GetxController {
-  RxnString selectMessageId = RxnString();
+  Rxn<ChatMessage> selectMessage = Rxn<ChatMessage>();
+  Rxn<ChatMessage> selectReplyMessage = Rxn<ChatMessage>();
+  RxBool isOnlineUser = RxBool(false);
+  Rxn<DateTime> lastSeen = Rxn<DateTime>();
   Future<void> checkUserActiveLive({required String userID}) async {
+    final AuthController authController = Get.find<AuthController>();
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
-    String clientID = 'user|$fcmToken|$userID';
-    String username = 'user|$userID';
+    String clientID = 'user|$fcmToken|${authController.userDataModel.value.id}';
+    String username = 'user|${authController.userDataModel.value.id}';
     const String password = Constants.token1;
     final MqttServerClient client = MqttServerClient(host, clientID);
     client.port = port;
@@ -29,11 +34,7 @@ class MessageController extends GetxController {
     client.connectionMessage = connMessage;
 
     try {
-      await client.connect().then((onValue) {
-        log('Connected to MQTT server $onValue');
-      }).catchError((error) {
-        log('Connection failed: $error');
-      });
+      await client.connect().then((onValue) {}).catchError((error) {});
       String topic = 'chat/users/$userID/online';
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
@@ -42,15 +43,16 @@ class MessageController extends GetxController {
             messages[0].payload as MqttPublishMessage;
         final String messageJson = MqttPublishPayload.bytesToStringAsString(
             recMessage.payload.message);
-        log("UserOnline Status: $messageJson");
+
         try {
-          final messageData = jsonDecode(messageJson);
+          final Map<String, dynamic> decodedJson = jsonDecode(messageJson);
+          lastSeen.value = DateTime.parse(decodedJson["last_seen_at"]);
+          isOnlineUser.value = decodedJson["online"];
         } catch (e) {
           log("Error parsing message JSON: $e");
         }
       });
     } catch (e) {
-      log('Connection failed: $e');
       client.disconnect();
     }
   }

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
-import 'package:alsat/app/modules/product/video_edit/crop_video.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:video_editor/video_editor.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
@@ -37,6 +35,7 @@ class ProductController extends GetxController {
 
   /// post product
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>();
+  Rxn<SubCategories> selectSubCategory = Rxn<SubCategories>();
   Rxn<BrandModel> selectedBrand = Rxn<BrandModel>();
   Rxn<CarModel> selectedModel = Rxn<CarModel>();
   RxList<String> selectModelCarClass = RxList([]);
@@ -72,10 +71,12 @@ class ProductController extends GetxController {
   RxBool allowCall = RxBool(true);
   RxBool contactOnlyWithChat = RxBool(true);
 
+  RxBool checkTermsAndConditions = RxBool(false);
+
   //price
 
-  RxBool isExchange = RxBool(true);
-  RxBool isCredit = RxBool(true);
+  RxBool isExchange = RxBool(false);
+  RxBool isCredit = RxBool(false);
   RxBool isLeftAvalable = RxBool(true);
   //-- On Init Method --//
   @override
@@ -89,7 +90,7 @@ class ProductController extends GetxController {
     //-- Category check to find the total field --//
     if (selectCategory.value != null) {
       if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
-        totalProductFiled.value = 13;
+        totalProductFiled.value = 11;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         totalProductFiled.value = 9;
@@ -112,7 +113,7 @@ class ProductController extends GetxController {
         if (selectedColor.isNotEmpty) filledCount++;
         // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         // if (productNameController.text.trim().isNotEmpty) filledCount++;
-        if (vinCode.text.trim().isNotEmpty) filledCount++;
+        // if (vinCode.text.trim().isNotEmpty) filledCount++;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         if (selectCategory.value != null) filledCount++;
@@ -136,7 +137,7 @@ class ProductController extends GetxController {
         if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
     } else {
-      if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+      // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
       if (productNameController.text.trim().isNotEmpty) filledCount++;
     }
     totalProductFiledCount.value = filledCount;
@@ -272,7 +273,7 @@ class ProductController extends GetxController {
 
   //--- Get All PRODUCT ---//
   RxList<ProductModel> productList = RxList<ProductModel>();
-  ProudctPostListRes? productPostListRes;
+  ProductPostListRes? productPostListRes;
   RxBool isFetchProduct = RxBool(true);
   Future<void> fetchProducts({String? nextPaginateDate}) async {
     String url = Constants.baseUrl + Constants.postProduct;
@@ -296,7 +297,7 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         Map<String, dynamic> responseData = response.data;
-        productPostListRes = ProudctPostListRes.fromJson(responseData);
+        productPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
           productList.addAll(productPostListRes?.data ?? []);
         } else {
@@ -333,7 +334,7 @@ class ProductController extends GetxController {
   //--- Get User PRODUCT ---//
   RxBool isFetchMyProduct = RxBool(true);
   RxList<ProductModel> myProductList = RxList<ProductModel>();
-  ProudctPostListRes? myProductPostListRes;
+  ProductPostListRes? myProductPostListRes;
 
   Future<void> fetchMyProducts({String? nextPaginateDate}) async {
     AuthController authController = Get.find();
@@ -362,7 +363,7 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         Map<String, dynamic> responseData = response.data;
-        myProductPostListRes = ProudctPostListRes.fromJson(responseData);
+        myProductPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
           myProductList.addAll(myProductPostListRes?.data ?? []);
         } else {
@@ -398,7 +399,7 @@ class ProductController extends GetxController {
 
   RxBool isFetchLikeProduct = RxBool(true);
   RxList<ProductModel> myLikeProductList = RxList<ProductModel>();
-  ProudctPostListRes? myLikeProductPostListRes;
+  ProductPostListRes? myLikeProductPostListRes;
 
   Future<void> fetchMyLikeProducts({String? nextPaginateDate}) async {
     String url = Constants.baseUrl + Constants.postProduct;
@@ -423,9 +424,9 @@ class ProductController extends GetxController {
         }
       },
       onSuccess: (response) {
-        log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
+        log('Like Url${response.requestOptions.baseUrl} ${response.requestOptions.path} ${response.requestOptions.data}');
         Map<String, dynamic> responseData = response.data;
-        myLikeProductPostListRes = ProudctPostListRes.fromJson(responseData);
+        myLikeProductPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
           myLikeProductList.addAll(myLikeProductPostListRes?.data ?? []);
         } else {
@@ -481,8 +482,10 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         isProductLike.value = false;
-        CustomSnackBar.showCustomSnackBar(
-            message: 'Product liked successfully', title: 'Success');
+        CustomSnackBar.showCustomToast(
+            message: 'Product ${likeValue ? "liked" : "Unliked"} Successfully',
+            title: 'Success');
+        fetchMyLikeProducts();
       },
       onError: (p0) {
         log("Product like failed: ${p0.response} ${p0.response?.data}");

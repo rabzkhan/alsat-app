@@ -44,6 +44,7 @@ class MyLikePost extends StatelessWidget {
                   ),
                   itemBuilder: (context, index) {
                     return ProductGridTile(
+                      isShowFavoriteButton: true,
                       loading: productController.isFetchLikeProduct.value,
                       productModel: productController.isFetchLikeProduct.value
                           ? null

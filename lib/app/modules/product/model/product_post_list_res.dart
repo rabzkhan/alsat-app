@@ -4,32 +4,32 @@
 
 import 'dart:convert';
 
-ProudctPostListRes proudctPostListResFromJson(String str) =>
-    ProudctPostListRes.fromJson(json.decode(str));
+ProductPostListRes productPostListResFromJson(String str) =>
+    ProductPostListRes.fromJson(json.decode(str));
 
-String proudctPostListResToJson(ProudctPostListRes data) =>
+String productPostListResToJson(ProductPostListRes data) =>
     json.encode(data.toJson());
 
-class ProudctPostListRes {
+class ProductPostListRes {
   final List<ProductModel>? data;
   final bool? hasMore;
 
-  ProudctPostListRes({
+  ProductPostListRes({
     this.data,
     this.hasMore,
   });
 
-  ProudctPostListRes copyWith({
+  ProductPostListRes copyWith({
     List<ProductModel>? data,
     bool? hasMore,
   }) =>
-      ProudctPostListRes(
+      ProductPostListRes(
         data: data ?? this.data,
         hasMore: hasMore ?? this.hasMore,
       );
 
-  factory ProudctPostListRes.fromJson(Map<String, dynamic> json) =>
-      ProudctPostListRes(
+  factory ProductPostListRes.fromJson(Map<String, dynamic> json) =>
+      ProductPostListRes(
         data: json["data"] == null
             ? []
             : List<ProductModel>.from(

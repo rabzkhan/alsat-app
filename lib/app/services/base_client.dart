@@ -157,11 +157,11 @@ class BaseClient {
       {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: localLanguage.serverNotResponding,
+        message: localLanguage.server_not_responding,
         url: url,
       ));
     } else {
-      _handleError(localLanguage.serverNotResponding);
+      _handleError(localLanguage.server_not_responding);
     }
   }
 
@@ -170,11 +170,11 @@ class BaseClient {
       {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: localLanguage.noInternetConnection,
+        message: localLanguage.no_internet_connection,
         url: url,
       ));
     } else {
-      _handleError(localLanguage.noInternetConnection);
+      _handleError(localLanguage.no_internet_connection);
     }
   }
 
@@ -186,12 +186,12 @@ class BaseClient {
     if (error.response?.statusCode == 404) {
       if (onError != null) {
         return onError(ApiException(
-          message: localLanguage.urlNotFound,
+          message: localLanguage.url_not_found,
           url: url,
           statusCode: 404,
         ));
       } else {
-        return _handleError(localLanguage.urlNotFound);
+        return _handleError(localLanguage.url_not_found);
       }
     }
 
@@ -200,18 +200,18 @@ class BaseClient {
         error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
-          message: localLanguage.noInternetConnection,
+          message: localLanguage.no_internet_connection,
           url: url,
         ));
       } else {
-        return _handleError(localLanguage.noInternetConnection);
+        return _handleError(localLanguage.no_internet_connection);
       }
     }
 
     // check if the error is 500 (server problem)
     if (error.response?.statusCode == 500) {
       var exception = ApiException(
-        message: localLanguage.serverError,
+        message: localLanguage.server_error,
         url: url,
         statusCode: 500,
       );

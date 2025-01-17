@@ -68,7 +68,7 @@ class NetworkImagePreview extends StatelessWidget {
               ),
           errorWidget: (context, url, e) => ClipRRect(
             borderRadius: BorderRadius.circular(radius).r,
-            child: error ?? Image.asset(logo),
+            child: error ?? Image.asset(logo, fit: BoxFit.cover),
           ),
         ),
       ),

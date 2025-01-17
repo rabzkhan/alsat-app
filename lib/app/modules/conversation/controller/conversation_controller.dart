@@ -8,19 +8,23 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../../services/base_client.dart';
 import '../model/conversation_messages_res.dart';
 import '../model/message_model.dart';
 import '../model/mqtt_message_model.dart';
+import 'message_controller.dart';
 
 class ConversationController extends GetxController {
   Rxn<Duration> recordTime = Rxn<Duration>();
+  final reportFromKey = GlobalKey<FormBuilderState>();
 
   @override
   void onInit() {
@@ -34,6 +38,8 @@ class ConversationController extends GetxController {
   RxBool isSendingMessage = false.obs;
   Future<void> sendMessageToServer(String messages,
       {Map<String, dynamic>? map}) async {
+    MessageController messageController =
+        Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     AuthController authController = Get.find();
     String uId = authController.userDataModel.value.id ?? "";
     Map<String, dynamic> messagesMap = {
@@ -42,9 +48,10 @@ class ConversationController extends GetxController {
           .firstWhereOrNull((e) => e.id != uId)
           ?.id,
       "content": messages,
-      "reply_to": "",
+      "reply_to": messageController.selectReplyMessage.value?.id ?? '',
       "attachments": [map]
     };
+    messageController.selectReplyMessage.value = null;
     // log('messagesMap: $messagesMap');
 
     await BaseClient.safeApiCall(
@@ -72,27 +79,53 @@ class ConversationController extends GetxController {
   // get user conversation List
   RxBool isConversationLoading = true.obs;
   RxList<ConversationModel> conversationList = RxList<ConversationModel>();
-  Future<void> getConversations() async {
+  Future<void> getConversations({String? paginate}) async {
+    String url = Constants.baseUrl + Constants.userConversationList;
+    if (paginate != null) {
+      url = "$url?next=$paginate";
+    }
     await BaseClient.safeApiCall(
-      Constants.baseUrl + Constants.userConversationList,
+      url,
       DioRequestType.get,
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
       onLoading: () {
-        isConversationLoading.value = true;
-        conversationList.value = [];
+        if (paginate == null) {
+          isConversationLoading.value = true;
+          conversationList.value = [];
+        }
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
-        conversationList.value = ConversationListRes.fromJson(data).data ?? [];
+        if (paginate == null) {
+          conversationList.value =
+              ConversationListRes.fromJson(data).data ?? [];
+        } else {
+          conversationList
+              .addAll(ConversationListRes.fromJson(data).data ?? []);
+        }
+        conversationList.refresh();
         isConversationLoading.value = false;
       },
       onError: (error) {
         isConversationLoading.value = false;
       },
     );
+  }
+
+  //--- Coversation List Pagenation ---//
+  RefreshController conversationRefreshController =
+      RefreshController(initialRefresh: false);
+  void conversationRefresh() async {
+    await getConversations();
+    conversationRefreshController.refreshCompleted();
+  }
+
+  void conversationLoading() async {
+    await getConversations(paginate: conversationList.last.createdAt);
+    conversationRefreshController.loadComplete();
   }
 
   /// messages
@@ -159,6 +192,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -178,6 +228,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -197,6 +264,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -216,6 +300,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -235,6 +336,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: e.data,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -254,6 +372,23 @@ class ConversationController extends GetxController {
                       imageUrl: selectUserInfo.value?.picture ?? '',
                     ),
                     data: null,
+                    replyMessage: element.replyTo == null
+                        ? null
+                        : ChatMessage(
+                            id: element.replyTo?.id ?? '0',
+                            text: element.replyTo?.content ?? '',
+                            messageType: ChatMessageType.text,
+                            messageStatus: MessageStatus.viewed,
+                            isSender: authController.userDataModel.value.id ==
+                                element.replyTo?.sender?.id,
+                            time: element.replyTo?.createdAt ?? DateTime.now(),
+                            otherUser: ChatUser(
+                              id: selectUserInfo.value?.id ?? "",
+                              name: selectUserInfo.value?.userName ?? '',
+                              imageUrl: selectUserInfo.value?.picture ?? '',
+                            ),
+                            data: e.data,
+                          ),
                   ),
                 );
               }
@@ -523,6 +658,71 @@ class ConversationController extends GetxController {
         log(
           "${Constants.baseUrl}${Constants.conversationMessages}/$messageId?userID:${authController.userDataModel.value.id}",
         );
+      },
+    );
+  }
+
+  //--- Block User --//
+  RxBool isBlockUser = false.obs;
+  Future<bool> blockUser(String id, String uId, {bool isBlock = true}) async {
+    log('blockUser: $id ${'${Constants.baseUrl}${Constants.userConversationList}/$id/block'}');
+    isBlockUser.value = true;
+    return await BaseClient.safeApiCall(
+      '${Constants.baseUrl}${Constants.userConversationList}/$id/block',
+      DioRequestType.put,
+      data: {"user_id": uId, "block": isBlock},
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {},
+      onSuccess: (response) async {
+        isBlockUser.value = false;
+        CustomSnackBar.showCustomToast(message: 'User Blocked Successfully');
+        getConversations();
+        if (isBlock) Get.back();
+        Get.back();
+        return true;
+      },
+      onError: (error) {
+        CustomSnackBar.showCustomToast(
+            message: 'Something went wrong', color: Colors.red);
+        isBlockUser.value = false;
+        log('blockUser Error: $error');
+        return false;
+      },
+    );
+  }
+
+  //-- sendReport --//
+  RxBool isReport = false.obs;
+  Future<bool> sendReport(Map<String, dynamic> data) async {
+    return BaseClient.safeApiCall(
+      '${Constants.baseUrl}/reports',
+      DioRequestType.post,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: data,
+      onLoading: () {
+        isReport.value = true;
+      },
+      onSuccess: (response) async {
+        log('sendReport: $response');
+        isReport.value = false;
+        Get.back();
+        CustomSnackBar.showCustomToast(
+            title: 'Reported', message: 'User Reported Successfully');
+        return true;
+      },
+      onError: (error) {
+        log('sendReport Error: $error');
+        isReport.value = false;
+        Get.back();
+        CustomSnackBar.showCustomErrorToast(
+            title: 'Error', message: 'Something went wrong');
+        return false;
       },
     );
   }

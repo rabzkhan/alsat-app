@@ -42,6 +42,7 @@ class PremiumContent extends StatelessWidget {
       onRefresh: homeController.onPremiumRefresh,
       onLoading: homeController.onPremiumLoading,
       child: ListView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
         children: [
           //--- Category ---//
@@ -133,48 +134,67 @@ class PremiumContent extends StatelessWidget {
           ),
           //--- Premium Content ---//
 
-          InkWell(
-            onTap: () {
-              Get.to(
-                const UserFilterView(),
-                transition: Transition.rightToLeft,
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 10.h, left: 15.w, right: 15.w),
-              width: Get.width,
-              height: 50.h,
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 15.h),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10.r),
-                border: Border.all(
-                  color: Get.theme.disabledColor.withOpacity(.1),
+          Padding(
+            padding: EdgeInsets.only(
+                top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
+            child: TextFormField(
+              onFieldSubmitted: (value) {
+                homeController.fetchPremiumUser(isFilter: true);
+                Get.to(
+                  const UserFilterResultView(isBackFilter: false),
+                  transition: Transition.rightToLeft,
+                );
+              },
+              decoration: InputDecoration(
+                prefixIcon: Icon(
+                  CupertinoIcons.search,
+                  color: Get.theme.disabledColor,
                 ),
-              ),
-              child: Row(
-                // spacing: 10.w,
-                children: [
-                  Image.asset(
-                    searchIcon,
-                    color: Get.theme.disabledColor,
-                  ),
-                  10.horizontalSpace,
-                  Text(
-                    "Find Users",
-                    style: TextStyle(
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w400,
-                      color: Get.theme.disabledColor.withOpacity(.5),
+                suffixIcon: InkWell(
+                  onTap: () {
+                    homeController.fetchPremiumUser(isFilter: true);
+                    Get.to(
+                      const UserFilterResultView(isBackFilter: false),
+                      transition: Transition.rightToLeft,
+                    );
+                  },
+                  child: SizedBox(
+                    height: 20.h,
+                    width: 20.w,
+                    child: Center(
+                      child: Image.asset(
+                        height: 20.h,
+                        width: 20.w,
+                        filterIcon,
+                        color: Get.theme.disabledColor,
+                      ),
                     ),
                   ),
-                  const Spacer(),
-                  10.horizontalSpace,
-                  Image.asset(
-                    filterIcon,
-                    color: Get.theme.disabledColor,
+                ),
+                hintStyle: TextStyle(
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Get.theme.disabledColor.withOpacity(.5),
+                ),
+                hintText: 'Find Users',
+                isDense: true,
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Get.theme.disabledColor.withOpacity(.1),
                   ),
-                ],
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Get.theme.disabledColor.withOpacity(.1),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    color: Get.theme.primaryColor.withOpacity(.4),
+                  ),
+                ),
               ),
             ),
           ),

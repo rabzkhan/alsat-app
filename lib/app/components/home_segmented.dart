@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../config/theme/app_text_theme.dart';
+import '../../utils/helper.dart';
 import '../common/const/image_path.dart';
+import '../modules/auth_user/auth_user_tab/widgets/upgrade_to_premium_dialog.dart';
 
 class HomeSegmented extends StatelessWidget {
   const HomeSegmented({super.key});
@@ -13,6 +15,7 @@ class HomeSegmented extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find();
+    final AuthController authController = Get.find();
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 20.h,
@@ -45,7 +48,7 @@ class HomeSegmented extends StatelessWidget {
                       height: 45.h,
                       child: Text(
                         textAlign: TextAlign.center,
-                        "Product",
+                        localLanguage.product,
                         style: regular.copyWith(
                           fontSize: 17.sp,
                           color: !homeController.showPremium.value
@@ -68,7 +71,11 @@ class HomeSegmented extends StatelessWidget {
             child: Obx(() {
               return InkWell(
                 onTap: () {
-                  homeController.showPremium.value = true;
+                  if (!(authController.userDataModel.value.premium ?? false)) {
+                    upgradeToPremiumDialog();
+                  } else {
+                    homeController.showPremium.value = true;
+                  }
                 },
                 child: SizedBox(
                   height: 45.h,
@@ -101,7 +108,7 @@ class HomeSegmented extends StatelessWidget {
                           5.horizontalSpace,
                           Text(
                             textAlign: TextAlign.center,
-                            "Premium",
+                            localLanguage.premium,
                             style: regular.copyWith(
                               fontSize: 17.sp,
                               color: homeController.showPremium.value

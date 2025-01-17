@@ -142,7 +142,7 @@ class ProductDetailsController extends GetxController {
 
   //-- Add Product Comment --//
   RxBool isProductCommentAdd = RxBool(false);
-  TextEditingController commentController = TextEditingController();
+
   Future<void> addProductComment(
       {required String productId, required String comment}) async {
     await BaseClient.safeApiCall(
@@ -158,7 +158,6 @@ class ProductDetailsController extends GetxController {
         isProductCommentAdd.value = true;
       },
       onSuccess: (response) {
-        commentController.clear();
         getProductComments(productId: productId);
         isProductCommentAdd.value = false;
       },
@@ -202,7 +201,7 @@ class ProductDetailsController extends GetxController {
 
   RxBool isFetchUserProduct = RxBool(true);
   RxList<ProductModel> userProductList = RxList<ProductModel>();
-  ProudctPostListRes? userProductPostListRes;
+  ProductPostListRes? userProductPostListRes;
   String selectUserId = '';
   Future<void> fetchUserProducts({String? nextPaginateDate}) async {
     String url = Constants.baseUrl + Constants.postProduct;
@@ -230,7 +229,7 @@ class ProductDetailsController extends GetxController {
       onSuccess: (response) {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         Map<String, dynamic> responseData = response.data;
-        userProductPostListRes = ProudctPostListRes.fromJson(responseData);
+        userProductPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
           userProductList.addAll(userProductPostListRes?.data ?? []);
         } else {
@@ -377,13 +376,5 @@ class ProductDetailsController extends GetxController {
             message: 'Failed to get conversation info');
       },
     );
-  }
-
-  //-- dispose --//
-
-  @override
-  void onClose() {
-    commentController.dispose();
-    super.onClose();
   }
 }

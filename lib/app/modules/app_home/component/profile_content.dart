@@ -1,4 +1,5 @@
 import 'package:alsat/app/common/const/image_path.dart';
+import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/auth_user/auth_user_tab/my_listings.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
@@ -52,7 +53,14 @@ class _ProfileContentState extends State<ProfileContent> {
             ListTile(
               leading: CircleAvatar(
                 radius: 28.r,
-                child: Image.asset(carImage),
+                child: NetworkImagePreview(
+                  height: 56.h,
+                  width: 56.w,
+                  fit: BoxFit.cover,
+                  radius: 28.r,
+                  url: authController.userDataModel.value.picture ?? '',
+                  error: Image.asset(userDefaultIcon),
+                ),
               ),
               title: Obx(() => Text(
                     authController.userDataModel.value.userName ?? 'Guest User',

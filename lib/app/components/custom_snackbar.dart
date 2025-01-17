@@ -1,3 +1,4 @@
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -45,7 +46,7 @@ class CustomSnackBar {
       Color? color,
       Duration? duration}) {
     toastification.show(
-      backgroundColor: color ?? Colors.green,
+      backgroundColor: color ?? AppColors.primary,
       primaryColor: Colors.white,
       context: Get.context!,
       type: ToastificationType.success,
@@ -56,7 +57,7 @@ class CustomSnackBar {
       title: Text(
         title ?? "Alert Information",
         style: TextStyle(
-          color: Colors.white54,
+          color: Colors.white,
           fontSize: 12.sp,
           fontWeight: FontWeight.w500,
         ),
@@ -74,7 +75,7 @@ class CustomSnackBar {
       icon: const Icon(Icons.check_circle),
       borderRadius: BorderRadius.circular(12.0),
       boxShadow: highModeShadow,
-      showProgressBar: true,
+      showProgressBar: false,
       dragToClose: true,
     );
   }

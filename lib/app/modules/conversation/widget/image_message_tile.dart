@@ -12,8 +12,9 @@ class ImageMessage extends StatelessWidget {
   const ImageMessage({
     super.key,
     this.message,
+    this.isReply = false,
   });
-
+  final bool isReply;
   final ChatMessage? message;
 
   @override
@@ -37,9 +38,11 @@ class ImageMessage extends StatelessWidget {
           vertical: 10,
         ),
         decoration: BoxDecoration(
-          color: message!.isSender
-              ? context.theme.primaryColor.withOpacity(.2)
-              : Colors.white,
+          color: isReply
+              ? Colors.transparent
+              : message!.isSender
+                  ? context.theme.primaryColor.withOpacity(.2)
+                  : Colors.white,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Column(
@@ -55,7 +58,11 @@ class ImageMessage extends StatelessWidget {
             Text(
               DateFormat('hh:mm').format(message!.time),
               style: context.theme.textTheme.bodySmall?.copyWith(
-                color: message!.isSender ? Colors.white : null,
+                color: isReply
+                    ? Colors.black
+                    : message!.isSender
+                        ? Colors.white
+                        : null,
                 fontSize: 10.sp,
               ),
             ),

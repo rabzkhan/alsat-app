@@ -38,6 +38,7 @@ class _MySettingsState extends State<MySettings> {
   FilterController filterController = Get.find();
   @override
   Widget build(BuildContext context) {
+    log("${authController.userDataModel.value.toJson()}");
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.h),
@@ -81,7 +82,7 @@ class _MySettingsState extends State<MySettings> {
                                                 .userDataModel.value.picture ==
                                             null
                                         ? Image.asset(
-                                            "assets/images/user-avatar.png",
+                                            userDefaultIcon,
                                             height: 140.h,
                                             width: 140.h,
                                           )
@@ -138,8 +139,7 @@ class _MySettingsState extends State<MySettings> {
                           ),
                         ),
                         Text(
-                          authController.userDataModel.value.phone ??
-                              ' 01211312342',
+                          authController.userDataModel.value.phone ?? '',
                           style: regular.copyWith(
                             fontSize: 14.sp,
                           ),
@@ -154,10 +154,29 @@ class _MySettingsState extends State<MySettings> {
           20.verticalSpace,
           FormBuilder(
             key: userController.userSettingsFormKey,
+            initialValue: {
+              'category': homeController.categories
+                  .where((e) =>
+                      (authController.userDataModel.value.categories ?? [])
+                          .contains(e.name))
+                  .toList()
+                  .firstOrNull,
+            },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
+                  authController.selectUserCategoriesList.value = homeController
+                      .categories
+                      .where((e) =>
+                          (authController.userDataModel.value.categories ?? [])
+                              .contains(e.name))
+                      .toList();
+                  authController.selectedProvince.value =
+                      authController.userDataModel.value.location?.province ??
+                          "";
+                  authController.selectedCity.value =
+                      authController.userDataModel.value.location?.city ?? "";
                   return (authController.userDataModel.value.premium ?? false)
                       ? const Center()
                       : Row(
@@ -218,7 +237,7 @@ class _MySettingsState extends State<MySettings> {
                     enabled:
                         (authController.userDataModel.value.premium ?? false),
                     name: 'user_name',
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.text,
                     decoration: InputDecoration(
                       suffix: GestureDetector(
                         onTap: () {},
@@ -272,7 +291,7 @@ class _MySettingsState extends State<MySettings> {
                   );
                 }),
                 20.verticalSpace,
-                GestureDetector(
+                InkWell(
                   onTap: () {
                     showCupertinoModalBottomSheet(
                       expand: true,
@@ -282,34 +301,38 @@ class _MySettingsState extends State<MySettings> {
                           const ProfileSingleLocationSelection(),
                     );
                   },
-                  child: FormBuilderTextField(
-                    controller: authController.addressController,
-                    enabled: false,
-                    name: 'location',
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      suffix: Icon(
-                        Icons.keyboard_arrow_right,
-                        size: 14.h,
-                        color: AppColors.primary,
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: FormBuilderTextField(
+                      controller: authController.addressController,
+                      enabled: true,
+                      name: 'location',
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        suffix: Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 14.h,
+                          color: AppColors.primary,
+                        ),
+                        isDense: true,
+                        alignLabelWithHint: true,
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        labelText: 'Location',
+                        labelStyle: TextStyle(
+                          fontSize: 14.sp,
+                          color: Get.theme.shadowColor.withOpacity(.6),
+                        ),
+                        border: outlineBorder,
+                        enabledBorder: outlineBorder,
+                        errorBorder: outlineBorder,
+                        focusedBorder: outlineBorder,
                       ),
-                      isDense: true,
-                      alignLabelWithHint: true,
-                      floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelText: 'Location',
-                      labelStyle: TextStyle(
-                        fontSize: 14.sp,
-                        color: Get.theme.shadowColor.withOpacity(.6),
+                      validator: FormBuilderValidators.compose(
+                        [
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.minLength(3),
+                        ],
                       ),
-                      border: outlineBorder,
-                      enabledBorder: outlineBorder,
-                      errorBorder: outlineBorder,
-                      focusedBorder: outlineBorder,
-                    ),
-                    validator: FormBuilderValidators.compose(
-                      [
-                        FormBuilderValidators.required(),
-                      ],
                     ),
                   ),
                 ),
@@ -533,7 +556,7 @@ class _MySettingsState extends State<MySettings> {
                                               .userDataModel.value.email ??
                                           "",
                                     };
-                                    log("$data");
+
                                     authController.updateUserInformation(
                                         data: data);
                                   }

@@ -59,7 +59,7 @@ class UserDataModel {
         id: json["_id"],
         createdAt: json["created_at"],
         updatedAt: json["updated_at"],
-        premium: json["premium"],
+        premium: json["premium"] ?? json["plan"] == 'premium' ? true : false,
         messaging: json["messaging"] == null
             ? []
             : List<dynamic>.from(json["messaging"]!.map((x) => x)),
