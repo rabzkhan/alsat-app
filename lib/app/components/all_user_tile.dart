@@ -1,6 +1,6 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -68,35 +68,72 @@ class AllUserTile extends StatelessWidget {
                             : Get.theme.disabledColor.withOpacity(.1),
                       ),
                       4.horizontalSpace,
-                      Expanded(
+                      Flexible(
                         child: Text(
                           maxLines: 1,
                           premiumUserModel.userName ?? 'Premium User Name',
                           style: bold.copyWith(fontSize: 14.sp),
                         ),
                       ),
+                      5.horizontalSpace,
+                      CircleAvatar(
+                        radius: 5.r,
+                        backgroundColor: (premiumUserModel.active ?? false)
+                            ? Colors.green
+                            : Colors.grey,
+                      )
                     ],
                   ),
                   3.verticalSpace,
-                  Text(
-                      (premiumUserModel.email ?? '').isNotEmpty
-                          ? premiumUserModel.email ?? ''
-                          : premiumUserModel.phone ?? 'No Email',
-                      style: regular.copyWith(
-                        fontSize: 12.sp,
-                      )),
-                  if ((premiumUserModel.location?.province ?? '').isNotEmpty ||
-                      (premiumUserModel.location?.city ?? '').isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(top: 3.h),
-                      child: Text(
-                        '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RatingBarIndicator(
+                        rating: (premiumUserModel.rating ?? 0).toDouble(),
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star_border_outlined,
+                          color: Colors.amber,
+                        ),
+                        itemCount: 5,
+                        itemSize: 13.r,
+                        direction: Axis.horizontal,
+                      ),
+                      3.horizontalSpace,
+                      Text(
+                        '(${(premiumUserModel.rating ?? 0).toStringAsFixed(1)}) ${(premiumUserModel.votes ?? 0)}',
                         style: regular.copyWith(
                           fontSize: 12.sp,
-                          color: context.theme.disabledColor,
                         ),
-                      ),
-                    ),
+                      )
+                    ],
+                  ),
+                  // 3.verticalSpace,
+                  // Text(
+                  //     (premiumUserModel.email ?? '').isNotEmpty
+                  //         ? premiumUserModel.email ?? ''
+                  //         : premiumUserModel.phone ?? 'No Email',
+                  //     style: regular.copyWith(
+                  //       fontSize: 12.sp,
+                  //     )),
+                  ((premiumUserModel.location?.province ?? '').isNotEmpty ||
+                          (premiumUserModel.location?.city ?? '').isNotEmpty)
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 3.h),
+                          child: Text(
+                            '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
+                            style: regular.copyWith(
+                              fontSize: 12.sp,
+                              color: context.theme.disabledColor,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          "No Location",
+                          style: regular.copyWith(
+                            fontSize: 12.sp,
+                            color: context.theme.disabledColor,
+                          ),
+                        ),
                   3.verticalSpace,
                   Row(
                     children: [
@@ -113,27 +150,6 @@ class AllUserTile extends StatelessWidget {
                           3.horizontalSpace,
                           Text(
                             'Buyer Protection',
-                            style: regular.copyWith(
-                              color: Get.theme.disabledColor,
-                              fontSize: 10.sp,
-                            ),
-                          )
-                        ],
-                      ),
-                      5.horizontalSpace,
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            size: 15.r,
-                            color: (premiumUserModel.flag ?? false)
-                                ? Get.theme.primaryColor
-                                : Get.theme.disabledColor.withOpacity(.1),
-                          ),
-                          3.horizontalSpace,
-                          Text(
-                            'Credit',
                             style: regular.copyWith(
                               color: Get.theme.disabledColor,
                               fontSize: 10.sp,

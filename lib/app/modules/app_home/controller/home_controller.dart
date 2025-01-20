@@ -150,8 +150,8 @@ class HomeController extends GetxController {
   //-- Get All Primisum User--//
   RxnString followersValue = RxnString();
   RxnString registrationValue = RxnString();
-  RxBool isActiveUser = true.obs;
-  RxBool buyerProtection = true.obs;
+  RxBool isActiveUser = false.obs;
+  RxBool buyerProtection = false.obs;
   Rxn<CategoriesModel> category = Rxn<CategoriesModel>();
   RxList<Map<String, dynamic>> selectedLocation =
       RxList<Map<String, dynamic>>([]);
