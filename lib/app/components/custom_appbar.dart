@@ -33,9 +33,7 @@ class CustomAppBar extends StatelessWidget {
       height: 55.h,
       padding: EdgeInsets.symmetric(
         vertical: 10.h,
-        horizontal: 20.w,
-      ).copyWith(
-        left: 12.w,
+        horizontal: 10.w,
       ),
       child: Row(
         children: [

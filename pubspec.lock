@@ -645,6 +645,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_material_pickers:
+    dependency: "direct main"
+    description:
+      name: flutter_material_pickers
+      sha256: "1f0977df9d3977c6621fff602f6956107cf5ff0df58d3441459e5b2e37256131"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.7.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

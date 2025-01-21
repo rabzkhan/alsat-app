@@ -24,6 +24,7 @@ class UserFilterResultView extends StatelessWidget {
         preferredSize: Size.fromHeight(60.h),
         child: SafeArea(
           child: CustomAppBar(
+            isShowLogo: false,
             isShowBackButton: true,
             isShowFilter: false,
             isShowSearch: false,

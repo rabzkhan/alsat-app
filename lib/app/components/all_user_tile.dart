@@ -1,6 +1,7 @@
 import 'dart:developer';
-
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -34,8 +35,20 @@ class AllUserTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-        height: 100.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        height: 110.h,
         child: Row(
           children: [
             Container(
@@ -68,35 +81,71 @@ class AllUserTile extends StatelessWidget {
                             : Get.theme.disabledColor.withOpacity(.1),
                       ),
                       4.horizontalSpace,
-                      Expanded(
+                      Flexible(
                         child: Text(
                           maxLines: 1,
                           premiumUserModel.userName ?? 'Premium User Name',
-                          style: bold.copyWith(fontSize: 14.sp),
+                          style: bold.copyWith(fontSize: 16.sp),
                         ),
                       ),
+                      // 5.horizontalSpace,
+                      // CircleAvatar(
+                      //   radius: 5.r,
+                      //   backgroundColor: (premiumUserModel.active ?? false)
+                      //       ? Colors.green
+                      //       : Colors.grey,
+                      // )
                     ],
                   ),
                   3.verticalSpace,
-                  Text(
-                      (premiumUserModel.email ?? '').isNotEmpty
-                          ? premiumUserModel.email ?? ''
-                          : premiumUserModel.phone ?? 'No Email',
-                      style: regular.copyWith(
-                        fontSize: 12.sp,
-                      )),
-                  if ((premiumUserModel.location?.province ?? '').isNotEmpty ||
-                      (premiumUserModel.location?.city ?? '').isNotEmpty)
-                    Padding(
-                      padding: EdgeInsets.only(top: 3.h),
-                      child: Text(
-                        '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
-                        style: regular.copyWith(
-                          fontSize: 12.sp,
-                          color: context.theme.disabledColor,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RatingBarIndicator(
+                        rating: (premiumUserModel.rating ?? 0).toDouble(),
+                        itemBuilder: (context, index) => const Icon(
+                          Icons.star,
+                          color: Colors.amber,
                         ),
+                        itemCount: 5,
+                        itemSize: 13.r,
+                        direction: Axis.horizontal,
                       ),
-                    ),
+                      3.horizontalSpace,
+                      Text(
+                        '(${(premiumUserModel.rating ?? 0).toStringAsFixed(1)}) ${(premiumUserModel.votes ?? 0)}',
+                        style: regular.copyWith(
+                          fontSize: 14.sp,
+                        ),
+                      )
+                    ],
+                  ),
+                  // 3.verticalSpace,
+                  // Text(
+                  //     (premiumUserModel.email ?? '').isNotEmpty
+                  //         ? premiumUserModel.email ?? ''
+                  //         : premiumUserModel.phone ?? 'No Email',
+                  //     style: regular.copyWith(
+                  //       fontSize: 12.sp,
+                  //     )),
+                  ((premiumUserModel.location?.province ?? '').isNotEmpty ||
+                          (premiumUserModel.location?.city ?? '').isNotEmpty)
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 3.h),
+                          child: Text(
+                            '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
+                            style: regular.copyWith(
+                              fontSize: 14.sp,
+                            ),
+                          ),
+                        )
+                      : Text(
+                          "No Location",
+                          style: regular.copyWith(
+                            fontSize: 14.sp,
+                            color: context.theme.disabledColor,
+                          ),
+                        ),
                   3.verticalSpace,
                   Row(
                     children: [
@@ -114,39 +163,17 @@ class AllUserTile extends StatelessWidget {
                           Text(
                             'Buyer Protection',
                             style: regular.copyWith(
-                              color: Get.theme.disabledColor,
-                              fontSize: 10.sp,
-                            ),
-                          )
-                        ],
-                      ),
-                      5.horizontalSpace,
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.check_circle,
-                            size: 15.r,
-                            color: (premiumUserModel.flag ?? false)
-                                ? Get.theme.primaryColor
-                                : Get.theme.disabledColor.withOpacity(.1),
-                          ),
-                          3.horizontalSpace,
-                          Text(
-                            'Credit',
-                            style: regular.copyWith(
-                              color: Get.theme.disabledColor,
-                              fontSize: 10.sp,
+                              fontSize: 12.sp,
                             ),
                           )
                         ],
                       ),
                       20.horizontalSpace,
                       Text(
-                        'Follower: ${premiumUserModel.followers ?? 0}',
+                        'Follower ${formatFollowers((premiumUserModel.followers ?? 0).toInt())}',
                         style: regular.copyWith(
                           color: Get.theme.primaryColor,
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                         ),
                       )
                     ],

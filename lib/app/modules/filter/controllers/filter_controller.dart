@@ -36,7 +36,7 @@ class FilterController extends GetxController {
   RxBool isFilterLoading = false.obs;
 
   Rxn<CategoriesModel> category = Rxn<CategoriesModel>();
-  RxString condition = "used".obs;
+  RxString accountType = "".obs;
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
@@ -279,6 +279,8 @@ class FilterController extends GetxController {
   ProductPostListRes userProductPostListRes = ProductPostListRes();
   RxList<ProductModel> itemList = <ProductModel>[].obs;
   Map<String, dynamic>? filtermapPassed;
+  RxString searchText = RxString('');
+  TextEditingController searchController = TextEditingController();
   Future<void> applyFilter({
     bool refresh = false,
     bool paginate = false,
@@ -286,7 +288,7 @@ class FilterController extends GetxController {
   }) async {
     var map = {
       "category": (category.value?.name ?? '').toLowerCase(),
-      "condition": condition.value.toLowerCase(),
+      "condition": accountType.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
       "location":

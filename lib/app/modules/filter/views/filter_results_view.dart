@@ -87,7 +87,7 @@ class FilterResultsView extends GetView<FilterController> {
           ],
           elevation: 0,
           title: Text(
-            "Search Your Product",
+            (controller.category.value?.name ?? controller.searchText.value),
             style: regular,
           ),
         ),

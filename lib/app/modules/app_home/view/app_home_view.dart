@@ -6,7 +6,10 @@ import 'package:alsat/app/modules/app_home/component/category_content.dart';
 import 'package:alsat/app/modules/app_home/component/chat_content.dart';
 import 'package:alsat/app/modules/app_home/component/home_content.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
+import 'package:alsat/app/modules/filter/views/filter_results_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../../filter/views/search_view.dart';
@@ -70,6 +73,112 @@ class _AppHomeViewState extends State<AppHomeView> {
                 return CustomAppBar(
                   isShowLogo: homeController.homeBottomIndex.value == 0,
                   scaffoldKey: _scaffoldKey,
+                  action: homeController.homeBottomIndex.value == 1
+                      ? Container(
+                          width: Get.width * 0.8,
+                          padding: EdgeInsets.only(right: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  child: TextFormField(
+                                    controller:
+                                        filterController.searchController,
+                                    onFieldSubmitted: (value) {
+                                      filterController.category.value = null;
+                                      filterController.isFilterLoading.value =
+                                          true;
+                                      filterController.filtermapPassed = {
+                                        "title":
+                                            filterController.searchText.value,
+                                      };
+                                      filterController.applyFilter();
+                                      Get.to(
+                                        const FilterResultsView(),
+                                        transition: Transition.rightToLeft,
+                                      );
+                                    },
+                                    onChanged: (value) {
+                                      filterController.searchText.value = value;
+                                    },
+                                    decoration: InputDecoration(
+                                      suffixIcon: Obx(() {
+                                        return filterController
+                                                .searchText.value.isEmpty
+                                            ? const Text('')
+                                            : InkWell(
+                                                onTap: () {
+                                                  filterController
+                                                      .searchText.value = '';
+                                                  filterController
+                                                      .searchController
+                                                      .clear();
+                                                },
+                                                child: Icon(
+                                                  CupertinoIcons.xmark,
+                                                  color:
+                                                      Get.theme.disabledColor,
+                                                ),
+                                              );
+                                      }),
+                                      prefixIcon: Icon(
+                                        CupertinoIcons.search,
+                                        color: Get.theme.disabledColor,
+                                      ),
+                                      hintStyle: TextStyle(
+                                        fontSize: 12.sp,
+                                        fontWeight: FontWeight.w400,
+                                        color: Get.theme.disabledColor
+                                            .withOpacity(.5),
+                                      ),
+                                      hintText: 'Search Here',
+                                      isDense: true,
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      border: InputBorder.none,
+                                      enabledBorder: InputBorder.none,
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.r),
+                                        borderSide: BorderSide(
+                                          color: Get.theme.primaryColor
+                                              .withOpacity(.4),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                return filterController.searchText.value.isEmpty
+                                    ? const Center()
+                                    : InkWell(
+                                        onTap: () {
+                                          filterController.category.value =
+                                              null;
+                                          filterController
+                                              .isFilterLoading.value = true;
+                                          filterController.filtermapPassed = {
+                                            "title": filterController
+                                                .searchText.value,
+                                          };
+                                          filterController.applyFilter();
+                                          Get.to(
+                                            const FilterResultsView(),
+                                            transition: Transition.rightToLeft,
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 15.w),
+                                          child: const Icon(Icons.search),
+                                        ),
+                                      );
+                              }),
+                            ],
+                          ),
+                        )
+                      : const Center(),
                 );
               }),
               // Body

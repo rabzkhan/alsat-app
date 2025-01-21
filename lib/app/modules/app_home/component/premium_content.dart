@@ -1,8 +1,5 @@
 import 'package:alsat/app/common/const/image_path.dart';
-import 'package:alsat/app/components/network_image_preview.dart';
-import 'package:alsat/app/modules/app_home/component/home_content.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,28 +7,22 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import '../../../../config/theme/app_text_theme.dart';
 import '../../../components/all_user_tile.dart';
 import '../../conversation/controller/conversation_controller.dart';
-import '../../filter/controllers/filter_controller.dart';
-import '../../filter/views/filter_results_view.dart';
 import '../../filter/views/user_filter_result_view.dart';
-import '../../filter/views/user_filter_view.dart';
-import '../../product/controller/product_controller.dart';
-import '../../product/controller/product_details_controller.dart';
-import '../../product/view/client_profile_view.dart';
 import '../controller/home_controller.dart';
 import '../models/category_model.dart';
+import '../view/premium_categories_view.dart';
 
 class PremiumContent extends StatelessWidget {
   const PremiumContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final productController = Get.find<ProductController>();
+    // final productController = Get.find<ProductController>();
     final HomeController homeController = Get.find();
     final ConversationController _ = Get.find();
-    FilterController filterController = Get.find();
+    // FilterController filterController = Get.find();
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -44,8 +35,28 @@ class PremiumContent extends StatelessWidget {
       child: ListView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.zero,
         children: [
           //--- Category ---//
+          Row(
+            children: [
+              15.horizontalSpace,
+              Expanded(
+                child:
+                    Text("Popular Categories", style: Get.textTheme.titleSmall),
+              ),
+              TextButton(
+                onPressed: () {
+                  Get.to(() => const PremiumCategoriesView());
+                },
+                child: Text(
+                  "See All",
+                  style: Get.textTheme.titleSmall,
+                ),
+              ),
+              5.horizontalSpace,
+            ],
+          ),
           SizedBox(
             height: 68.h,
             child: Obx(() {
@@ -138,6 +149,7 @@ class PremiumContent extends StatelessWidget {
             padding: EdgeInsets.only(
                 top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
             child: TextFormField(
+              controller: homeController.searchController,
               onFieldSubmitted: (value) {
                 homeController.fetchPremiumUser(isFilter: true);
                 Get.to(
@@ -145,32 +157,75 @@ class PremiumContent extends StatelessWidget {
                   transition: Transition.rightToLeft,
                 );
               },
+              onChanged: (value) {
+                homeController.searchText.value = value;
+              },
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   CupertinoIcons.search,
                   color: Get.theme.disabledColor,
                 ),
-                suffixIcon: InkWell(
-                  onTap: () {
-                    homeController.fetchPremiumUser(isFilter: true);
-                    Get.to(
-                      const UserFilterResultView(isBackFilter: false),
-                      transition: Transition.rightToLeft,
-                    );
-                  },
-                  child: SizedBox(
-                    height: 20.h,
-                    width: 20.w,
-                    child: Center(
-                      child: Image.asset(
-                        height: 20.h,
-                        width: 20.w,
-                        filterIcon,
-                        color: Get.theme.disabledColor,
-                      ),
-                    ),
-                  ),
-                ),
+                suffixIcon: Obx(() {
+                  return homeController.searchText.isEmpty
+                      ? InkWell(
+                          onTap: () {
+                            homeController.category.value = null;
+                            homeController.fetchPremiumUser(isFilter: true);
+                            Get.to(
+                              const UserFilterResultView(isBackFilter: false),
+                              transition: Transition.rightToLeft,
+                            );
+                          },
+                          child: SizedBox(
+                            height: 20.h,
+                            width: 20.w,
+                            child: Center(
+                              child: Image.asset(
+                                height: 20.h,
+                                width: 20.w,
+                                filterIcon,
+                                color: Get.theme.disabledColor,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                homeController.searchController.clear();
+                                homeController.searchText.value = "";
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 18.r,
+                              ),
+                            ),
+                            8.horizontalSpace,
+                            InkWell(
+                              onTap: () {
+                                homeController.category.value = null;
+                                homeController.fetchPremiumUser(isFilter: true);
+                                Get.to(
+                                  const UserFilterResultView(
+                                      isBackFilter: false),
+                                  transition: Transition.rightToLeft,
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 16.r,
+                                child: Icon(
+                                  CupertinoIcons.search,
+                                  size: 18.r,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            10.horizontalSpace,
+                          ],
+                        );
+                }),
                 hintStyle: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,

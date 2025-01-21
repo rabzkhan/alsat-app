@@ -160,3 +160,15 @@ bool isImage(File file) {
   String extension = file.uri.pathSegments.last.split('.').last.toLowerCase();
   return imageExtensions.contains(extension);
 }
+
+String formatFollowers(int followers) {
+  if (followers >= 1000000000) {
+    return '${(followers / 1000000000).toStringAsFixed(1)}B';
+  } else if (followers >= 1000000) {
+    return '${(followers / 1000000).toStringAsFixed(1)}M';
+  } else if (followers >= 1000) {
+    return '${(followers / 1000).toStringAsFixed(1)}K';
+  } else {
+    return followers.toString();
+  }
+}
