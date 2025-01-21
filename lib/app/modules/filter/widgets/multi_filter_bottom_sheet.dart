@@ -26,7 +26,7 @@ class _MultiFilterBottomSheetState extends State<MultiFilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400.h,
+      margin: EdgeInsets.only(top: 50.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(

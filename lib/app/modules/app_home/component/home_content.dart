@@ -60,7 +60,7 @@ class HomeContent extends StatelessWidget {
                             padding: EdgeInsets.symmetric(
                               vertical: 15.h,
                             ).copyWith(
-                              top: 0.h,
+                              top: 10.h,
                             ),
                             child: Skeletonizer(
                               enabled: homeController.isBannerLoading.value,

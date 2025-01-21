@@ -18,9 +18,7 @@ class HomeSegmented extends StatelessWidget {
     final AuthController authController = Get.find();
     return Container(
       margin: EdgeInsets.symmetric(
-        vertical: 20.h,
-      ).copyWith(
-        top: 10.h,
+        vertical: 10.h,
       ),
       height: 45.h,
       width: Get.width * 0.7,

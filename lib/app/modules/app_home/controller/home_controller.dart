@@ -160,6 +160,8 @@ class HomeController extends GetxController {
   RxList<UserDataModel> filterUserList = <UserDataModel>[].obs;
   RxBool isPremiumLoading = true.obs;
   RxBool isFilterLoading = true.obs;
+  RxString searchText = RxString('');
+  TextEditingController searchController = TextEditingController();
   Future<void> fetchPremiumUser(
       {String? nextPaginateDate, bool isFilter = false}) async {
     String url = '${Constants.baseUrl}/users?limit=10';
@@ -179,6 +181,9 @@ class HomeController extends GetxController {
             }
           }
         : {"online": false, "premium": false};
+    if (searchText.value.isNotEmpty) {
+      data['search'] = searchText.value;
+    }
     log('Premium User: Date: $data-- $url');
     await BaseClient.safeApiCall(
       url,

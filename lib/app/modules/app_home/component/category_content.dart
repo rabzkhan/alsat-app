@@ -25,6 +25,7 @@ class CategoryContent extends StatelessWidget {
         homeController.getCategories();
       },
       child: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         physics: const BouncingScrollPhysics(),
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 16.w),

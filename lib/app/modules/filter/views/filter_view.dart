@@ -6,6 +6,7 @@ import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/app/modules/filter/views/filter_results_view.dart';
 import 'package:alsat/app/modules/filter/views/location_selection.dart';
+import 'package:alsat/app/modules/filter/widgets/year_range_sheet.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_material_pickers/dialogs/scroll_picker_dialog.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
@@ -241,6 +244,7 @@ class _FilterViewState extends State<FilterView> {
                   ? GestureDetector(
                       onTap: () {
                         Get.bottomSheet(
+                          isScrollControlled: true,
                           MultiFilterBottomSheet(
                             title: "Mobile Brand",
                             data: controller.mobileBrand,
@@ -397,7 +401,7 @@ class _FilterViewState extends State<FilterView> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.w),
                     child: Text(
-                      "Condition",
+                      "Account Type",
                       style: bold.copyWith(
                         fontSize: 16.sp,
                       ),
@@ -420,7 +424,7 @@ class _FilterViewState extends State<FilterView> {
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      controller.condition.value == ""
+                                      controller.accountType.value == ""
                                           ? Colors.white
                                           : Colors.transparent,
                                   elevation: 0,
@@ -429,7 +433,7 @@ class _FilterViewState extends State<FilterView> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  controller.condition.value = "";
+                                  controller.accountType.value = "";
                                 },
                                 child: const Text(
                                   "All",
@@ -444,7 +448,8 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value == "new"
+                                          controller.accountType.value ==
+                                                  "Premium"
                                               ? Colors.white
                                               : Colors.transparent,
                                       elevation: 0,
@@ -452,10 +457,10 @@ class _FilterViewState extends State<FilterView> {
                                           borderRadius:
                                               BorderRadius.circular(8.r))),
                                   onPressed: () {
-                                    controller.condition.value = "new";
+                                    controller.accountType.value = "Premium";
                                   },
                                   child: const Text(
-                                    "Brand New",
+                                    "Premium",
                                     style: TextStyle(
                                       color: Colors.black,
                                     ),
@@ -466,7 +471,8 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.condition.value == "used"
+                                          controller.accountType.value ==
+                                                  "Ordinary"
                                               ? Colors.white
                                               : Colors.transparent,
                                       elevation: 0,
@@ -474,10 +480,10 @@ class _FilterViewState extends State<FilterView> {
                                           borderRadius:
                                               BorderRadius.circular(8.r))),
                                   onPressed: () {
-                                    controller.condition.value = "used";
+                                    controller.accountType.value = "Ordinary";
                                   },
                                   child: const Text(
-                                    "Used",
+                                    "Ordinary",
                                     style: TextStyle(
                                       color: Colors.black,
                                     ),
@@ -580,6 +586,7 @@ class _FilterViewState extends State<FilterView> {
                         GestureDetector(
                           onTap: () {
                             Get.bottomSheet(
+                              isScrollControlled: true,
                               CarMultiBrandBottomSheet(
                                 title: "Brand",
                                 data: homeController.brandList,
@@ -832,7 +839,10 @@ class _FilterViewState extends State<FilterView> {
                                 child: FilterOptionWidget(
                                   title: "Year",
                                   subTitle: "1994 - 2009",
-                                  onTap: () {},
+                                  onTap: () {
+                                    Get.bottomSheet(
+                                        YearRangePicker(title: 'title'));
+                                  },
                                 ),
                               ),
                             ],

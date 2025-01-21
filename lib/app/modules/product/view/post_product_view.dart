@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
@@ -212,106 +213,44 @@ class _PostProductViewState extends State<PostProductView> {
             ),
           ),
           centerTitle: true,
+          actions: [
+            InkWell(
+              onTap: () {
+                resetForm();
+                _formKey.currentState!.reset();
+              },
+              child: Container(
+                margin: EdgeInsets.only(right: 10.w, top: 10.h, bottom: 10.h),
+                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10.r),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Clear All',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    4.horizontalSpace,
+                    Icon(
+                      Icons.delete_outline,
+                      color: Colors.white,
+                      size: 20.r,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         body: SafeArea(
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 5.h,
-                    ),
-                    width: Get.width * .5,
-                    height: Get.width > 600 ? 60.h : 40.h,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.r),
-                        boxShadow: [
-                          BoxShadow(
-                            color: context.theme.disabledColor.withOpacity(.1),
-                            offset: const Offset(0, 0),
-                            blurRadius: 10,
-                          )
-                        ]),
-                    child: Obx(() {
-                      return Stack(
-                        children: [
-                          AnimatedPositioned(
-                            height: Get.width > 600 ? 60.h : 30.h,
-                            duration: 300.ms,
-                            left:
-                                !productController.isShowPostProductVideo.value
-                                    ? 0
-                                    : Get.width * .22,
-                            child: Container(
-                              width: Get.width * .22,
-                              height: Get.width > 600 ? 60.h : 40.h,
-                              decoration: BoxDecoration(
-                                color: Get.theme.primaryColor,
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    productController
-                                        .isShowPostProductVideo.value = false;
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Obx(() {
-                                      return Text(
-                                        'Image',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: !productController
-                                                  .isShowPostProductVideo.value
-                                              ? Colors.white
-                                              : null,
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () {
-                                    productController
-                                        .isShowPostProductVideo.value = true;
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    child: Obx(() {
-                                      return Text(
-                                        'Video',
-                                        style: TextStyle(
-                                          fontSize: 14.sp,
-                                          color: productController
-                                                  .isShowPostProductVideo.value
-                                              ? Colors.white
-                                              : null,
-                                        ),
-                                      );
-                                    }),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      );
-                    }),
-                  )
-                ],
-              ),
-              // information
               Expanded(
                 child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -320,6 +259,108 @@ class _PostProductViewState extends State<PostProductView> {
                           ScrollViewKeyboardDismissBehavior.onDrag,
                       physics: const BouncingScrollPhysics(),
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10.w,
+                                vertical: 5.h,
+                              ),
+                              width: Get.width * .5,
+                              height: Get.width > 600 ? 60.h : 40.h,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: context.theme.disabledColor
+                                          .withOpacity(.1),
+                                      offset: const Offset(0, 0),
+                                      blurRadius: 10,
+                                    )
+                                  ]),
+                              child: Obx(() {
+                                return Stack(
+                                  children: [
+                                    AnimatedPositioned(
+                                      height: Get.width > 600 ? 60.h : 30.h,
+                                      duration: 300.ms,
+                                      left: !productController
+                                              .isShowPostProductVideo.value
+                                          ? 0
+                                          : Get.width * .22,
+                                      child: Container(
+                                        width: Get.width * .22,
+                                        height: Get.width > 600 ? 60.h : 40.h,
+                                        decoration: BoxDecoration(
+                                          color: Get.theme.primaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10.r),
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              productController
+                                                  .isShowPostProductVideo
+                                                  .value = false;
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              child: Obx(() {
+                                                return Text(
+                                                  'Image',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: !productController
+                                                            .isShowPostProductVideo
+                                                            .value
+                                                        ? Colors.white
+                                                        : null,
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              productController
+                                                  .isShowPostProductVideo
+                                                  .value = true;
+                                            },
+                                            child: Container(
+                                              alignment: Alignment.center,
+                                              child: Obx(() {
+                                                return Text(
+                                                  'Video',
+                                                  style: TextStyle(
+                                                    fontSize: 14.sp,
+                                                    color: productController
+                                                            .isShowPostProductVideo
+                                                            .value
+                                                        ? Colors.white
+                                                        : null,
+                                                  ),
+                                                );
+                                              }),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                );
+                              }),
+                            )
+                          ],
+                        ),
+                        // information
                         /// Post Product Video
                         Obx(() {
                           return !productController.isShowPostProductVideo.value
@@ -587,6 +628,7 @@ class _PostProductViewState extends State<PostProductView> {
                                   ),
                                 );
                         }),
+
                         ExpansionTile(
                           initiallyExpanded: true,
                           iconColor: context.theme.primaryColor,
@@ -1644,6 +1686,7 @@ class _PostProductViewState extends State<PostProductView> {
             productController.selectedPhoneBrand.value,
             onTap: () {
               Get.bottomSheet(
+                isScrollControlled: true,
                 FilterBottomSheet(
                   title: "Brand",
                   data: filterController.mobileBrand,
@@ -1675,6 +1718,7 @@ class _PostProductViewState extends State<PostProductView> {
                         productController.selectedBrand.value?.brand ?? '',
                         onTap: () {
                           Get.bottomSheet(
+                            isScrollControlled: true,
                             CarBrandBottomSheet(
                               title: "Brand",
                               data: homeController.brandList,
@@ -1780,10 +1824,13 @@ class _PostProductViewState extends State<PostProductView> {
                             });
                           },
                         )),
-                    Obx(() => _tile(
-                          "Year",
-                          productController.selectedYear.value,
-                        )),
+                    Obx(
+                      () => _tile(
+                        "Year",
+                        productController.selectedYear.value,
+                        onTap: () {},
+                      ),
+                    ),
                     Obx(() => _tile(
                           "Color",
                           productController.selectedColor.value.firstOrNull ??
@@ -1916,6 +1963,7 @@ class _PostProductViewState extends State<PostProductView> {
 
     productController.pickImageList.clear();
     productController.selectCategory.value = null;
+    productController.selectSubCategory.value = null;
     productController.selectedBrand.value = null;
     productController.selectedModel.value = null;
     productController.selectedBodyType.value = '';
@@ -1950,10 +1998,9 @@ class _PostProductViewState extends State<PostProductView> {
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
                       fontSize: 14.sp,
-                      fontWeight: FontWeight.w600,
-                      color: value.isEmpty
-                          ? Colors.red
-                          : context.theme.primaryColor,
+                      fontWeight:
+                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                      color: value.isEmpty ? Colors.red : Colors.black87,
                     ),
                   ),
                 ],

@@ -149,6 +149,7 @@ class PremiumContent extends StatelessWidget {
             padding: EdgeInsets.only(
                 top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
             child: TextFormField(
+              controller: homeController.searchController,
               onFieldSubmitted: (value) {
                 homeController.fetchPremiumUser(isFilter: true);
                 Get.to(
@@ -156,32 +157,75 @@ class PremiumContent extends StatelessWidget {
                   transition: Transition.rightToLeft,
                 );
               },
+              onChanged: (value) {
+                homeController.searchText.value = value;
+              },
               decoration: InputDecoration(
                 prefixIcon: Icon(
                   CupertinoIcons.search,
                   color: Get.theme.disabledColor,
                 ),
-                suffixIcon: InkWell(
-                  onTap: () {
-                    homeController.fetchPremiumUser(isFilter: true);
-                    Get.to(
-                      const UserFilterResultView(isBackFilter: false),
-                      transition: Transition.rightToLeft,
-                    );
-                  },
-                  child: SizedBox(
-                    height: 20.h,
-                    width: 20.w,
-                    child: Center(
-                      child: Image.asset(
-                        height: 20.h,
-                        width: 20.w,
-                        filterIcon,
-                        color: Get.theme.disabledColor,
-                      ),
-                    ),
-                  ),
-                ),
+                suffixIcon: Obx(() {
+                  return homeController.searchText.isEmpty
+                      ? InkWell(
+                          onTap: () {
+                            homeController.category.value = null;
+                            homeController.fetchPremiumUser(isFilter: true);
+                            Get.to(
+                              const UserFilterResultView(isBackFilter: false),
+                              transition: Transition.rightToLeft,
+                            );
+                          },
+                          child: SizedBox(
+                            height: 20.h,
+                            width: 20.w,
+                            child: Center(
+                              child: Image.asset(
+                                height: 20.h,
+                                width: 20.w,
+                                filterIcon,
+                                color: Get.theme.disabledColor,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                homeController.searchController.clear();
+                                homeController.searchText.value = "";
+                              },
+                              child: Icon(
+                                Icons.clear,
+                                size: 18.r,
+                              ),
+                            ),
+                            8.horizontalSpace,
+                            InkWell(
+                              onTap: () {
+                                homeController.category.value = null;
+                                homeController.fetchPremiumUser(isFilter: true);
+                                Get.to(
+                                  const UserFilterResultView(
+                                      isBackFilter: false),
+                                  transition: Transition.rightToLeft,
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 16.r,
+                                child: Icon(
+                                  CupertinoIcons.search,
+                                  size: 18.r,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                            10.horizontalSpace,
+                          ],
+                        );
+                }),
                 hintStyle: TextStyle(
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w400,

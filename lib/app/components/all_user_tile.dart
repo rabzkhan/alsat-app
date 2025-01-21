@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,8 +35,20 @@ class AllUserTile extends StatelessWidget {
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
-        height: 100.h,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+        margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.r),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        height: 110.h,
         child: Row(
           children: [
             Container(
@@ -72,16 +85,16 @@ class AllUserTile extends StatelessWidget {
                         child: Text(
                           maxLines: 1,
                           premiumUserModel.userName ?? 'Premium User Name',
-                          style: bold.copyWith(fontSize: 14.sp),
+                          style: bold.copyWith(fontSize: 16.sp),
                         ),
                       ),
-                      5.horizontalSpace,
-                      CircleAvatar(
-                        radius: 5.r,
-                        backgroundColor: (premiumUserModel.active ?? false)
-                            ? Colors.green
-                            : Colors.grey,
-                      )
+                      // 5.horizontalSpace,
+                      // CircleAvatar(
+                      //   radius: 5.r,
+                      //   backgroundColor: (premiumUserModel.active ?? false)
+                      //       ? Colors.green
+                      //       : Colors.grey,
+                      // )
                     ],
                   ),
                   3.verticalSpace,
@@ -91,7 +104,7 @@ class AllUserTile extends StatelessWidget {
                       RatingBarIndicator(
                         rating: (premiumUserModel.rating ?? 0).toDouble(),
                         itemBuilder: (context, index) => const Icon(
-                          Icons.star_border_outlined,
+                          Icons.star,
                           color: Colors.amber,
                         ),
                         itemCount: 5,
@@ -102,7 +115,7 @@ class AllUserTile extends StatelessWidget {
                       Text(
                         '(${(premiumUserModel.rating ?? 0).toStringAsFixed(1)}) ${(premiumUserModel.votes ?? 0)}',
                         style: regular.copyWith(
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                         ),
                       )
                     ],
@@ -122,15 +135,14 @@ class AllUserTile extends StatelessWidget {
                           child: Text(
                             '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
                             style: regular.copyWith(
-                              fontSize: 12.sp,
-                              color: context.theme.disabledColor,
+                              fontSize: 14.sp,
                             ),
                           ),
                         )
                       : Text(
                           "No Location",
                           style: regular.copyWith(
-                            fontSize: 12.sp,
+                            fontSize: 14.sp,
                             color: context.theme.disabledColor,
                           ),
                         ),
@@ -151,18 +163,17 @@ class AllUserTile extends StatelessWidget {
                           Text(
                             'Buyer Protection',
                             style: regular.copyWith(
-                              color: Get.theme.disabledColor,
-                              fontSize: 10.sp,
+                              fontSize: 12.sp,
                             ),
                           )
                         ],
                       ),
                       20.horizontalSpace,
                       Text(
-                        'Follower: ${premiumUserModel.followers ?? 0}',
+                        'Follower ${formatFollowers((premiumUserModel.followers ?? 0).toInt())}',
                         style: regular.copyWith(
                           color: Get.theme.primaryColor,
-                          fontSize: 12.sp,
+                          fontSize: 14.sp,
                         ),
                       )
                     ],

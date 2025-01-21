@@ -4,6 +4,7 @@ import 'package:alsat/app/modules/product/controller/product_details_controller.
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_popup/flutter_popup.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -71,18 +72,94 @@ class _MessagesScreenState extends State<MessagesScreen> {
           elevation: 0,
           toolbarHeight: 60.h,
           actions: [
-            IconButton(
-              onPressed: (widget.conversation.haveBlocked ?? false)
-                  ? null
-                  : () {
-                      _key.currentState!.openEndDrawer();
-                    },
-              icon: Icon(
+            CustomPopup(
+              backgroundColor: AppColors.primary,
+              showArrow: true,
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+              barrierColor: Colors.transparent,
+              arrowColor: Colors.black,
+              contentDecoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.primary.withOpacity(.4),
+                    blurRadius: 10,
+                    spreadRadius: .5,
+                  ),
+                ],
+              ),
+              content: SizedBox(
+                width: MediaQuery.of(context).size.width * .5,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CupertinoListTile.notched(
+                      onTap: () {
+                        // Get.back();
+                        showUserBlockBottomSheet(
+                          participant: (conversationController
+                              .selectConversation.value?.participants
+                              ?.firstWhereOrNull((e) =>
+                                  e.id !=
+                                  authController.userDataModel.value.id))!,
+                          conversationController: conversationController,
+                        ).then((onValue) {
+                          widget.conversation.haveBlocked = true;
+                          setState(() {});
+                        });
+                      },
+                      title: Text(
+                        'Block User',
+                        style: regular.copyWith(
+                          fontSize: 14.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      leading: const Icon(
+                        Icons.block_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Divider(
+                      height: 1,
+                      color: Colors.grey.shade300,
+                    ),
+                    CupertinoListTile.notched(
+                      onTap: () {
+                        // Get.back();
+                        showUserReportBottomSheet(
+                          participant: (conversationController
+                              .selectConversation.value?.participants
+                              ?.firstWhereOrNull((e) =>
+                                  e.id !=
+                                  authController.userDataModel.value.id))!,
+                          conversationController: conversationController,
+                        );
+                      },
+                      title: Text(
+                        'Report',
+                        style: regular.copyWith(
+                          fontSize: 14.sp,
+                          color: Colors.white,
+                        ),
+                      ),
+                      leading: const Icon(
+                        Icons.report,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              child: Icon(
                 Icons.more_vert_sharp,
                 size: 30.r,
                 color: bold.color!.withOpacity(.5),
               ),
-            )
+            ),
           ],
           title: Obx(() {
             return InkWell(
@@ -156,19 +233,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
             );
           }),
         ),
-        endDrawer: MessageSideOption(
-          conversationController: conversationController,
-          authController: authController,
-          _key,
-          participant: (conversationController
-              .selectConversation.value?.participants
-              ?.firstWhereOrNull(
-                  (e) => e.id != authController.userDataModel.value.id)),
-          onBlock: () {
-            widget.conversation.haveBlocked = true;
-            setState(() {});
-          },
-        ),
         body: GestureDetector(
           onTap: () {
             messageController.selectMessage.value = null;
@@ -205,7 +269,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   );
                 }),
               ),
-              (widget.conversation.haveBlocked ?? false)
+              ((widget.conversation.haveBlocked ?? false) ||
+                      (widget.conversation.isBlocked ?? false))
                   ? Container(
                       margin: EdgeInsets.only(top: 10.h),
                       padding: EdgeInsets.symmetric(
@@ -232,34 +297,35 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             ),
                           ),
                           10.verticalSpace,
-                          Row(
-                            children: [
-                              Expanded(
-                                child: CupertinoButton(
-                                  color: Colors.grey,
-                                  child: const Text('UnBlock'),
-                                  onPressed: () {
-                                    showUserBlockBottomSheet(
-                                      isBlocked: false,
-                                      participant: (conversationController
-                                          .selectConversation
-                                          .value
-                                          ?.participants
-                                          ?.firstWhereOrNull((e) =>
-                                              e.id !=
-                                              authController
-                                                  .userDataModel.value.id))!,
-                                      conversationController:
-                                          conversationController,
-                                    ).then((value) {
-                                      widget.conversation.haveBlocked = false;
-                                      setState(() {});
-                                    });
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
+                          if ((widget.conversation.haveBlocked ?? false))
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CupertinoButton(
+                                    color: Colors.grey,
+                                    child: const Text('UnBlock'),
+                                    onPressed: () {
+                                      showUserBlockBottomSheet(
+                                        isBlocked: false,
+                                        participant: (conversationController
+                                            .selectConversation
+                                            .value
+                                            ?.participants
+                                            ?.firstWhereOrNull((e) =>
+                                                e.id !=
+                                                authController
+                                                    .userDataModel.value.id))!,
+                                        conversationController:
+                                            conversationController,
+                                      ).then((value) {
+                                        widget.conversation.haveBlocked = false;
+                                        setState(() {});
+                                      });
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
                           10.verticalSpace,
                           Row(
                             children: [

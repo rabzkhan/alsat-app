@@ -25,7 +25,7 @@ class _CarBrandBottomSheetState extends State<CarBrandBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400.h,
+      margin: EdgeInsets.only(top: 50.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
