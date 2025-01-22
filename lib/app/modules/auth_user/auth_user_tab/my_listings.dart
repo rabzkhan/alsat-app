@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:alsat/app/components/product_grid_tile.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
