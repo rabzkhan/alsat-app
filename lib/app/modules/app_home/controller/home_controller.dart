@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
+import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
@@ -75,6 +76,8 @@ class HomeController extends GetxController {
         categories.value =
             data.map((json) => CategoriesModel.fromJson(json)).toList();
         isCategoryLoading.value = false;
+        Get.find<ProductController>().myListingSelectCategory.value =
+            categories.first;
       },
       onError: (error) {
         log('CategoryError: ${error.message}');

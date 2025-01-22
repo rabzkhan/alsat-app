@@ -12,26 +12,11 @@ import '../../app_home/models/car_brand_res.dart';
 import '../../app_home/models/category_model.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/model/product_post_list_res.dart';
-import '../models/location_model.dart';
-import '../views/filter_results_view.dart';
 
 class FilterController extends GetxController {
-  RxList<String> dummyImage = <String>[
-    "https://imgd.aeplcdn.com/664x374/n/cw/ec/110233/camry-exterior-right-front-three-quarter-3.jpeg?isig=0&q=80",
-    "https://imgd.aeplcdn.com/1200x900/cw/ec/37333/Toyota-Corolla-Altis-Exterior-142776.jpg?wm=0",
-    "https://www.team-bhp.com/sites/default/files/pictures2021/0%20Initial.JPG",
-    "https://cdn.motor1.com/images/mgl/bgg7xl/s1/2022-bmw-m3-touring.jpg",
-    "https://imgd.aeplcdn.com/664x374/n/cw/ec/178535/c-class-exterior-right-front-three-quarter.jpeg?isig=0&q=80",
-    "https://stimg.cardekho.com/images/carexteriorimages/930x620/Tesla/Model-X/5253/1611841733029/front-left-side-47.jpg",
-    "https://s3-prod.autonews.com/s3fs-public/CYBERTRUCK-MAIN_i_5.jpg",
-    "https://cdn.motor1.com/images/mgl/WRMx1/s3/mercedes-amg-g-class-with-v12-engine-from-brabus.jpg"
-  ].obs;
-
-  String getRandomImageUrl() {
-    final random = Random();
-    int index = random.nextInt(dummyImage.length);
-    return dummyImage[index];
-  }
+  RxInt mileage = 100.obs;
+  RxInt choseFirstYear = 1900.obs;
+  RxInt choseLastYear = DateTime.now().year.obs;
 
   RxBool isFilterLoading = false.obs;
 
@@ -291,6 +276,8 @@ class FilterController extends GetxController {
       "condition": accountType.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
+      "year_from": choseFirstYear.value,
+      "year_to": choseLastYear.value,
       "location":
           getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
       "brand": brand.isEmpty ? [] : brandformate(),

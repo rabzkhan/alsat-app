@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
@@ -43,7 +44,7 @@ class CategoryContent extends StatelessWidget {
                 ...List.generate(
                   homeController.categories.length,
                   (index) => ExpansionTile(
-                    title: GestureDetector(
+                    title: InkWell(
                       onTap: (homeController.categories[index].subCategories ??
                                   [])
                               .isEmpty
@@ -92,24 +93,83 @@ class CategoryContent extends StatelessWidget {
                     childrenPadding:
                         EdgeInsets.symmetric(horizontal: Get.width * .12),
                     children: [
-                      ...(homeController.categories[index].subCategories ?? [])
-                          .map((subCategory) {
-                        return GestureDetector(
+                      if ((homeController.categories[index].subCategories ?? [])
+                                  .firstWhereOrNull((e) =>
+                                      e.name?.toLowerCase().contains('all') ??
+                                      false) ==
+                              null &&
+                          (homeController.categories[index].subCategories ?? [])
+                              .isNotEmpty)
+                        InkWell(
                           onTap: () {
-                            filterController.category.value = CategoriesModel(
-                              sId: subCategory.sId,
-                              name: subCategory.name,
-                              icon: subCategory.icon,
-                              filter: subCategory.filter,
-                            );
-
+                            filterController.category.value = homeController
+                                .categories
+                                .elementAtOrNull(index);
                             filterController.isFilterLoading.value = true;
                             filterController.filtermapPassed = {
                               "category":
-                                  (subCategory.name ?? '').toLowerCase(),
+                                  (homeController.categories[index].name ?? '')
+                                      .toLowerCase(),
                             };
                             filterController.applyFilter();
+                            Get.to(
+                              const FilterResultsView(),
+                              transition: Transition.rightToLeft,
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.h, horizontal: 10.w),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    'All',
+                                    style: TextStyle(
+                                      fontSize: 15.sp,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ...(homeController.categories[index].subCategories ?? [])
+                          .map((subCategory) {
+                        return InkWell(
+                          onTap: () {
+                            String categoryName = subCategory.name ?? '';
+                            bool isParentCategory =
+                                categoryName.toLowerCase().contains('all');
+                            if (isParentCategory) {
+                              filterController.category.value = homeController
+                                  .categories
+                                  .elementAtOrNull(index);
+                              filterController.isFilterLoading.value = true;
+                              filterController.filtermapPassed = {
+                                "category":
+                                    (homeController.categories[index].name ??
+                                            '')
+                                        .toLowerCase(),
+                              };
+                            } else {
+                              filterController.category.value = CategoriesModel(
+                                sId: subCategory.sId,
+                                name: subCategory.name,
+                                icon: subCategory.icon,
+                                filter: subCategory.filter,
+                              );
 
+                              filterController.isFilterLoading.value = true;
+                              filterController.filtermapPassed = {
+                                "category":
+                                    (subCategory.name ?? '').toLowerCase(),
+                              };
+                            }
+                            filterController.applyFilter();
                             Get.to(
                               const FilterResultsView(),
                               transition: Transition.rightToLeft,

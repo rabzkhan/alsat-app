@@ -31,6 +31,7 @@ import '../widgets/car_multi_model_sheet.dart';
 import '../widgets/color_picker_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
+import '../widgets/mileage_picker.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
 
 class FilterView extends StatefulWidget {
@@ -835,15 +836,8 @@ class _FilterViewState extends State<FilterView> {
                                     )),
                               ),
                               10.horizontalSpace,
-                              Expanded(
-                                child: FilterOptionWidget(
-                                  title: "Year",
-                                  subTitle: "1994 - 2009",
-                                  onTap: () {
-                                    Get.bottomSheet(
-                                        YearRangePicker(title: 'title'));
-                                  },
-                                ),
+                              const Expanded(
+                                child: FilterYearRangePicker(),
                               ),
                             ],
                           ),
@@ -877,12 +871,8 @@ class _FilterViewState extends State<FilterView> {
                                 ),
                               ),
                               10.horizontalSpace,
-                              Expanded(
-                                child: FilterOptionWidget(
-                                  title: "Mileage",
-                                  subTitle: " ~ km",
-                                  onTap: () {},
-                                ),
+                              const Expanded(
+                                child: MileagePicker(),
                               ),
                             ],
                           ),

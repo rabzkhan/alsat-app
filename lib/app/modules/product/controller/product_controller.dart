@@ -380,6 +380,9 @@ class ProductController extends GetxController {
     );
   }
 
+  //my listing
+  Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
+
   //--- Get All PRODUCT ---//
   RefreshController myListingRefreshController =
       RefreshController(initialRefresh: false);

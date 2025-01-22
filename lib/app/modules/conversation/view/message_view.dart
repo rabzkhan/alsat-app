@@ -19,7 +19,6 @@ import '../controller/message_controller.dart';
 import '../model/conversation_messages_res.dart';
 import '../model/conversations_res.dart';
 import '../widget/message_input_widget.dart';
-import '../widget/message_side_option.dart';
 import '../widget/message_tile.dart';
 import '../widget/user_block_bottom_sheet.dart';
 import '../widget/user_report_bottom_sheet.dart';

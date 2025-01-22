@@ -9,28 +9,25 @@ import 'package:get/get.dart';
 
 import '../controllers/filter_controller.dart';
 
-class FilterYearRangePicker extends StatefulWidget {
-  const FilterYearRangePicker({super.key});
+class MileagePicker extends StatefulWidget {
+  const MileagePicker({super.key});
 
   @override
-  State<FilterYearRangePicker> createState() => _FilterYearRangePickerState();
+  State<MileagePicker> createState() => _MileagePickerState();
 }
 
-class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
+class _MileagePickerState extends State<MileagePicker> {
   late double widgetHeight;
   late ScrollController scrollController;
-  late ScrollController scrollController2;
-  final List<int> items = List.generate(1000, (index) => index + 1900);
-
+  final List<int> items = List.generate(1000, (index) => (index * 100));
   final FilterController filterController = Get.find();
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       return FilterOptionWidget(
-        title: "Year",
-        subTitle:
-            "${filterController.choseFirstYear.value} - ${filterController.choseLastYear.value}",
+        title: "Mileage",
+        subTitle: "${filterController.mileage.value} - Km",
         onTap: () {
           showCustomDialog(context);
         },
@@ -39,10 +36,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
   }
 
   showCustomDialog(BuildContext context) {
-    int initialItem = items.indexOf(filterController.choseFirstYear.value);
-    int initialItem2 = items.indexOf(filterController.choseLastYear.value);
+    int initialItem = items.indexOf(filterController.mileage.value);
     scrollController = FixedExtentScrollController(initialItem: initialItem);
-    scrollController2 = FixedExtentScrollController(initialItem: initialItem2);
     final ThemeData themeData = Theme.of(context);
     TextStyle? defaultStyle = themeData.textTheme.bodyMedium;
     TextStyle? selectedStyle = themeData.textTheme.bodyLarge
@@ -71,7 +66,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    child: Text('Year Range',
+                    child: Text('Pick Mileage',
                         style: themeData.textTheme.titleMedium),
                   ),
                   10.verticalSpace,
@@ -100,7 +95,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                           '$value',
                                           style: (value ==
                                                   filterController
-                                                      .choseFirstYear.value)
+                                                      .mileage.value)
                                               ? selectedStyle
                                               : defaultStyle,
                                         );
@@ -111,70 +106,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                   itemExtent: 50,
                                   onSelectedItemChanged: (index) {
                                     setState(() {
-                                      filterController.choseFirstYear.value =
-                                          items[index];
-                                    });
-                                  },
-                                  physics: const FixedExtentScrollPhysics(),
-                                ),
-                              ),
-                              const Divider(),
-                              Center(
-                                child: Container(
-                                  margin:
-                                      EdgeInsets.symmetric(horizontal: 20.w),
-                                  height: 50,
-                                  decoration: const BoxDecoration(
-                                    border: Border(
-                                      top: BorderSide(
-                                        color: AppColors.primary,
-                                        width: .8,
-                                      ),
-                                      bottom: BorderSide(
-                                        color: AppColors.primary,
-                                        width: .8,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        10.verticalSpace,
-                        Expanded(
-                          child: Stack(
-                            children: <Widget>[
-                              GestureDetector(
-                                onTapUp: _itemTapped,
-                                child: ListWheelScrollView.useDelegate(
-                                  childDelegate: ListWheelChildBuilderDelegate(
-                                      builder:
-                                          (BuildContext context, int index) {
-                                    if (index < 0 || index > items.length - 1) {
-                                      return null;
-                                    }
-
-                                    var value = items[index];
-
-                                    return Center(
-                                      child: Obx(() {
-                                        return Text(
-                                          '$value',
-                                          style: (value ==
-                                                  filterController
-                                                      .choseLastYear.value)
-                                              ? selectedStyle
-                                              : defaultStyle,
-                                        );
-                                      }),
-                                    );
-                                  }),
-                                  controller: scrollController2,
-                                  itemExtent: 50,
-                                  onSelectedItemChanged: (index) {
-                                    setState(() {
-                                      filterController.choseLastYear.value =
+                                      filterController.mileage.value =
                                           items[index];
                                     });
                                   },
