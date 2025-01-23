@@ -19,7 +19,6 @@ import '../../../components/network_image_preview.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../../authentication/controller/auth_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
-import '../../filter/views/location_selection.dart';
 import '../controller/user_controller.dart';
 import 'widgets/location_selection.dart';
 import 'widgets/upgrade_to_premium_dialog.dart';
@@ -161,6 +160,19 @@ class _MySettingsState extends State<MySettings> {
                           .contains(e.name))
                   .toList()
                   .firstOrNull,
+              'bio': authController.userDataModel.value.bio ?? '',
+              'youtube': authController.userDataModel.value.messaging
+                      ?.firstWhereOrNull((e) => e.type == 'youtube')
+                      ?.id ??
+                  '',
+              'tiktok': authController.userDataModel.value.messaging
+                      ?.firstWhereOrNull((e) => e.type == 'tiktok')
+                      ?.id ??
+                  '',
+              'twitch': authController.userDataModel.value.messaging
+                      ?.firstWhereOrNull((e) => e.type == 'twitch')
+                      ?.id ??
+                  '',
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -291,6 +303,30 @@ class _MySettingsState extends State<MySettings> {
                   );
                 }),
                 20.verticalSpace,
+                FormBuilderTextField(
+                  maxLines: 3,
+                  name: 'bio',
+                  decoration: InputDecoration(
+                    isDense: true,
+                    alignLabelWithHint: true,
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    labelText: 'About Me',
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      color: Get.theme.shadowColor.withOpacity(.6),
+                    ),
+                    border: outlineBorder,
+                    enabledBorder: outlineBorder,
+                    errorBorder: outlineBorder,
+                    focusedBorder: outlineBorder,
+                  ),
+                  validator: FormBuilderValidators.compose(
+                    [
+                      FormBuilderValidators.required(),
+                    ],
+                  ),
+                ),
+                20.verticalSpace,
                 InkWell(
                   onTap: () {
                     showCupertinoModalBottomSheet(
@@ -414,7 +450,6 @@ class _MySettingsState extends State<MySettings> {
                 20.verticalSpace,
                 FormBuilderTextField(
                   name: 'youtube',
-                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
                       youtubeIcon,
@@ -442,7 +477,6 @@ class _MySettingsState extends State<MySettings> {
                 20.verticalSpace,
                 FormBuilderTextField(
                   name: 'tiktok',
-                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
                       tiktokIcon,
@@ -470,7 +504,6 @@ class _MySettingsState extends State<MySettings> {
                 20.verticalSpace,
                 FormBuilderTextField(
                   name: 'twitch',
-                  keyboardType: TextInputType.phone,
                   decoration: InputDecoration(
                     suffix: Image.asset(
                       twitchIcon,
@@ -537,16 +570,15 @@ class _MySettingsState extends State<MySettings> {
                                       ], // max 3
                                       "location": {
                                         "province": authController
-                                                .selectedProvince.value ??
-                                            'No Address',
+                                            .selectedProvince.value,
                                         "city":
-                                            authController.selectedCity.value ??
-                                                'No Address',
+                                            authController.selectedCity.value,
                                         "geo": {
                                           "type": "point",
                                           "coordinates": [45, 5]
                                         }
                                       },
+                                      "bio": formData['bio'] ?? "",
                                       "user_name": formData['user_name'] ?? "",
                                       "categories": authController
                                           .selectUserCategoriesList

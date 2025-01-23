@@ -67,7 +67,6 @@ Future<void> main() async {
                 // home: const OnboardingPage(),
                 initialBinding: AppBinding(),
                 theme: appTheme(),
-                // locale: localizationService.locale.value,
                 locale: Locale(localizationService.locale.value.languageCode),
                 localizationsDelegates: const [
                   AppLocalizations.delegate, // Add this line

@@ -683,112 +683,114 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     ),
                   ),
                   10.verticalSpace,
-
-                  Row(
-                    children: [
-                      if (isCallAvailable(
-                          widget.productModel?.individualInfo?.freeToCallFrom,
-                          widget.productModel?.individualInfo?.freeToCallTo))
-                        Expanded(
-                          child: MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                              side: BorderSide(
-                                color: Get.theme.primaryColor,
-                              ),
-                            ),
-                            height: 45,
-                            color: Get.theme.scaffoldBackgroundColor,
-                            onPressed: () async {
-                              final url =
-                                  'tel:${widget.productModel?.individualInfo?.phoneNumber}';
-                              if (await canLaunchUrl(Uri.parse(url))) {
-                                await launchUrl(Uri.parse(url));
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.phone,
-                                  color: Get.theme.primaryColor,
-                                  size: 20.r,
-                                ),
-                                5.horizontalSpace,
-                                Text(
-                                  'Call ',
-                                  style: regular.copyWith(
-                                    color: Get.theme.primaryColor,
-                                    fontSize: 14.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (isCallAvailable(
-                          widget.productModel?.individualInfo?.freeToCallFrom,
-                          widget.productModel?.individualInfo?.freeToCallTo))
-                        30.horizontalSpace,
-                      Expanded(
-                        child: Obx(() {
-                          return MaterialButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.r),
-                            ),
-                            height: 45,
-                            color: Get.theme.primaryColor,
-                            onPressed: productDetailsController
-                                    .isFetchUserConversationLoading.value
-                                ? null
-                                : () {
-                                    productDetailsController
-                                        .getConversationInfoByUserId(
-                                            productDetailsController
-                                                    .postUserModel.value?.id ??
-                                                "")
-                                        .then((value) {
-                                      Get.to(
-                                        MessagesScreen(
-                                          conversation: productDetailsController
-                                              .conversationInfo.value!,
-                                        ),
-                                        transition: Transition.fadeIn,
-                                      );
-                                    });
-                                  },
-                            child: productDetailsController
-                                    .isFetchUserConversationLoading.value
-                                ? const CupertinoActivityIndicator()
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.messenger_rounded,
-                                        color: Colors.white,
-                                        size: 20.r,
-                                      ),
-                                      5.horizontalSpace,
-                                      Text(
-                                        'Mesaage',
-                                        style: regular.copyWith(
-                                          color: Colors.white,
-                                          fontSize: 14.sp,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                          );
-                        }),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),
             50.verticalSpace,
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+        child: Row(
+          children: [
+            if (isCallAvailable(
+                widget.productModel?.individualInfo?.freeToCallFrom,
+                widget.productModel?.individualInfo?.freeToCallTo))
+              Expanded(
+                child: MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                    side: BorderSide(
+                      color: Get.theme.primaryColor,
+                    ),
+                  ),
+                  height: 45,
+                  color: Get.theme.scaffoldBackgroundColor,
+                  onPressed: () async {
+                    final url =
+                        'tel:${widget.productModel?.individualInfo?.phoneNumber}';
+                    if (await canLaunchUrl(Uri.parse(url))) {
+                      await launchUrl(Uri.parse(url));
+                    } else {
+                      throw 'Could not launch $url';
+                    }
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.phone,
+                        color: Get.theme.primaryColor,
+                        size: 20.r,
+                      ),
+                      5.horizontalSpace,
+                      Text(
+                        'Call ',
+                        style: regular.copyWith(
+                          color: Get.theme.primaryColor,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (isCallAvailable(
+                widget.productModel?.individualInfo?.freeToCallFrom,
+                widget.productModel?.individualInfo?.freeToCallTo))
+              30.horizontalSpace,
+            Expanded(
+              child: Obx(() {
+                return MaterialButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  height: 45,
+                  color: Get.theme.primaryColor,
+                  onPressed: productDetailsController
+                          .isFetchUserConversationLoading.value
+                      ? null
+                      : () {
+                          productDetailsController
+                              .getConversationInfoByUserId(
+                                  productDetailsController
+                                          .postUserModel.value?.id ??
+                                      "")
+                              .then((value) {
+                            Get.to(
+                              MessagesScreen(
+                                conversation: productDetailsController
+                                    .conversationInfo.value!,
+                              ),
+                              transition: Transition.fadeIn,
+                            );
+                          });
+                        },
+                  child: productDetailsController
+                          .isFetchUserConversationLoading.value
+                      ? const CupertinoActivityIndicator()
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.messenger_rounded,
+                              color: Colors.white,
+                              size: 20.r,
+                            ),
+                            5.horizontalSpace,
+                            Text(
+                              'Mesaage',
+                              style: regular.copyWith(
+                                color: Colors.white,
+                                fontSize: 14.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                );
+              }),
+            ),
           ],
         ),
       ),

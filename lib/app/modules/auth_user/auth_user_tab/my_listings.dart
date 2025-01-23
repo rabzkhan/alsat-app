@@ -18,41 +18,45 @@ class MyListings extends StatelessWidget {
 
     return Obx(() {
       return DefaultTabController(
-        initialIndex: (homeController.categories
-            .indexOf(productController.myListingSelectCategory.value)),
+        initialIndex: productController.myListingSelectCategory.value == null
+            ? 0
+            : (homeController.categories
+                .indexOf(productController.myListingSelectCategory.value)),
         length: homeController.categories.length,
         child: Column(
           children: [
             6.verticalSpace,
-            TabBar(
-              onTap: (value) {
-                productController.myListingSelectCategory.value =
-                    homeController.categories[value];
-                productController.myListingRefresh();
-              },
-              isScrollable: true,
-              unselectedLabelColor: Colors.black87,
-              indicatorWeight: 1,
-              indicator: BoxDecoration(
-                color: Colors.transparent,
-                border: Border(
-                  bottom: BorderSide(
-                    color: context.theme.primaryColor,
-                    width: 1,
+            Obx(() {
+              return TabBar(
+                onTap: (value) {
+                  productController.myListingSelectCategory.value =
+                      homeController.categories[value];
+                  productController.myListingRefresh();
+                },
+                isScrollable: true,
+                unselectedLabelColor: Colors.black87,
+                indicatorWeight: 1,
+                indicator: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: context.theme.primaryColor,
+                      width: 1,
+                    ),
                   ),
                 ),
-              ),
-              tabs: homeController.categories
-                  .map(
-                    (e) => Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        e.name ?? '',
+                tabs: homeController.categories
+                    .map(
+                      (e) => Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.h),
+                        child: Text(
+                          e.name ?? '',
+                        ),
                       ),
-                    ),
-                  )
-                  .toList(),
-            ),
+                    )
+                    .toList(),
+              );
+            }),
             Expanded(
               child: Obx(
                 () {
