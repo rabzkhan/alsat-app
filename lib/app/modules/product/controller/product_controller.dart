@@ -345,6 +345,7 @@ class ProductController extends GetxController {
     } else {
       url = "$url?user=${authController.userDataModel.value.id}";
     }
+    log("post url: $url");
 
     await BaseClient.safeApiCall(
       url,
@@ -353,15 +354,17 @@ class ProductController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: {},
+      data: myListingSelectCategory.value != null
+          ? {"category": myListingSelectCategory.value!.name ?? ""}
+          : {},
       onLoading: () {
         if (nextPaginateDate == null) {
           isFetchMyProduct.value = true;
-          myProductList.clear();
+          myProductList.value = [];
         }
       },
       onSuccess: (response) {
-        log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
+        log('${response.requestOptions.baseUrl} ${response.requestOptions.path} ${response.requestOptions.data}');
         Map<String, dynamic> responseData = response.data;
         myProductPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
@@ -379,6 +382,9 @@ class ProductController extends GetxController {
       },
     );
   }
+
+  //my listing
+  Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
 
   //--- Get All PRODUCT ---//
   RefreshController myListingRefreshController =

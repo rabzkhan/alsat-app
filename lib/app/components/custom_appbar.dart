@@ -14,6 +14,7 @@ class CustomAppBar extends StatelessWidget {
   final bool isShowNotification;
   final bool isShowBackButton;
   final Widget? action;
+  final Widget? title;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   const CustomAppBar(
       {super.key,
@@ -23,11 +24,11 @@ class CustomAppBar extends StatelessWidget {
       this.isShowBackButton = false,
       this.action,
       this.isShowLogo = true,
-      this.scaffoldKey});
+      this.scaffoldKey,
+      this.title});
 
   @override
   Widget build(BuildContext context) {
-    HomeController homeController = Get.find<HomeController>();
     return Container(
       alignment: Alignment.center,
       height: 55.h,
@@ -49,7 +50,7 @@ class CustomAppBar extends StatelessWidget {
               : const BackButton(),
           4.horizontalSpace,
           const Spacer(),
-          if (isShowLogo) Image.asset(logo),
+          if (isShowLogo) title ?? Image.asset(logo),
           const Spacer(),
           if (!isShowFilter && !isShowSearch) const Spacer(),
           action ?? const Center(),

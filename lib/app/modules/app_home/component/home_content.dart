@@ -31,8 +31,8 @@ class HomeContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final productController = Get.find<ProductController>();
     final HomeController homeController = Get.find();
+    final productController = Get.find<ProductController>();
     final ConversationController _ = Get.find();
     FilterController filterController = Get.find();
     return Column(

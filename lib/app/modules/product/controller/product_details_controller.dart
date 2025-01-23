@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
@@ -10,11 +11,21 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../../services/base_client.dart';
+import '../../app_home/models/category_model.dart';
 import '../../authentication/model/user_data_model.dart';
 import '../model/product_post_res.dart';
 
 class ProductDetailsController extends GetxController {
+  Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>(null);
   //-- get Product Like Count --//
+
+  @override
+  void onInit() {
+    HomeController homeController = Get.find();
+    selectCategory.value = homeController.categories.firstOrNull;
+    super.onInit();
+  }
+
   RxnNum likeCount = RxnNum(0);
   RxBool isProductLike = RxBool(true);
   Future<void> productLikeCount({required String productId}) async {
@@ -219,7 +230,9 @@ class ProductDetailsController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: {},
+      data: selectCategory.value != null
+          ? {"category": selectCategory.value!.name ?? ""}
+          : {},
       onLoading: () {
         if (nextPaginateDate == null) {
           isFetchUserProduct.value = true;

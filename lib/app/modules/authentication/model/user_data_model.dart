@@ -13,7 +13,7 @@ class UserDataModel {
   String? id;
   String? createdAt;
   String? updatedAt;
-  List<dynamic>? messaging;
+  final List<Messaging>? messaging;
   String? picture;
   Location? location;
   String? phone;
@@ -30,6 +30,7 @@ class UserDataModel {
   bool? premium;
   DateTime? planExpiration;
   bool? protectionLabel;
+  String? bio;
 
   bool? flag;
   UserDataModel({
@@ -53,6 +54,7 @@ class UserDataModel {
     this.premium,
     this.planExpiration,
     this.protectionLabel,
+    this.bio,
   });
 
   factory UserDataModel.fromJson(Map<String, dynamic> json) => UserDataModel(
@@ -62,7 +64,8 @@ class UserDataModel {
         premium: json["premium"] ?? json["plan"] == 'premium' ? true : false,
         messaging: json["messaging"] == null
             ? []
-            : List<dynamic>.from(json["messaging"]!.map((x) => x)),
+            : List<Messaging>.from(
+                json["messaging"]!.map((x) => Messaging.fromJson(x))),
         picture: json["picture"],
         followers: json["followers"],
         followed: json["followed"],
@@ -84,6 +87,7 @@ class UserDataModel {
             ? null
             : DateTime.parse(json["plan_expiration"]),
         protectionLabel: json["protection_label"],
+        bio: json["bio"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -111,6 +115,7 @@ class UserDataModel {
         "request_deletion": requestDeletion,
         "plan_expiration": planExpiration?.toIso8601String(),
         "protection_label": protectionLabel,
+        "bio": bio,
       };
 }
 
@@ -131,5 +136,34 @@ class Location {
   Map<String, dynamic> toJson() => {
         "province": province,
         "city": city,
+      };
+}
+
+class Messaging {
+  final String? id;
+  final String? type;
+
+  Messaging({
+    this.id,
+    this.type,
+  });
+
+  Messaging copyWith({
+    String? id,
+    String? type,
+  }) =>
+      Messaging(
+        id: id ?? this.id,
+        type: type ?? this.type,
+      );
+
+  factory Messaging.fromJson(Map<String, dynamic> json) => Messaging(
+        id: json["id"],
+        type: json["type"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "type": type,
       };
 }
