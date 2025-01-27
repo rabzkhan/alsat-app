@@ -32,6 +32,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import '../video_edit/crop_video.dart';
 import '../widget/category_selection.dart';
 import '../widget/post_category_selection.dart';
+import '../widget/single_year_picker.dart';
 
 class PostProductView extends StatefulWidget {
   const PostProductView({super.key});
@@ -217,7 +218,6 @@ class _PostProductViewState extends State<PostProductView> {
             InkWell(
               onTap: () {
                 resetForm();
-                _formKey.currentState!.reset();
               },
               child: Container(
                 margin: EdgeInsets.only(right: 10.w, top: 10.h, bottom: 10.h),
@@ -360,8 +360,7 @@ class _PostProductViewState extends State<PostProductView> {
                             )
                           ],
                         ),
-                        // information
-                        /// Post Product Video
+
                         Obx(() {
                           return !productController.isShowPostProductVideo.value
                               ? Container(
@@ -733,9 +732,14 @@ class _PostProductViewState extends State<PostProductView> {
                                     },
                                   )),
                             Obx(() => productController
-                                        .selectCategory.value?.name
-                                        ?.toLowerCase() ==
-                                    'automobile'
+                                            .selectCategory.value?.name
+                                            ?.toLowerCase() ==
+                                        'automobile' &&
+                                    (productController.selectSubCategory.value
+                                                ?.name ??
+                                            "")
+                                        .toLowerCase()
+                                        .contains('car')
                                 ? _autoMobile(context)
                                 : productController.selectCategory.value?.name
                                             ?.toLowerCase() ==
@@ -1828,7 +1832,14 @@ class _PostProductViewState extends State<PostProductView> {
                       () => _tile(
                         "Year",
                         productController.selectedYear.value,
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => SingleYearPicker(
+                              selectYear: productController.selectedYear,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Obx(() => _tile(
@@ -1862,7 +1873,10 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['title'] = map['productName'];
     productPostMap['type'] =
         productController.selectCategory.value?.name?.toLowerCase() ==
-                'automobile'
+                    'automobile' &&
+                (productController.selectSubCategory.value?.name ?? "")
+                    .toLowerCase()
+                    .contains('car')
             ? 'car'
             : productController.selectCategory.value?.name?.toLowerCase() ==
                     'real estate'
@@ -1871,7 +1885,9 @@ class _PostProductViewState extends State<PostProductView> {
                         'phone'
                     ? 'phone'
                     : 'general';
-    productPostMap['category_id'] = productController.selectCategory.value?.sId;
+    productPostMap['category_id'] =
+        productController.selectSubCategory.value?.sId ??
+            productController.selectCategory.value?.sId;
     productPostMap['description'] = map['discription'];
 
     List<Map> media = [];
@@ -1951,6 +1967,7 @@ class _PostProductViewState extends State<PostProductView> {
   resetForm() {
     _formKey.currentState?.reset();
     productController.estateDealTypeController.clear();
+    productController.priceController.text = '';
     productController.estateAddressController.clear();
     productController.estateTypeController.clear();
     productController.selectedPhoneBrand.value = '';
