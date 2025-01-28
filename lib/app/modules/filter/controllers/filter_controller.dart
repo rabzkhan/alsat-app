@@ -128,23 +128,25 @@ class FilterController extends GetxController {
 // RxString for selected city
   RxString selectedCity = "".obs;
 
+  clearAddress() {
+    selectedProvinces.value = {};
+    selectedCities.value = {};
+    selectedProvince.value = "";
+    selectedCity.value = "";
+  }
+
 // Toggle province selection with support for single or multiple selection
   void toggleProvince(String provinceName, bool allowMultipleSelection) {
     if (!allowMultipleSelection) {
-      // Single selection: toggle the selected province
       if (selectedProvince.value == provinceName) {
-        // If already selected, deselect it
         selectedProvince.value = "";
         selectedCity.value = "";
       } else {
-        log.log("selectedProvince.value ${selectedProvince.value}");
-        // If not selected, clear others and select the new one
         selectedProvince.value = provinceName;
         selectedCity.value = "";
       }
       Get.find<ProductController>().calculateFilledIndividualInfoFields();
     } else {
-      // Multiple selection: toggle the province
       if (selectedProvinces.contains(provinceName)) {
         selectedProvinces.remove(provinceName);
         selectedCities.remove(provinceName);
@@ -152,6 +154,10 @@ class FilterController extends GetxController {
         selectedProvinces.add(provinceName);
         selectedCities[provinceName] = [];
       }
+
+      selectedProvinces.refresh();
+      selectedCities.refresh();
+      log.log("selectedProvinces: $selectedProvinces  : $selectedCities");
     }
   }
 

@@ -1,23 +1,17 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:developer';
-
 import 'package:alsat/app/components/custom_snackbar.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dio/dio.dart';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:pod_player/pod_player.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
 import 'package:alsat/app/common/const/image_path.dart';
-import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
@@ -29,6 +23,7 @@ import '../controller/product_details_controller.dart';
 import '../model/product_post_list_res.dart';
 import '../widget/product_media.dart';
 import 'product_comments_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetailsView extends StatefulWidget {
   final ProductModel? productModel;
@@ -41,6 +36,7 @@ class ProductDetailsView extends StatefulWidget {
 class _ProductDetailsViewState extends State<ProductDetailsView> {
   final ProductController productController = Get.find();
   late ProductDetailsController productDetailsController;
+  AuthController authController = Get.find();
 
   @override
   void initState() {
@@ -68,12 +64,20 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
         productCreateTime: widget.productModel?.createdAt ?? '');
     productDetailsController.productCommentCount(
         productId: widget.productModel?.id ?? '');
-    productDetailsController.getUserByUId(
-        userId: widget.productModel?.userId ?? '');
+    productDetailsController
+        .getUserByUId(userId: widget.productModel?.userId ?? '')
+        .then((value) {
+      if (authController.userDataModel.value.id ==
+          productDetailsController.postUserModel.value?.id) {
+        productDetailsController.getProductInsights(
+            pId: widget.productModel?.id ?? '');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -223,7 +227,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   7.verticalSpace,
 
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10.h),
+                    margin: EdgeInsets.symmetric(vertical: 10.h)
+                        .copyWith(bottom: 0),
                     padding:
                         EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w)
                             .copyWith(right: 0),
@@ -260,7 +265,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        'Views',
+                                        localLanguage.views,
                                         style: regular.copyWith(
                                           fontSize: 13.sp,
                                           fontWeight: FontWeight.w500,
@@ -353,7 +358,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Like',
+                                          localLanguage.like,
                                           style: regular.copyWith(
                                             fontSize: 13.sp,
                                             fontWeight: FontWeight.w500,
@@ -419,7 +424,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Comment',
+                                          localLanguage.comment,
                                           style: regular.copyWith(
                                             fontSize: 13.sp,
                                             fontWeight: FontWeight.w500,
@@ -459,11 +464,57 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       ],
                     ),
                   ),
-
+                  10.verticalSpace,
+                  Obx(() {
+                    return productDetailsController.productInsightsList.isEmpty
+                        ? const Center()
+                        : ExpansionTile(
+                            collapsedBackgroundColor:
+                                Get.theme.disabledColor.withOpacity(.03),
+                            backgroundColor:
+                                Get.theme.disabledColor.withOpacity(.03),
+                            // tilePadding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            collapsedShape: RoundedRectangleBorder(
+                              side: BorderSide.none,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            title: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Image.asset(
+                                  'assets/icons/sport.png',
+                                  width: 25.w,
+                                  height: 25.h,
+                                  color: Get.theme.primaryColor,
+                                ),
+                                8.horizontalSpace,
+                                const Text('Product Insights'),
+                              ],
+                            ),
+                            children: [
+                              _viewTile(
+                                title: 'Province/State',
+                                value: 'View Count',
+                              ),
+                              ...productDetailsController.productInsightsList
+                                  .map((e) {
+                                return _viewTile(
+                                  title:
+                                      '${e['province'].isEmpty ? 'Unknown' : e['province']}',
+                                  value: '${e['count']}',
+                                );
+                              })
+                            ],
+                          );
+                  }),
                   7.verticalSpace,
                   //  information
                   Text(
-                    'Information',
+                    localLanguage.information,
                     style: bold.copyWith(
                       fontSize: 18.sp,
                     ),
@@ -486,41 +537,41 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 infoTile(
-                                    name: 'Brand',
+                                    name: localLanguage.brand,
                                     value:
                                         widget.productModel?.carInfo?.brand ??
                                             ''),
                                 infoTile(
-                                    name: 'Model Type',
+                                    name: localLanguage.modelType,
                                     value:
                                         widget.productModel?.carInfo?.model ??
                                             ''),
                                 infoTile(
-                                    name: 'Body Type',
+                                    name: localLanguage.bodyType,
                                     value: widget
                                             .productModel?.carInfo?.bodyType ??
                                         ''),
                                 infoTile(
-                                    name: 'Year',
+                                    name: localLanguage.year,
                                     value:
                                         "${widget.productModel?.carInfo?.year ?? ''}"),
                                 infoTile(
-                                    name: 'Engine',
+                                    name: localLanguage.engine,
                                     value: widget.productModel?.carInfo
                                             ?.engineType ??
                                         ''),
                                 infoTile(
-                                    name: 'Color',
+                                    name: localLanguage.color,
                                     value:
                                         widget.productModel?.carInfo?.color ??
                                             ''),
                                 infoTile(
-                                    name: 'Condition',
+                                    name: localLanguage.condition,
                                     value: widget
                                             .productModel?.carInfo?.condition ??
                                         ''),
                                 infoTile(
-                                    name: 'Passed  KM',
+                                    name: localLanguage.passedKm,
                                     value:
                                         "${widget.productModel?.carInfo?.passedKm ?? ''}"),
                               ],
@@ -530,34 +581,34 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     infoTile(
-                                        name: 'Address',
+                                        name: localLanguage.address,
                                         value: widget.productModel?.estateInfo
                                                 ?.address ??
                                             ''),
                                     infoTile(
-                                        name: 'Type',
+                                        name: localLanguage.type,
                                         value: widget.productModel?.estateInfo
                                                 ?.type ??
                                             ''),
                                     infoTile(
-                                        name: 'Floor',
+                                        name: localLanguage.floor,
                                         value:
                                             "${widget.productModel?.estateInfo?.floor ?? ''}"),
                                     infoTile(
-                                        name: 'Floor Type',
+                                        name: localLanguage.floorType,
                                         value:
                                             "${widget.productModel?.estateInfo?.floorType ?? ''}"),
                                     infoTile(
-                                        name: 'Rooom',
+                                        name: localLanguage.room,
                                         value:
                                             "${widget.productModel?.estateInfo?.room ?? ''}"),
                                     infoTile(
-                                        name: 'Lift',
+                                        name: localLanguage.lift,
                                         value: (widget.productModel?.estateInfo
                                                     ?.lift ??
                                                 false)
-                                            ? 'Avalable'
-                                            : 'No'),
+                                            ? localLanguage.available
+                                            : localLanguage.no),
                                   ],
                                 )
                               : widget.productModel?.phoneInfo != null
@@ -565,7 +616,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         infoTile(
-                                            name: 'Brand',
+                                            name: localLanguage.brand,
                                             value: widget.productModel
                                                     ?.phoneInfo?.brand ??
                                                 ''),
@@ -575,7 +626,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         infoTile(
-                                            name: 'Location',
+                                            name: localLanguage.location,
                                             value: widget
                                                     .productModel
                                                     ?.individualInfo
@@ -586,7 +637,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   20.verticalSpace,
                   //  discription
                   Text(
-                    'Discription',
+                    localLanguage.description,
                     style: bold.copyWith(
                       fontSize: 18.sp,
                     ),
@@ -677,7 +728,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                   12.verticalSpace,
                   Text(
-                    'Contact With Seller',
+                    localLanguage.contactWithSeller,
                     style: semiBold.copyWith(
                       fontSize: 14.sp,
                     ),
@@ -690,109 +741,145 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-        child: Row(
-          children: [
-            if (isCallAvailable(
-                widget.productModel?.individualInfo?.freeToCallFrom,
-                widget.productModel?.individualInfo?.freeToCallTo))
-              Expanded(
-                child: MaterialButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                    side: BorderSide(
-                      color: Get.theme.primaryColor,
-                    ),
-                  ),
-                  height: 45,
-                  color: Get.theme.scaffoldBackgroundColor,
-                  onPressed: () async {
-                    final url =
-                        'tel:${widget.productModel?.individualInfo?.phoneNumber}';
-                    if (await canLaunchUrl(Uri.parse(url))) {
-                      await launchUrl(Uri.parse(url));
-                    } else {
-                      throw 'Could not launch $url';
-                    }
-                  },
+      bottomNavigationBar: Obx(
+        () {
+          return (productDetailsController.postUserModel.value?.id ?? "") ==
+                      authController.userDataModel.value.id ||
+                  productDetailsController.postUserModel.value == null
+              ? Container(
+                  height: 0,
+                )
+              : Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.phone,
-                        color: Get.theme.primaryColor,
-                        size: 20.r,
-                      ),
-                      5.horizontalSpace,
-                      Text(
-                        'Call ',
-                        style: regular.copyWith(
-                          color: Get.theme.primaryColor,
-                          fontSize: 14.sp,
+                      if (isCallAvailable(
+                          widget.productModel?.individualInfo?.freeToCallFrom,
+                          widget.productModel?.individualInfo?.freeToCallTo))
+                        Expanded(
+                          child: MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              side: BorderSide(
+                                color: Get.theme.primaryColor,
+                              ),
+                            ),
+                            height: 45,
+                            color: Get.theme.scaffoldBackgroundColor,
+                            onPressed: () async {
+                              final url =
+                                  'tel:${widget.productModel?.individualInfo?.phoneNumber}';
+                              if (await canLaunchUrl(Uri.parse(url))) {
+                                await launchUrl(Uri.parse(url));
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  color: Get.theme.primaryColor,
+                                  size: 20.r,
+                                ),
+                                5.horizontalSpace,
+                                Text(
+                                  localLanguage.call,
+                                  style: regular.copyWith(
+                                    color: Get.theme.primaryColor,
+                                    fontSize: 14.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
+                      if (isCallAvailable(
+                          widget.productModel?.individualInfo?.freeToCallFrom,
+                          widget.productModel?.individualInfo?.freeToCallTo))
+                        30.horizontalSpace,
+                      Expanded(
+                        child: Obx(() {
+                          return MaterialButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                            height: 45,
+                            color: Get.theme.primaryColor,
+                            onPressed: productDetailsController
+                                    .isFetchUserConversationLoading.value
+                                ? null
+                                : () {
+                                    productDetailsController
+                                        .getConversationInfoByUserId(
+                                            productDetailsController
+                                                    .postUserModel.value?.id ??
+                                                "")
+                                        .then((value) {
+                                      Get.to(
+                                        MessagesScreen(
+                                          conversation: productDetailsController
+                                              .conversationInfo.value!,
+                                        ),
+                                        transition: Transition.fadeIn,
+                                      );
+                                    });
+                                  },
+                            child: productDetailsController
+                                    .isFetchUserConversationLoading.value
+                                ? const CupertinoActivityIndicator()
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.messenger_rounded,
+                                        color: Colors.white,
+                                        size: 20.r,
+                                      ),
+                                      5.horizontalSpace,
+                                      Text(
+                                        localLanguage.message,
+                                        style: regular.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 14.sp,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          );
+                        }),
                       ),
                     ],
                   ),
-                ),
-              ),
-            if (isCallAvailable(
-                widget.productModel?.individualInfo?.freeToCallFrom,
-                widget.productModel?.individualInfo?.freeToCallTo))
-              30.horizontalSpace,
-            Expanded(
-              child: Obx(() {
-                return MaterialButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
-                  height: 45,
-                  color: Get.theme.primaryColor,
-                  onPressed: productDetailsController
-                          .isFetchUserConversationLoading.value
-                      ? null
-                      : () {
-                          productDetailsController
-                              .getConversationInfoByUserId(
-                                  productDetailsController
-                                          .postUserModel.value?.id ??
-                                      "")
-                              .then((value) {
-                            Get.to(
-                              MessagesScreen(
-                                conversation: productDetailsController
-                                    .conversationInfo.value!,
-                              ),
-                              transition: Transition.fadeIn,
-                            );
-                          });
-                        },
-                  child: productDetailsController
-                          .isFetchUserConversationLoading.value
-                      ? const CupertinoActivityIndicator()
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.messenger_rounded,
-                              color: Colors.white,
-                              size: 20.r,
-                            ),
-                            5.horizontalSpace,
-                            Text(
-                              'Mesaage',
-                              style: regular.copyWith(
-                                color: Colors.white,
-                                fontSize: 14.sp,
-                              ),
-                            ),
-                          ],
-                        ),
                 );
-              }),
+        },
+      ),
+    );
+  }
+
+  Padding _viewTile({required String title, required String value}) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w)
+          .copyWith(top: 0),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: regular.copyWith(
+              fontSize: 14.sp,
             ),
-          ],
-        ),
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: regular.copyWith(
+              fontSize: 14.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -828,11 +915,11 @@ bool isCallAvailable(String? freeFrom, String? freeTo) {
   List<String> fromParts = freeFrom.split(":");
   List<String> toParts = freeTo.split(":");
 
-  int fromHour = int.tryParse(fromParts[0]) ?? 0;
-  int fromMinute = int.tryParse(fromParts[1]) ?? 0;
+  int fromHour = int.tryParse(fromParts.elementAtOrNull(0) ?? '') ?? 0;
+  int fromMinute = int.tryParse(fromParts.elementAtOrNull(1) ?? '') ?? 0;
 
-  int toHour = int.tryParse(toParts[0]) ?? 0;
-  int toMinute = int.tryParse(toParts[1]) ?? 0;
+  int toHour = int.tryParse(toParts.elementAtOrNull(0) ?? '') ?? 0;
+  int toMinute = int.tryParse(toParts.elementAtOrNull(1) ?? '') ?? 0;
   DateTime now = DateTime.now();
   int currentHour = now.hour;
   int currentMinute = now.minute;

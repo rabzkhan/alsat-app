@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/user_filter_result_view.dart';
 import '../controller/home_controller.dart';
 import '../models/category_model.dart';
@@ -15,6 +16,8 @@ class PremiumCategoriesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find();
+    FilterController filterController = Get.find<FilterController>();
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -56,6 +59,7 @@ class PremiumCategoriesView extends StatelessWidget {
                       homeController.category.value =
                           homeController.categories[index];
                       homeController.fetchPremiumUser(isFilter: true);
+                      filterController.clearAddress();
                       Get.to(
                         const UserFilterResultView(isBackFilter: false),
                         transition: Transition.rightToLeft,

@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:alsat/app/components/custom_appbar.dart';
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,8 @@ import '../../../components/network_image_preview.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../../authentication/controller/auth_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
+import '../../filter/views/location_selection.dart';
 import '../controller/user_controller.dart';
-import 'widgets/location_selection.dart';
 import 'widgets/upgrade_to_premium_dialog.dart';
 
 class MySettings extends StatefulWidget {
@@ -35,6 +36,18 @@ class _MySettingsState extends State<MySettings> {
   final AuthController authController = Get.find();
   HomeController homeController = Get.find();
   FilterController filterController = Get.find();
+  @override
+  void initState() {
+    filterController.clearAddress();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    filterController.clearAddress();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     log("${authController.userDataModel.value.toJson()}");
@@ -178,17 +191,20 @@ class _MySettingsState extends State<MySettings> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
-                  authController.selectUserCategoriesList.value = homeController
-                      .categories
-                      .where((e) =>
-                          (authController.userDataModel.value.categories ?? [])
-                              .contains(e.name))
-                      .toList();
-                  authController.selectedProvince.value =
-                      authController.userDataModel.value.location?.province ??
-                          "";
-                  authController.selectedCity.value =
-                      authController.userDataModel.value.location?.city ?? "";
+                  Future.microtask(() {
+                    authController.selectUserCategoriesList.value =
+                        homeController.categories
+                            .where((e) => (authController
+                                        .userDataModel.value.categories ??
+                                    [])
+                                .contains(e.name))
+                            .toList();
+                    filterController.selectedProvince.value =
+                        authController.userDataModel.value.location?.province ??
+                            "";
+                    filterController.selectedCity.value =
+                        authController.userDataModel.value.location?.city ?? "";
+                  });
                   return (authController.userDataModel.value.premium ?? false)
                       ? const Center()
                       : Row(
@@ -334,8 +350,13 @@ class _MySettingsState extends State<MySettings> {
                       context: context,
                       backgroundColor: Colors.transparent,
                       builder: (context) =>
-                          const ProfileSingleLocationSelection(),
-                    );
+                          const LocationSelection(canSelectMultiple: false),
+                    ).then((value) {
+                      if (value != null) {
+                        authController.addressController.text =
+                            filterController.getSelectedLocationText();
+                      }
+                    });
                   },
                   child: IgnorePointer(
                     ignoring: true,
@@ -416,7 +437,14 @@ class _MySettingsState extends State<MySettings> {
                         .contains(value)) {
                       authController.selectUserCategoriesList.remove(value);
                     } else {
-                      authController.selectUserCategoriesList.add(value!);
+                      if (authController.selectUserCategoriesList.length == 3) {
+                        CustomSnackBar.showCustomToast(
+                          color: Colors.red,
+                          message: 'You can select only 3 categories',
+                        );
+                      } else {
+                        authController.selectUserCategoriesList.add(value!);
+                      }
                     }
                     authController.selectUserCategoriesList.refresh();
                   },
@@ -569,10 +597,12 @@ class _MySettingsState extends State<MySettings> {
                                         }
                                       ], // max 3
                                       "location": {
-                                        "province": authController
-                                            .selectedProvince.value,
-                                        "city":
-                                            authController.selectedCity.value,
+                                        "province": filterController
+                                            .getSelectedLocationData()
+                                            .firstOrNull?['province'],
+                                        "city": filterController
+                                            .getSelectedLocationData()
+                                            .firstOrNull?['city'],
                                         "geo": {
                                           "type": "point",
                                           "coordinates": [45, 5]

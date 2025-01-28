@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +19,6 @@ class LocationSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FilterController filterController = Get.find();
-
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
@@ -50,99 +51,139 @@ class LocationSelection extends StatelessWidget {
                       provinces.length,
                       (provinceIndex) {
                         final province = provinces[provinceIndex];
-                        return ExpansionTile(
-                          title: Row(
-                            children: [
-                              Text(
-                                province.name,
-                                style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const Spacer(),
-                              GestureDetector(
-                                onTap: () {
-                                  // Toggle province selection
-                                  filterController.toggleProvince(
-                                      province.name, canSelectMultiple);
-                                },
-                                child: CircleAvatar(
-                                  radius: 10.r,
-                                  backgroundColor: AppColors.liteGray,
-                                  child: Icon(
-                                    filterController
-                                            .isProvinceSelected(province.name)
-                                        ? Icons.check_circle
-                                        : Icons.circle_outlined,
-                                    color: AppColors.primary,
-                                    size: 20.r,
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 6.h),
+                          child: ExpansionTile(
+                            collapsedShape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              side: BorderSide.none,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                              side: BorderSide.none,
+                            ),
+                            dense: true,
+                            initiallyExpanded: false,
+                            showTrailingIcon: false,
+                            onExpansionChanged: (value) {
+                              if (value) {
+                                filterController.toggleProvince(
+                                    province.name, canSelectMultiple);
+                              }
+                            },
+                            title: Row(
+                              children: [
+                                Text(
+                                  province.name,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          expandedAlignment: Alignment.centerLeft,
-                          expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                          childrenPadding: EdgeInsets.symmetric(
-                              horizontal: Get.width * .06, vertical: 10.h),
-                          children: [
-                            ...province.cities.map(
-                              (city) {
-                                return InkWell(
+                                const Spacer(),
+                                InkWell(
                                   onTap: () {
-                                    filterController.toggleCity(
-                                      province.name,
-                                      city,
-                                      canSelectMultiple,
-                                    );
+                                    filterController.toggleProvince(
+                                        province.name, canSelectMultiple);
                                   },
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 14.h),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          city,
-                                          style: TextStyle(
-                                            fontSize: 14.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        const Spacer(),
-                                        if (filterController
-                                            .isProvinceSelected(province.name))
-                                          GestureDetector(
-                                            onTap: () {
-                                              // Toggle city selection
-                                              filterController.toggleCity(
-                                                province.name,
-                                                city,
-                                                canSelectMultiple,
-                                              );
-                                            },
-                                            child: CircleAvatar(
-                                              radius: 8.r,
-                                              backgroundColor:
-                                                  AppColors.liteGray,
-                                              child: Icon(
-                                                filterController.isCitySelected(
-                                                        province.name, city)
-                                                    ? Icons.check_circle
-                                                    : Icons.circle_outlined,
-                                                color: AppColors.primary,
-                                                size: 14.r,
-                                              ),
-                                            ),
-                                          ),
-                                        20.horizontalSpace,
-                                      ],
+                                  child: CircleAvatar(
+                                    radius: 12.r,
+                                    backgroundColor: AppColors.liteGray,
+                                    child: Icon(
+                                      filterController
+                                              .isProvinceSelected(province.name)
+                                          ? Icons.check_circle
+                                          : Icons.circle_outlined,
+                                      color: AppColors.primary,
+                                      size: 24.r,
                                     ),
                                   ),
-                                );
-                              },
-                            )
-                          ],
+                                ),
+                              ],
+                            ),
+                            expandedAlignment: Alignment.centerLeft,
+                            expandedCrossAxisAlignment:
+                                CrossAxisAlignment.start,
+                            childrenPadding: EdgeInsets.symmetric(
+                                    horizontal: Get.width * .06, vertical: 10.h)
+                                .copyWith(right: 0),
+                            backgroundColor: Theme.of(context)
+                                .disabledColor
+                                .withOpacity(.03),
+                            collapsedBackgroundColor: Theme.of(context)
+                                .disabledColor
+                                .withOpacity(.03),
+                            children: [
+                              ...province.cities.map(
+                                (city) {
+                                  return InkWell(
+                                    onTap: () {
+                                      filterController.toggleCity(
+                                        province.name,
+                                        city,
+                                        canSelectMultiple,
+                                      );
+                                    },
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            width: .5,
+                                            color: Theme.of(context)
+                                                .disabledColor
+                                                .withOpacity(.1),
+                                          ),
+                                        ),
+                                      ),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10.h),
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            city,
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          if (filterController
+                                              .isProvinceSelected(
+                                                  province.name))
+                                            GestureDetector(
+                                              onTap: () {
+                                                // Toggle city selection
+                                                filterController.toggleCity(
+                                                  province.name,
+                                                  city,
+                                                  canSelectMultiple,
+                                                );
+                                              },
+                                              child: CircleAvatar(
+                                                radius: 9.r,
+                                                backgroundColor:
+                                                    AppColors.liteGray,
+                                                child: Icon(
+                                                  filterController
+                                                          .isCitySelected(
+                                                              province.name,
+                                                              city)
+                                                      ? Icons.check_circle
+                                                      : Icons.circle_outlined,
+                                                  color: AppColors.primary,
+                                                  size: 18.r,
+                                                ),
+                                              ),
+                                            ),
+                                          20.horizontalSpace,
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
+                            ],
+                          ),
                         );
                       },
                     ),

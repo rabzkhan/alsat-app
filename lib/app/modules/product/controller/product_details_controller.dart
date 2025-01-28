@@ -208,6 +208,31 @@ class ProductDetailsController extends GetxController {
     );
   }
 
+  RxBool isFetchProductInsights = RxBool(false);
+  RxList productInsightsList = RxList();
+  Future<void> getProductInsights({required String pId}) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$pId/views/count-by-province",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        productInsightsList.clear();
+        isFetchProductInsights.value = true;
+      },
+      onSuccess: (response) {
+        productInsightsList.value = response.data;
+        log("isFetchProductInsights ${response.data}");
+        isFetchProductInsights.value = false;
+      },
+      onError: (p0) {
+        isFetchProductInsights.value = false;
+      },
+    );
+  }
+
   //--- Get User PRODUCT ---//
 
   RxBool isFetchUserProduct = RxBool(true);

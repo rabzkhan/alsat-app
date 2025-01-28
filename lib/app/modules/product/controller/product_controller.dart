@@ -96,7 +96,7 @@ class ProductController extends GetxController {
         totalProductFiled.value = 9;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'phone') {
-        totalProductFiled.value = 4;
+        totalProductFiled.value = 3;
       }
     }
     int filledCount = 0;
@@ -255,7 +255,7 @@ class ProductController extends GetxController {
       data: body,
       onLoading: () {},
       onSuccess: (response) {
-        log(response.toString());
+        log("postProduct Success: ${response.data}");
         isProductPosting.value = false;
         CustomSnackBar.showCustomToast(
             message: 'Product posted successfully', title: 'Success');

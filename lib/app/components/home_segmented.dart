@@ -8,6 +8,7 @@ import '../../config/theme/app_text_theme.dart';
 import '../../utils/helper.dart';
 import '../common/const/image_path.dart';
 import '../modules/auth_user/auth_user_tab/widgets/upgrade_to_premium_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSegmented extends StatelessWidget {
   const HomeSegmented({super.key});
@@ -16,6 +17,7 @@ class HomeSegmented extends StatelessWidget {
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find();
     final AuthController authController = Get.find();
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Container(
       margin: EdgeInsets.symmetric(
         vertical: 10.h,

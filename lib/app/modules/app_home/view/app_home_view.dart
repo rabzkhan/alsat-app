@@ -15,6 +15,7 @@ import '../../auth_user/controller/user_controller.dart';
 import '../../filter/views/search_view.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppHomeView extends StatefulWidget {
   const AppHomeView({super.key});
@@ -29,20 +30,20 @@ class _AppHomeViewState extends State<AppHomeView> {
   final UserController userController = Get.find();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  Future<bool> _onWillPop() async {
+  Future<bool> _onWillPop(AppLocalizations localLanguage) async {
     return await showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Confirm Exit'),
-            content: const Text('Do you really want to go back?'),
+            title: Text(localLanguage.confirmExit),
+            content: Text(localLanguage.doYouWantToGoBack),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false), // Stay
-                child: const Text('No'),
+                child: Text(localLanguage.no),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true), // Exit
-                child: const Text('Yes'),
+                child: Text(localLanguage.yes),
               ),
             ],
           ),
@@ -52,8 +53,9 @@ class _AppHomeViewState extends State<AppHomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return WillPopScope(
-      onWillPop: _onWillPop,
+      onWillPop: () => _onWillPop(localLanguage),
       child: Scaffold(
         key: _scaffoldKey,
         backgroundColor: Get.theme.secondaryHeaderColor,
@@ -93,6 +95,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         "title":
                                             filterController.searchText.value,
                                       };
+                                      filterController.clearAddress();
                                       filterController.applyFilter();
                                       Get.to(
                                         const FilterResultsView(),
@@ -133,7 +136,6 @@ class _AppHomeViewState extends State<AppHomeView> {
                                             .withOpacity(.5),
                                       ),
                                       hintText: 'Search Here',
-                                      isDense: true,
                                       filled: true,
                                       fillColor: Colors.white,
                                       border: InputBorder.none,
@@ -142,6 +144,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         borderRadius:
                                             BorderRadius.circular(8.r),
                                         borderSide: BorderSide(
+                                          width: .6,
                                           color: Get.theme.primaryColor
                                               .withOpacity(.4),
                                         ),
@@ -164,6 +167,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                                 .searchText.value,
                                           };
                                           filterController.applyFilter();
+                                          filterController.clearAddress();
                                           Get.to(
                                             const FilterResultsView(),
                                             transition: Transition.rightToLeft,

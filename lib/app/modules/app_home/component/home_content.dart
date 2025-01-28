@@ -299,6 +299,7 @@ onBannerTab(HomeController homeController, ProductController productController,
           .toLowerCase(),
     };
     filterController.applyFilter();
+    filterController.clearAddress();
 
     Get.to(
       const FilterResultsView(),

@@ -60,6 +60,7 @@ class CategoryContent extends StatelessWidget {
                                         .toLowerCase(),
                               };
                               filterController.applyFilter();
+                              filterController.clearAddress();
                               Get.to(
                                 const FilterResultsView(),
                                 transition: Transition.rightToLeft,
@@ -112,6 +113,7 @@ class CategoryContent extends StatelessWidget {
                                       .toLowerCase(),
                             };
                             filterController.applyFilter();
+                            filterController.clearAddress();
                             Get.to(
                               const FilterResultsView(),
                               transition: Transition.rightToLeft,
@@ -170,6 +172,7 @@ class CategoryContent extends StatelessWidget {
                               };
                             }
                             filterController.applyFilter();
+                            filterController.clearAddress();
                             Get.to(
                               const FilterResultsView(),
                               transition: Transition.rightToLeft,

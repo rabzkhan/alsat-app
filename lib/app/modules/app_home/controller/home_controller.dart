@@ -6,12 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../utils/constants.dart';
 import '../../../common/const/image_path.dart';
 import '../../../services/base_client.dart';
 import '../../authentication/model/all_user_model.dart';
 import '../../authentication/model/user_data_model.dart';
+import '../../filter/controllers/filter_controller.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
 
@@ -23,28 +24,28 @@ class HomeController extends GetxController {
   RxInt categoryExpandedIndex = RxInt(0);
   RxBool isCategoryLoading = false.obs;
 
-  List<Map<String, dynamic>> bottomBarItems = [
-    {
-      "icon": homeIcon,
-      "name": 'Home',
-    },
-    {
-      "icon": searchIcon,
-      "name": 'Search',
-    },
-    {
-      "icon": addPost,
-      "name": 'Post Add',
-    },
-    {
-      "icon": chatIcon,
-      "name": 'Chat',
-    },
-    {
-      "icon": profileIcon,
-      "name": 'Profile',
-    },
-  ];
+  List<Map<String, dynamic>> bottomBarItems(AppLocalizations localLanguage) => [
+        {
+          "icon": homeIcon,
+          "name": localLanguage.home,
+        },
+        {
+          "icon": searchIcon,
+          "name": localLanguage.search,
+        },
+        {
+          "icon": addPost,
+          "name": localLanguage.addPost,
+        },
+        {
+          "icon": chatIcon,
+          "name": localLanguage.chat,
+        },
+        {
+          "icon": profileIcon,
+          "name": localLanguage.profile,
+        },
+      ];
   PageController homePageController = PageController();
 
   RxList<CategoriesModel> categories = <CategoriesModel>[].obs;
@@ -156,8 +157,6 @@ class HomeController extends GetxController {
   RxBool isActiveUser = false.obs;
   RxBool buyerProtection = false.obs;
   Rxn<CategoriesModel> category = Rxn<CategoriesModel>();
-  RxList<Map<String, dynamic>> selectedLocation =
-      RxList<Map<String, dynamic>>([]);
   AllUserInformationRes allUserInformationRes = AllUserInformationRes();
   RxList<UserDataModel> premiumUserList = <UserDataModel>[].obs;
   RxList<UserDataModel> filterUserList = <UserDataModel>[].obs;
@@ -167,6 +166,8 @@ class HomeController extends GetxController {
   TextEditingController searchController = TextEditingController();
   Future<void> fetchPremiumUser(
       {String? nextPaginateDate, bool isFilter = false}) async {
+    FilterController filterController = Get.find<FilterController>();
+
     String url = '${Constants.baseUrl}/users?limit=10';
     if (nextPaginateDate != null) {
       url = "$url&next=$nextPaginateDate";
@@ -176,8 +177,9 @@ class HomeController extends GetxController {
             "category": category.value?.name,
             "online": isActiveUser.value,
             "premium": buyerProtection.value,
-            "location":
-                selectedLocation.isEmpty ? null : selectedLocation.value,
+            "location": filterController.getSelectedLocationData().isEmpty
+                ? null
+                : filterController.getSelectedLocationData(),
             "sorting": {
               "follower": followersValue.value == 'Max To Min' ? -1 : 1,
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,

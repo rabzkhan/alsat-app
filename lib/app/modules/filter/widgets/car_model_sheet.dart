@@ -35,33 +35,24 @@ class _CarModelBottomSheetState extends State<CarModelBottomSheet> {
       ),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: const Icon(
-                        Icons.close,
-                      ),
-                    ),
-                  ],
+          AppBar(
+            automaticallyImplyLeading: false,
+            toolbarHeight: 50,
+            centerTitle: true,
+            elevation: 0,
+            title: Text(
+              widget.title,
+              textAlign: TextAlign.center,
+              style: bold.copyWith(fontSize: 16.sp),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: const Icon(
+                  Icons.close,
                 ),
-              ),
-              Expanded(
-                child: Text(
-                  widget.title,
-                  textAlign: TextAlign.center,
-                  style: bold.copyWith(fontSize: 16.sp),
-                ),
-              ),
-              const Expanded(
-                child: SizedBox(),
               ),
             ],
           ),

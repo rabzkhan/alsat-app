@@ -29,15 +29,15 @@ class UserFilterResultView extends StatelessWidget {
             isShowFilter: false,
             isShowSearch: false,
             isShowNotification: false,
-            action: IconButton(
-              onPressed: () {
+            action: InkWell(
+              onTap: () {
                 if (isBackFilter) {
                   Get.back();
                 } else {
                   Get.off(() => const UserFilterView());
                 }
               },
-              icon: Image.asset(
+              child: Image.asset(
                 filterIcon,
                 height: 23.h,
                 width: 23.w,
