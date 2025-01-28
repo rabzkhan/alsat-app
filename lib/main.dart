@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alsat/app/common/binding/app_binding.dart';
+import 'package:alsat/utils/helper.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,6 +45,7 @@ Future<void> main() async {
       builder: (context, widget) {
         LocalizationService localizationService =
             Get.put(LocalizationService());
+
         return ToastificationWrapper(
           child: Obx(() {
             return GetMaterialApp(

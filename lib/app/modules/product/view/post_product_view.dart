@@ -50,7 +50,20 @@ class _PostProductViewState extends State<PostProductView> {
 
   @override
   void initState() {
+    filterController.clearAddress();
+    Future.microtask(() {
+      filterController.selectedProvince.value =
+          authController.userDataModel.value.location?.province ?? "";
+      filterController.selectedCity.value =
+          authController.userDataModel.value.location?.city ?? "";
+    });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    filterController.clearAddress();
+    super.dispose();
   }
 
   @override
@@ -155,22 +168,6 @@ class _PostProductViewState extends State<PostProductView> {
                                     if (_formKey.currentState!.validate()) {
                                       FocusScope.of(context).unfocus();
 
-                                      if (productController.totalProductFiled.value != productController.totalProductFiledCount.value ||
-                                          productController
-                                                  .productPriceFiled.value !=
-                                              productController
-                                                  .productPriceFiledCount
-                                                  .value ||
-                                          productController
-                                                  .individualInfoFiled.value !=
-                                              productController
-                                                  .individualInfoFiledCount
-                                                  .value) {
-                                        CustomSnackBar.showCustomToast(
-                                            color: Colors.red,
-                                            message:
-                                                "Please fill all the fields");
-                                      }
                                       if (productController
                                           .pickImageList.isEmpty) {
                                         CustomSnackBar.showCustomToast(
@@ -220,7 +217,7 @@ class _PostProductViewState extends State<PostProductView> {
                 resetForm();
               },
               child: Container(
-                margin: EdgeInsets.only(right: 10.w, top: 10.h, bottom: 10.h),
+                margin: EdgeInsets.only(right: 10.w, top: 13.h, bottom: 13.h),
                 padding: EdgeInsets.symmetric(horizontal: 10.w),
                 decoration: BoxDecoration(
                   color: Colors.red,
@@ -230,17 +227,17 @@ class _PostProductViewState extends State<PostProductView> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      'Clear All',
+                      'Clear',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 14.sp,
+                        fontSize: 12.sp,
                       ),
                     ),
                     4.horizontalSpace,
                     Icon(
                       Icons.delete_outline,
                       color: Colors.white,
-                      size: 20.r,
+                      size: 18.r,
                     ),
                   ],
                 ),
@@ -827,10 +824,7 @@ class _PostProductViewState extends State<PostProductView> {
                                   FormBuilderTextField(
                                     controller: productController
                                         .productDescriptionController,
-                                    onChanged: (newValue) {
-                                      productController
-                                          .calculateFilledProductFields();
-                                    },
+                                    onChanged: (newValue) {},
                                     minLines: 3,
                                     maxLines: 3,
                                     name: 'discription',
@@ -870,10 +864,7 @@ class _PostProductViewState extends State<PostProductView> {
                                                   controller:
                                                       productController.vinCode,
                                                   name: 'vinCode',
-                                                  onChanged: (newValue) {
-                                                    productController
-                                                        .calculateFilledProductFields();
-                                                  },
+                                                  onChanged: (newValue) {},
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     fontSize: 12.sp,
@@ -1960,11 +1951,11 @@ class _PostProductViewState extends State<PostProductView> {
             ? {"brand": productController.selectedPhoneBrand.value}
             : null;
     resetForm();
-    _formKey.currentState!.reset();
     await productController.postProduct(productPostMap);
   }
 
   resetForm() {
+    filterController.clearAddress();
     _formKey.currentState?.reset();
     productController.estateDealTypeController.clear();
     productController.priceController.text = '';

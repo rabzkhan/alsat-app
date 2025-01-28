@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:get/get.dart' as getx;
 import 'package:logger/logger.dart';
-import '../../utils/helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../components/custom_snackbar.dart';
 import 'api_exceptions.dart';
 
@@ -157,11 +158,12 @@ class BaseClient {
       {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: localLanguage.server_not_responding,
+        message: AppLocalizations.of(getx.Get.context!)!.server_not_responding,
         url: url,
       ));
     } else {
-      _handleError(localLanguage.server_not_responding);
+      _handleError(
+          AppLocalizations.of(getx.Get.context!)!.server_not_responding);
     }
   }
 
@@ -170,11 +172,12 @@ class BaseClient {
       {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
-        message: localLanguage.no_internet_connection,
+        message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
         url: url,
       ));
     } else {
-      _handleError(localLanguage.no_internet_connection);
+      _handleError(
+          AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
     }
   }
 
@@ -186,12 +189,13 @@ class BaseClient {
     if (error.response?.statusCode == 404) {
       if (onError != null) {
         return onError(ApiException(
-          message: localLanguage.url_not_found,
+          message: AppLocalizations.of(getx.Get.context!)!.url_not_found,
           url: url,
           statusCode: 404,
         ));
       } else {
-        return _handleError(localLanguage.url_not_found);
+        return _handleError(
+            AppLocalizations.of(getx.Get.context!)!.url_not_found);
       }
     }
 
@@ -200,18 +204,20 @@ class BaseClient {
         error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
-          message: localLanguage.no_internet_connection,
+          message:
+              AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
           url: url,
         ));
       } else {
-        return _handleError(localLanguage.no_internet_connection);
+        return _handleError(
+            AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
       }
     }
 
     // check if the error is 500 (server problem)
     if (error.response?.statusCode == 500) {
       var exception = ApiException(
-        message: localLanguage.server_error,
+        message: AppLocalizations.of(getx.Get.context!)!.server_error,
         url: url,
         statusCode: 500,
       );

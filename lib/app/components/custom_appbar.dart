@@ -16,16 +16,17 @@ class CustomAppBar extends StatelessWidget {
   final Widget? action;
   final Widget? title;
   final GlobalKey<ScaffoldState>? scaffoldKey;
-  const CustomAppBar(
-      {super.key,
-      this.isShowSearch = true,
-      this.isShowFilter = true,
-      this.isShowNotification = true,
-      this.isShowBackButton = false,
-      this.action,
-      this.isShowLogo = true,
-      this.scaffoldKey,
-      this.title});
+  const CustomAppBar({
+    super.key,
+    this.isShowSearch = true,
+    this.isShowFilter = true,
+    this.isShowNotification = true,
+    this.isShowBackButton = false,
+    this.action,
+    this.isShowLogo = true,
+    this.scaffoldKey,
+    this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +34,7 @@ class CustomAppBar extends StatelessWidget {
       alignment: Alignment.center,
       height: 65.h,
       padding: EdgeInsets.symmetric(
-        vertical: 15.h,
+        vertical: 10.h,
         horizontal: 10.w,
       ),
       child: Row(

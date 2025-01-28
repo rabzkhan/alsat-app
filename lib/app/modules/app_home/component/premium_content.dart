@@ -9,6 +9,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../components/all_user_tile.dart';
 import '../../conversation/controller/conversation_controller.dart';
+import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/user_filter_result_view.dart';
 import '../controller/home_controller.dart';
 import '../models/category_model.dart';
@@ -22,7 +23,7 @@ class PremiumContent extends StatelessWidget {
     // final productController = Get.find<ProductController>();
     final HomeController homeController = Get.find();
     final ConversationController _ = Get.find();
-    // FilterController filterController = Get.find();
+    FilterController filterController = Get.find();
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
@@ -87,6 +88,7 @@ class PremiumContent extends StatelessWidget {
                         homeController.category.value =
                             homeController.categories[index];
                         homeController.fetchPremiumUser(isFilter: true);
+                        filterController.clearAddress();
                         Get.to(
                           const UserFilterResultView(isBackFilter: false),
                           transition: Transition.rightToLeft,
@@ -152,6 +154,7 @@ class PremiumContent extends StatelessWidget {
               controller: homeController.searchController,
               onFieldSubmitted: (value) {
                 homeController.fetchPremiumUser(isFilter: true);
+                filterController.clearAddress();
                 Get.to(
                   const UserFilterResultView(isBackFilter: false),
                   transition: Transition.rightToLeft,
@@ -169,6 +172,7 @@ class PremiumContent extends StatelessWidget {
                   return homeController.searchText.isEmpty
                       ? InkWell(
                           onTap: () {
+                            filterController.clearAddress();
                             homeController.category.value = null;
                             homeController.fetchPremiumUser(isFilter: true);
                             Get.to(
@@ -205,6 +209,7 @@ class PremiumContent extends StatelessWidget {
                             8.horizontalSpace,
                             InkWell(
                               onTap: () {
+                                filterController.clearAddress();
                                 homeController.category.value = null;
                                 homeController.fetchPremiumUser(isFilter: true);
                                 Get.to(

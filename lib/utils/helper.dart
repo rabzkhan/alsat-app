@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:crypto/crypto.dart';
 
-final localLanguage = AppLocalizations.of(Get.context!)!;
 String timeAgo(DateTime date) {
   final clock = DateTime.now();
   var elapsed = clock.millisecondsSinceEpoch - date.millisecondsSinceEpoch;

@@ -73,12 +73,12 @@ class _VideoMessageState extends State<VideoMessage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              videoFile == null
-                  ? const CupertinoActivityIndicator()
-                  : Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        ClipRRect(
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  videoFile == null
+                      ? const CupertinoActivityIndicator()
+                      : ClipRRect(
                           borderRadius: BorderRadius.circular(5.r),
                           child: Image.memory(
                             videoFile!,
@@ -86,57 +86,57 @@ class _VideoMessageState extends State<VideoMessage> {
                             fit: BoxFit.cover,
                           ),
                         ),
-                        CircleAvatar(
-                          backgroundColor: Colors.black.withOpacity(.5),
-                          radius: 20,
-                          child: Icon(
-                            Icons.play_arrow_rounded,
+                  CircleAvatar(
+                    backgroundColor: Colors.black.withOpacity(.5),
+                    radius: 20,
+                    child: Icon(
+                      Icons.play_arrow_rounded,
+                      color: Colors.white,
+                      size: 30.r,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    left: 0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.videocam_rounded,
+                            size: 16.r,
                             color: Colors.white,
-                            size: 30.r,
                           ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          left: 0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.videocam_rounded,
-                                  size: 16.r,
-                                  color: Colors.white,
-                                ),
-                                3.horizontalSpace,
-                                Text(
-                                  convertSecondsToTime(videoPlayerController
-                                          ?.value.duration.inSeconds ??
-                                      0),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                                3.horizontalSpace,
-                                Expanded(
-                                  child: Text(
-                                    textAlign: TextAlign.end,
-                                    DateFormat('hh:mm a dd MMM').format(
-                                      widget.message?.time ?? DateTime.now(),
-                                    ),
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                )
-                              ],
+                          3.horizontalSpace,
+                          Text(
+                            convertSecondsToTime(videoPlayerController
+                                    ?.value.duration.inSeconds ??
+                                0),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12.sp,
                             ),
                           ),
-                        ),
-                      ],
+                          3.horizontalSpace,
+                          Expanded(
+                            child: Text(
+                              textAlign: TextAlign.end,
+                              DateFormat('hh:mm a dd MMM').format(
+                                widget.message?.time ?? DateTime.now(),
+                              ),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

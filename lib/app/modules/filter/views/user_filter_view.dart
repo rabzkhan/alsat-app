@@ -1,7 +1,6 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/app/modules/filter/views/location_selection.dart';
-import 'package:alsat/app/modules/filter/views/premium_address_select.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -127,7 +126,7 @@ class UserFilterView extends StatelessWidget {
                 context: context,
                 backgroundColor: Colors.transparent,
                 builder: (context) =>
-                    const PremiumAddressSelection(reverse: true),
+                    const LocationSelection(canSelectMultiple: true),
               );
             },
             child: Container(
@@ -159,7 +158,8 @@ class UserFilterView extends StatelessWidget {
                               Expanded(
                                 child: ScrollingTextWidget(
                                   child: Text(
-                                    "${homeController.selectedLocation.isEmpty ? 'No Location Selected' : homeController.selectedLocation}", // Display selected location text here
+                                    Get.find<FilterController>()
+                                        .getSelectedLocationText(),
                                     style: regular.copyWith(
                                       fontSize: 10.sp,
                                       color: context.theme.primaryColor,

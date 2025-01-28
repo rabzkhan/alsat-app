@@ -138,7 +138,7 @@ class AuthController extends GetxController {
         log('login User Info --- :${userDataModel.value.id}');
         if (addressController.text.isEmpty) {
           addressController.text =
-              "${userDataModel.value.location?.province ?? ''} ${userDataModel.value.location?.province ?? ""}";
+              "${userDataModel.value.location?.province ?? ''} ${userDataModel.value.location?.city ?? ""}";
         }
         if (user.active == true) {
           saveFcmToken();
@@ -205,10 +205,6 @@ class AuthController extends GetxController {
   //-- upgrate user info --//
   RxList<CategoriesModel> selectUserCategoriesList = <CategoriesModel>[].obs;
   TextEditingController addressController = TextEditingController();
-  // RxString for selected province
-  RxString selectedProvince = "".obs;
-  // RxString for selected city
-  RxString selectedCity = "".obs;
   RxBool isUpdateLoading = false.obs;
 
   updateUserInformation({required Map<String, dynamic> data}) async {
