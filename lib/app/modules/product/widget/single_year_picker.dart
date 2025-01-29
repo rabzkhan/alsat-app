@@ -16,13 +16,13 @@ class SingleYearPicker extends StatefulWidget {
 class _SingleYearPickerState extends State<SingleYearPicker> {
   late double widgetHeight;
   late ScrollController scrollController;
-  final List<String> items =
-      List.generate(200, (index) => (index + 1900).toString());
-  String selectYear = '1999';
+  List<String> items = [];
+  String selectYear = '0';
   @override
   void initState() {
     selectYear = widget.selectYear.value;
-
+    items = List.generate(
+        100, (index) => (index + (num.parse(selectYear) - 50)).toString());
     int initialItem = items.indexOf(widget.selectYear.value);
     scrollController = FixedExtentScrollController(initialItem: initialItem);
 

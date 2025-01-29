@@ -25,6 +25,29 @@ import '../../authentication/controller/auth_controller.dart';
 import '../model/product_post_list_res.dart';
 
 class ProductController extends GetxController {
+  List<String> estateTypeList = [
+    'House',
+    'Apartment',
+    'Condo',
+    'Villa',
+    'Studio',
+    'Townhouse',
+    'Penthouse',
+    'Duplex',
+    'Commercial Property',
+  ];
+  List<String> estateDealTypeList = [
+    'Buy',
+    'Sell',
+    'Rent',
+    'Lease',
+    'Mortgage',
+    'Invest',
+    'Short-Term Rent',
+    'Vacation Rental',
+    'Co-ownership',
+    'Foreclosure',
+  ];
   RxBool isShowPostProductVideo = RxBool(false);
   RxBool isProductPosting = RxBool(false);
   RxList<File> pickImageList = RxList([]);
@@ -43,8 +66,8 @@ class ProductController extends GetxController {
   RxString selectedTransmission = RxString("");
   RxString selectedEngineType = RxString("");
   RxList<String> selectedColor = RxList<String>([]);
-  RxString selectedYear = RxString('20000');
-  RxString selectedPassed = RxString('1999');
+  RxString selectedYear = RxString(DateTime.now().year.toString());
+  RxString selectedPassed = RxString('7000');
   //-- post product count --//
   RxInt totalProductFiled = RxInt(3);
   RxInt totalProductFiledCount = RxInt(0);
@@ -55,9 +78,9 @@ class ProductController extends GetxController {
   RxInt individualInfoFiled = RxInt(6);
   RxInt individualInfoFiledCount = RxInt(2);
   //--Text Field--//
-  TextEditingController estateDealTypeController = TextEditingController();
+  RxnString estateDealType = RxnString();
   TextEditingController estateAddressController = TextEditingController();
-  TextEditingController estateTypeController = TextEditingController();
+  RxnString estateType = RxnString();
 
   TextEditingController productNameController = TextEditingController();
   TextEditingController productDescriptionController = TextEditingController();
@@ -117,9 +140,9 @@ class ProductController extends GetxController {
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         if (selectCategory.value != null) filledCount++;
-        if (estateDealTypeController.text.trim().isNotEmpty) filledCount++;
+        if ((estateDealType.value ?? "").isNotEmpty) filledCount++;
         if (estateAddressController.text.trim().isNotEmpty) filledCount++;
-        if (estateTypeController.text.trim().isNotEmpty) filledCount++;
+        if ((estateType.value ?? '').isNotEmpty) filledCount++;
         if (floor.text.trim().isNotEmpty) filledCount++;
         if (room.text.trim().isNotEmpty) filledCount++;
         filledCount++;

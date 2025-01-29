@@ -30,7 +30,7 @@ class ConversationController extends GetxController {
   void onInit() {
     getConversations();
     connectToMqtt();
-
+    messageWithAdmin();
     super.onInit();
   }
 
@@ -42,15 +42,24 @@ class ConversationController extends GetxController {
         Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     AuthController authController = Get.find();
     String uId = authController.userDataModel.value.id ?? "";
-    Map<String, dynamic> messagesMap = {
-      "sender_id": uId,
-      "receiver_id": (selectConversation.value?.participants ?? [])
-          .firstWhereOrNull((e) => e.id != uId)
-          ?.id,
-      "content": messages,
-      "reply_to": messageController.selectReplyMessage.value?.id ?? '',
-      "attachments": [map]
-    };
+    String? receiverId = (selectConversation.value?.participants ?? [])
+        .firstWhereOrNull((e) => e.id != uId)
+        ?.id;
+    Map<String, dynamic> messagesMap = receiverId == null
+        ? {
+            "sender_id": uId,
+            "receiver_id": receiverId,
+            "content": messages,
+            "reply_to": messageController.selectReplyMessage.value?.id ?? '',
+            "attachments": [map]
+          }
+        : {
+            "sender_id": uId,
+            "receiver_id": receiverId,
+            "content": messages,
+            "reply_to": messageController.selectReplyMessage.value?.id ?? '',
+            "attachments": [map]
+          };
     messageController.selectReplyMessage.value = null;
     // log('messagesMap: $messagesMap');
 
@@ -723,6 +732,32 @@ class ConversationController extends GetxController {
         CustomSnackBar.showCustomErrorToast(
             title: 'Error', message: 'Something went wrong');
         return false;
+      },
+    );
+  }
+
+  //-- Message With admin --//
+  Rxn<ConversationModel> addminConversationModel = Rxn<ConversationModel>();
+  RxBool isMessageWithAdmin = false.obs;
+  Future<void> messageWithAdmin() async {
+    return BaseClient.safeApiCall(
+      '${Constants.baseUrl}${Constants.userConversationList}/admin',
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isMessageWithAdmin.value = true;
+      },
+      onSuccess: (response) async {
+        Map<String, dynamic> data = response.data;
+        addminConversationModel.value = ConversationModel.fromJson(data);
+        isMessageWithAdmin.value = false;
+      },
+      onError: (error) {
+        log('messageWithAdmin Error: $error');
+        isMessageWithAdmin.value = false;
       },
     );
   }

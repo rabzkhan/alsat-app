@@ -1,5 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
+import 'package:alsat/app/modules/conversation/view/message_view.dart';
 import 'package:alsat/app/modules/promotions/view/my_promotions_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -11,6 +12,7 @@ import '../../config/theme/app_text_theme.dart';
 import '../../config/translations/localization_service.dart';
 import '../modules/auth_user/auth_user_tab/my_settings.dart';
 import '../modules/authentication/controller/auth_controller.dart';
+import '../modules/conversation/controller/conversation_controller.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
@@ -18,6 +20,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     AuthController authController = Get.find();
+    ConversationController conversationController = Get.find();
     LocalizationService localizationService = Get.put(LocalizationService());
     return GlassmorphicContainer(
       width: Get.width * .6,
@@ -103,22 +106,38 @@ class AppDrawer extends StatelessWidget {
                     //   ),
                     // ),
                     // 20.verticalSpace,
-                    Row(
-                      children: [
-                        Image.asset(
-                          chatIcon,
-                          width: 25.w,
-                          color: Get.theme.textTheme.bodyLarge!.color!,
-                        ),
-                        10.horizontalSpace,
-                        Text(
-                          'Chat To Aadmin',
-                          style: regular.copyWith(
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                      ],
-                    ),
+                    Obx(() {
+                      return conversationController
+                                  .addminConversationModel.value ==
+                              null
+                          ? const Center()
+                          : InkWell(
+                              onTap: () {
+                                Get.to(
+                                    () => MessagesScreen(
+                                        conversation: conversationController
+                                            .addminConversationModel.value!),
+                                    transition: Transition.fadeIn);
+                              },
+                              child: Row(
+                                children: [
+                                  Image.asset(
+                                    chatIcon,
+                                    width: 25.w,
+                                    color:
+                                        Get.theme.textTheme.bodyLarge!.color!,
+                                  ),
+                                  10.horizontalSpace,
+                                  Text(
+                                    'Chat To Aadmin',
+                                    style: regular.copyWith(
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                    }),
                     10.verticalSpace,
                     ExpansionTile(
                       shape:
