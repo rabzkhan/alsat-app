@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 
-class EngineTypeSheet extends StatelessWidget {
+class EngineTypeSheet extends StatefulWidget {
   const EngineTypeSheet({
     super.key,
     required this.title,
@@ -15,6 +15,21 @@ class EngineTypeSheet extends StatelessWidget {
   final String title;
   final RxList<String> data;
   final RxString selectedData;
+
+  @override
+  State<EngineTypeSheet> createState() => _EngineTypeSheetState();
+}
+
+class _EngineTypeSheetState extends State<EngineTypeSheet> {
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    int initialItem = widget.data.indexOf(widget.selectedData.value);
+    scrollController = FixedExtentScrollController(initialItem: initialItem);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +64,7 @@ class EngineTypeSheet extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  title,
+                  widget.title,
                   textAlign: TextAlign.center,
                   style: bold.copyWith(fontSize: 16.sp),
                 ),
@@ -65,22 +80,23 @@ class EngineTypeSheet extends StatelessWidget {
               width: Get.width * .6,
               child: Scrollbar(
                 thickness: 1.w,
-                controller: ScrollController(),
+                controller: scrollController,
                 thumbVisibility: true,
                 trackVisibility: true,
                 child: ListWheelScrollView(
+                  controller: scrollController,
                   physics: const BouncingScrollPhysics(),
                   squeeze: 1,
                   onSelectedItemChanged: (value) {
-                    if (selectedData.value == data[value]) {
-                      selectedData.value = "Not Chsen Yet";
+                    if (widget.selectedData.value == widget.data[value]) {
+                      widget.selectedData.value = "Not Chsen Yet";
                     } else {
-                      selectedData.value = data[value];
+                      widget.selectedData.value = widget.data[value];
                     }
                   },
                   itemExtent: 35.h,
                   children: List.generate(
-                    data.length,
+                    widget.data.length,
                     (index) {
                       return Obx(() {
                         return Container(
@@ -90,14 +106,15 @@ class EngineTypeSheet extends StatelessWidget {
                               vertical: 7.h, horizontal: 20.w),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: selectedData.value == data[index]
+                              color: widget.selectedData.value ==
+                                      widget.data[index]
                                   ? AppColors.primary.withOpacity(.4)
                                   : Colors.transparent,
                             ),
                             borderRadius: BorderRadius.circular(10.r),
                           ),
                           child: Text(
-                            data[index],
+                            widget.data[index],
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14.sp,

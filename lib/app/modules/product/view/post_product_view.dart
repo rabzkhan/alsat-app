@@ -1394,19 +1394,16 @@ class _PostProductViewState extends State<PostProductView> {
       children: [
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: FormBuilderTextField(
+          child: FormBuilderDropdown<String>(
+            name: 'estateType',
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(),
             ]),
-            name: 'estateType',
             onChanged: (newValue) {
+              productController.estateType.value = newValue!;
               productController.calculateFilledProductFields();
             },
-            controller: productController.estateTypeController,
-            textAlign: TextAlign.right,
-            textAlignVertical: TextAlignVertical.center,
             style: regular.copyWith(
-              // fontSize: 12.sp,
               color: context.theme.primaryColor,
             ),
             decoration: InputDecoration(
@@ -1438,6 +1435,37 @@ class _PostProductViewState extends State<PostProductView> {
                 ),
               ),
             ),
+            selectedItemBuilder: (context) {
+              return productController.estateTypeList
+                  .map(
+                    (estate) => DropdownMenuItem<String>(
+                      alignment: Alignment.centerRight,
+                      value: estate,
+                      child: Text(
+                        estate,
+                        style: regular.copyWith(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList();
+            },
+            items: productController.estateTypeList
+                .map(
+                  (estate) => DropdownMenuItem<String>(
+                    value: estate,
+                    child: Text(
+                      estate,
+                      style: regular.copyWith(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
           ),
         ),
         Padding(
@@ -1490,19 +1518,16 @@ class _PostProductViewState extends State<PostProductView> {
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: FormBuilderTextField(
+          child: FormBuilderDropdown<String>(
+            name: 'estateDealType',
             validator: FormBuilderValidators.compose([
               FormBuilderValidators.required(),
             ]),
-            name: 'estateDealType',
             onChanged: (newValue) {
+              productController.estateDealType.value = newValue!;
               productController.calculateFilledProductFields();
             },
-            controller: productController.estateDealTypeController,
-            textAlign: TextAlign.right,
-            textAlignVertical: TextAlignVertical.center,
             style: regular.copyWith(
-              // fontSize: 12.sp,
               color: context.theme.primaryColor,
             ),
             decoration: InputDecoration(
@@ -1534,7 +1559,74 @@ class _PostProductViewState extends State<PostProductView> {
                 ),
               ),
             ),
+            selectedItemBuilder: (context) {
+              return productController.estateDealTypeList
+                  .map(
+                    (estate) => DropdownMenuItem<String>(
+                      alignment: Alignment.centerRight,
+                      value: estate,
+                      child: Text(
+                        estate,
+                        style: regular.copyWith(
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList();
+            },
+            items: productController.estateDealTypeList
+                .map(
+                  (estate) => DropdownMenuItem<String>(
+                    value: estate,
+                    child: Text(
+                      estate,
+                      style: regular.copyWith(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
           ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Obx(
+                () => _tile(
+                  "Floor",
+                  productController.selectedYear.value,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SingleYearPicker(
+                        selectYear: productController.selectedYear,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Expanded(
+              child: Obx(
+                () => _tile(
+                  "Room",
+                  productController.selectedYear.value,
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => SingleYearPicker(
+                        selectYear: productController.selectedYear,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
         Container(
           height: 40,
@@ -1957,10 +2049,10 @@ class _PostProductViewState extends State<PostProductView> {
   resetForm() {
     filterController.clearAddress();
     _formKey.currentState?.reset();
-    productController.estateDealTypeController.clear();
+    productController.estateDealType.value = null;
     productController.priceController.text = '';
     productController.estateAddressController.clear();
-    productController.estateTypeController.clear();
+    productController.estateType.value = null;
     productController.selectedPhoneBrand.value = '';
     productController.productNameController.clear();
     productController.productDescriptionController.clear();
