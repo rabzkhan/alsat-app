@@ -150,3 +150,6 @@ flutter:
           weight: 500
         - asset: assets/fonts/Cairo-SemiBold.ttf
           weight: 900
+    - family: Exo
+      fonts:
+        - asset: assets/fonts/Exo-Regular.ttf

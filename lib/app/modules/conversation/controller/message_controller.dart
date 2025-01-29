@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/services/base_client.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
@@ -18,7 +19,8 @@ class MessageController extends GetxController {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
-    String clientID = 'user|$fcmToken|${authController.userDataModel.value.id}';
+    String clientID =
+        'user|${DateTime.now().millisecondsSinceEpoch}|${authController.userDataModel.value.id}';
     String username = 'user|${authController.userDataModel.value.id}';
     const String password = Constants.token1;
     final MqttServerClient client = MqttServerClient(host, clientID);
@@ -59,5 +61,25 @@ class MessageController extends GetxController {
 
   void onDisconnected() {
     log('Disconnected from the MQTT broker');
+  }
+
+  //read all unseen messages--//
+  Future<void> readAllUnSeenMessages(String chatId) async {
+    return BaseClient.safeApiCall(
+      '${Constants.baseUrl}${Constants.userConversationList}/$chatId/status',
+      DioRequestType.put,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: {"status": "read"},
+      onLoading: () {},
+      onSuccess: (response) async {
+        log('read all unseen messages');
+      },
+      onError: (error) {
+        log('read all unseen messages error: ${error.toString()}');
+      },
+    );
   }
 }

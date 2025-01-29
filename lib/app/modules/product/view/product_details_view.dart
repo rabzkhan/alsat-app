@@ -517,6 +517,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     localLanguage.information,
                     style: bold.copyWith(
                       fontSize: 18.sp,
+                      fontFamily: 'Poppins',
                     ),
                   ),
                   10.verticalSpace,
@@ -892,15 +893,14 @@ Padding infoTile({required String name, required String value}) {
       children: [
         Text(
           name,
-          style: regular.copyWith(
-            fontSize: 15.sp,
-          ),
+          style: regular.copyWith(fontSize: 15.sp, fontFamily: 'Exo'),
         ),
         const Spacer(),
         Text(
           value,
           style: regular.copyWith(
             fontSize: 15.sp,
+            fontFamily: 'Exo',
             fontWeight: FontWeight.w600,
           ),
         ),

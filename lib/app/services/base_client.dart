@@ -108,7 +108,7 @@ class BaseClient {
       _handleTimeoutException(url: url, onError: onError);
     } catch (error, stackTrace) {
       // print the line of code that throw unexpected exception
-      log('error: ${error.toString()}');
+      log('error: ${error.toString()}-- $url--$queryParameters - $data');
       Logger().e(stackTrace);
       // unexpected error for example (parsing json error)
       _handleUnexpectedException(url: url, onError: onError, error: error);

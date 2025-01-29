@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
 import 'package:alsat/utils/helper.dart';
@@ -37,14 +39,8 @@ class ChatContent extends StatelessWidget {
         padding: EdgeInsets.symmetric(
           horizontal: 20.w,
           vertical: 10.h,
-        ),
+        ).copyWith(top: 0),
         children: [
-          Text(
-            'Chat',
-            style: regular.copyWith(
-              fontSize: 16.sp,
-            ),
-          ),
           Obx(() {
             return Skeletonizer(
               enabled: conversationController.isConversationLoading.value,
@@ -55,6 +51,7 @@ class ChatContent extends StatelessWidget {
                 end: Alignment.centerRight,
               ),
               child: ListView.builder(
+                padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: conversationController.isConversationLoading.value
@@ -79,6 +76,9 @@ class ChatContent extends StatelessWidget {
                     ),
                     child: ListTile(
                       onTap: () {
+                        conversationController
+                            .conversationList[index].notReadedCount = 0;
+                        conversationController.conversationList.refresh();
                         Get.to(
                           MessagesScreen(
                             conversation: conversation!,
@@ -94,42 +94,64 @@ class ChatContent extends StatelessWidget {
                         radius: 20.r,
                         child: CircleAvatar(
                           radius: 18.r,
-                          child: NetworkImagePreview(
-                            radius: 30.r,
-                            url: participant?.picture ?? "",
-                            height: 44.h,
-                            error: Image.asset(userDefaultIcon),
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        '${participant?.userName}',
-                        style: regular.copyWith(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      trailing: CircleAvatar(
-                          radius: 14.r,
-                          backgroundColor:
-                              Get.theme.primaryColor.withOpacity(.5),
-                          child: CircleAvatar(
-                            radius: 13.r,
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              radius: 13.r,
-                              backgroundColor:
-                                  Get.theme.disabledColor.withOpacity(.05),
-                              child: Text(
-                                (conversation?.notReadedCount ?? 0).toString(),
-                                style: regular.copyWith(
-                                  fontSize: 10.sp,
-                                  fontWeight: FontWeight.w500,
-                                  color: Get.theme.primaryColor,
+                          child: (conversation?.isAdminChat ?? false)
+                              ? Image.asset("assets/icons/admin.png")
+                              : NetworkImagePreview(
+                                  radius: 30.r,
+                                  url: participant?.picture ?? "",
+                                  height: 44.h,
+                                  error: Image.asset(userDefaultIcon),
                                 ),
+                        ),
+                      ),
+                      title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            (conversation?.isAdminChat ?? false)
+                                ? 'Alsat Admin'
+                                : '${participant?.userName}',
+                            style: regular.copyWith(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Poppins'),
+                          ),
+                          if (conversation?.isAdminChat ?? false)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Icon(
+                                Icons.verified,
+                                color: Colors.blue,
+                                size: 18.sp,
                               ),
-                            ),
-                          )),
+                            )
+                        ],
+                      ),
+                      trailing: (conversation?.notReadedCount ?? 0) <= 0
+                          ? null
+                          : CircleAvatar(
+                              radius: 14.r,
+                              backgroundColor:
+                                  Get.theme.primaryColor.withOpacity(.5),
+                              child: CircleAvatar(
+                                radius: 13.r,
+                                backgroundColor: Colors.white,
+                                child: CircleAvatar(
+                                  radius: 13.r,
+                                  backgroundColor:
+                                      Get.theme.disabledColor.withOpacity(.05),
+                                  child: Text(
+                                    (conversation?.notReadedCount ?? 0)
+                                        .toString(),
+                                    style: regular.copyWith(
+                                      fontSize: 10.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Get.theme.primaryColor,
+                                    ),
+                                  ),
+                                ),
+                              )),
                       subtitle: conversationController
                               .isConversationLoading.value
                           ? const Text('Last Message Loading')

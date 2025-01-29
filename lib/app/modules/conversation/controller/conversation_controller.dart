@@ -48,7 +48,6 @@ class ConversationController extends GetxController {
     Map<String, dynamic> messagesMap = receiverId == null
         ? {
             "sender_id": uId,
-            "receiver_id": receiverId,
             "content": messages,
             "reply_to": messageController.selectReplyMessage.value?.id ?? '',
             "attachments": [map]
@@ -60,11 +59,14 @@ class ConversationController extends GetxController {
             "reply_to": messageController.selectReplyMessage.value?.id ?? '',
             "attachments": [map]
           };
+    String url = Constants.baseUrl + Constants.conversationMessages;
     messageController.selectReplyMessage.value = null;
-    // log('messagesMap: $messagesMap');
+    if (receiverId == null) {
+      url = "$url/admin";
+    }
 
     await BaseClient.safeApiCall(
-      Constants.baseUrl + Constants.conversationMessages,
+      url,
       DioRequestType.post,
       data: messagesMap,
       headers: {

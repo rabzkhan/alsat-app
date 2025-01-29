@@ -1997,13 +1997,17 @@ class _PostProductViewState extends State<PostProductView> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    value.isEmpty ? 'Not chosen yet' : value,
-                    style: regular.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight:
-                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
-                      color: value.isEmpty ? Colors.red : Colors.black87,
+                  Expanded(
+                    child: Text(
+                      textAlign: TextAlign.end,
+                      maxLines: 1,
+                      value.isEmpty ? 'Not chosen yet' : value,
+                      style: regular.copyWith(
+                        fontSize: 14.sp,
+                        fontWeight:
+                            value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                        color: value.isEmpty ? Colors.red : Colors.black87,
+                      ),
                     ),
                   ),
                 ],

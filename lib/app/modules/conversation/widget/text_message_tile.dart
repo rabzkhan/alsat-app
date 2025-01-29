@@ -17,6 +17,10 @@ class TextMessage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(
+        left: message!.isSender ? 50 : 0,
+        right: message!.isSender ? 0 : 50,
+      ),
       padding: const EdgeInsets.symmetric(
         horizontal: 16.0 * 0.75,
         vertical: 10,
@@ -41,12 +45,11 @@ class TextMessage extends StatelessWidget {
                   : message!.isSender
                       ? Colors.white
                       : null,
-              fontSize: 16.sp,
+              fontSize: 15.sp,
             ),
           ),
-          5.verticalSpace,
           Text(
-            DateFormat('hh:mm').format(message!.time),
+            DateFormat('hh:mm').format(message!.time.toLocal()),
             style: context.theme.textTheme.bodySmall?.copyWith(
               color: isReply
                   ? Colors.black38
