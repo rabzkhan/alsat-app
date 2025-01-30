@@ -79,7 +79,7 @@ class NotificationService {
             content: NotificationContent(
               id: uniqueId,
               channelKey: 'basic_channel',
-              summary: "Sports Notification",
+              summary: "Message from ${m.notification!.title}",
               title: m.notification!.title ??
                   m.data['title'] ??
                   'Notification Title',
@@ -105,7 +105,7 @@ class NotificationService {
                 id: uniqueId,
                 largeIcon: smallIcon,
                 channelKey: 'basic_channel',
-                summary: "Sports Notification",
+                summary: "Message from ${m.notification!.title}",
                 title: m.notification!.title ??
                     m.data['title'] ??
                     'Notification Title',
@@ -131,7 +131,7 @@ class NotificationService {
         content: NotificationContent(
           id: uniqueId,
           channelKey: 'basic_channel',
-          summary: "Sports Notification",
+          summary: "Message from ${m.notification!.title}",
           largeIcon: smallIcon ?? bigPicture,
           color: Colors.amber,
           backgroundColor: AppColors.primary,

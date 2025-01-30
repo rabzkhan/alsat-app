@@ -175,255 +175,26 @@ class ConversationController extends GetxController {
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
+
         conversationMessagesRes.value = ConversationMessagesRes.fromJson(data);
         selectConversationMessageList.value =
             conversationMessagesRes.value?.data?.messages ?? [];
+
         Map<String, Participant>? map =
             conversationMessagesRes.value?.data?.participants;
         map?.remove(authController.userDataModel.value.id.toString());
-        selectUserInfo.value = map?.values.toList().first;
+        selectUserInfo.value = map?.values.toList().firstOrNull;
+        selectUserInfo.value ??= Participant(
+          userName: 'Admin',
+          picture: 'Admin',
+        );
 
         for (var element in selectConversationMessageList) {
-          if (element.attachments != null &&
-              (element.attachments ?? []).isNotEmpty) {
-            for (Attachment e in element.attachments ?? []) {
-              if (e.type == 'image') {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.image,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: e.data,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-              if (e.type == 'video') {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.video,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: e.data,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-              if (e.type == 'location') {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.map,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: e.data,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-              if (e.type == 'audio') {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.audio,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: e.data,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-              if (e.type == 'post') {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.post,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: e.data,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-              if ((e.type ?? '').trim().isEmpty) {
-                coverMessage.add(
-                  ChatMessage(
-                    id: element.id ?? '0',
-                    text: element.content ?? '',
-                    messageType: ChatMessageType.text,
-                    messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.senderId,
-                    time: element.createdAt ?? DateTime.now(),
-                    otherUser: ChatUser(
-                      id: selectUserInfo.value?.id ?? "",
-                      name: selectUserInfo.value?.userName ?? '',
-                      imageUrl: selectUserInfo.value?.picture ?? '',
-                    ),
-                    data: null,
-                    replyMessage: element.replyTo == null
-                        ? null
-                        : ChatMessage(
-                            id: element.replyTo?.id ?? '0',
-                            text: element.replyTo?.content ?? '',
-                            messageType: ChatMessageType.text,
-                            messageStatus: MessageStatus.viewed,
-                            isSender: authController.userDataModel.value.id ==
-                                element.replyTo?.sender?.id,
-                            time: element.replyTo?.createdAt ?? DateTime.now(),
-                            otherUser: ChatUser(
-                              id: selectUserInfo.value?.id ?? "",
-                              name: selectUserInfo.value?.userName ?? '',
-                              imageUrl: selectUserInfo.value?.picture ?? '',
-                            ),
-                            data: e.data,
-                          ),
-                  ),
-                );
-              }
-            }
-          } else {
-            coverMessage.add(
-              ChatMessage(
-                id: element.id ?? '0',
-                text: element.content ?? '',
-                messageType: ChatMessageType.text,
-                messageStatus: MessageStatus.viewed,
-                isSender:
-                    authController.userDataModel.value.id == element.senderId,
-                time: element.createdAt ?? DateTime.now(),
-                otherUser: ChatUser(
-                  id: selectUserInfo.value?.id ?? "",
-                  name: selectUserInfo.value?.userName ?? '',
-                  imageUrl: selectUserInfo.value?.picture ?? '',
-                ),
-                data: null,
-              ),
-            );
-          }
+          List<ChatMessage> convertMessages =
+              messageConvert(element, selectUserInfo.value, authController);
+          coverMessage.addAll(convertMessages);
         }
+        coverMessage.refresh();
 
         isConversationMessageLoading.value = false;
       },
@@ -495,6 +266,18 @@ class ConversationController extends GetxController {
 
   //-- Check Auther Message --//
   checkMessagesToPush(MqttMessageModel mqttMessageModel) {
+    MessageModel messageModel = MessageModel(
+      id: mqttMessageModel.id ?? '',
+      chatId: mqttMessageModel.chatId ?? '',
+      accessedAt: mqttMessageModel.accessedAt ?? DateTime.now(),
+      senderId: mqttMessageModel.sender?.id ?? '',
+      receiverId: mqttMessageModel.receiver?.id ?? '',
+      content: mqttMessageModel.content ?? '',
+      createdAt: mqttMessageModel.createdAt ?? DateTime.now(),
+      updatedAt: mqttMessageModel.updatedAt ?? DateTime.now(),
+      attachments: mqttMessageModel.attachments ?? [],
+      status: mqttMessageModel.status ?? '',
+    );
     ConversationModel? conversation = conversationList.firstWhereOrNull(
         (element) =>
             element.participants?.lastOrNull?.id ==
@@ -506,23 +289,13 @@ class ConversationController extends GetxController {
     //-- Check if conversation is selected --//
     if (selectConversation.value?.participants?.lastOrNull?.id ==
         mqttMessageModel.sender?.id) {
-      var newMessage = ChatMessage(
-        id: mqttMessageModel.sender?.id ?? '0',
-        text: mqttMessageModel.content ?? '',
-        messageType: ChatMessageType.text,
-        messageStatus: MessageStatus.notView,
-        isSender: authController.userDataModel.value.id ==
-            mqttMessageModel.sender?.id,
-        time: mqttMessageModel.createdAt ?? DateTime.now(),
-        otherUser: ChatUser(
-          id: selectUserInfo.value?.id ?? "",
-          name: selectUserInfo.value?.userName ?? '',
-          imageUrl: selectUserInfo.value?.picture ?? '',
-        ),
-        data: null,
-      );
+      // ReplyTo? replyTo,
 
-      coverMessage.insert(0, newMessage);
+      List<ChatMessage> newMessage =
+          messageConvert(messageModel, selectUserInfo.value, authController);
+      for (var element in newMessage) {
+        coverMessage.insert(0, element);
+      }
       coverMessage.refresh();
     }
     if (conversation != null) {
@@ -539,6 +312,7 @@ class ConversationController extends GetxController {
         accessedAt: mqttMessageModel.accessedAt,
       );
       conversation.lastMessage = message;
+      conversation.notReadedCount = conversation.notReadedCount! + 1;
       conversationList.refresh();
     }
   }

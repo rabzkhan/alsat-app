@@ -32,7 +32,7 @@ class MessageTile extends StatelessWidget {
     MessageController messageController = Get.put(MessageController(),
         tag:
             '${Get.find<ConversationController>().selectConversation.value?.id}');
-    Widget messageConvert(ChatMessage message, {bool isReply = false}) {
+    Widget messageConvertByType(ChatMessage message, {bool isReply = false}) {
       switch (message.messageType) {
         case ChatMessageType.text:
           return TextMessage(message: message, isReply: isReply);
@@ -82,6 +82,7 @@ class MessageTile extends StatelessWidget {
             mainAxisAlignment: message.isSender
                 ? MainAxisAlignment.end
                 : MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!message.isSender) ...[
                 CircleAvatar(
@@ -108,12 +109,16 @@ class MessageTile extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.circular(10.r),
+                        borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10.r),
+                          topLeft: Radius.circular(10.r),
+                          bottomLeft: Radius.circular(10.r),
+                        ),
                       ),
-                      child:
-                          messageConvert(message.replyMessage!, isReply: true),
+                      child: messageConvertByType(message.replyMessage!,
+                          isReply: true),
                     ),
-                  messageConvert(message),
+                  messageConvertByType(message),
                 ],
               )),
               if (message.isSender)

@@ -31,7 +31,14 @@ class TextMessage extends StatelessWidget {
             : message!.isSender
                 ? context.theme.primaryColor
                 : Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
+        borderRadius: isReply
+            ? null
+            : message?.replyMessage != null
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(10.r),
+                    bottomRight: Radius.circular(10.r),
+                  )
+                : BorderRadius.circular(10.r),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -45,20 +52,21 @@ class TextMessage extends StatelessWidget {
                   : message!.isSender
                       ? Colors.white
                       : null,
-              fontSize: 15.sp,
+              fontSize: isReply ? 12.sp : 15.sp,
             ),
           ),
-          Text(
-            DateFormat('hh:mm').format(message!.time.toLocal()),
-            style: context.theme.textTheme.bodySmall?.copyWith(
-              color: isReply
-                  ? Colors.black38
-                  : message!.isSender
-                      ? Colors.white
-                      : null,
-              fontSize: 10.sp,
+          if (!isReply)
+            Text(
+              DateFormat('hh:mm').format(message!.time.toLocal()),
+              style: context.theme.textTheme.bodySmall?.copyWith(
+                color: isReply
+                    ? Colors.black38
+                    : message!.isSender
+                        ? Colors.white
+                        : null,
+                fontSize: 10.sp,
+              ),
             ),
-          ),
         ],
       ),
     );

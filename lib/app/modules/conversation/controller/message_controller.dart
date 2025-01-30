@@ -14,16 +14,22 @@ class MessageController extends GetxController {
   Rxn<ChatMessage> selectReplyMessage = Rxn<ChatMessage>();
   RxBool isOnlineUser = RxBool(false);
   Rxn<DateTime> lastSeen = Rxn<DateTime>();
+  late MqttServerClient client;
+  @override
+  void onClose() {
+    client.disconnect();
+    super.onClose();
+  }
+
   Future<void> checkUserActiveLive({required String userID}) async {
     final AuthController authController = Get.find<AuthController>();
-    final fcmToken = await FirebaseMessaging.instance.getToken();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
     String clientID =
         'user|${DateTime.now().millisecondsSinceEpoch}|${authController.userDataModel.value.id}';
     String username = 'user|${authController.userDataModel.value.id}';
     const String password = Constants.token1;
-    final MqttServerClient client = MqttServerClient(host, clientID);
+    client = MqttServerClient(host, clientID);
     client.port = port;
     client.logging(on: true);
     client.setProtocolV311();
