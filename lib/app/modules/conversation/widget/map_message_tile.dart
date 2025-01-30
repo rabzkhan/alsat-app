@@ -34,9 +34,14 @@ class MapMessage extends StatelessWidget {
           color: isReply
               ? Colors.transparent
               : message!.isSender
-                  ? context.theme.primaryColor.withOpacity(.3)
+                  ? context.theme.primaryColor.withOpacity(.1)
                   : Colors.white,
           borderRadius: BorderRadius.circular(10.r),
+          border: Border.all(
+            color: !message!.isSender
+                ? Colors.black26
+                : context.theme.primaryColor.withOpacity(.4),
+          ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -65,9 +70,10 @@ class MapMessage extends StatelessWidget {
             ),
             5.verticalSpace,
             Text(
-              DateFormat('hh:mm').format(message!.time),
+              DateFormat('hh:mm').format(message!.time.toLocal()),
               style: context.theme.textTheme.bodySmall?.copyWith(
                 fontSize: 10.sp,
+                color: message!.isSender ? Get.theme.primaryColor : null,
               ),
             ),
           ],

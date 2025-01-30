@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -41,8 +42,8 @@ class ImageMessage extends StatelessWidget {
           color: isReply
               ? Colors.transparent
               : message!.isSender
-                  ? context.theme.primaryColor.withOpacity(.2)
-                  : Colors.white,
+                  ? Colors.transparent
+                  : Colors.transparent,
           borderRadius: BorderRadius.circular(10.r),
         ),
         child: Column(
@@ -51,17 +52,18 @@ class ImageMessage extends StatelessWidget {
           children: [
             message!.data.toString().toLowerCase().contains('http')
                 ? NetworkImagePreview(
+                    radius: 10.r,
                     url: message!.data,
                   )
                 : Image.file(File(message!.data.toString())),
             5.verticalSpace,
             Text(
-              DateFormat('hh:mm').format(message!.time),
+              DateFormat('hh:mm').format(message!.time.toLocal()),
               style: context.theme.textTheme.bodySmall?.copyWith(
                 color: isReply
                     ? Colors.black
                     : message!.isSender
-                        ? Colors.white
+                        ? AppColors.primary
                         : null,
                 fontSize: 10.sp,
               ),
