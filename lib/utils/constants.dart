@@ -1,7 +1,7 @@
 class Constants {
   static const baseUrl = 'https://alsat-api.flutterrwave.pro/app/v1';
   static const token1 =
-      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2ZGQ3NmNkMS0yYTNiLTQzNmYtOTg3ZC1kOTIzM2JiNjUwOTQiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiI5NDEzNWVlNy1jYTY4LTQzMzEtODJjMC00NzM5MjIwMzk3YjAiLCJleHAiOjE3Mzg3MDI1MTgsImlhdCI6MTczNzQwNjUxOCwibmJmIjoxNzM3NDA2NTE3LCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.ShWxLNFhgOTR7556YhsRuP6vNB8i-60j9UKgUoswkk9PXZyLcCXSemH-ijvEu-eGhyGrNfJ65BZTw5skKBXygRhGK3saqfSZQrJpzrvwZAJ3TT6pA2AnItnloIJvMsvhFgN_FiLsI8i4887SitbGTBmBj66Io_6sversVZiAW9oXle7iGSoWl4eavQqPAiDUsdwz67jSD2Y-yxtUWnPLIToaw8v-HUUUX_jDe4Tkx2lHrjCo7m00NDpuKEtzdYdzng8ZJattaJ7a1iYp4QskgYsWnG7W5RzE7ChKFHHd2x7abBLeuGQdvSWoPS0ZA0ZgiFeHQFFYkfO6mfvDjX4lsA';
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI3YWQ2NDEzYS1jYzkxLTRiODEtODcxNy00Y2UxMzdkZDNjYjEiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiI0YjJkYzZjNi1hZjU4LTQ5YzMtYjdjYi1lNWVmNGYwYjIyMjMiLCJleHAiOjE3Mzk0NDQ4MTIsImlhdCI6MTczODE0ODgxMiwibmJmIjoxNzM4MTQ4ODExLCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.y0hSFMvgUT5tiV6yOGqA4tYj_efsP2MrnmxDZpNes1xqMZV4lYzpOtO7beczLvSKPmAZ-t2GhDKnDu6l80FFlIQyZ8m7ENec6cuGsC-PeU8VapV2bV7jS-WoMgm0bxeyqXDDRgJA6xLs0E2fDXcZUIot9pv_OtDgANEkcUSmjA3ebcUSADoXllx0wGj2qPyT3UzFU56VJGlqxU_chJFHbGKQhMF_HUiEJo6rHKmw-878yq8sgY2ybd1U9v1eh_py3fgZ9wrljHXjAA_kZRTW-FCpMG79lFL1TcBUbYoGd_cb1W78gQj6PzEHWCV8TfSck_aqUxBIX3cG7QEFoV178w';
   static const token = 'Bearer $token1';
   static const filter = '/posts';
 
@@ -13,6 +13,7 @@ class Constants {
   static const conversationMessages = '/messages';
   static const postProduct = '/posts';
   static const categories = '/categories';
+  static const stories = '/stories';
   static const banners = '/banners';
   static const user = '/users';
   static const fcmStore = '/users/device';

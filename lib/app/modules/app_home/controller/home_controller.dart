@@ -1,18 +1,25 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
+import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../../utils/constants.dart';
 import '../../../common/const/image_path.dart';
 import '../../../services/base_client.dart';
 import '../../authentication/model/all_user_model.dart';
 import '../../authentication/model/user_data_model.dart';
 import '../../filter/controllers/filter_controller.dart';
+import '../../story/model/story_res.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
 
@@ -51,10 +58,11 @@ class HomeController extends GetxController {
   RxList<CategoriesModel> categories = <CategoriesModel>[].obs;
   //-- init method --//
   @override
-  void onInit() {
+  Future<void> onInit() async {
     getBanner();
     fetchCarBrand();
-    getCategories();
+    await getCategories();
+    fetchUserStory();
     super.onInit();
   }
 
@@ -264,5 +272,83 @@ class HomeController extends GetxController {
     await fetchPremiumUser(
         nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
     userFilterRefreshController.loadComplete();
+  }
+
+  //========================================Story========================================================///
+  RxList<StoryModel> storyList = <StoryModel>[].obs;
+  RxBool isStoryLoading = false.obs;
+  fetchUserStory() async {
+    AuthController authController = Get.find<AuthController>();
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isStoryLoading.value = true;
+        storyList.clear();
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data;
+        storyList.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
+        isStoryLoading.value = false;
+        storyList.refresh();
+        log('fetchUserStory: ${storyList.length}');
+      },
+      onError: (error) {
+        log('fetchUserStoryError: ${error.message}');
+        isStoryLoading.value = false;
+        storyList.refresh();
+      },
+    );
+  }
+
+  //========================================Story Image Picker========================================================///
+  List<File> pickStoryImageList = [];
+
+  Future<void> storyPickImage(
+    BuildContext context,
+  ) async {
+    List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
+      context,
+      pickerConfig: const AssetPickerConfig(
+        maxAssets: 1,
+        requestType: RequestType.image,
+      ),
+    );
+    if (pickImage != null) {
+      for (AssetEntity imagePick in pickImage) {
+        File? file = await imagePick.file;
+        if (file != null) {
+          pickStoryImageList.add(file);
+        }
+        update();
+      }
+    }
+    return;
+  }
+
+  void openEditor(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProImageEditor.network(
+          'https://picsum.photos/id/237/2000',
+          callbacks: ProImageEditorCallbacks(
+            onImageEditingComplete: (Uint8List bytes) async {
+              /*
+              Your code to handle the edited image. Upload it to your server as an example.
+              You can choose to use await, so that the loading-dialog remains visible until your code is ready, or no async, so that the loading-dialog closes immediately.
+              By default, the bytes are in `jpg` format.
+            */
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+    );
   }
 }

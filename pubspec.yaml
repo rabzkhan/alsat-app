@@ -105,6 +105,9 @@ dependencies:
   flutter_popup: ^3.3.0
   record: ^5.2.0
   flutter_material_pickers: ^3.7.0
+  stories_for_flutter:
+    path: packages/stories
+  pro_image_editor: ^6.2.1
 
 
     
