@@ -335,8 +335,8 @@ class HomeController extends GetxController {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ProImageEditor.network(
-          'https://picsum.photos/id/237/2000',
+        builder: (context) => ProImageEditor.file(
+          pickStoryImageList.first,
           callbacks: ProImageEditorCallbacks(
             onImageEditingComplete: (Uint8List bytes) async {
               /*
