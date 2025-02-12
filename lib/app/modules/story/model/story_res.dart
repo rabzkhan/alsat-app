@@ -11,13 +11,46 @@ String storyModelToJson(List<StoryModel> data) =>
     json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class StoryModel {
+  final User? user;
+  final List<Story>? stories;
+
+  StoryModel({
+    this.user,
+    this.stories,
+  });
+
+  StoryModel copyWith({
+    User? user,
+    List<Story>? stories,
+  }) =>
+      StoryModel(
+        user: user ?? this.user,
+        stories: stories ?? this.stories,
+      );
+
+  factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
+        user: json["user"] == null ? null : User.fromJson(json["user"]),
+        stories: json["stories"] == null
+            ? []
+            : List<Story>.from(json["stories"]!.map((x) => Story.fromJson(x))),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "user": user?.toJson(),
+        "stories": stories == null
+            ? []
+            : List<dynamic>.from(stories!.map((x) => x.toJson())),
+      };
+}
+
+class Story {
   final String? id;
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final DateTime? accessedAt;
   final Media? media;
 
-  StoryModel({
+  Story({
     this.id,
     this.createdAt,
     this.updatedAt,
@@ -25,14 +58,14 @@ class StoryModel {
     this.media,
   });
 
-  StoryModel copyWith({
+  Story copyWith({
     String? id,
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? accessedAt,
     Media? media,
   }) =>
-      StoryModel(
+      Story(
         id: id ?? this.id,
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
@@ -40,7 +73,7 @@ class StoryModel {
         media: media ?? this.media,
       );
 
-  factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
+  factory Story.fromJson(Map<String, dynamic> json) => Story(
         id: json["_id"],
         createdAt: json["created_at"] == null
             ? null
@@ -137,5 +170,66 @@ class Media {
         "size": size,
         "hash": hash,
         "content_type": contentType,
+      };
+}
+
+class User {
+  final String? id;
+  final DateTime? createdAt;
+  final String? userName;
+  final String? picture;
+  final bool? protectionLabel;
+  final bool? admin;
+  final String? role;
+
+  User({
+    this.id,
+    this.createdAt,
+    this.userName,
+    this.picture,
+    this.protectionLabel,
+    this.admin,
+    this.role,
+  });
+
+  User copyWith({
+    String? id,
+    DateTime? createdAt,
+    String? userName,
+    String? picture,
+    bool? protectionLabel,
+    bool? admin,
+    String? role,
+  }) =>
+      User(
+        id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
+        userName: userName ?? this.userName,
+        picture: picture ?? this.picture,
+        protectionLabel: protectionLabel ?? this.protectionLabel,
+        admin: admin ?? this.admin,
+        role: role ?? this.role,
+      );
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+        id: json["_id"],
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        userName: json["user_name"],
+        picture: json["picture"],
+        protectionLabel: json["protection_label"],
+        admin: json["admin"],
+        role: json["role"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "_id": id,
+        "created_at": createdAt?.toIso8601String(),
+        "user_name": userName,
+        "picture": picture,
+        "protection_label": protectionLabel,
+        "admin": admin,
+        "role": role,
       };
 }

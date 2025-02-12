@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -62,7 +64,7 @@ class HomeController extends GetxController {
     getBanner();
     fetchCarBrand();
     await getCategories();
-    fetchUserStory();
+    fetchAppStory();
     super.onInit();
   }
 
@@ -277,10 +279,9 @@ class HomeController extends GetxController {
   //========================================Story========================================================///
   RxList<StoryModel> storyList = <StoryModel>[].obs;
   RxBool isStoryLoading = false.obs;
-  fetchUserStory() async {
-    AuthController authController = Get.find<AuthController>();
+  fetchAppStory() async {
     await BaseClient.safeApiCall(
-      "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
+      "${Constants.baseUrl}${Constants.stories}",
       DioRequestType.get,
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
@@ -312,6 +313,7 @@ class HomeController extends GetxController {
   Future<void> storyPickImage(
     BuildContext context,
   ) async {
+    pickStoryImageList = [];
     List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
       context,
       pickerConfig: const AssetPickerConfig(
@@ -339,16 +341,52 @@ class HomeController extends GetxController {
           pickStoryImageList.first,
           callbacks: ProImageEditorCallbacks(
             onImageEditingComplete: (Uint8List bytes) async {
-              /*
-              Your code to handle the edited image. Upload it to your server as an example.
-              You can choose to use await, so that the loading-dialog remains visible until your code is ready, or no async, so that the loading-dialog closes immediately.
-              By default, the bytes are in `jpg` format.
-            */
+              String base64String = base64Encode(bytes);
+              int size = bytes.length;
+              var hash = md5.convert(bytes).toString();
+              Map<String, dynamic> media = {
+                "media": {
+                  "name": base64String,
+                  "type": "image",
+                  "size": size,
+                  "hash": hash,
+                  "content_type": "image/jpg"
+                }
+              };
+              postStory(media);
               Navigator.pop(context);
             },
           ),
         ),
       ),
+    );
+  }
+
+  //-- Post Story --//
+  RxBool isStoryPostLoading = false.obs;
+  Future<void> postStory(Map<String, dynamic> data) async {
+    await BaseClient.safeApiCall(
+      Constants.baseUrl + Constants.stories,
+      DioRequestType.post,
+      headers: {
+        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: data,
+      onLoading: () {
+        isStoryPostLoading.value = true;
+      },
+      onSuccess: (response) async {
+        isStoryPostLoading.value = false;
+        fetchAppStory();
+        pickStoryImageList.clear();
+        update();
+      },
+      onError: (error) {
+        isStoryPostLoading.value = false;
+        log('postStoryError: ${error.message}');
+        Logger().d("$error <- error");
+      },
     );
   }
 }
