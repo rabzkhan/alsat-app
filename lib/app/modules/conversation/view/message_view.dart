@@ -203,6 +203,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               ?.picture ??
                           "",
                       height: 44.h,
+                      width: 44.w,
                       error: (widget.conversation.isAdminChat ?? false)
                           ? Image.asset("assets/icons/admin.png")
                           : Image.asset(userDefaultIcon),

@@ -251,7 +251,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           Padding(
                             padding: EdgeInsets.only(top: 10.h),
                             child: Text(
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.justify,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                               '${widget.productDetailsController.postUserModel.value?.bio}',
                               style: regular.copyWith(
                                 fontSize: 14.sp,

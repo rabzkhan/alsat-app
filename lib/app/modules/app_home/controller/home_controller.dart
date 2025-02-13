@@ -63,8 +63,9 @@ class HomeController extends GetxController {
   Future<void> onInit() async {
     getBanner();
     fetchCarBrand();
+    userOwnStory();
     await getCategories();
-    fetchAppStory();
+
     super.onInit();
   }
 
@@ -279,7 +280,7 @@ class HomeController extends GetxController {
   //========================================Story========================================================///
   RxList<StoryModel> storyList = <StoryModel>[].obs;
   RxBool isStoryLoading = false.obs;
-  fetchAppStory() async {
+  fetchAppStores() async {
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.stories}",
       DioRequestType.get,
@@ -289,12 +290,12 @@ class HomeController extends GetxController {
       },
       onLoading: () {
         isStoryLoading.value = true;
-        storyList.clear();
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        storyList.value =
+        List<StoryModel> story =
             data.map((json) => StoryModel.fromJson(json)).toList();
+        storyList.addAll(story);
         isStoryLoading.value = false;
         storyList.refresh();
         log('fetchUserStory: ${storyList.length}');
@@ -303,6 +304,30 @@ class HomeController extends GetxController {
         log('fetchUserStoryError: ${error.message}');
         isStoryLoading.value = false;
         storyList.refresh();
+      },
+    );
+  }
+
+  userOwnStory() async {
+    AuthController authController = Get.find();
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        storyList.clear();
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data;
+        storyList.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
+        fetchAppStores();
+      },
+      onError: (error) {
+        fetchAppStores();
       },
     );
   }
@@ -378,7 +403,7 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         isStoryPostLoading.value = false;
-        fetchAppStory();
+        userOwnStory();
         pickStoryImageList.clear();
         update();
       },

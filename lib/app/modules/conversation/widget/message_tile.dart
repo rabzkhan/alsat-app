@@ -91,6 +91,7 @@ class MessageTile extends StatelessWidget {
                     radius: 40.r,
                     url: message.otherUser.imageUrl,
                     height: 40.r,
+                    width: 40.r,
                     error: Image.asset(userDefaultIcon),
                   ),
                 ),

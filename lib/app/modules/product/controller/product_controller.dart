@@ -341,6 +341,7 @@ class ProductController extends GetxController {
   void onHomeRefresh() async {
     final HomeController homeController = Get.find();
     homeController.getBanner();
+    homeController.userOwnStory();
     await fetchProducts();
     homeRefreshController.refreshCompleted();
   }
