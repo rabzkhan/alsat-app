@@ -15,6 +15,7 @@ import '../../auth_user/auth_user_tab/my_following.dart';
 import '../../auth_user/auth_user_tab/my_like_post.dart';
 import '../../auth_user/auth_user_tab/my_settings.dart';
 import '../../auth_user/controller/user_controller.dart';
+import '../controller/home_controller.dart';
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -23,13 +24,22 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => _ProfileContentState();
 }
 
-class _ProfileContentState extends State<ProfileContent> {
+class _ProfileContentState extends State<ProfileContent>
+    with TickerProviderStateMixin {
   final UserController userController = Get.find();
   final AuthController authController = Get.find();
   final ProductController productController = Get.find();
+  HomeController homeController = Get.find();
+  late TabController mainTabController;
+  late TabController tabController;
 
   @override
   void initState() {
+    mainTabController =
+        TabController(length: userController.profileTab.length, vsync: this);
+
+    tabController =
+        TabController(length: homeController.categories.length, vsync: this);
     if (productController.myProductList.isEmpty) {
       productController.fetchMyProducts();
     }
@@ -38,138 +48,178 @@ class _ProfileContentState extends State<ProfileContent> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: userController.profileTab.length,
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 12.w,
-          vertical: 3.h,
-        ).copyWith(
-          top: 3.h,
-        ),
-        child: Column(
-          children: [
-            //profile tile
-            ListTile(
-              leading: CircleAvatar(
-                radius: 28.r,
-                child: NetworkImagePreview(
-                  height: 56.h,
-                  width: 56.w,
-                  fit: BoxFit.cover,
-                  radius: 28.r,
-                  url: authController.userDataModel.value.picture ?? '',
-                  error: Image.asset(userDefaultIcon),
-                ),
-              ),
-              title: Obx(() => Text(
-                    authController.userDataModel.value.userName ?? 'Guest User',
-                    style: bold.copyWith(
-                      fontSize: 18.sp,
-                    ),
-                  )),
-              subtitle: Padding(
-                padding: EdgeInsets.symmetric(vertical: 2.h),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() => Text(
-                          authController.userDataModel.value.phone ??
-                              ' 01211312342',
-                          style: regular.copyWith(
-                            fontSize: 10.sp,
-                          ),
-                        )),
-                    if (MySharedPref.isLoggedIn())
-                      Obx(
-                        () => RatingBar.builder(
-                          itemSize: 15.h,
-                          initialRating: MySharedPref.isLoggedIn()
-                              ? double.parse(
-                                  (authController.userDataModel.value.rating ??
-                                          "0")
-                                      .toString())
-                              : 0,
-                          minRating: 0,
-                          direction: Axis.horizontal,
-                          allowHalfRating: true,
-                          itemCount: 5,
-                          itemBuilder: (context, _) => Icon(
-                            Icons.star,
-                            color: Get.theme.primaryColor,
-                          ),
-                          onRatingUpdate: (rating) {},
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      Get.to(() => const MySettings());
-                    },
-                    icon: Container(
-                      width: 30.w,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 5.w,
-                        vertical: 4.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Get.theme.primaryColor.withOpacity(.15),
-                        borderRadius: BorderRadius.circular(5.r),
-                      ),
-                      child: Image.asset(
-                        settingIcon,
-                      ),
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: 12.w,
+        vertical: 3.h,
+      ).copyWith(
+        top: 3.h,
+      ),
+      child: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) => [
+          SliverToBoxAdapter(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    radius: 28.r,
+                    child: NetworkImagePreview(
+                      height: 56.h,
+                      width: 56.w,
+                      fit: BoxFit.cover,
+                      radius: 28.r,
+                      url: authController.userDataModel.value.picture ?? '',
+                      error: Image.asset(userDefaultIcon),
                     ),
                   ),
-                  //const Icon(Icons.more_vert_outlined),
-                ],
-              ),
+                  title: Obx(() => Text(
+                        authController.userDataModel.value.userName ??
+                            'Guest User',
+                        style: bold.copyWith(
+                          fontSize: 18.sp,
+                        ),
+                      )),
+                  subtitle: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 2.h),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Obx(() => Text(
+                              authController.userDataModel.value.phone ??
+                                  ' 01211312342',
+                              style: regular.copyWith(
+                                fontSize: 10.sp,
+                              ),
+                            )),
+                        if (MySharedPref.isLoggedIn())
+                          Obx(
+                            () => RatingBar.builder(
+                              itemSize: 15.h,
+                              initialRating: MySharedPref.isLoggedIn()
+                                  ? double.parse((authController
+                                              .userDataModel.value.rating ??
+                                          "0")
+                                      .toString())
+                                  : 0,
+                              minRating: 0,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Get.theme.primaryColor,
+                              ),
+                              onRatingUpdate: (rating) {},
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.to(() => const MySettings());
+                        },
+                        icon: Container(
+                          width: 30.w,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 5.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Get.theme.primaryColor.withOpacity(.15),
+                            borderRadius: BorderRadius.circular(5.r),
+                          ),
+                          child: Image.asset(
+                            settingIcon,
+                          ),
+                        ),
+                      ),
+                      //const Icon(Icons.more_vert_outlined),
+                    ],
+                  ),
+                ),
+                10.verticalSpace,
+              ],
             ),
-            10.verticalSpace,
-
-            SizedBox(
-              height: 32.h,
-              child: TabBar(
-                indicatorWeight: 0,
-                indicatorPadding: EdgeInsets.zero,
-                indicatorSize: TabBarIndicatorSize.tab,
-                labelStyle: regular.copyWith(
-                  fontSize: 14.sp,
-                ),
-                padding: EdgeInsets.zero,
-                unselectedLabelColor: Get.theme.disabledColor,
-                labelColor: Get.theme.scaffoldBackgroundColor,
-                indicator: BoxDecoration(
-                  color: Get.theme.primaryColor,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
+          ),
+          SliverAppBar(
+            pinned: true,
+            elevation: 0,
+            backgroundColor: Get.theme.scaffoldBackgroundColor,
+            toolbarHeight: 0,
+            bottom: TabBar(
+              controller: mainTabController,
+              indicatorWeight: 0,
+              indicatorPadding: EdgeInsets.zero,
+              indicatorSize: TabBarIndicatorSize.tab,
+              labelStyle: regular.copyWith(
+                fontSize: 14.sp,
+              ),
+              padding: EdgeInsets.zero,
+              unselectedLabelColor: Get.theme.disabledColor,
+              labelColor: Get.theme.scaffoldBackgroundColor,
+              indicator: BoxDecoration(
+                color: Get.theme.primaryColor,
+                borderRadius: BorderRadius.circular(8.r),
+              ),
+              isScrollable: true,
+              tabs: userController.profileTab.map(
+                (e) {
+                  return Tab(
+                    text: e,
+                  );
+                },
+              ).toList(),
+            ),
+          ),
+          SliverAppBar(
+              pinned: true,
+              elevation: 0,
+              backgroundColor: Get.theme.scaffoldBackgroundColor,
+              toolbarHeight: 0,
+              bottom: TabBar(
+                controller: tabController,
+                onTap: (value) {
+                  productController.myListingSelectCategory.value =
+                      homeController.categories[value];
+                  productController.myListingRefresh();
+                },
                 isScrollable: true,
-                tabs: userController.profileTab.map(
-                  (e) {
-                    return Tab(
-                      text: e,
-                    );
-                  },
-                ).toList(),
-              ),
-            ),
-            5.verticalSpace,
-            const Expanded(
-              child: TabBarView(
-                children: [
-                  MyListings(),
-                  MyLikePost(),
-                  MyFollowers(),
-                  MyFollowing(),
-                ],
-              ),
-            )
+                unselectedLabelColor: Colors.black87,
+                indicatorWeight: 1,
+                indicator: BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: context.theme.primaryColor,
+                      width: 1,
+                    ),
+                  ),
+                ),
+                tabs: homeController.categories
+                    .map(
+                      (e) => Padding(
+                        padding: EdgeInsets.symmetric(vertical: 6.h),
+                        child: Text(
+                          e.name ?? '',
+                        ),
+                      ),
+                    )
+                    .toList(),
+              )),
+        ],
+        body: TabBarView(
+          controller: mainTabController,
+          children: const [
+            MyListings(),
+            // MyLikePost(),
+            // MyFollowers(),
+            // MyFollowing(),
           ],
         ),
       ),
