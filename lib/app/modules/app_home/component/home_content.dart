@@ -294,7 +294,7 @@ onBannerTab(HomeController homeController, ProductController productController,
   // IF CATEGORY
   if ('${bannerModel.type}'.toUpperCase() == 'CATEGORY') {
     filterController.isFilterLoading.value = true;
-    filterController.filtermapPassed = {
+    filterController.filterMapPassed = {
       "category": (homeController.categories
                   .firstWhereOrNull(
                       (element) => element.sId == bannerModel.entityId)

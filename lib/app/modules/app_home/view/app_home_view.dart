@@ -71,7 +71,7 @@ class _AppHomeViewState extends State<AppHomeView> {
         body: SafeArea(
           child: Column(
             children: [
-              // Custom appbar
+              // Custom appBar
               Obx(() {
                 return CustomAppBar(
                   title: homeController.homeBottomIndex.value == 3
@@ -105,7 +105,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                       filterController.category.value = null;
                                       filterController.isFilterLoading.value =
                                           true;
-                                      filterController.filtermapPassed = {
+                                      filterController.filterMapPassed = {
                                         "title":
                                             filterController.searchText.value,
                                       };
@@ -176,7 +176,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                               null;
                                           filterController
                                               .isFilterLoading.value = true;
-                                          filterController.filtermapPassed = {
+                                          filterController.filterMapPassed = {
                                             "title": filterController
                                                 .searchText.value,
                                           };

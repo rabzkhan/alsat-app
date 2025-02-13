@@ -1057,7 +1057,7 @@ class _FilterViewState extends State<FilterView> {
                         : () {
                             log('filter');
                             controller.isFilterLoading.value = true;
-                            controller.filtermapPassed = null;
+                            controller.filterMapPassed = null;
                             controller.applyFilter();
                             if (widget.isBack) {
                               Get.back();

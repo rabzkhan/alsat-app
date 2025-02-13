@@ -53,7 +53,7 @@ class CategoryContent extends StatelessWidget {
                                   .categories
                                   .elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
-                              filterController.filtermapPassed = {
+                              filterController.filterMapPassed = {
                                 "category":
                                     (homeController.categories[index].name ??
                                             '')
@@ -107,7 +107,7 @@ class CategoryContent extends StatelessWidget {
                                 .categories
                                 .elementAtOrNull(index);
                             filterController.isFilterLoading.value = true;
-                            filterController.filtermapPassed = {
+                            filterController.filterMapPassed = {
                               "category":
                                   (homeController.categories[index].name ?? '')
                                       .toLowerCase(),
@@ -151,7 +151,7 @@ class CategoryContent extends StatelessWidget {
                                   .categories
                                   .elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
-                              filterController.filtermapPassed = {
+                              filterController.filterMapPassed = {
                                 "category":
                                     (homeController.categories[index].name ??
                                             '')
@@ -166,7 +166,7 @@ class CategoryContent extends StatelessWidget {
                               );
 
                               filterController.isFilterLoading.value = true;
-                              filterController.filtermapPassed = {
+                              filterController.filterMapPassed = {
                                 "category":
                                     (subCategory.name ?? '').toLowerCase(),
                               };

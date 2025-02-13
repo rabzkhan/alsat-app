@@ -269,7 +269,7 @@ class FilterController extends GetxController {
 
   ProductPostListRes userProductPostListRes = ProductPostListRes();
   RxList<ProductModel> itemList = <ProductModel>[].obs;
-  Map<String, dynamic>? filtermapPassed;
+  Map<String, dynamic>? filterMapPassed;
   RxString searchText = RxString('');
   TextEditingController searchController = TextEditingController();
   Future<void> applyFilter({
@@ -302,8 +302,8 @@ class FilterController extends GetxController {
     };
 
     final filterData = Map<String, dynamic>.from(map);
-    filterData.addAll(filtermapPassed ?? {});
-    filtermapPassed = filterData;
+    filterData.addAll(filterMapPassed ?? {});
+    filterMapPassed = filterData;
 
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextValue != null) {

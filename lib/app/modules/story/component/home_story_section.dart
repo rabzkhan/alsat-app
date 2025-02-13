@@ -21,10 +21,11 @@ class HomeStorySection extends StatelessWidget {
     AuthController authController = Get.find();
     return Obx(() {
       return Stories(
+        autoPlayDuration: const Duration(seconds: 5),
         highLightColor: AppColors.primary,
         paddingColor: AppColors.secondary,
         fullpageVisitedColor: AppColors.primary,
-        fullpageUnisitedColor: AppColors.primary,
+        fullpageUnisitedColor: Colors.grey,
         storyStatusBarColor: Colors.white,
         circlePadding: 2,
         addOption: Obx(() {
@@ -33,7 +34,10 @@ class HomeStorySection extends StatelessWidget {
                 ? null
                 : () {
                     homeController.storyPickImage(context).then((_) {
-                      homeController.openEditor(context);
+                      if (homeController.pickStoryImageList.firstOrNull !=
+                          null) {
+                        homeController.openEditor(context);
+                      }
                     });
                   },
             child: Padding(

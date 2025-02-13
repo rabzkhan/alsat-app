@@ -72,6 +72,9 @@ class FullPageViewState extends State<FullPageView> {
   Timer? changePageTimer;
 
   nextPage(index) {
+    if (changePageTimer != null) {
+      changePageTimer!.cancel();
+    }
     if (index == combinedList.length - 1) {
       Navigator.pop(context);
       return;
@@ -82,15 +85,20 @@ class FullPageViewState extends State<FullPageView> {
 
     _pageController!.animateToPage(selectedIndex!,
         duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+    initPageChangeTimer();
   }
 
   prevPage(index) {
+    if (changePageTimer != null) {
+      changePageTimer!.cancel();
+    }
     if (index == 0) return;
     setState(() {
       selectedIndex = index - 1;
     });
     _pageController!.animateToPage(selectedIndex!,
         duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+    initPageChangeTimer();
   }
 
   initPageChangeTimer() {
@@ -133,8 +141,12 @@ class FullPageViewState extends State<FullPageView> {
   Widget build(BuildContext context) {
     _pageController = PageController(initialPage: selectedIndex!);
     return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 0,
+      ),
       body: Stack(
         children: <Widget>[
+          // Overlay to detect taps for next page & previous page
           PageView(
             onPageChanged: (page) {
               setState(() {
@@ -195,20 +207,24 @@ class FullPageViewState extends State<FullPageView> {
                             numOfCompleted(
                                 listLengths as List<int>, selectedIndex!),
                             (index) => Expanded(
-                              child: Container(
-                                margin: const EdgeInsets.all(2),
-                                height: 2.5,
-                                decoration: BoxDecoration(
-                                    color: fullpageVisitedColor ??
-                                        const Color(0xff444444),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        blurRadius: 10,
-                                        color: Colors.black,
-                                      )
-                                    ]),
-                              ),
+                              child: index + 1 ==
+                                          numOfCompleted(
+                                              listLengths as List<int>,
+                                              selectedIndex!) &&
+                                      widget.autoPlayDuration != null
+                                  ? AnimatedProgressBar(
+                                      endColor: fullpageVisitedColor!,
+                                      startColor: fullpageUnvisitedColor!,
+                                    )
+                                  : Container(
+                                      margin: const EdgeInsets.all(2),
+                                      height: 3,
+                                      decoration: BoxDecoration(
+                                        color: fullpageVisitedColor ??
+                                            const Color(0xff444444),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
                             ),
                           ) +
                           List.generate(
@@ -219,12 +235,11 @@ class FullPageViewState extends State<FullPageView> {
                             (index) => Expanded(
                               child: Container(
                                 margin: const EdgeInsets.all(2),
-                                height: 2.5,
+                                height: 3,
                                 decoration: BoxDecoration(
                                   color: widget.fullpageUnvisitedColor ??
                                       Colors.white,
                                   borderRadius: BorderRadius.circular(20),
-                                  boxShadow: const [BoxShadow(blurRadius: 2)],
                                 ),
                               ),
                             ),
@@ -274,6 +289,7 @@ class FullPageViewState extends State<FullPageView> {
               ),
             ],
           ),
+          //show Time
         ],
       ),
     );
@@ -338,4 +354,84 @@ int getStoryIndex(List<int> listLengths, int index) {
     temp = listLengths[i];
   }
   return val;
+}
+
+class AnimatedProgressBar extends StatefulWidget {
+  final Color startColor;
+  final Color endColor;
+  final Duration duration;
+
+  const AnimatedProgressBar({
+    Key? key,
+    this.startColor = Colors.white,
+    this.endColor = Colors.blue,
+    this.duration = const Duration(seconds: 20), // Dynamic duration
+  }) : super(key: key);
+
+  @override
+  _AnimatedProgressBarState createState() => _AnimatedProgressBarState();
+}
+
+class _AnimatedProgressBarState extends State<AnimatedProgressBar> {
+  double progress = 0.0;
+  Timer? timer;
+  int updateInterval = 100; // Update every 100ms
+
+  @override
+  void initState() {
+    super.initState();
+    startProgress();
+  }
+
+  void startProgress() {
+    // Total updates needed to complete progress
+    int totalUpdates =
+        (widget.duration.inMilliseconds / updateInterval).round();
+
+    timer = Timer.periodic(Duration(milliseconds: updateInterval), (timer) {
+      if (progress >= 1.0) {
+        timer.cancel();
+      } else {
+        setState(() {
+          progress += 1 / totalUpdates; // Dynamically calculated increment
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // Background (unvisited part)
+        Container(
+          margin: const EdgeInsets.all(2),
+          height: 3,
+          width: MediaQuery.of(context).size.width, // Full width background
+          decoration: BoxDecoration(
+            color: widget.startColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+
+        // Foreground (animated progress part)
+        AnimatedContainer(
+          duration: Duration(milliseconds: updateInterval),
+          margin: const EdgeInsets.all(2),
+          height: 3,
+          width: MediaQuery.of(context).size.width * progress, // Expands width
+          decoration: BoxDecoration(
+            color: widget.endColor,
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -140,6 +140,9 @@ class StoryItem {
   List<Scaffold> stories;
 
   /// Add a story
-  StoryItem(
-      {required this.name, required this.thumbnail, required this.stories});
+  StoryItem({
+    required this.name,
+    required this.thumbnail,
+    required this.stories,
+  });
 }
