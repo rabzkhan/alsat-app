@@ -109,8 +109,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                       ),
                       onChangeStart: (value) => _startValue = value,
                       onChangeEnd: (value) => _endValue = value,
-                      onChangePlaybackState: (value) =>
-                          setState(() => _isPlaying = value),
+                      onChangePlaybackState: (value) => setState(() => _isPlaying = value),
                     ),
                   ),
                 ),
@@ -140,8 +139,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                               color: Colors.white,
                             ),
                       onPressed: () async {
-                        bool playbackState =
-                            await _trimmer.videoPlaybackControl(
+                        bool playbackState = await _trimmer.videoPlaybackControl(
                           startValue: _startValue,
                           endValue: _endValue,
                         );
@@ -154,8 +152,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                         backgroundColor: context.theme.primaryColor,
                         elevation: 0,
                       ),
-                      onPressed:
-                          _progressVisibility ? null : () => _saveVideo(),
+                      onPressed: _progressVisibility ? null : () => _saveVideo(),
                       label: const Text("Crop Video"),
                       icon: const Icon(Icons.content_cut_sharp),
                     ),
