@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';

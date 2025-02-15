@@ -1,11 +1,9 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../../../config/theme/app_text_theme.dart';
-import '../../../common/const/image_path.dart';
 import '../../../components/network_image_preview.dart';
 import '../../../components/prepost_loading.dart';
 import '../model/message_model.dart';

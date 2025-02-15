@@ -1,7 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/view/message_view.dart';
-import 'package:alsat/app/modules/promotions/view/my_promotions_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,9 +67,7 @@ class AppDrawer extends StatelessWidget {
                 style: bold.copyWith(fontSize: 16.sp),
               ),
               subtitle: Text(
-                authController.userDataModel.value.phone ??
-                    authController.userDataModel.value.email ??
-                    "",
+                authController.userDataModel.value.phone ?? authController.userDataModel.value.email ?? "",
               ),
             ),
             Expanded(
@@ -107,29 +104,25 @@ class AppDrawer extends StatelessWidget {
                     // ),
                     // 20.verticalSpace,
                     Obx(() {
-                      return conversationController
-                                  .addminConversationModel.value ==
-                              null
+                      return conversationController.addminConversationModel.value == null
                           ? const Center()
                           : InkWell(
                               onTap: () {
                                 Get.to(
                                     () => MessagesScreen(
-                                        conversation: conversationController
-                                            .addminConversationModel.value!),
+                                        conversation: conversationController.addminConversationModel.value!),
                                     transition: Transition.fadeIn);
                               },
                               child: Row(
                                 children: [
                                   Image.asset(
-                                    chatIcon,
+                                    adminChat,
                                     width: 25.w,
-                                    color:
-                                        Get.theme.textTheme.bodyLarge!.color!,
+                                    color: Colors.grey.shade900,
                                   ),
                                   10.horizontalSpace,
                                   Text(
-                                    'Chat To Aadmin',
+                                    'Chat With Admin',
                                     style: regular.copyWith(
                                       fontSize: 14.sp,
                                     ),
@@ -140,19 +133,18 @@ class AppDrawer extends StatelessWidget {
                     }),
                     10.verticalSpace,
                     ExpansionTile(
-                      shape:
-                          const RoundedRectangleBorder(side: BorderSide.none),
+                      shape: const RoundedRectangleBorder(side: BorderSide.none),
                       tilePadding: EdgeInsets.zero,
                       title: Row(
                         children: [
                           Image.asset(
-                            drawerSetting,
+                            translate,
                             width: 25.w,
-                            color: Get.theme.textTheme.bodyLarge!.color!,
+                            color: Colors.grey.shade900,
                           ),
                           10.horizontalSpace,
                           Text(
-                            'Setting',
+                            'Language',
                             style: regular.copyWith(
                               fontSize: 14.sp,
                             ),
@@ -164,20 +156,16 @@ class AppDrawer extends StatelessWidget {
                       expandedAlignment: Alignment.centerLeft,
                       children: [
                         TextButton.icon(
-                          icon: const Icon(Icons.language),
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('en'));
+                            localizationService.changeLocale(const Locale('en'));
                           },
                           label: const Text('English'),
                         ),
                         TextButton.icon(
-                          icon: const Icon(Icons.donut_large_rounded),
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('ar'));
+                            localizationService.changeLocale(const Locale('tk'));
                           },
-                          label: const Text('Arabic'),
+                          label: const Text('Turkmen'),
                         ),
                       ],
                     ),

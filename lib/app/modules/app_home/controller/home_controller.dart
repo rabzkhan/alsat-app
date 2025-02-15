@@ -6,7 +6,6 @@ import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

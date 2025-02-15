@@ -1,10 +1,5 @@
-import 'package:alsat/app/data/local/my_shared_pref.dart';
-import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
-import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import '../../config/translations/localization_service.dart';
 import '../common/const/image_path.dart';
 
 class CustomAppBar extends StatelessWidget {

@@ -1,10 +1,14 @@
 PODS:
+  - audio_session (0.0.1):
+    - Flutter
   - audio_waveforms (0.0.1):
     - Flutter
   - awesome_notifications (0.10.0):
     - Flutter
     - IosAwnCore (~> 0.10.0)
   - awesome_notifications_core (0.0.1):
+    - Flutter
+  - device_info_plus (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.9):
     - DKImagePickerController/ImageDataManager
@@ -110,6 +114,8 @@ PODS:
     - nanopb (~> 3.30910.0)
     - PromisesSwift (~> 2.1)
   - Flutter (1.0.0)
+  - flutter_keyboard_visibility (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - geocoding_ios (1.0.5):
@@ -160,6 +166,8 @@ PODS:
   - integration_test (0.0.1):
     - Flutter
   - IosAwnCore (0.10.0)
+  - just_audio (0.0.1):
+    - Flutter
   - libwebp (1.3.2):
     - libwebp/demux (= 1.3.2)
     - libwebp/mux (= 1.3.2)
@@ -179,8 +187,6 @@ PODS:
     - nanopb/encode (= 3.30910.0)
   - nanopb/decode (3.30910.0)
   - nanopb/encode (3.30910.0)
-  - open_filex (0.0.2):
-    - Flutter
   - package_info_plus (0.4.5):
     - Flutter
   - path_provider_foundation (0.0.1):
@@ -191,9 +197,13 @@ PODS:
   - photo_manager (2.0.0):
     - Flutter
     - FlutterMacOS
+  - pointer_interceptor_ios (0.0.1):
+    - Flutter
   - PromisesObjC (2.4.0)
   - PromisesSwift (2.4.0):
     - PromisesObjC (= 2.4.0)
+  - record_darwin (1.0.0):
+    - Flutter
   - SDWebImage (5.20.0):
     - SDWebImage/Core (= 5.20.0)
   - SDWebImage/Core (5.20.0)
@@ -203,8 +213,12 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
+  - stories_for_flutter (0.0.1):
+    - Flutter
   - SwiftyGif (5.4.5)
   - url_launcher_ios (0.0.1):
+    - Flutter
+  - vibration (1.7.5):
     - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
@@ -213,9 +227,11 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - audio_session (from `.symlinks/plugins/audio_session/ios`)
   - audio_waveforms (from `.symlinks/plugins/audio_waveforms/ios`)
   - awesome_notifications (from `.symlinks/plugins/awesome_notifications/ios`)
   - awesome_notifications_core (from `.symlinks/plugins/awesome_notifications_core/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - emoji_picker_flutter (from `.symlinks/plugins/emoji_picker_flutter/ios`)
   - ffmpeg_kit_flutter (from `.symlinks/plugins/ffmpeg_kit_flutter/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
@@ -223,21 +239,26 @@ DEPENDENCIES:
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
+  - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - geocoding_ios (from `.symlinks/plugins/geocoding_ios/ios`)
   - get_thumbnail_video (from `.symlinks/plugins/get_thumbnail_video/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - location (from `.symlinks/plugins/location/ios`)
-  - open_filex (from `.symlinks/plugins/open_filex/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
+  - pointer_interceptor_ios (from `.symlinks/plugins/pointer_interceptor_ios/ios`)
+  - record_darwin (from `.symlinks/plugins/record_darwin/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - stories_for_flutter (from `.symlinks/plugins/stories_for_flutter/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - vibration (from `.symlinks/plugins/vibration/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
   - wakelock_plus (from `.symlinks/plugins/wakelock_plus/ios`)
 
@@ -268,12 +289,16 @@ SPEC REPOS:
     - SwiftyGif
 
 EXTERNAL SOURCES:
+  audio_session:
+    :path: ".symlinks/plugins/audio_session/ios"
   audio_waveforms:
     :path: ".symlinks/plugins/audio_waveforms/ios"
   awesome_notifications:
     :path: ".symlinks/plugins/awesome_notifications/ios"
   awesome_notifications_core:
     :path: ".symlinks/plugins/awesome_notifications_core/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   emoji_picker_flutter:
     :path: ".symlinks/plugins/emoji_picker_flutter/ios"
   ffmpeg_kit_flutter:
@@ -288,6 +313,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
     :path: Flutter
+  flutter_keyboard_visibility:
+    :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   geocoding_ios:
@@ -300,10 +327,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   integration_test:
     :path: ".symlinks/plugins/integration_test/ios"
+  just_audio:
+    :path: ".symlinks/plugins/just_audio/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
-  open_filex:
-    :path: ".symlinks/plugins/open_filex/ios"
   package_info_plus:
     :path: ".symlinks/plugins/package_info_plus/ios"
   path_provider_foundation:
@@ -312,21 +339,31 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
+  pointer_interceptor_ios:
+    :path: ".symlinks/plugins/pointer_interceptor_ios/ios"
+  record_darwin:
+    :path: ".symlinks/plugins/record_darwin/ios"
   shared_preferences_foundation:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   sqflite_darwin:
     :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  stories_for_flutter:
+    :path: ".symlinks/plugins/stories_for_flutter/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  vibration:
+    :path: ".symlinks/plugins/vibration/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/darwin"
   wakelock_plus:
     :path: ".symlinks/plugins/wakelock_plus/ios"
 
 SPEC CHECKSUMS:
+  audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
   audio_waveforms: cd736909ebc6b6a164eb74701d8c705ce3241e1c
   awesome_notifications: dd5518ff1c80be03d4f1c40f04da9d9cc2a37af5
   awesome_notifications_core: d02eed89738fa362d56cbd372850e9adcd2c6bef
+  device_info_plus: bf2e3232933866d73fe290f2942f2156cdd10342
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
   emoji_picker_flutter: fe2e6151c5b548e975d546e6eeb567daf0962a58
@@ -346,6 +383,7 @@ SPEC CHECKSUMS:
   FirebaseRemoteConfigInterop: 7a7aebb9342d53913a5c890efa88e289d9e5c1bc
   FirebaseSessions: 3f56f177d9e53a85021d16b31f9a111849d1dd8b
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: df98d66e515e1ca797af436137b4459b160ad8c9
   geocoding_ios: d7460f56e80e118d57678efe5c2cdc888739ff18
   get_thumbnail_video: b9a180957daed3e9179e66268db51d8798e41f65
@@ -357,21 +395,25 @@ SPEC CHECKSUMS:
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   IosAwnCore: 653786a911089012092ce831f2945cd339855a89
+  just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   libwebp: 1786c9f4ff8a279e4dac1e8f385004d5fc253009
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
-  open_filex: 6e26e659846ec990262224a12ef1c528bb4edbe4
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   permission_handler_apple: 9878588469a2b0d0fc1e048d9f43605f92e6cec2
   photo_manager: ff695c7a1dd5bc379974953a2b5c0a293f7c4c8a
+  pointer_interceptor_ios: 508241697ff0947f853c061945a8b822463947c1
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
+  record_darwin: 3b1a8e7d5c0cbf45ad6165b4d83a6ca643d929c3
   SDWebImage: 73c6079366fea25fa4bb9640d5fb58f0893facd8
   shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
   sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
+  stories_for_flutter: 61c379ff8a3dcfdebbe2faffb5c8f4d62ff13994
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
+  vibration: 7d883d141656a1c1a6d8d238616b2042a51a1241
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   wakelock_plus: 78ec7c5b202cab7761af8e2b2b3d0671be6c4ae1
 

@@ -1,10 +1,7 @@
-import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 
 class MessageVideoPlayerView extends StatefulWidget {

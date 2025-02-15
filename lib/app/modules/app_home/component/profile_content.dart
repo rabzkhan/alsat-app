@@ -24,8 +24,7 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => _ProfileContentState();
 }
 
-class _ProfileContentState extends State<ProfileContent>
-    with TickerProviderStateMixin {
+class _ProfileContentState extends State<ProfileContent> with TickerProviderStateMixin {
   final UserController userController = Get.find();
   final AuthController authController = Get.find();
   final ProductController productController = Get.find();
@@ -42,14 +41,12 @@ class _ProfileContentState extends State<ProfileContent>
     );
 
     mainTabController.addListener(() {
-      if (homeController.profileTabCurrentPage.value !=
-          mainTabController.index) {
+      if (homeController.profileTabCurrentPage.value != mainTabController.index) {
         homeController.profileTabCurrentPage.value = mainTabController.index;
       }
     });
 
-    tabController =
-        TabController(length: homeController.categories.length, vsync: this);
+    tabController = TabController(length: homeController.categories.length, vsync: this);
     if (productController.myProductList.isEmpty) {
       productController.fetchMyProducts();
     }
@@ -84,8 +81,7 @@ class _ProfileContentState extends State<ProfileContent>
                     ),
                   ),
                   title: Obx(() => Text(
-                        authController.userDataModel.value.userName ??
-                            'Guest User',
+                        authController.userDataModel.value.userName ?? 'Guest User',
                         style: bold.copyWith(
                           fontSize: 18.sp,
                         ),
@@ -97,8 +93,7 @@ class _ProfileContentState extends State<ProfileContent>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Obx(() => Text(
-                              authController.userDataModel.value.phone ??
-                                  ' 01211312342',
+                              authController.userDataModel.value.phone ?? ' 01211312342',
                               style: regular.copyWith(
                                 fontSize: 10.sp,
                               ),
@@ -108,10 +103,7 @@ class _ProfileContentState extends State<ProfileContent>
                             () => RatingBar.builder(
                               itemSize: 15.h,
                               initialRating: MySharedPref.isLoggedIn()
-                                  ? double.parse((authController
-                                              .userDataModel.value.rating ??
-                                          "0")
-                                      .toString())
+                                  ? double.parse((authController.userDataModel.value.rating ?? "0").toString())
                                   : 0,
                               minRating: 0,
                               direction: Axis.horizontal,
@@ -204,8 +196,7 @@ class _ProfileContentState extends State<ProfileContent>
                       child: TabBar(
                         controller: tabController,
                         onTap: (value) {
-                          productController.myListingSelectCategory.value =
-                              homeController.categories[value];
+                          productController.myListingSelectCategory.value = homeController.categories[value];
                           productController.myListingRefresh();
                         },
                         isScrollable: true,

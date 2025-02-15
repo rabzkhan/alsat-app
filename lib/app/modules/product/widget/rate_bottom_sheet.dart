@@ -141,7 +141,7 @@ showRateBottomSheet(
                         ),
                       ),
                     )
-                  : Text("");
+                  : const Text("");
             }),
             Obx(() {
               return productDetailsController.isRateUserLoading.value

@@ -24,10 +24,12 @@ const String sortUp = 'assets/icons/sort_up.png';
 const String homeIcon = 'assets/icons/home.png';
 const String categoryIcon = 'assets/icons/category.png';
 const String chatIcon = 'assets/icons/chat.png';
+const String adminChat = 'assets/icons/admin-chat.png';
 const String profileIcon = 'assets/icons/profile.png';
 const String addPost = 'assets/icons/addpost.png';
 //drawer
 const String drawerSetting = 'assets/icons/settingdrawer.png';
+const String translate = 'assets/icons/translate.png';
 const String sportIcon = 'assets/icons/sport.png';
 const String newsIcon = 'assets/icons/news.png';
 const String youtubeIcon = 'assets/icons/youtube.png';

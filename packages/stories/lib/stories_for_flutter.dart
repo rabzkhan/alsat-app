@@ -62,7 +62,7 @@ class Stories extends StatelessWidget {
   final bool showStoryName;
 
   const Stories({
-    Key? key,
+    super.key,
     this.storyItemList,
     this.storyCircleTextStyle,
     this.highLightColor,
@@ -83,7 +83,7 @@ class Stories extends StatelessWidget {
     this.autoPlayDuration,
     this.showStoryName = true,
     this.addOption,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Align(

@@ -2,7 +2,6 @@ import 'package:alsat/app/modules/parent/view/splash_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/filter/bindings/filter_binding.dart';
-import '../modules/filter/views/filter_view.dart';
 part 'app_routes.dart';
 
 class AppPages {

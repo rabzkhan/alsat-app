@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/modules/app_home/component/premium_content.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
@@ -11,10 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:stories_for_flutter/stories_for_flutter.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../../utils/loading_dialog.dart';
-import '../../../common/const/image_path.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../../components/home_segmented.dart';

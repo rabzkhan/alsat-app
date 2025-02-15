@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/services/base_client.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';

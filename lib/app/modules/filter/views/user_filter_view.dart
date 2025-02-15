@@ -66,8 +66,7 @@ class UserFilterView extends StatelessWidget {
                 expand: true,
                 context: context,
                 backgroundColor: Colors.transparent,
-                builder: (context) =>
-                    const CategorySelection(valueReturn: true),
+                builder: (context) => const CategorySelection(valueReturn: true),
               ).then((value) {
                 homeController.category.value = value;
                 // productController.calculateFilledProductFields();
@@ -75,8 +74,7 @@ class UserFilterView extends StatelessWidget {
             },
             child: Container(
               decoration: borderedContainer,
-              margin:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
+              margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
               padding: EdgeInsets.symmetric(
                 vertical: 10.h,
                 horizontal: 12.w,
@@ -98,9 +96,7 @@ class UserFilterView extends StatelessWidget {
                       2.verticalSpace,
                       Obx(() {
                         return Text(
-                          (homeController.category.value?.name ??
-                                  'Select Category')
-                              .toString(),
+                          (homeController.category.value?.name ?? 'Select Category').toString(),
                           style: bold.copyWith(
                             fontSize: 16.sp,
                             color: Colors.black,
@@ -125,14 +121,12 @@ class UserFilterView extends StatelessWidget {
                 expand: true,
                 context: context,
                 backgroundColor: Colors.transparent,
-                builder: (context) =>
-                    const LocationSelection(canSelectMultiple: true),
+                builder: (context) => const LocationSelection(canSelectMultiple: true),
               );
             },
             child: Container(
               decoration: borderedContainer,
-              margin:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               padding: EdgeInsets.symmetric(
                 vertical: 10.h,
                 horizontal: 12.w,
@@ -158,8 +152,7 @@ class UserFilterView extends StatelessWidget {
                               Expanded(
                                 child: ScrollingTextWidget(
                                   child: Text(
-                                    Get.find<FilterController>()
-                                        .getSelectedLocationText(),
+                                    Get.find<FilterController>().getSelectedLocationText(),
                                     style: regular.copyWith(
                                       fontSize: 10.sp,
                                       color: context.theme.primaryColor,
@@ -207,8 +200,7 @@ class UserFilterView extends StatelessWidget {
                     ),
                     title: Text(
                       'Followers',
-                      style: bold.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      style: bold.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Obx(() {
                       return Text(
@@ -218,7 +210,7 @@ class UserFilterView extends StatelessWidget {
                     }),
                     dense: true,
                     children: [
-                      Divider(
+                      const Divider(
                         color: AppColors.primary,
                         height: 1,
                       ),
@@ -237,8 +229,7 @@ class UserFilterView extends StatelessWidget {
                             ),
                             Obx(() {
                               return Radio(
-                                visualDensity:
-                                    const VisualDensity(vertical: -2),
+                                visualDensity: const VisualDensity(vertical: -2),
                                 value: 'Min To Max',
                                 groupValue: homeController.followersValue.value,
                                 onChanged: (value) {
@@ -263,8 +254,7 @@ class UserFilterView extends StatelessWidget {
                             ),
                             Obx(() {
                               return Radio(
-                                visualDensity:
-                                    const VisualDensity(vertical: -2),
+                                visualDensity: const VisualDensity(vertical: -2),
                                 value: 'Max To Min',
                                 groupValue: homeController.followersValue.value,
                                 onChanged: (value) {
@@ -297,13 +287,11 @@ class UserFilterView extends StatelessWidget {
                     ),
                     title: Text(
                       'Registration',
-                      style: bold.copyWith(
-                          fontSize: 14.sp, fontWeight: FontWeight.w500),
+                      style: bold.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Obx(() {
                       return Text(
-                        homeController.registrationValue.value ??
-                            'Not Chose Yet',
+                        homeController.registrationValue.value ?? 'Not Chose Yet',
                         style: regular.copyWith(fontSize: 10.sp),
                       );
                     }),
@@ -328,14 +316,11 @@ class UserFilterView extends StatelessWidget {
                             ),
                             Obx(() {
                               return Radio(
-                                visualDensity:
-                                    const VisualDensity(vertical: -2),
+                                visualDensity: const VisualDensity(vertical: -2),
                                 value: 'New To Old',
-                                groupValue:
-                                    homeController.registrationValue.value,
+                                groupValue: homeController.registrationValue.value,
                                 onChanged: (value) {
-                                  homeController.registrationValue.value =
-                                      value;
+                                  homeController.registrationValue.value = value;
                                 },
                               );
                             }),
@@ -356,14 +341,11 @@ class UserFilterView extends StatelessWidget {
                             ),
                             Obx(() {
                               return Radio(
-                                visualDensity:
-                                    const VisualDensity(vertical: -2),
+                                visualDensity: const VisualDensity(vertical: -2),
                                 value: 'Old To New',
-                                groupValue:
-                                    homeController.registrationValue.value,
+                                groupValue: homeController.registrationValue.value,
                                 onChanged: (value) {
-                                  homeController.registrationValue.value =
-                                      value;
+                                  homeController.registrationValue.value = value;
                                 },
                               );
                             }),
@@ -420,9 +402,8 @@ class UserFilterView extends StatelessWidget {
                     child: Obx(() {
                       return ElevatedButton(
                         style: OutlinedButton.styleFrom(
-                          backgroundColor: homeController.category.value == null
-                              ? AppColors.liteGray
-                              : AppColors.primary,
+                          backgroundColor:
+                              homeController.category.value == null ? AppColors.liteGray : AppColors.primary,
                           padding: EdgeInsets.symmetric(vertical: 18.h),
                           elevation: 0,
                           shape: RoundedRectangleBorder(
@@ -430,8 +411,7 @@ class UserFilterView extends StatelessWidget {
                           ),
                         ),
                         onPressed: () {
-                          Get.to(const UserFilterResultView(),
-                              transition: Transition.cupertino);
+                          Get.to(const UserFilterResultView(), transition: Transition.cupertino);
                           homeController.fetchPremiumUser(isFilter: true);
                         },
                         child: Obx(() {

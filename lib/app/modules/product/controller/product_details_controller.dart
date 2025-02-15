@@ -6,7 +6,6 @@ import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';

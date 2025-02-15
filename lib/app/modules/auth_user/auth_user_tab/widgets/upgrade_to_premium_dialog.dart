@@ -157,7 +157,7 @@ upgradeToPremiumDialog() {
                 ),
                 30.verticalSpace,
                 Text(
-                  "Don\’t have a code? Contact support to learn more about premium features.",
+                  "Don’t have a code? Contact support to learn more about premium features.",
                   textAlign: TextAlign.center,
                   style:
                       Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),

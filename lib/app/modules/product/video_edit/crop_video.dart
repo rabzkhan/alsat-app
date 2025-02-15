@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'package:alsat/app/common/binding/app_binding.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 import '../controller/product_controller.dart';
@@ -111,8 +109,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                       ),
                       onChangeStart: (value) => _startValue = value,
                       onChangeEnd: (value) => _endValue = value,
-                      onChangePlaybackState: (value) =>
-                          setState(() => _isPlaying = value),
+                      onChangePlaybackState: (value) => setState(() => _isPlaying = value),
                     ),
                   ),
                 ),
@@ -142,8 +139,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                               color: Colors.white,
                             ),
                       onPressed: () async {
-                        bool playbackState =
-                            await _trimmer.videoPlaybackControl(
+                        bool playbackState = await _trimmer.videoPlaybackControl(
                           startValue: _startValue,
                           endValue: _endValue,
                         );
@@ -156,8 +152,7 @@ class _VideoCropScreenState extends State<VideoCropScreen> {
                         backgroundColor: context.theme.primaryColor,
                         elevation: 0,
                       ),
-                      onPressed:
-                          _progressVisibility ? null : () => _saveVideo(),
+                      onPressed: _progressVisibility ? null : () => _saveVideo(),
                       label: const Text("Crop Video"),
                       icon: const Icon(Icons.content_cut_sharp),
                     ),
