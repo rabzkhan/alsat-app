@@ -1,6 +1,4 @@
 import 'package:alsat/app/common/const/image_path.dart';
-import 'package:alsat/app/components/all_user_tile.dart';
-import 'package:alsat/app/components/image_preview.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';

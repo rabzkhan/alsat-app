@@ -1,7 +1,6 @@
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/product_details_view.dart';
-import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

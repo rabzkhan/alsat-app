@@ -10,7 +10,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
-import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -210,7 +209,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   7.horizontalSpace,
                                   Expanded(
                                     child: Padding(
-                                      padding: EdgeInsets.only(top: 10),
+                                      padding: const EdgeInsets.only(top: 10),
                                       child: CustomPaint(
                                         size: const Size(double.infinity, 50),
                                         painter: WaveformPainter(

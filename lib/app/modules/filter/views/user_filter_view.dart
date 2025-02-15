@@ -218,7 +218,7 @@ class UserFilterView extends StatelessWidget {
                     }),
                     dense: true,
                     children: [
-                      Divider(
+                      const Divider(
                         color: AppColors.primary,
                         height: 1,
                       ),

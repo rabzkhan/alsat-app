@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +84,7 @@ class _SingleDialogPickerState extends State<SingleDialogPicker> {
 
                                 return Center(
                                   child: Text(
-                                    '$value',
+                                    value,
                                     style: (value == selectYear)
                                         ? selectedStyle
                                         : defaultStyle,

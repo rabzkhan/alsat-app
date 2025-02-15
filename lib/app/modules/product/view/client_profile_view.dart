@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
@@ -175,7 +174,6 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                         ),
                                       ],
                                     );
-                              ;
                             }),
                             15.horizontalSpace,
                             Expanded(

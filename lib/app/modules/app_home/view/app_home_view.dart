@@ -13,7 +13,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../auth_user/controller/user_controller.dart';
-import '../../filter/views/search_view.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -86,8 +85,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                         )
                       : null,
-                  isShowLogo: homeController.homeBottomIndex.value == 0 ||
-                      homeController.homeBottomIndex.value == 3,
+                  isShowLogo: homeController.homeBottomIndex.value == 0 || homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
                   action: homeController.homeBottomIndex.value == 1
                       ? Container(
@@ -99,15 +97,12 @@ class _AppHomeViewState extends State<AppHomeView> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.r),
                                   child: TextFormField(
-                                    controller:
-                                        filterController.searchController,
+                                    controller: filterController.searchController,
                                     onFieldSubmitted: (value) {
                                       filterController.category.value = null;
-                                      filterController.isFilterLoading.value =
-                                          true;
+                                      filterController.isFilterLoading.value = true;
                                       filterController.filterMapPassed = {
-                                        "title":
-                                            filterController.searchText.value,
+                                        "title": filterController.searchText.value,
                                       };
                                       filterController.clearAddress();
                                       filterController.applyFilter();
@@ -121,21 +116,16 @@ class _AppHomeViewState extends State<AppHomeView> {
                                     },
                                     decoration: InputDecoration(
                                       suffixIcon: Obx(() {
-                                        return filterController
-                                                .searchText.value.isEmpty
+                                        return filterController.searchText.value.isEmpty
                                             ? const Text('')
                                             : InkWell(
                                                 onTap: () {
-                                                  filterController
-                                                      .searchText.value = '';
-                                                  filterController
-                                                      .searchController
-                                                      .clear();
+                                                  filterController.searchText.value = '';
+                                                  filterController.searchController.clear();
                                                 },
                                                 child: Icon(
                                                   CupertinoIcons.xmark,
-                                                  color:
-                                                      Get.theme.disabledColor,
+                                                  color: Get.theme.disabledColor,
                                                 ),
                                               );
                                       }),
@@ -146,8 +136,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                       hintStyle: TextStyle(
                                         fontSize: 12.sp,
                                         fontWeight: FontWeight.w400,
-                                        color: Get.theme.disabledColor
-                                            .withOpacity(.5),
+                                        color: Get.theme.disabledColor.withOpacity(.5),
                                       ),
                                       hintText: 'Search Here',
                                       filled: true,
@@ -155,12 +144,10 @@ class _AppHomeViewState extends State<AppHomeView> {
                                       border: InputBorder.none,
                                       enabledBorder: InputBorder.none,
                                       focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
+                                        borderRadius: BorderRadius.circular(8.r),
                                         borderSide: BorderSide(
                                           width: .6,
-                                          color: Get.theme.primaryColor
-                                              .withOpacity(.4),
+                                          color: Get.theme.primaryColor.withOpacity(.4),
                                         ),
                                       ),
                                     ),
@@ -172,13 +159,10 @@ class _AppHomeViewState extends State<AppHomeView> {
                                     ? const Center()
                                     : InkWell(
                                         onTap: () {
-                                          filterController.category.value =
-                                              null;
-                                          filterController
-                                              .isFilterLoading.value = true;
+                                          filterController.category.value = null;
+                                          filterController.isFilterLoading.value = true;
                                           filterController.filterMapPassed = {
-                                            "title": filterController
-                                                .searchText.value,
+                                            "title": filterController.searchText.value,
                                           };
                                           filterController.applyFilter();
                                           filterController.clearAddress();
@@ -216,14 +200,10 @@ class _AppHomeViewState extends State<AppHomeView> {
                             },
                             children: [
                               const HomeContent(),
-                              if (!homeController.isCategoryLoading.value)
-                                const CategoryContent(),
-                              if (!homeController.isCategoryLoading.value)
-                                const AddPostContent(),
-                              if (!homeController.isCategoryLoading.value)
-                                const ChatContent(),
-                              if (!homeController.isCategoryLoading.value)
-                                const ProfileContent(),
+                              if (!homeController.isCategoryLoading.value) const CategoryContent(),
+                              if (!homeController.isCategoryLoading.value) const AddPostContent(),
+                              if (!homeController.isCategoryLoading.value) const ChatContent(),
+                              if (!homeController.isCategoryLoading.value) const ProfileContent(),
                             ],
                           );
                         }),

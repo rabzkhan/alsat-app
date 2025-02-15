@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../controller/conversation_controller.dart';

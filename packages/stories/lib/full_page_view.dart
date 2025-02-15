@@ -37,7 +37,7 @@ class FullPageView extends StatefulWidget {
   final Duration? autoPlayDuration;
 
   const FullPageView({
-    Key? key,
+    super.key,
     required this.storiesMapList,
     required this.storyNumber,
     this.fullPagetitleStyle,
@@ -50,7 +50,7 @@ class FullPageView extends StatefulWidget {
     this.storyStatusBarColor,
     this.onPageChanged,
     this.autoPlayDuration,
-  }) : super(key: key);
+  });
   @override
   FullPageViewState createState() => FullPageViewState();
 }
@@ -363,11 +363,11 @@ class AnimatedProgressBar extends StatefulWidget {
   final Duration duration;
 
   const AnimatedProgressBar({
-    Key? key,
+    super.key,
     this.startColor = Colors.white,
     this.endColor = Colors.blue,
     this.duration = const Duration(seconds: 20), // Dynamic duration
-  }) : super(key: key);
+  });
 
   @override
   _AnimatedProgressBarState createState() => _AnimatedProgressBarState();

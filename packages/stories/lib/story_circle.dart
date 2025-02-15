@@ -49,7 +49,7 @@ class StoryCircle extends StatelessWidget {
   final bool showStoryName;
 
   const StoryCircle({
-    Key? key,
+    super.key,
     this.story,
     this.selectedIndex,
     this.storyCircleTextStyle,
@@ -70,7 +70,7 @@ class StoryCircle extends StatelessWidget {
     this.onPageChanged,
     this.autoPlayDuration,
     this.showStoryName = true,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     double? altRadius = 27;

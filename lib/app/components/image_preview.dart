@@ -1,5 +1,3 @@
-import 'package:alsat/app/common/binding/app_binding.dart';
-import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';

@@ -1,7 +1,3 @@
-import 'dart:developer';
-import 'dart:math';
-
-import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import '../../filter/views/filter_results_view.dart';
-import '../../filter/views/filter_view.dart';
 import '../models/category_model.dart';
 
 class CategoryContent extends StatelessWidget {
@@ -45,19 +40,12 @@ class CategoryContent extends StatelessWidget {
                   homeController.categories.length,
                   (index) => ExpansionTile(
                     title: InkWell(
-                      onTap: (homeController.categories[index].subCategories ??
-                                  [])
-                              .isEmpty
+                      onTap: (homeController.categories[index].subCategories ?? []).isEmpty
                           ? () {
-                              filterController.category.value = homeController
-                                  .categories
-                                  .elementAtOrNull(index);
+                              filterController.category.value = homeController.categories.elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
                               filterController.filterMapPassed = {
-                                "category":
-                                    (homeController.categories[index].name ??
-                                            '')
-                                        .toLowerCase(),
+                                "category": (homeController.categories[index].name ?? '').toLowerCase(),
                               };
                               filterController.applyFilter();
                               filterController.clearAddress();
@@ -71,9 +59,7 @@ class CategoryContent extends StatelessWidget {
                         children: [
                           6.horizontalSpace,
                           SvgPicture.network(
-                            placeholderBuilder: (context) =>
-                                const CupertinoActivityIndicator
-                                    .partiallyRevealed(),
+                            placeholderBuilder: (context) => const CupertinoActivityIndicator.partiallyRevealed(),
                             homeController.categories[index].icon.toString(),
                             width: 35.w,
                             height: 22.w,
@@ -91,27 +77,20 @@ class CategoryContent extends StatelessWidget {
                     ),
                     expandedAlignment: Alignment.centerLeft,
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
-                    childrenPadding:
-                        EdgeInsets.symmetric(horizontal: Get.width * .12),
+                    childrenPadding: EdgeInsets.symmetric(horizontal: Get.width * .12),
                     children: [
                       if ((homeController.categories[index].subCategories ?? [])
-                                  .firstWhereOrNull((e) =>
-                                      e.name?.toLowerCase().contains('all') ??
-                                      false) ==
+                                  .firstWhereOrNull((e) => e.name?.toLowerCase().contains('all') ?? false) ==
                               null &&
-                          (homeController.categories[index].subCategories ?? [])
-                              .isNotEmpty)
+                          (homeController.categories[index].subCategories ?? []).isNotEmpty)
                         InkWell(
                           onTap: () {
-                            filterController.category.value = homeController
-                                .categories
-                                .elementAtOrNull(index);
+                            filterController.category.value = homeController.categories.elementAtOrNull(index);
                             filterController.isFilterLoading.value = true;
                             filterController.filterMapPassed = {
-                              "category":
-                                  (homeController.categories[index].name ?? '')
-                                      .toLowerCase(),
+                              "category": (homeController.categories[index].name ?? '').toLowerCase(),
                             };
+
                             filterController.applyFilter();
                             filterController.clearAddress();
                             Get.to(
@@ -120,8 +99,7 @@ class CategoryContent extends StatelessWidget {
                             );
                           },
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.h, horizontal: 10.w),
+                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
                             child: Row(
                               children: [
                                 Expanded(
@@ -139,23 +117,16 @@ class CategoryContent extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ...(homeController.categories[index].subCategories ?? [])
-                          .map((subCategory) {
+                      ...(homeController.categories[index].subCategories ?? []).map((subCategory) {
                         return InkWell(
                           onTap: () {
                             String categoryName = subCategory.name ?? '';
-                            bool isParentCategory =
-                                categoryName.toLowerCase().contains('all');
+                            bool isParentCategory = categoryName.toLowerCase().contains('all');
                             if (isParentCategory) {
-                              filterController.category.value = homeController
-                                  .categories
-                                  .elementAtOrNull(index);
+                              filterController.category.value = homeController.categories.elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
                               filterController.filterMapPassed = {
-                                "category":
-                                    (homeController.categories[index].name ??
-                                            '')
-                                        .toLowerCase(),
+                                "category": (homeController.categories[index].name ?? '').toLowerCase(),
                               };
                             } else {
                               filterController.category.value = CategoriesModel(
@@ -167,8 +138,7 @@ class CategoryContent extends StatelessWidget {
 
                               filterController.isFilterLoading.value = true;
                               filterController.filterMapPassed = {
-                                "category":
-                                    (subCategory.name ?? '').toLowerCase(),
+                                "category": (subCategory.name ?? '').toLowerCase(),
                               };
                             }
                             filterController.applyFilter();
@@ -179,8 +149,7 @@ class CategoryContent extends StatelessWidget {
                             );
                           },
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 8.h, horizontal: 10.w),
+                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
                             child: Row(
                               children: [
                                 Expanded(

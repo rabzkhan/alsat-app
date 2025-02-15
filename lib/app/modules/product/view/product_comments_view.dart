@@ -4,13 +4,11 @@ import 'package:alsat/app/modules/product/controller/product_details_controller.
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../components/custom_appbar.dart';
 import '../../../components/network_image_preview.dart';
 import '../model/product_post_list_res.dart';
 

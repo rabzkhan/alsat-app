@@ -87,21 +87,16 @@ class _MySettingsState extends State<MySettings> {
                                 Radius.circular(100.r),
                               ),
                               child: Obx(() {
-                                return authController
-                                        .isProfilePictureLoading.value
+                                return authController.isProfilePictureLoading.value
                                     ? const CircularProgressIndicator()
-                                    : authController
-                                                .userDataModel.value.picture ==
-                                            null
+                                    : authController.userDataModel.value.picture == null
                                         ? Image.asset(
                                             userDefaultIcon,
                                             height: 140.h,
                                             width: 140.h,
                                           )
                                         : NetworkImagePreview(
-                                            url: authController.userDataModel
-                                                    .value.picture ??
-                                                '',
+                                            url: authController.userDataModel.value.picture ?? '',
                                             height: 140.h,
                                             width: 140.h,
                                             fit: BoxFit.cover,
@@ -115,8 +110,7 @@ class _MySettingsState extends State<MySettings> {
                           right: 6.w,
                           child: IconButton(
                             onPressed: () async {
-                              List<AssetEntity>? pickImage =
-                                  await AssetPicker.pickAssets(
+                              List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
                                 context,
                                 pickerConfig: const AssetPickerConfig(
                                   maxAssets: 1,
@@ -126,8 +120,7 @@ class _MySettingsState extends State<MySettings> {
                               if (pickImage != null) {
                                 // log("image path ${pickImage[0].file.path}");
                                 File? file = await pickImage.first.file;
-                                await authController
-                                    .updateProfilePicture(file!);
+                                await authController.updateProfilePicture(file!);
                               }
                             },
                             icon: Image.asset(
@@ -144,8 +137,7 @@ class _MySettingsState extends State<MySettings> {
                     () => Column(
                       children: [
                         Text(
-                          authController.userDataModel.value.userName ??
-                              'Guest User',
+                          authController.userDataModel.value.userName ?? 'Guest User',
                           style: bold.copyWith(
                             fontSize: 16.sp,
                           ),
@@ -168,42 +160,28 @@ class _MySettingsState extends State<MySettings> {
             key: userController.userSettingsFormKey,
             initialValue: {
               'category': homeController.categories
-                  .where((e) =>
-                      (authController.userDataModel.value.categories ?? [])
-                          .contains(e.name))
+                  .where((e) => (authController.userDataModel.value.categories ?? []).contains(e.name))
                   .toList()
                   .firstOrNull,
               'bio': authController.userDataModel.value.bio ?? '',
-              'youtube': authController.userDataModel.value.messaging
-                      ?.firstWhereOrNull((e) => e.type == 'youtube')
-                      ?.id ??
-                  '',
-              'tiktok': authController.userDataModel.value.messaging
-                      ?.firstWhereOrNull((e) => e.type == 'tiktok')
-                      ?.id ??
-                  '',
-              'twitch': authController.userDataModel.value.messaging
-                      ?.firstWhereOrNull((e) => e.type == 'twitch')
-                      ?.id ??
-                  '',
+              // 'youtube':
+              //     authController.userDataModel.value.messaging?.firstWhereOrNull((e) => e.type == 'youtube')?.id ?? '',
+              // 'tiktok':
+              //     authController.userDataModel.value.messaging?.firstWhereOrNull((e) => e.type == 'tiktok')?.id ?? '',
+              // 'twitch':
+              //     authController.userDataModel.value.messaging?.firstWhereOrNull((e) => e.type == 'twitch')?.id ?? '',
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
                   Future.microtask(() {
-                    authController.selectUserCategoriesList.value =
-                        homeController.categories
-                            .where((e) => (authController
-                                        .userDataModel.value.categories ??
-                                    [])
-                                .contains(e.name))
-                            .toList();
+                    authController.selectUserCategoriesList.value = homeController.categories
+                        .where((e) => (authController.userDataModel.value.categories ?? []).contains(e.name))
+                        .toList();
                     filterController.selectedProvince.value =
-                        authController.userDataModel.value.location?.province ??
-                            "";
-                    filterController.selectedCity.value =
-                        authController.userDataModel.value.location?.city ?? "";
+                        authController.userDataModel.value.location?.province ?? "";
+                    filterController.selectedCity.value = authController.userDataModel.value.location?.city ?? "";
                   });
                   return (authController.userDataModel.value.premium ?? false)
                       ? const Center()
@@ -220,12 +198,10 @@ class _MySettingsState extends State<MySettings> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color:
-                                      Get.theme.primaryColor.withOpacity(0.1),
+                                  color: Get.theme.primaryColor.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(6.r),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 6.h, horizontal: 6.w),
+                                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -262,8 +238,7 @@ class _MySettingsState extends State<MySettings> {
                 Obx(() {
                   return FormBuilderTextField(
                     initialValue: authController.userDataModel.value.userName,
-                    enabled:
-                        (authController.userDataModel.value.premium ?? false),
+                    enabled: (authController.userDataModel.value.premium ?? false),
                     name: 'user_name',
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -274,8 +249,7 @@ class _MySettingsState extends State<MySettings> {
                             color: Get.theme.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6.r),
                           ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.h, horizontal: 6.w),
+                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -349,12 +323,10 @@ class _MySettingsState extends State<MySettings> {
                       expand: true,
                       context: context,
                       backgroundColor: Colors.transparent,
-                      builder: (context) =>
-                          const LocationSelection(canSelectMultiple: false),
+                      builder: (context) => const LocationSelection(canSelectMultiple: false),
                     ).then((value) {
                       if (value != null) {
-                        authController.addressController.text =
-                            filterController.getSelectedLocationText();
+                        authController.addressController.text = filterController.getSelectedLocationText();
                       }
                     });
                   },
@@ -397,10 +369,7 @@ class _MySettingsState extends State<MySettings> {
                 FormBuilderSearchableDropdown<CategoriesModel>(
                   dropdownBuilder: (context, selectedItem) {
                     return Text(
-                      authController.selectUserCategoriesList
-                          .map((e) => e.name)
-                          .toList()
-                          .join(","),
+                      authController.selectUserCategoriesList.map((e) => e.name).toList().join(","),
                     );
                   },
                   compareFn: (a, b) => a.sId == b.sId,
@@ -418,8 +387,7 @@ class _MySettingsState extends State<MySettings> {
                           child: Obx(() {
                             return Icon(
                               Icons.check,
-                              color: authController.selectUserCategoriesList
-                                      .contains(item)
+                              color: authController.selectUserCategoriesList.contains(item)
                                   ? AppColors.primary
                                   : Colors.transparent,
                             );
@@ -433,8 +401,7 @@ class _MySettingsState extends State<MySettings> {
                   ),
                   name: 'category',
                   onChanged: (value) {
-                    if (authController.selectUserCategoriesList
-                        .contains(value)) {
+                    if (authController.selectUserCategoriesList.contains(value)) {
                       authController.selectUserCategoriesList.remove(value);
                     } else {
                       if (authController.selectUserCategoriesList.length == 3) {
@@ -469,93 +436,94 @@ class _MySettingsState extends State<MySettings> {
                   ),
                 ),
                 20.verticalSpace,
-                Text(
-                  "Social",
-                  style: medium.copyWith(
-                    color: Colors.grey.shade800,
-                  ),
-                ),
-                20.verticalSpace,
-                FormBuilderTextField(
-                  name: 'youtube',
-                  decoration: InputDecoration(
-                    suffix: Image.asset(
-                      youtubeIcon,
-                      width: 14.w,
-                      height: 14.h,
-                      color: Get.theme.primaryColor,
-                    ),
-                    isDense: true,
-                    alignLabelWithHint: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Youtube',
-                    labelStyle: TextStyle(
-                      fontSize: 14.sp,
-                      color: Get.theme.shadowColor.withOpacity(.6),
-                    ),
-                    border: outlineBorder,
-                    enabledBorder: outlineBorder,
-                    errorBorder: outlineBorder,
-                    focusedBorder: outlineBorder,
-                  ),
-                  // validator: FormBuilderValidators.compose(
-                  //   [],
-                  // ),
-                ),
-                20.verticalSpace,
-                FormBuilderTextField(
-                  name: 'tiktok',
-                  decoration: InputDecoration(
-                    suffix: Image.asset(
-                      tiktokIcon,
-                      width: 14.w,
-                      height: 14.h,
-                      color: Get.theme.primaryColor,
-                    ),
-                    isDense: true,
-                    alignLabelWithHint: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Tiktok',
-                    labelStyle: TextStyle(
-                      fontSize: 14.sp,
-                      color: Get.theme.shadowColor.withOpacity(.6),
-                    ),
-                    border: outlineBorder,
-                    enabledBorder: outlineBorder,
-                    errorBorder: outlineBorder,
-                    focusedBorder: outlineBorder,
-                  ),
-                  // validator: FormBuilderValidators.compose(
-                  //   [],
-                  // ),
-                ),
-                20.verticalSpace,
-                FormBuilderTextField(
-                  name: 'twitch',
-                  decoration: InputDecoration(
-                    suffix: Image.asset(
-                      twitchIcon,
-                      width: 14.w,
-                      height: 14.h,
-                      color: Get.theme.primaryColor,
-                    ),
-                    isDense: true,
-                    alignLabelWithHint: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: 'Twitch',
-                    labelStyle: TextStyle(
-                      fontSize: 14.sp,
-                      color: Get.theme.shadowColor.withOpacity(.6),
-                    ),
-                    border: outlineBorder,
-                    enabledBorder: outlineBorder,
-                    errorBorder: outlineBorder,
-                    focusedBorder: outlineBorder,
-                  ),
-                  // validator: FormBuilderValidators.compose(
-                  //   [],
-                  // ),
-                ),
+                // Text(
+                //   "Social",
+                //   style: medium.copyWith(
+                //     color: Colors.grey.shade800,
+                //   ),
+                // ),
+                // 20.verticalSpace,
+                // FormBuilderTextField(
+                //   name: 'youtube',
+                //   decoration: InputDecoration(
+                //     suffix: Image.asset(
+                //       youtubeIcon,
+                //       width: 14.w,
+                //       height: 14.h,
+                //       color: Get.theme.primaryColor,
+                //     ),
+                //     isDense: true,
+                //     alignLabelWithHint: true,
+                //     floatingLabelBehavior: FloatingLabelBehavior.always,
+                //     labelText: 'Youtube',
+                //     labelStyle: TextStyle(
+                //       fontSize: 14.sp,
+                //       color: Get.theme.shadowColor.withOpacity(.6),
+                //     ),
+                //     border: outlineBorder,
+                //     enabledBorder: outlineBorder,
+                //     errorBorder: outlineBorder,
+                //     focusedBorder: outlineBorder,
+                //   ),
+                //   // validator: FormBuilderValidators.compose(
+                //   //   [],
+                //   // ),
+                // ),
+                // 20.verticalSpace,
+                // FormBuilderTextField(
+                //   name: 'tiktok',
+                //   decoration: InputDecoration(
+                //     suffix: Image.asset(
+                //       tiktokIcon,
+                //       width: 14.w,
+                //       height: 14.h,
+                //       color: Get.theme.primaryColor,
+                //     ),
+                //     isDense: true,
+                //     alignLabelWithHint: true,
+                //     floatingLabelBehavior: FloatingLabelBehavior.always,
+                //     labelText: 'Tiktok',
+                //     labelStyle: TextStyle(
+                //       fontSize: 14.sp,
+                //       color: Get.theme.shadowColor.withOpacity(.6),
+                //     ),
+                //     border: outlineBorder,
+                //     enabledBorder: outlineBorder,
+                //     errorBorder: outlineBorder,
+                //     focusedBorder: outlineBorder,
+                //   ),
+                //   // validator: FormBuilderValidators.compose(
+                //   //   [],
+                //   // ),
+                // ),
+                // 20.verticalSpace,
+                // FormBuilderTextField(
+                //   name: 'twitch',
+                //   decoration: InputDecoration(
+                //     suffix: Image.asset(
+                //       twitchIcon,
+                //       width: 14.w,
+                //       height: 14.h,
+                //       color: Get.theme.primaryColor,
+                //     ),
+                //     isDense: true,
+                //     alignLabelWithHint: true,
+                //     floatingLabelBehavior: FloatingLabelBehavior.always,
+                //     labelText: 'Twitch',
+                //     labelStyle: TextStyle(
+                //       fontSize: 14.sp,
+                //       color: Get.theme.shadowColor.withOpacity(.6),
+                //     ),
+                //     border: outlineBorder,
+                //     enabledBorder: outlineBorder,
+                //     errorBorder: outlineBorder,
+                //     focusedBorder: outlineBorder,
+                //   ),
+                //   // validator: FormBuilderValidators.compose(
+                //   //   [],
+                //   // ),
+                // ),
+
                 40.verticalSpace,
                 Row(
                   children: [
@@ -573,54 +541,21 @@ class _MySettingsState extends State<MySettings> {
                           onPressed: authController.isUpdateLoading.value
                               ? null
                               : () {
-                                  if (userController
-                                      .userSettingsFormKey.currentState!
-                                      .saveAndValidate()) {
-                                    Map formData = userController
-                                        .userSettingsFormKey
-                                        .currentState!
-                                        .value;
+                                  if (userController.userSettingsFormKey.currentState!.saveAndValidate()) {
+                                    Map formData = userController.userSettingsFormKey.currentState!.value;
                                     Map<String, dynamic> data = {
-                                      "messaging": [
-                                        {
-                                          "id":
-                                              formData['youtube'] ?? "No Link",
-                                          "type": "youtube"
-                                        },
-                                        {
-                                          "id": formData['tiktok'] ?? "No Link",
-                                          "type": "tiktok"
-                                        },
-                                        {
-                                          "id": formData['twitch'] ?? "No Link",
-                                          "type": "twitch"
-                                        }
-                                      ], // max 3
-                                      "location": {
-                                        "province": filterController
-                                            .getSelectedLocationData()
-                                            .firstOrNull?['province'],
-                                        "city": filterController
-                                            .getSelectedLocationData()
-                                            .firstOrNull?['city'],
-                                        "geo": {
-                                          "type": "point",
-                                          "coordinates": [45, 5]
-                                        }
-                                      },
+                                      // "messaging": [
+                                      //   {"id": formData['youtube'] ?? "No Link", "type": "youtube"},
+                                      //   {"id": formData['tiktok'] ?? "No Link", "type": "tiktok"},
+                                      //   {"id": formData['twitch'] ?? "No Link", "type": "twitch"}
+                                      // ], // max 3
+
                                       "bio": formData['bio'] ?? "",
                                       "user_name": formData['user_name'] ?? "",
-                                      "categories": authController
-                                          .selectUserCategoriesList
-                                          .map((e) => e.name)
-                                          .toList(),
-                                      "email": authController
-                                              .userDataModel.value.email ??
-                                          "",
+                                      "categories": authController.selectUserCategoriesList.map((e) => e.name).toList(),
                                     };
 
-                                    authController.updateUserInformation(
-                                        data: data);
+                                    authController.updateUserInformation(data: data);
                                   }
                                 },
                           child: authController.isUpdateLoading.value

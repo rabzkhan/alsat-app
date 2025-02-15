@@ -16,16 +16,14 @@ Stream<List<Uint8List>> generateTrimThumbnails(
 
   for (int i = 1; i <= quantity; i++) {
     try {
-      final Uint8List? bytes = await VideoThumbnail.thumbnailData(
+      final Uint8List bytes = await VideoThumbnail.thumbnailData(
         imageFormat: ImageFormat.JPEG,
         video: path,
         timeMs: (eachPart * i).toInt(),
         quality: controller.trimThumbnailsQuality,
       );
-      if (bytes != null) {
-        byteList.add(bytes);
-      }
-    } catch (e) {
+      byteList.add(bytes);
+        } catch (e) {
       debugPrint(e.toString());
     }
 
@@ -73,7 +71,7 @@ Future<CoverData> generateSingleCoverThumbnail(
   int timeMs = 0,
   int quality = 10,
 }) async {
-  final Uint8List? thumbData = await VideoThumbnail.thumbnailData(
+  final Uint8List thumbData = await VideoThumbnail.thumbnailData(
     imageFormat: ImageFormat.JPEG,
     video: filePath,
     timeMs: timeMs,

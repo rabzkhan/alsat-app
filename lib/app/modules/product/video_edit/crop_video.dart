@@ -1,10 +1,8 @@
 import 'dart:io';
-import 'package:alsat/app/common/binding/app_binding.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:video_player/video_player.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 import '../controller/product_controller.dart';
