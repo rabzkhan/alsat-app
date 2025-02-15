@@ -9,7 +9,8 @@ import '../../../components/no_data_widget.dart';
 import '../../app_home/controller/home_controller.dart';
 
 class MyListings extends StatelessWidget {
-  const MyListings({super.key});
+  final TabController tabController;
+  const MyListings({super.key, required this.tabController});
 
   @override
   Widget build(BuildContext context) {
@@ -23,87 +24,46 @@ class MyListings extends StatelessWidget {
             : (homeController.categories
                 .indexOf(productController.myListingSelectCategory.value)),
         length: homeController.categories.length,
-        child: Column(
-          children: [
-            6.verticalSpace,
-            Obx(() {
-              return TabBar(
-                onTap: (value) {
-                  productController.myListingSelectCategory.value =
-                      homeController.categories[value];
-                  productController.myListingRefresh();
-                },
-                isScrollable: true,
-                unselectedLabelColor: Colors.black87,
-                indicatorWeight: 1,
-                indicator: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: context.theme.primaryColor,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                tabs: homeController.categories
-                    .map(
-                      (e) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6.h),
-                        child: Text(
-                          e.name ?? '',
-                        ),
-                      ),
-                    )
-                    .toList(),
-              );
-            }),
-            Expanded(
-              child: Obx(
-                () {
-                  return SmartRefresher(
-                    enablePullDown: true,
-                    enablePullUp: true,
-                    header: WaterDropHeader(
-                      waterDropColor: context.theme.primaryColor,
-                    ),
-                    controller: productController.myListingRefreshController,
-                    onRefresh: productController.myListingRefresh,
-                    onLoading: productController.myListingLoading,
-                    child: !productController.isFetchMyProduct.value &&
-                            productController.myProductList.isEmpty
-                        ? const NoDataWidget()
-                        : GridView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                              vertical: 20.h,
-                            ),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 10.h,
-                              crossAxisSpacing: 10.w,
-                              mainAxisExtent: 200.h,
-                            ),
-                            itemBuilder: (context, index) {
-                              return ProductGridTile(
-                                loading:
-                                    productController.isFetchMyProduct.value,
-                                productModel: productController
-                                        .isFetchMyProduct.value
-                                    ? null
-                                    : productController.myProductList[index],
-                              );
-                            },
-                            itemCount: productController.isFetchMyProduct.value
-                                ? 10
-                                : productController.myProductList.length,
-                          ),
-                  );
-                },
+        child: Obx(
+          () {
+            return SmartRefresher(
+              enablePullDown: true,
+              enablePullUp: true,
+              header: WaterDropHeader(
+                waterDropColor: context.theme.primaryColor,
               ),
-            ),
-          ],
+              controller: productController.myListingRefreshController,
+              onRefresh: productController.myListingRefresh,
+              onLoading: productController.myListingLoading,
+              child: !productController.isFetchMyProduct.value &&
+                      productController.myProductList.isEmpty
+                  ? const NoDataWidget()
+                  : GridView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 8.w,
+                        vertical: 20.h,
+                      ),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        mainAxisSpacing: 10.h,
+                        crossAxisSpacing: 10.w,
+                        mainAxisExtent: 200.h,
+                      ),
+                      itemBuilder: (context, index) {
+                        return ProductGridTile(
+                          loading: productController.isFetchMyProduct.value,
+                          productModel: productController.isFetchMyProduct.value
+                              ? null
+                              : productController.myProductList[index],
+                        );
+                      },
+                      itemCount: productController.isFetchMyProduct.value
+                          ? 10
+                          : productController.myProductList.length,
+                    ),
+            );
+          },
         ),
       );
     });

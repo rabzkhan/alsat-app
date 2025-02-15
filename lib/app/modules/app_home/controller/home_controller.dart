@@ -29,6 +29,7 @@ class HomeController extends GetxController {
   RxBool isShowSearch = false.obs;
   RxBool showPremium = false.obs;
   //home page variable
+  RxInt profileTabCurrentPage = RxInt(0);
   RxInt homeBottomIndex = RxInt(0);
   RxInt categoryExpandedIndex = RxInt(0);
   RxBool isCategoryLoading = false.obs;
@@ -61,11 +62,10 @@ class HomeController extends GetxController {
   //-- init method --//
   @override
   Future<void> onInit() async {
+    getCategories();
     getBanner();
     fetchCarBrand();
     userOwnStory();
-    await getCategories();
-
     super.onInit();
   }
 

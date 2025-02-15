@@ -207,20 +207,26 @@ class _AppHomeViewState extends State<AppHomeView> {
                     children: [
                       // HOME TAB
                       Expanded(
-                        child: PageView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: homeController.homePageController,
-                          onPageChanged: (value) {
-                            homeController.homeBottomIndex.value = value;
-                          },
-                          children: const [
-                            HomeContent(),
-                            CategoryContent(),
-                            AddPostContent(),
-                            ChatContent(),
-                            ProfileContent(),
-                          ],
-                        ),
+                        child: Obx(() {
+                          return PageView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: homeController.homePageController,
+                            onPageChanged: (value) {
+                              homeController.homeBottomIndex.value = value;
+                            },
+                            children: [
+                              const HomeContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const CategoryContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const AddPostContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const ChatContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const ProfileContent(),
+                            ],
+                          );
+                        }),
                       ),
                       const AppBottomNavigationBar(),
                     ],

@@ -213,6 +213,7 @@ class FullPageViewState extends State<FullPageView> {
                                               selectedIndex!) &&
                                       widget.autoPlayDuration != null
                                   ? AnimatedProgressBar(
+                                      duration: widget.autoPlayDuration!,
                                       endColor: fullpageVisitedColor!,
                                       startColor: fullpageUnvisitedColor!,
                                     )
