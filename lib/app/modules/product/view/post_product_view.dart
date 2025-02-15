@@ -196,34 +196,21 @@ class _PostProductViewState extends State<PostProductView> {
           ),
           centerTitle: true,
           actions: [
-            InkWell(
+            GestureDetector(
               onTap: () {
                 resetForm();
               },
               child: Container(
-                margin: EdgeInsets.only(right: 10.w, top: 13.h, bottom: 13.h),
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                decoration: BoxDecoration(
+                margin: EdgeInsets.symmetric(horizontal: 14.w),
+                padding: EdgeInsets.all(6.r),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
                   color: Colors.red,
-                  borderRadius: BorderRadius.circular(10.r),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Clear',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.sp,
-                      ),
-                    ),
-                    4.horizontalSpace,
-                    Icon(
-                      Icons.delete_outline,
-                      color: Colors.white,
-                      size: 18.r,
-                    ),
-                  ],
+                child: Icon(
+                  Icons.delete_outline,
+                  color: Colors.white,
+                  size: 18.r,
                 ),
               ),
             ),

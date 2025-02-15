@@ -116,13 +116,13 @@ class AppDrawer extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Image.asset(
-                                    chatIcon,
+                                    adminChat,
                                     width: 25.w,
-                                    color: Get.theme.textTheme.bodyLarge!.color!,
+                                    color: Colors.grey.shade900,
                                   ),
                                   10.horizontalSpace,
                                   Text(
-                                    'Chat To Aadmin',
+                                    'Chat With Admin',
                                     style: regular.copyWith(
                                       fontSize: 14.sp,
                                     ),
@@ -138,9 +138,9 @@ class AppDrawer extends StatelessWidget {
                       title: Row(
                         children: [
                           Image.asset(
-                            drawerSetting,
+                            translate,
                             width: 25.w,
-                            color: Get.theme.textTheme.bodyLarge!.color!,
+                            color: Colors.grey.shade900,
                           ),
                           10.horizontalSpace,
                           Text(
@@ -156,14 +156,12 @@ class AppDrawer extends StatelessWidget {
                       expandedAlignment: Alignment.centerLeft,
                       children: [
                         TextButton.icon(
-                          icon: const Icon(Icons.language),
                           onPressed: () {
                             localizationService.changeLocale(const Locale('en'));
                           },
                           label: const Text('English'),
                         ),
                         TextButton.icon(
-                          icon: const Icon(Icons.donut_large_rounded),
                           onPressed: () {
                             localizationService.changeLocale(const Locale('tk'));
                           },

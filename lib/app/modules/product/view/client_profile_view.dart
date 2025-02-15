@@ -71,6 +71,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.white12,
+            title: Text(""),
           ),
           body: NestedScrollView(
               headerSliverBuilder: (context, innerBoxIsScrolled) => [

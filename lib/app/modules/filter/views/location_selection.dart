@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,14 +25,13 @@ class LocationSelection extends StatelessWidget {
             style: bold.copyWith(fontSize: 16.sp),
           ),
           trailing: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.check,
-              color: Colors.black,
+              size: 30.sp,
+              color: Colors.grey.shade700,
             ),
             onPressed: () {
-              Get.back(
-                  result:
-                      Get.find<FilterController>().getSelectedLocationText());
+              Get.back(result: Get.find<FilterController>().getSelectedLocationText());
             },
           ),
         ),
@@ -66,8 +64,7 @@ class LocationSelection extends StatelessWidget {
                             showTrailingIcon: false,
                             onExpansionChanged: (value) {
                               if (value) {
-                                filterController.toggleProvince(
-                                    province.name, canSelectMultiple);
+                                filterController.toggleProvince(province.name, canSelectMultiple);
                               }
                             },
                             title: Row(
@@ -82,15 +79,13 @@ class LocationSelection extends StatelessWidget {
                                 const Spacer(),
                                 InkWell(
                                   onTap: () {
-                                    filterController.toggleProvince(
-                                        province.name, canSelectMultiple);
+                                    filterController.toggleProvince(province.name, canSelectMultiple);
                                   },
                                   child: CircleAvatar(
                                     radius: 12.r,
                                     backgroundColor: AppColors.liteGray,
                                     child: Icon(
-                                      filterController
-                                              .isProvinceSelected(province.name)
+                                      filterController.isProvinceSelected(province.name)
                                           ? Icons.check_circle
                                           : Icons.circle_outlined,
                                       color: AppColors.primary,
@@ -101,17 +96,11 @@ class LocationSelection extends StatelessWidget {
                               ],
                             ),
                             expandedAlignment: Alignment.centerLeft,
-                            expandedCrossAxisAlignment:
-                                CrossAxisAlignment.start,
-                            childrenPadding: EdgeInsets.symmetric(
-                                    horizontal: Get.width * .06, vertical: 10.h)
-                                .copyWith(right: 0),
-                            backgroundColor: Theme.of(context)
-                                .disabledColor
-                                .withOpacity(.03),
-                            collapsedBackgroundColor: Theme.of(context)
-                                .disabledColor
-                                .withOpacity(.03),
+                            expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                            childrenPadding:
+                                EdgeInsets.symmetric(horizontal: Get.width * .06, vertical: 10.h).copyWith(right: 0),
+                            backgroundColor: Theme.of(context).disabledColor.withOpacity(.03),
+                            collapsedBackgroundColor: Theme.of(context).disabledColor.withOpacity(.03),
                             children: [
                               ...province.cities.map(
                                 (city) {
@@ -128,14 +117,11 @@ class LocationSelection extends StatelessWidget {
                                         border: Border(
                                           bottom: BorderSide(
                                             width: .5,
-                                            color: Theme.of(context)
-                                                .disabledColor
-                                                .withOpacity(.1),
+                                            color: Theme.of(context).disabledColor.withOpacity(.1),
                                           ),
                                         ),
                                       ),
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10.h),
+                                      padding: EdgeInsets.symmetric(vertical: 10.h),
                                       child: Row(
                                         children: [
                                           Text(
@@ -146,9 +132,7 @@ class LocationSelection extends StatelessWidget {
                                             ),
                                           ),
                                           const Spacer(),
-                                          if (filterController
-                                              .isProvinceSelected(
-                                                  province.name))
+                                          if (filterController.isProvinceSelected(province.name))
                                             GestureDetector(
                                               onTap: () {
                                                 // Toggle city selection
@@ -160,13 +144,9 @@ class LocationSelection extends StatelessWidget {
                                               },
                                               child: CircleAvatar(
                                                 radius: 9.r,
-                                                backgroundColor:
-                                                    AppColors.liteGray,
+                                                backgroundColor: AppColors.liteGray,
                                                 child: Icon(
-                                                  filterController
-                                                          .isCitySelected(
-                                                              province.name,
-                                                              city)
+                                                  filterController.isCitySelected(province.name, city)
                                                       ? Icons.check_circle
                                                       : Icons.circle_outlined,
                                                   color: AppColors.primary,

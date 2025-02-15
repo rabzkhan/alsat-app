@@ -134,7 +134,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         color: Get.theme.disabledColor,
                                       ),
                                       hintStyle: TextStyle(
-                                        fontSize: 12.sp,
+                                        fontSize: 14.sp,
                                         fontWeight: FontWeight.w400,
                                         color: Get.theme.disabledColor.withOpacity(.5),
                                       ),
