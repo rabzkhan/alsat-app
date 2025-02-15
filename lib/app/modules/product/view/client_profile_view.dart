@@ -5,6 +5,7 @@ import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stories_for_flutter/stories_for_flutter.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
@@ -44,6 +46,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
     Future.microtask(() {
       widget.productDetailsController.isFetchUserLoading.value = true;
       widget.productDetailsController.getUserByUId(userId: widget.userId);
+      widget.productDetailsController.getUserStory(widget.userId);
     });
     super.initState();
   }
@@ -115,19 +118,65 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: 28.r,
-                              child: NetworkImagePreview(
-                                radius: 26.r,
-                                url: widget.productDetailsController
-                                        .postUserModel.value?.picture ??
-                                    '',
-                                height: 52.h,
-                                width: 52.w,
-                                error: Image.asset(userDefaultIcon),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            Obx(() {
+                              return widget.productDetailsController
+                                      .userStoryList.isEmpty
+                                  ? CircleAvatar(
+                                      radius: 28.r,
+                                      child: NetworkImagePreview(
+                                        radius: 26.r,
+                                        url: widget.productDetailsController
+                                                .postUserModel.value?.picture ??
+                                            '',
+                                        height: 52.h,
+                                        width: 52.w,
+                                        error: Image.asset(userDefaultIcon),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    )
+                                  : Stories(
+                                      highLightColor: AppColors.primary,
+                                      paddingColor: AppColors.secondary,
+                                      fullpageVisitedColor: AppColors.primary,
+                                      fullpageUnisitedColor: AppColors.primary,
+                                      storyStatusBarColor: Colors.white,
+                                      circlePadding: 2,
+                                      showStoryName: false,
+                                      // addOption:,
+                                      storyItemList: [
+                                        StoryItem(
+                                          name: "",
+                                          thumbnail: NetworkImage(
+                                            widget
+                                                    .productDetailsController
+                                                    .userStoryList
+                                                    .first
+                                                    .user
+                                                    ?.picture ??
+                                                '',
+                                          ),
+                                          stories: [
+                                            ...(widget
+                                                        .productDetailsController
+                                                        .userStoryList
+                                                        .first
+                                                        .stories ??
+                                                    [])
+                                                .map(
+                                              (e) => Scaffold(
+                                                body: Center(
+                                                  child: NetworkImagePreview(
+                                                    url: e.media?.name ?? '',
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                              ;
+                            }),
                             15.horizontalSpace,
                             Expanded(
                               child: Column(
@@ -202,7 +251,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           Padding(
                             padding: EdgeInsets.only(top: 10.h),
                             child: Text(
-                              textAlign: TextAlign.left,
+                              textAlign: TextAlign.justify,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
                               '${widget.productDetailsController.postUserModel.value?.bio}',
                               style: regular.copyWith(
                                 fontSize: 14.sp,

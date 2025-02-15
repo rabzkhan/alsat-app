@@ -6,6 +6,10 @@ import 'package:get/get.dart';
 
 import 'package:crypto/crypto.dart';
 
+import '../app/modules/authentication/controller/auth_controller.dart';
+import '../app/modules/conversation/model/conversation_messages_res.dart';
+import '../app/modules/conversation/model/message_model.dart';
+
 String timeAgo(DateTime date) {
   final clock = DateTime.now();
   var elapsed = clock.millisecondsSinceEpoch - date.millisecondsSinceEpoch;
@@ -170,4 +174,241 @@ String formatFollowers(int followers) {
   } else {
     return followers.toString();
   }
+}
+
+List<ChatMessage> messageConvert(MessageModel element,
+    Participant? selectUserInfo, AuthController authController) {
+  List<ChatMessage> coverMessage = [];
+  if (element.attachments != null && (element.attachments ?? []).isNotEmpty) {
+    for (Attachment e in element.attachments ?? []) {
+      if (e.type == 'image') {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.image,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: e.data,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+      if (e.type == 'video') {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.video,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: e.data,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+      if (e.type == 'location') {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.map,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: e.data,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+      if (e.type == 'audio') {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.audio,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: e.data,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+      if (e.type == 'post') {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.post,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: e.data,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+      if ((e.type ?? '').trim().isEmpty) {
+        coverMessage.add(
+          ChatMessage(
+            id: element.id ?? '0',
+            text: element.content ?? '',
+            messageType: ChatMessageType.text,
+            messageStatus: MessageStatus.viewed,
+            isSender: authController.userDataModel.value.id == element.senderId,
+            time: element.createdAt ?? DateTime.now(),
+            otherUser: ChatUser(
+              id: selectUserInfo?.id ?? "",
+              name: selectUserInfo?.userName ?? '',
+              imageUrl: selectUserInfo?.picture ?? '',
+            ),
+            data: null,
+            replyMessage: element.replyTo == null
+                ? null
+                : ChatMessage(
+                    id: element.replyTo?.id ?? '0',
+                    text: element.replyTo?.content ?? '',
+                    messageType: ChatMessageType.text,
+                    messageStatus: MessageStatus.viewed,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
+                    time: element.replyTo?.createdAt ?? DateTime.now(),
+                    otherUser: ChatUser(
+                      id: selectUserInfo?.id ?? "",
+                      name: selectUserInfo?.userName ?? '',
+                      imageUrl: selectUserInfo?.picture ?? '',
+                    ),
+                    data: e.data,
+                  ),
+          ),
+        );
+      }
+    }
+  } else {
+    coverMessage.add(
+      ChatMessage(
+        id: element.id ?? '0',
+        text: element.content ?? '',
+        messageType: ChatMessageType.text,
+        messageStatus: MessageStatus.viewed,
+        isSender: authController.userDataModel.value.id == element.senderId,
+        time: element.createdAt ?? DateTime.now(),
+        otherUser: ChatUser(
+          id: selectUserInfo?.id ?? "",
+          name: selectUserInfo?.userName ?? '',
+          imageUrl: selectUserInfo?.picture ?? '',
+        ),
+        data: null,
+      ),
+    );
+  }
+  return coverMessage;
 }

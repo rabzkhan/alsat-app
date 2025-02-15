@@ -79,14 +79,14 @@ class ProductController extends GetxController {
   RxInt individualInfoFiledCount = RxInt(2);
   //--Text Field--//
   RxnString estateDealType = RxnString();
+  RxString selectRoom = RxString('1');
+  RxString selectFloor = RxString('1');
   TextEditingController estateAddressController = TextEditingController();
   RxnString estateType = RxnString();
 
   TextEditingController productNameController = TextEditingController();
   TextEditingController productDescriptionController = TextEditingController();
   TextEditingController vinCode = TextEditingController();
-  TextEditingController floor = TextEditingController();
-  TextEditingController room = TextEditingController();
   TextEditingController priceController = TextEditingController();
 
   ///Individual Info
@@ -116,7 +116,7 @@ class ProductController extends GetxController {
         totalProductFiled.value = 11;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
-        totalProductFiled.value = 9;
+        totalProductFiled.value = 7;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'phone') {
         totalProductFiled.value = 3;
@@ -143,8 +143,6 @@ class ProductController extends GetxController {
         if ((estateDealType.value ?? "").isNotEmpty) filledCount++;
         if (estateAddressController.text.trim().isNotEmpty) filledCount++;
         if ((estateType.value ?? '').isNotEmpty) filledCount++;
-        if (floor.text.trim().isNotEmpty) filledCount++;
-        if (room.text.trim().isNotEmpty) filledCount++;
         filledCount++;
         // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         // if (productNameController.text.trim().isNotEmpty) filledCount++;
@@ -343,6 +341,7 @@ class ProductController extends GetxController {
   void onHomeRefresh() async {
     final HomeController homeController = Get.find();
     homeController.getBanner();
+    homeController.userOwnStory();
     await fetchProducts();
     homeRefreshController.refreshCompleted();
   }

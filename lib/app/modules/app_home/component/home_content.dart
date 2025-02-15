@@ -4,12 +4,14 @@ import 'package:alsat/app/modules/app_home/component/premium_content.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/app_home/models/banner_res.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
+import 'package:alsat/app/modules/story/component/home_story_section.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:stories_for_flutter/stories_for_flutter.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../../utils/loading_dialog.dart';
 import '../../../common/const/image_path.dart';
@@ -161,6 +163,8 @@ class HomeContent extends StatelessWidget {
                                   )),
                             ),
                           ),
+                          //-- Stroy Section
+                          const HomeStorySection(),
 
                           /// other banner
                           Skeletonizer(
@@ -290,7 +294,7 @@ onBannerTab(HomeController homeController, ProductController productController,
   // IF CATEGORY
   if ('${bannerModel.type}'.toUpperCase() == 'CATEGORY') {
     filterController.isFilterLoading.value = true;
-    filterController.filtermapPassed = {
+    filterController.filterMapPassed = {
       "category": (homeController.categories
                   .firstWhereOrNull(
                       (element) => element.sId == bannerModel.entityId)

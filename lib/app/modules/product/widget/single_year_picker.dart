@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class SingleYearPicker extends StatefulWidget {
+class SingleDialogPicker extends StatefulWidget {
   final RxString selectYear;
-  const SingleYearPicker({super.key, required this.selectYear});
+  final List<String>? items;
+  final String? title;
+  const SingleDialogPicker(
+      {super.key, required this.selectYear, this.items, this.title});
 
   @override
-  State<SingleYearPicker> createState() => _SingleYearPickerState();
+  State<SingleDialogPicker> createState() => _SingleDialogPickerState();
 }
 
-class _SingleYearPickerState extends State<SingleYearPicker> {
+class _SingleDialogPickerState extends State<SingleDialogPicker> {
   late double widgetHeight;
   late ScrollController scrollController;
   List<String> items = [];
@@ -21,8 +24,9 @@ class _SingleYearPickerState extends State<SingleYearPicker> {
   @override
   void initState() {
     selectYear = widget.selectYear.value;
-    items = List.generate(
-        100, (index) => (index + (num.parse(selectYear) - 50)).toString());
+    items = widget.items ??
+        List.generate(
+            100, (index) => (index + (num.parse(selectYear) - 50)).toString());
     int initialItem = items.indexOf(widget.selectYear.value);
     scrollController = FixedExtentScrollController(initialItem: initialItem);
 
@@ -57,8 +61,8 @@ class _SingleYearPickerState extends State<SingleYearPicker> {
             children: [
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child:
-                    Text('Select Year', style: themeData.textTheme.titleMedium),
+                child: Text(widget.title ?? 'Select Year',
+                    style: themeData.textTheme.titleMedium),
               ),
               10.verticalSpace,
               Expanded(

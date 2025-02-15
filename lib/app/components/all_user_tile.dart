@@ -85,16 +85,9 @@ class AllUserTile extends StatelessWidget {
                         child: Text(
                           maxLines: 1,
                           premiumUserModel.userName ?? 'Premium User Name',
-                          style: bold.copyWith(fontSize: 16.sp),
+                          style: bold.copyWith(fontSize: 15.sp),
                         ),
                       ),
-                      // 5.horizontalSpace,
-                      // CircleAvatar(
-                      //   radius: 5.r,
-                      //   backgroundColor: (premiumUserModel.active ?? false)
-                      //       ? Colors.green
-                      //       : Colors.grey,
-                      // )
                     ],
                   ),
                   3.verticalSpace,
@@ -115,19 +108,11 @@ class AllUserTile extends StatelessWidget {
                       Text(
                         '(${(premiumUserModel.rating ?? 0).toStringAsFixed(1)}) ${(premiumUserModel.votes ?? 0)}',
                         style: regular.copyWith(
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                         ),
                       )
                     ],
                   ),
-                  // 3.verticalSpace,
-                  // Text(
-                  //     (premiumUserModel.email ?? '').isNotEmpty
-                  //         ? premiumUserModel.email ?? ''
-                  //         : premiumUserModel.phone ?? 'No Email',
-                  //     style: regular.copyWith(
-                  //       fontSize: 12.sp,
-                  //     )),
                   ((premiumUserModel.location?.province ?? '').isNotEmpty ||
                           (premiumUserModel.location?.city ?? '').isNotEmpty)
                       ? Padding(
@@ -135,14 +120,14 @@ class AllUserTile extends StatelessWidget {
                           child: Text(
                             '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
                             style: regular.copyWith(
-                              fontSize: 14.sp,
+                              fontSize: 12.sp,
                             ),
                           ),
                         )
                       : Text(
                           "No Location",
                           style: regular.copyWith(
-                            fontSize: 14.sp,
+                            fontSize: 12.sp,
                             color: context.theme.disabledColor,
                           ),
                         ),
@@ -154,7 +139,7 @@ class AllUserTile extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.check_circle,
-                            size: 15.r,
+                            size: 14.r,
                             color: (premiumUserModel.protectionLabel ?? false)
                                 ? Get.theme.primaryColor
                                 : Get.theme.disabledColor.withOpacity(.1),
@@ -173,7 +158,7 @@ class AllUserTile extends StatelessWidget {
                         'Follower ${formatFollowers((premiumUserModel.followers ?? 0).toInt())}',
                         style: regular.copyWith(
                           color: Get.theme.primaryColor,
-                          fontSize: 14.sp,
+                          fontSize: 12.sp,
                         ),
                       )
                     ],
@@ -182,7 +167,7 @@ class AllUserTile extends StatelessWidget {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios, size: 15.r),
+            Icon(Icons.arrow_forward_ios, size: 13.r),
           ],
         ),
       ),

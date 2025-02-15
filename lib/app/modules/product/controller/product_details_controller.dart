@@ -13,6 +13,7 @@ import '../../../components/custom_snackbar.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/models/category_model.dart';
 import '../../authentication/model/user_data_model.dart';
+import '../../story/model/story_res.dart';
 import '../model/product_post_res.dart';
 
 class ProductDetailsController extends GetxController {
@@ -412,6 +413,37 @@ class ProductDetailsController extends GetxController {
         isFetchUserConversationLoading.value = false;
         CustomSnackBar.showCustomErrorToast(
             message: 'Failed to get conversation info');
+      },
+    );
+  }
+
+  ///--Get User User Story--//
+  RxBool isFetchUserStoryLoading = RxBool(false);
+  RxList<StoryModel> userStoryList = RxList<StoryModel>();
+  Future<void> getUserStory(String userId) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.stories}?user_id=$userId",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isFetchUserStoryLoading.value = true;
+        userStoryList.clear();
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data;
+        userStoryList.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
+        isFetchUserStoryLoading.value = false;
+        userStoryList.refresh();
+        log('fetchUserStory: ${userStoryList.length}');
+      },
+      onError: (error) {
+        log('fetchUserStoryError: ${error.message}');
+        isFetchUserStoryLoading.value = false;
+        userStoryList.refresh();
       },
     );
   }

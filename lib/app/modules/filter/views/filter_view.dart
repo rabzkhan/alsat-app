@@ -25,6 +25,7 @@ import '../../../components/custom_appbar.dart';
 import '../../app_home/models/car_brand_res.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/widget/category_selection.dart';
+import '../../product/widget/single_year_picker.dart';
 import '../widgets/car_model_sheet.dart';
 import '../widgets/car_multi_brand_sheet.dart';
 import '../widgets/car_multi_model_sheet.dart';
@@ -887,148 +888,55 @@ class _FilterViewState extends State<FilterView> {
                           child: Row(
                             children: [
                               Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 4.h,
-                                    horizontal: 8.w,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(
-                                      color: Get.theme.primaryColor
-                                          .withOpacity(.4),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Floor',
-                                        style: bold.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      3.verticalSpace,
-                                      FormBuilderTextField(
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                              RegExp(r'^\d*\.?\d*')),
-                                        ],
-                                        controller: productController.room,
-                                        name: 'floor',
-                                        onChanged: (newValue) {},
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Get.theme.primaryColor
-                                              .withOpacity(.6),
-                                        ),
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: AppColors.liteGray
-                                              .withOpacity(.3),
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 0.h,
+                                child: Obx(
+                                  () => _tile(
+                                    "Floor",
+                                    productController.selectFloor.value,
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            SingleDialogPicker(
+                                          title: "Select Number of Floor",
+                                          items: List.generate(
+                                            50,
+                                            (index) => (index + 1).toString(),
                                           ),
-                                          isDense: true,
-                                          alignLabelWithHint: true,
-                                          floatingLabelBehavior:
-                                              FloatingLabelBehavior.always,
-                                          labelText: '',
-                                          labelStyle: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: Get.theme.primaryColor
-                                                .withOpacity(.6),
-                                          ),
-                                          border: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
+                                          selectYear:
+                                              productController.selectFloor,
                                         ),
-                                        validator:
-                                            FormBuilderValidators.compose([]),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
-                              20.horizontalSpace,
                               Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    vertical: 4.h,
-                                    horizontal: 8.w,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(
-                                      color: Get.theme.primaryColor
-                                          .withOpacity(.4),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Room',
-                                        style: bold.copyWith(
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      3.verticalSpace,
-                                      FormBuilderTextField(
-                                        keyboardType: TextInputType.number,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(
-                                              RegExp(r'^\d*\.?\d*')),
-                                        ],
-                                        controller: productController.room,
-                                        name: 'room',
-                                        onChanged: (newValue) {},
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 12.sp,
-                                          color: Get.theme.primaryColor
-                                              .withOpacity(.6),
-                                        ),
-                                        decoration: InputDecoration(
-                                          filled: true,
-                                          fillColor: AppColors.liteGray
-                                              .withOpacity(.3),
-                                          contentPadding: EdgeInsets.symmetric(
-                                            vertical: 0.h,
+                                child: Obx(
+                                  () => _tile(
+                                    "Room",
+                                    productController.selectRoom.value,
+                                    onTap: () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) =>
+                                            SingleDialogPicker(
+                                          title: "Select Number of Room",
+                                          items: List.generate(
+                                            50,
+                                            (index) => (index + 1).toString(),
                                           ),
-                                          isDense: true,
-                                          alignLabelWithHint: true,
-                                          floatingLabelBehavior:
-                                              FloatingLabelBehavior.always,
-                                          labelText: '',
-                                          labelStyle: TextStyle(
-                                            fontSize: 12.sp,
-                                            color: Get.theme.primaryColor
-                                                .withOpacity(.6),
-                                          ),
-                                          border: InputBorder.none,
-                                          enabledBorder: InputBorder.none,
-                                          errorBorder: InputBorder.none,
-                                          focusedBorder: InputBorder.none,
+                                          selectYear:
+                                              productController.selectRoom,
                                         ),
-                                        validator:
-                                            FormBuilderValidators.compose([]),
-                                      ),
-                                    ],
+                                      );
+                                    },
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         )
-                      : Center();
+                      : const Center();
             }),
           ),
 
@@ -1149,7 +1057,7 @@ class _FilterViewState extends State<FilterView> {
                         : () {
                             log('filter');
                             controller.isFilterLoading.value = true;
-                            controller.filtermapPassed = null;
+                            controller.filterMapPassed = null;
                             controller.applyFilter();
                             if (widget.isBack) {
                               Get.back();
@@ -1189,6 +1097,51 @@ class _FilterViewState extends State<FilterView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  _tile(String title, String value, {Function()? onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: SizedBox(
+        width: Get.width,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: regular.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  Text(
+                    value.isEmpty ? 'Not chosen yet' : value,
+                    style: regular.copyWith(
+                      fontSize: 14.sp,
+                      fontWeight:
+                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                      color: value.isEmpty ? Colors.red : Colors.black87,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15.w),
+              child: Divider(
+                height: 1,
+                color: context.theme.primaryColor,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

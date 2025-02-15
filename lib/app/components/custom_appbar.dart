@@ -32,11 +32,11 @@ class CustomAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      height: 65.h,
+      height: 60.h,
       padding: EdgeInsets.symmetric(
         vertical: 10.h,
         horizontal: 10.w,
-      ),
+      ).copyWith(bottom: 5.h),
       child: Row(
         children: [
           !isShowBackButton

@@ -66,8 +66,8 @@ class _VideoMessageState extends State<VideoMessage> {
             color: widget.isReply
                 ? Colors.transparent
                 : widget.message!.isSender
-                    ? context.theme.primaryColor.withOpacity(.1)
-                    : Colors.white,
+                    ? Colors.transparent
+                    : Colors.transparent,
             borderRadius: BorderRadius.circular(10.r),
           ),
           child: Column(
@@ -123,7 +123,8 @@ class _VideoMessageState extends State<VideoMessage> {
                             child: Text(
                               textAlign: TextAlign.end,
                               DateFormat('hh:mm a dd MMM').format(
-                                widget.message?.time ?? DateTime.now(),
+                                widget.message?.time.toLocal() ??
+                                    DateTime.now(),
                               ),
                               style: TextStyle(
                                 color: Colors.white,

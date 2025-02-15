@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -50,6 +51,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
     conversationController.selectConversation.value = widget.conversation;
     conversationController.getConversationsMessages();
     conversationController.typeMessageText.value = '';
+    messageController.readAllUnSeenMessages(widget.conversation.id ?? '');
     super.initState();
   }
 
@@ -201,18 +203,38 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               ?.picture ??
                           "",
                       height: 44.h,
-                      error: Image.asset(userDefaultIcon),
+                      width: 44.w,
+                      error: (widget.conversation.isAdminChat ?? false)
+                          ? Image.asset("assets/icons/admin.png")
+                          : Image.asset(userDefaultIcon),
                     ),
                   ),
                   8.horizontalSpace,
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${conversationController.selectConversation.value?.participants?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)?.userName}',
-                        style: bold.copyWith(
-                          fontSize: 15.sp,
-                        ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            (widget.conversation.isAdminChat ?? false)
+                                ? 'Alsat Admin'
+                                : '${conversationController.selectConversation.value?.participants?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)?.userName}',
+                            style: bold.copyWith(
+                              fontSize: 15.sp,
+                            ),
+                          ),
+                          if (widget.conversation.isAdminChat ?? false)
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 5),
+                              child: Icon(
+                                Icons.verified,
+                                color: Colors.blue,
+                                size: 18.sp,
+                              ),
+                            )
+                        ],
                       ),
                       1.verticalSpace,
                       Obx(() {
@@ -252,19 +274,25 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     child: conversationController
                             .isConversationMessageLoading.value
                         ? const Center(child: CupertinoActivityIndicator())
-                        : ListView.builder(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
-                            reverse: true,
-                            controller: conversationController.scrollController,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount:
-                                conversationController.coverMessage.length,
-                            itemBuilder: (context, index) => MessageTile(
-                              message:
-                                  conversationController.coverMessage[index],
-                            ),
-                          ),
+                        : !conversationController
+                                    .isConversationMessageLoading.value &&
+                                conversationController.coverMessage.isEmpty
+                            ? const NoDataWidget(
+                                isShowIcon: false, title: 'No Messages')
+                            : ListView.builder(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                reverse: true,
+                                controller:
+                                    conversationController.scrollController,
+                                physics: const BouncingScrollPhysics(),
+                                itemCount:
+                                    conversationController.coverMessage.length,
+                                itemBuilder: (context, index) => MessageTile(
+                                  message: conversationController
+                                      .coverMessage[index],
+                                ),
+                              ),
                   );
                 }),
               ),

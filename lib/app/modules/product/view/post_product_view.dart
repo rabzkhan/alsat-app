@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
@@ -12,12 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:video_editor/video_editor.dart';
-import '../../../components/custom_appbar.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/location_selection.dart';
@@ -30,7 +25,7 @@ import '../controller/product_controller.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import '../video_edit/crop_video.dart';
-import '../widget/category_selection.dart';
+
 import '../widget/post_category_selection.dart';
 import '../widget/single_year_picker.dart';
 
@@ -1598,12 +1593,17 @@ class _PostProductViewState extends State<PostProductView> {
               child: Obx(
                 () => _tile(
                   "Floor",
-                  productController.selectedYear.value,
+                  productController.selectFloor.value,
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => SingleYearPicker(
-                        selectYear: productController.selectedYear,
+                      builder: (context) => SingleDialogPicker(
+                        title: "Select Number of Floor",
+                        items: List.generate(
+                          50,
+                          (index) => (index + 1).toString(),
+                        ),
+                        selectYear: productController.selectFloor,
                       ),
                     );
                   },
@@ -1614,12 +1614,17 @@ class _PostProductViewState extends State<PostProductView> {
               child: Obx(
                 () => _tile(
                   "Room",
-                  productController.selectedYear.value,
+                  productController.selectRoom.value,
                   onTap: () {
                     showDialog(
                       context: context,
-                      builder: (context) => SingleYearPicker(
-                        selectYear: productController.selectedYear,
+                      builder: (context) => SingleDialogPicker(
+                        title: "Select Number of Room",
+                        items: List.generate(
+                          50,
+                          (index) => (index + 1).toString(),
+                        ),
+                        selectYear: productController.selectRoom,
                       ),
                     );
                   },
@@ -1627,105 +1632,6 @@ class _PostProductViewState extends State<PostProductView> {
               ),
             ),
           ],
-        ),
-        Container(
-          height: 40,
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: Row(
-            children: [
-              Text(
-                'Floor',
-                style: bold.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              10.horizontalSpace,
-              Expanded(
-                child: FormBuilderTextField(
-                  controller: productController.floor,
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                  ],
-                  name: 'floor',
-                  onChanged: (newValue) {
-                    productController.calculateFilledProductFields();
-                  },
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Get.theme.primaryColor.withOpacity(.6),
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                    ),
-                    isDense: true,
-                    alignLabelWithHint: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: '',
-                    labelStyle: TextStyle(
-                      fontSize: 12.sp,
-                      color: Get.theme.primaryColor.withOpacity(.6),
-                    ),
-                    border: outlineBorderPrimary,
-                    enabledBorder: outlineBorderPrimary,
-                    errorBorder: outlineBorderPrimary,
-                    focusedBorder: outlineBorderPrimary,
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                ),
-              ),
-              30.horizontalSpace,
-              Text(
-                'Room',
-                style: bold.copyWith(
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              10.horizontalSpace,
-              Expanded(
-                child: FormBuilderTextField(
-                  keyboardType: TextInputType.number,
-                  inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                  ],
-                  controller: productController.room,
-                  name: 'room',
-                  onChanged: (newValue) {
-                    productController.calculateFilledProductFields();
-                  },
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    color: Get.theme.primaryColor.withOpacity(.6),
-                  ),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                    ),
-                    isDense: true,
-                    alignLabelWithHint: true,
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                    labelText: '',
-                    labelStyle: TextStyle(
-                      fontSize: 12.sp,
-                      color: Get.theme.primaryColor.withOpacity(.6),
-                    ),
-                    border: outlineBorderPrimary,
-                    enabledBorder: outlineBorderPrimary,
-                    errorBorder: outlineBorderPrimary,
-                    focusedBorder: outlineBorderPrimary,
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.required(),
-                  ]),
-                ),
-              ),
-            ],
-          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h)
@@ -1918,7 +1824,7 @@ class _PostProductViewState extends State<PostProductView> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) => SingleYearPicker(
+                            builder: (context) => SingleDialogPicker(
                               selectYear: productController.selectedYear,
                             ),
                           );
@@ -2031,9 +1937,9 @@ class _PostProductViewState extends State<PostProductView> {
                 "type": map['estateType'],
                 "address": map['estateAddress'],
                 "deal_type": map['estateDealType'],
-                "floor": num.parse(map['floor']).toInt(),
+                "floor": num.parse(productController.selectFloor.value).toInt(),
                 "floor_type": 2,
-                "room": num.parse(map['room']).toInt(),
+                "room": num.parse(productController.selectRoom.value).toInt(),
                 "renov": "cosmetique",
                 "lift": productController.isLeftAvalable.value,
               }
@@ -2057,10 +1963,7 @@ class _PostProductViewState extends State<PostProductView> {
     productController.productNameController.clear();
     productController.productDescriptionController.clear();
     productController.vinCode.clear();
-    productController.floor.clear();
     productController.priceController.clear();
-    productController.room.clear();
-
     productController.pickImageList.clear();
     productController.selectCategory.value = null;
     productController.selectSubCategory.value = null;
@@ -2094,13 +1997,17 @@ class _PostProductViewState extends State<PostProductView> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    value.isEmpty ? 'Not chosen yet' : value,
-                    style: regular.copyWith(
-                      fontSize: 14.sp,
-                      fontWeight:
-                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
-                      color: value.isEmpty ? Colors.red : Colors.black87,
+                  Expanded(
+                    child: Text(
+                      textAlign: TextAlign.end,
+                      maxLines: 1,
+                      value.isEmpty ? 'Not chosen yet' : value,
+                      style: regular.copyWith(
+                        fontSize: 14.sp,
+                        fontWeight:
+                            value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                        color: value.isEmpty ? Colors.red : Colors.black87,
+                      ),
                     ),
                   ),
                 ],

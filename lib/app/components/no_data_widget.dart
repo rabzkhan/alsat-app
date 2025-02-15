@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 class NoDataWidget extends StatelessWidget {
   final double? bottomHeight;
   final String? title;
-  const NoDataWidget({super.key, this.bottomHeight, this.title});
+  final bool isShowIcon;
+  const NoDataWidget(
+      {super.key, this.bottomHeight, this.title, this.isShowIcon = true});
 
   @override
   Widget build(BuildContext context) {
@@ -15,24 +17,11 @@ class NoDataWidget extends StatelessWidget {
         opacity: 0.7,
         child: Stack(
           children: [
-            Positioned(
-              top: 0,
-              bottom: 150.h,
-              left: -2,
-              child: Image.asset(
-                'assets/images/leaf.png',
-                height: 100,
-                width: Get.width * .18,
-                color: context.theme.primaryColor,
-              ),
-            ),
-            Positioned(
-              top: 0,
-              bottom: 150.h,
-              right: 0,
-              child: Transform(
-                alignment: Alignment.center,
-                transform: Matrix4.identity()..scale(-1.0, 1.0),
+            if (isShowIcon)
+              Positioned(
+                top: 0,
+                bottom: 150.h,
+                left: -2,
                 child: Image.asset(
                   'assets/images/leaf.png',
                   height: 100,
@@ -40,15 +29,31 @@ class NoDataWidget extends StatelessWidget {
                   color: context.theme.primaryColor,
                 ),
               ),
-            ),
+            if (isShowIcon)
+              Positioned(
+                top: 0,
+                bottom: 150.h,
+                right: 0,
+                child: Transform(
+                  alignment: Alignment.center,
+                  transform: Matrix4.identity()..scale(-1.0, 1.0),
+                  child: Image.asset(
+                    'assets/images/leaf.png',
+                    height: 100,
+                    width: Get.width * .18,
+                    color: context.theme.primaryColor,
+                  ),
+                ),
+              ),
             Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/nodata.png',
-                  height: 150.h,
-                  color: context.theme.primaryColor,
-                ),
+                if (isShowIcon)
+                  Image.asset(
+                    'assets/images/nodata.png',
+                    height: 150.h,
+                    color: context.theme.primaryColor,
+                  ),
                 2.verticalSpace,
                 Text(
                   title ?? 'No Data Available Yet',

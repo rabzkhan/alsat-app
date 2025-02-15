@@ -8,6 +8,7 @@ class ChatMessage {
   final ChatMessageType messageType;
   final MessageStatus messageStatus;
   final bool isSender;
+  final bool isShowMessageTime;
   final DateTime time;
   final ChatUser otherUser;
   final dynamic data;
@@ -23,6 +24,7 @@ class ChatMessage {
     required this.otherUser,
     required this.data,
     this.replyMessage,
+    this.isShowMessageTime = false,
   });
 }
 

@@ -32,7 +32,7 @@ class FilterResultsView extends GetView<FilterController> {
                 Get.to(
                     FilterView(
                       isBack: true,
-                      preData: controller.filtermapPassed,
+                      preData: controller.filterMapPassed,
                     ),
                     transition: Transition.fadeIn);
               },

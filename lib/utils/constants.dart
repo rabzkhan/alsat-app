@@ -1,7 +1,7 @@
 class Constants {
   static const baseUrl = 'https://alsat-api.flutterrwave.pro/app/v1';
   static const token1 =
-      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI2ZGQ3NmNkMS0yYTNiLTQzNmYtOTg3ZC1kOTIzM2JiNjUwOTQiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiI5NDEzNWVlNy1jYTY4LTQzMzEtODJjMC00NzM5MjIwMzk3YjAiLCJleHAiOjE3Mzg3MDI1MTgsImlhdCI6MTczNzQwNjUxOCwibmJmIjoxNzM3NDA2NTE3LCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.ShWxLNFhgOTR7556YhsRuP6vNB8i-60j9UKgUoswkk9PXZyLcCXSemH-ijvEu-eGhyGrNfJ65BZTw5skKBXygRhGK3saqfSZQrJpzrvwZAJ3TT6pA2AnItnloIJvMsvhFgN_FiLsI8i4887SitbGTBmBj66Io_6sversVZiAW9oXle7iGSoWl4eavQqPAiDUsdwz67jSD2Y-yxtUWnPLIToaw8v-HUUUX_jDe4Tkx2lHrjCo7m00NDpuKEtzdYdzng8ZJattaJ7a1iYp4QskgYsWnG7W5RzE7ChKFHHd2x7abBLeuGQdvSWoPS0ZA0ZgiFeHQFFYkfO6mfvDjX4lsA';
+      'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIzYTUzNGFkNS0zYWZmLTQ0ZGItYTAxYy0yMmNkZTM4OGVjYjYiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiI0YjJkYzZjNi1hZjU4LTQ5YzMtYjdjYi1lNWVmNGYwYjIyMjMiLCJleHAiOjE3NDAxMzA2ODAsImlhdCI6MTczODgzNDY4MCwibmJmIjoxNzM4ODM0Njc5LCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.WzGrXixkHr9nnaUy2f_WGWmhyWRVB20dJyI7KftlPh65DmD7PKdBXaCbD-W8eZYKdKuhD8tuf5cuscwQd2GEQBulWVSn03KcOgUjI2w3dOQ5hPE9wEObdv1m-1kyki_9rrAcvwnfp1AcOiWHWGo44TYr8xS2WUbpi8JzupsRC7PasMmUYh1bIjPRc-KbC5O2sbjRzv2oWn78msaGOFao6BJcjqds7k5uwoopRpCceDjlOvXcSniM-ZUvV7DFuNEZ50zyqtBQXVRuHPbWxGulJWGljxkPoK-XCh0Gvv8HLoCLK9a31nkFfyvpfX_i1753bhNgKw4ZnYdiOcNEGQSzqw';
   static const token = 'Bearer $token1';
   static const filter = '/posts';
 
@@ -13,6 +13,7 @@ class Constants {
   static const conversationMessages = '/messages';
   static const postProduct = '/posts';
   static const categories = '/categories';
+  static const stories = '/stories';
   static const banners = '/banners';
   static const user = '/users';
   static const fcmStore = '/users/device';
@@ -23,7 +24,3 @@ class Constants {
   static const updateProfilePicture =
       '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
 }
-
-
-
-// eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI5NjE1MTliOC00ODA4LTRhODktYWY2Ny1kY2Y3MGRiYjAwZWIiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiI5NDEzNWVlNy1jYTY4LTQzMzEtODJjMC00NzM5MjIwMzk3YjAiLCJleHAiOjE3MzU0MDMyODMsImlhdCI6MTczNDEwNzI4MywibmJmIjoxNzM0MTA3MjgyLCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.A1Z4ntgqbNDf-n33i0y_jkwUgts3aOpbyKXc61aNA4wXNPpS6k-GL59F3a18oZE0r7q2nBF1Ls_Ll3bIxa4e7BX4XiinWsAyKH4qdVpqhg4BxrHpChgxs7f6ZqQQzA15OoSMe8p-gkaL0vJa-Dh6B1BTtYCrWS3X3lQlvPbkC7vEa0bkhE80B9EGL5mgwgUnhYGFa-I4SplcUVN4qa9m-y3zsHk5zTixveLjtQby454KdcrWMwf8OhITq7GiP_eoXPzD_tGKgep_MhoMTkwRW7U68b3EbaFGtjMephBW3pmkTjh86Ovb4gn-nD1vFihACsxJcvsNWBAyg9ooQmLSZA

@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import '../../../../config/theme/app_text_theme.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../../filter/views/search_view.dart';
 import '../component/profile_content.dart';
@@ -70,10 +71,23 @@ class _AppHomeViewState extends State<AppHomeView> {
         body: SafeArea(
           child: Column(
             children: [
-              // Custom appbar
+              // Custom appBar
               Obx(() {
                 return CustomAppBar(
-                  isShowLogo: homeController.homeBottomIndex.value == 0,
+                  title: homeController.homeBottomIndex.value == 3
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 30),
+                          child: Text(
+                            'Chat History',
+                            style: bold.copyWith(
+                              fontSize: 20.sp,
+                              fontFamily: 'Exo',
+                            ),
+                          ),
+                        )
+                      : null,
+                  isShowLogo: homeController.homeBottomIndex.value == 0 ||
+                      homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
                   action: homeController.homeBottomIndex.value == 1
                       ? Container(
@@ -91,7 +105,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                       filterController.category.value = null;
                                       filterController.isFilterLoading.value =
                                           true;
-                                      filterController.filtermapPassed = {
+                                      filterController.filterMapPassed = {
                                         "title":
                                             filterController.searchText.value,
                                       };
@@ -162,7 +176,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                               null;
                                           filterController
                                               .isFilterLoading.value = true;
-                                          filterController.filtermapPassed = {
+                                          filterController.filterMapPassed = {
                                             "title": filterController
                                                 .searchText.value,
                                           };
@@ -193,20 +207,26 @@ class _AppHomeViewState extends State<AppHomeView> {
                     children: [
                       // HOME TAB
                       Expanded(
-                        child: PageView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          controller: homeController.homePageController,
-                          onPageChanged: (value) {
-                            homeController.homeBottomIndex.value = value;
-                          },
-                          children: const [
-                            HomeContent(),
-                            CategoryContent(),
-                            AddPostContent(),
-                            ChatContent(),
-                            ProfileContent(),
-                          ],
-                        ),
+                        child: Obx(() {
+                          return PageView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            controller: homeController.homePageController,
+                            onPageChanged: (value) {
+                              homeController.homeBottomIndex.value = value;
+                            },
+                            children: [
+                              const HomeContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const CategoryContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const AddPostContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const ChatContent(),
+                              if (!homeController.isCategoryLoading.value)
+                                const ProfileContent(),
+                            ],
+                          );
+                        }),
                       ),
                       const AppBottomNavigationBar(),
                     ],
