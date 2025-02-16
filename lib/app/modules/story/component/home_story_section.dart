@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/modules/story/component/story_video_player.dart';
+import 'package:alsat/app/modules/story/screen/story_video_editor.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,10 +35,15 @@ class HomeStorySection extends StatelessWidget {
             onTap: homeController.isStoryPostLoading.value
                 ? null
                 : () {
-                    homeController.storyPickImage(context).then((_) {
-                      if (homeController.pickStoryImageList.firstOrNull !=
-                          null) {
-                        homeController.openEditor(context);
+                    homeController.storyAssetPicker(context).then((_) {
+                      if (homeController.pickStoryImageList.isNotEmpty) {
+                        homeController.openEditor(Get.context!);
+                      } else if (homeController.pickStoryVideoList.isNotEmpty) {
+                        Get.to(
+                          () => StoryVideoEditor(
+                            homeController.pickStoryVideoList.first,
+                          ),
+                        );
                       }
                     });
                   },
@@ -103,10 +112,16 @@ class HomeStorySection extends StatelessWidget {
               stories: [
                 ...(e.stories ?? []).map(
                   (e) => Scaffold(
+                    extendBody: true,
+                    extendBodyBehindAppBar: true,
                     body: Center(
-                      child: NetworkImagePreview(
-                        url: e.media?.name ?? '',
-                      ),
+                      child: (e.media?.type == "video" &&
+                              e.media?.name != null &&
+                              e.media!.name!.isNotEmpty)
+                          ? StoryVideoPlayer(url: e.media!.name!)
+                          : NetworkImagePreview(
+                              url: e.media?.name ?? '',
+                            ),
                     ),
                   ),
                 ),

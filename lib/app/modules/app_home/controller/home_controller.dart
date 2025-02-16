@@ -333,23 +333,29 @@ class HomeController extends GetxController {
 
   //========================================Story Image Picker========================================================///
   List<File> pickStoryImageList = [];
+  List<File> pickStoryVideoList = [];
 
-  Future<void> storyPickImage(
+  Future<void> storyAssetPicker(
     BuildContext context,
   ) async {
     pickStoryImageList = [];
+    pickStoryVideoList = [];
     List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
       context,
       pickerConfig: const AssetPickerConfig(
         maxAssets: 1,
-        requestType: RequestType.image,
+        requestType: RequestType.common,
       ),
     );
     if (pickImage != null) {
       for (AssetEntity imagePick in pickImage) {
         File? file = await imagePick.file;
         if (file != null) {
-          pickStoryImageList.add(file);
+          if (imagePick.type == AssetType.video) {
+            pickStoryVideoList.add(file);
+          } else {
+            pickStoryImageList.add(file);
+          }
         }
         update();
       }

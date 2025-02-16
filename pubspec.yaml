@@ -49,9 +49,9 @@ dependencies:
   path_provider: ^2.1.4
   image_picker: ^1.1.2
   file_picker: ^8.1.2
-  emoji_picker_flutter: ^3.1.0
+  emoji_picker_flutter: ^4.3.0
   modal_bottom_sheet: ^3.0.0
-  mqtt_client: ^9.6.8
+  mqtt_client: ^10.5.1
   path: ^1.9.0
   firebase_core: ^3.6.0
   firebase_messaging: ^15.1.3
@@ -75,15 +75,15 @@ dependencies:
   
   permission_handler: ^11.3.1
   url_launcher: ^6.3.1
-  fl_chart: ^0.69.0
+  fl_chart: ^0.70.2
   get: ^4.6.6
   logger: ^2.3.0
   flutter_screenutil: ^5.9.3
   dio: ^5.4.3+1
   shared_preferences: ^2.2.3
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.3
   pinput: ^5.0.0
-  location: ^6.0.2
+  location: ^8.0.0
   geocoding: ^3.0.0
   get_thumbnail_video: ^0.7.3
   video_player: ^2.9.2
@@ -101,13 +101,15 @@ dependencies:
   photo_view: ^0.15.0
   toastification: ^2.3.0
   form_builder_extra_fields: ^11.0.0
-  flutter_slidable: ^3.1.2
+  flutter_slidable: ^4.0.0
   flutter_popup: ^3.3.0
   record: ^5.2.0
   flutter_material_pickers: ^3.7.0
   stories_for_flutter:
     path: packages/stories
-  pro_image_editor: ^6.2.1
+  pro_image_editor: ^8.1.12
+  better_player_plus: ^1.0.8
+  wakelock_plus: ^1.2.10
 
 
     
