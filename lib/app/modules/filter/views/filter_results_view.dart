@@ -1,3 +1,4 @@
+import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/filter/views/filter_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
@@ -99,36 +100,41 @@ class FilterResultsView extends GetView<FilterController> {
               controller: controller.refreshController,
               onRefresh: controller.onRefresh,
               onLoading: controller.onLoading,
-              child: ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.only(top: 10.h),
-                itemCount: controller.isFilterLoading.value
-                    ? 10
-                    : controller.itemList.length,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (BuildContext context, int index) {
-                  ProductModel? productModel = controller.isFilterLoading.value
-                      ? null
-                      : controller.itemList[index];
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      bottom: 5.h,
+              child: !controller.isFilterLoading.value &&
+                      controller.itemList.isEmpty
+                  ? NoDataWidget()
+                  : ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      padding: EdgeInsets.only(top: 10.h),
+                      itemCount: controller.isFilterLoading.value
+                          ? 10
+                          : controller.itemList.length,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (BuildContext context, int index) {
+                        ProductModel? productModel =
+                            controller.isFilterLoading.value
+                                ? null
+                                : controller.itemList[index];
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            bottom: 5.h,
+                          ),
+                          child: Skeletonizer(
+                            enabled: controller.isFilterLoading.value,
+                            effect: ShimmerEffect(
+                              baseColor:
+                                  Get.theme.disabledColor.withOpacity(.2),
+                              highlightColor: Colors.white,
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            child: ProductListTile(
+                              productModel: productModel,
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    child: Skeletonizer(
-                      enabled: controller.isFilterLoading.value,
-                      effect: ShimmerEffect(
-                        baseColor: Get.theme.disabledColor.withOpacity(.2),
-                        highlightColor: Colors.white,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      child: ProductListTile(
-                        productModel: productModel,
-                      ),
-                    ),
-                  );
-                },
-              ),
             );
           },
         ),

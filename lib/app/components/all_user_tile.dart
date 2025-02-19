@@ -118,6 +118,7 @@ class AllUserTile extends StatelessWidget {
                       ? Padding(
                           padding: EdgeInsets.only(top: 3.h),
                           child: Text(
+                            maxLines: 1,
                             '${premiumUserModel.location?.province ?? ''} ${premiumUserModel.location?.city ?? '--'} , ${premiumUserModel.categories?.firstOrNull ?? ''}',
                             style: regular.copyWith(
                               fontSize: 12.sp,

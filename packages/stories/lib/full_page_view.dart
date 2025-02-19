@@ -36,6 +36,8 @@ class FullPageView extends StatefulWidget {
   /// Default value is infinite.
   final Duration? autoPlayDuration;
 
+  ///
+
   const FullPageView({
     super.key,
     required this.storiesMapList,
@@ -84,7 +86,7 @@ class FullPageViewState extends State<FullPageView> {
     });
 
     _pageController!.animateToPage(selectedIndex!,
-        duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     initPageChangeTimer();
   }
 
@@ -97,7 +99,7 @@ class FullPageViewState extends State<FullPageView> {
       selectedIndex = index - 1;
     });
     _pageController!.animateToPage(selectedIndex!,
-        duration: const Duration(milliseconds: 100), curve: Curves.easeIn);
+        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     initPageChangeTimer();
   }
 

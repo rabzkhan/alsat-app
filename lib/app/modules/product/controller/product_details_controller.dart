@@ -233,6 +233,35 @@ class ProductDetailsController extends GetxController {
     );
   }
 
+  RxList<CategoriesModel> userPostCategories = <CategoriesModel>[].obs;
+  RxBool isUserPostCategoryLoading = false.obs;
+  getUserPostCategories() async {
+    AuthController authController = Get.find();
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}/posts/categories?user_id=${authController.userDataModel.value.id}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isUserPostCategoryLoading.value = true;
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data;
+        userPostCategories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
+        log('userPostCategories: ${userPostCategories.length}');
+        selectCategory.value = userPostCategories.first;
+        fetchUserProducts();
+        isUserPostCategoryLoading.value = false;
+      },
+      onError: (error) {
+        isUserPostCategoryLoading.value = false;
+      },
+    );
+  }
+
   //--- Get User PRODUCT ---//
 
   RxBool isFetchUserProduct = RxBool(true);
@@ -247,7 +276,10 @@ class ProductDetailsController extends GetxController {
     } else {
       url = "$url?user=${postUserModel.value?.id ?? selectUserId}";
     }
-
+    Map<String, dynamic> data = selectCategory.value != null
+        ? {"category_id": selectCategory.value!.sId ?? ""}
+        : {};
+    log('PostMy $url  ${data.toString()}  ${selectCategory.value?.name}');
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
@@ -255,9 +287,7 @@ class ProductDetailsController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      data: selectCategory.value != null
-          ? {"category": selectCategory.value!.name ?? ""}
-          : {},
+      data: data,
       onLoading: () {
         if (nextPaginateDate == null) {
           isFetchUserProduct.value = true;

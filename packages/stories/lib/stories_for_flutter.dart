@@ -60,7 +60,6 @@ class Stories extends StatelessWidget {
 
   /// Show story name on main page
   final bool showStoryName;
-
   const Stories({
     super.key,
     this.storyItemList,

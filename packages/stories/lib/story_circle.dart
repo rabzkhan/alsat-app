@@ -47,7 +47,6 @@ class StoryCircle extends StatelessWidget {
 
   /// Show story name on main page
   final bool showStoryName;
-
   const StoryCircle({
     super.key,
     this.story,
