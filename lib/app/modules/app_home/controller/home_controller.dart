@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
@@ -20,6 +21,7 @@ import '../../../services/base_client.dart';
 import '../../authentication/model/all_user_model.dart';
 import '../../authentication/model/user_data_model.dart';
 import '../../filter/controllers/filter_controller.dart';
+import '../../product/model/product_post_list_res.dart';
 import '../../story/model/story_res.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
@@ -64,6 +66,7 @@ class HomeController extends GetxController {
     getCategories();
     getBanner();
     fetchCarBrand();
+    getUserPostCategories();
     userOwnStory();
     super.onInit();
   }
@@ -86,14 +89,44 @@ class HomeController extends GetxController {
         List<dynamic> data = response.data;
         categories.value =
             data.map((json) => CategoriesModel.fromJson(json)).toList();
+
         isCategoryLoading.value = false;
-        Get.find<ProductController>().myListingSelectCategory.value =
-            categories.first;
       },
       onError: (error) {
         log('CategoryError: ${error.message}');
         Logger().d("$error <- error");
         isCategoryLoading.value = false;
+      },
+    );
+  }
+
+//-- get categories --//
+  RxList<CategoriesModel> userPostCategories = <CategoriesModel>[].obs;
+  RxBool isUserPostCategoryLoading = false.obs;
+  getUserPostCategories() async {
+    AuthController authController = Get.find();
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}/posts/categories?user_id=${authController.userDataModel.value.id}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isUserPostCategoryLoading.value = true;
+      },
+      onSuccess: (response) async {
+        Logger().d(response.data.toString());
+        List<dynamic> data = response.data;
+        userPostCategories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
+        log('userPostCategories: ${userPostCategories.length}');
+        myListingSelectCategory.value = userPostCategories.first;
+        fetchMyProducts();
+        isUserPostCategoryLoading.value = false;
+      },
+      onError: (error) {
+        isUserPostCategoryLoading.value = false;
       },
     );
   }
@@ -418,5 +451,75 @@ class HomeController extends GetxController {
         Logger().d("$error <- error");
       },
     );
+  }
+
+  //--- Get User PRODUCT ---//
+  RxBool isFetchMyProduct = RxBool(true);
+  RxList<ProductModel> myProductList = RxList<ProductModel>();
+  ProductPostListRes? myProductPostListRes;
+
+  Future<void> fetchMyProducts({String? nextPaginateDate}) async {
+    AuthController authController = Get.find();
+    String url = Constants.baseUrl + Constants.postProduct;
+    if (nextPaginateDate != null) {
+      url =
+          '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
+    } else {
+      url = "$url?user=${authController.userDataModel.value.id}";
+    }
+    Map<String, dynamic> data = myListingSelectCategory.value != null
+        ? {"category_id": myListingSelectCategory.value!.sId ?? ""}
+        : {};
+    log('PostMy $url  ${data.toString()} ${myListingSelectCategory.value?.name}');
+    await BaseClient.safeApiCall(
+      url,
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      data: data,
+      onLoading: () {
+        if (nextPaginateDate == null) {
+          isFetchMyProduct.value = true;
+          myProductList.value = [];
+        }
+      },
+      onSuccess: (response) {
+        Map<String, dynamic> responseData = response.data;
+        myProductPostListRes = ProductPostListRes.fromJson(responseData);
+        if (nextPaginateDate != null) {
+          myProductList.addAll(myProductPostListRes?.data ?? []);
+        } else {
+          myProductList.value = myProductPostListRes?.data ?? [];
+        }
+        isFetchMyProduct.value = false;
+      },
+      onError: (p0) {
+        log('${p0.url} ${Constants.token}');
+        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
+        isFetchMyProduct.value = false;
+        CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
+      },
+    );
+  }
+
+  //my listing
+  Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
+
+  //--- Get All PRODUCT ---//
+  RefreshController myListingRefreshController =
+      RefreshController(initialRefresh: false);
+  void myListingRefresh() async {
+    await fetchMyProducts();
+    myListingRefreshController.refreshCompleted();
+  }
+
+  void myListingLoading() async {
+    if (myProductPostListRes?.hasMore ?? false) {
+      await fetchMyProducts(
+          nextPaginateDate: myProductList.value.last.createdAt);
+    }
+    myListingRefreshController.loadComplete();
   }
 }

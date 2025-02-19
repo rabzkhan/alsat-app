@@ -38,8 +38,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
   void initState() {
     widget.productDetailsController.selectUserId = widget.userId;
 
-    if (widget.productDetailsController.userProductList.isEmpty) {
-      widget.productDetailsController.fetchUserProducts();
+    if (widget.productDetailsController.userPostCategories.isEmpty) {
+      widget.productDetailsController.getUserPostCategories();
     }
     Future.microtask(() {
       widget.productDetailsController.isFetchUserLoading.value = true;
@@ -432,107 +432,118 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       }),
                     )
                   ],
-              body: DefaultTabController(
-                initialIndex: widget
-                            .productDetailsController.selectCategory.value ==
-                        null
-                    ? 0
-                    : (homeController.categories.indexOf(
-                        widget.productDetailsController.selectCategory.value)),
-                length: homeController.categories.length,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(() {
-                      return TabBar(
-                        onTap: (value) {
-                          widget.productDetailsController.selectCategory.value =
-                              homeController.categories[value];
-                          userProductRefresh();
-                        },
-                        isScrollable: true,
-                        unselectedLabelColor: Colors.black87,
-                        indicatorWeight: 1,
-                        indicator: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border(
-                            bottom: BorderSide(
-                              color: context.theme.primaryColor,
-                              width: 1,
+              body: Obx(() {
+                return DefaultTabController(
+                  initialIndex: widget.productDetailsController
+                          .isUserPostCategoryLoading.value
+                      ? 0
+                      : widget.productDetailsController.selectCategory.value ==
+                              null
+                          ? 0
+                          : (widget.productDetailsController.userPostCategories
+                              .indexOf(widget.productDetailsController
+                                  .selectCategory.value)),
+                  length:
+                      widget.productDetailsController.userPostCategories.length,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Obx(() {
+                        return TabBar(
+                          onTap: (value) {
+                            widget.productDetailsController.selectCategory
+                                    .value =
+                                widget.productDetailsController
+                                    .userPostCategories[value];
+                            userProductRefresh();
+                          },
+                          isScrollable: true,
+                          unselectedLabelColor: Colors.black87,
+                          indicatorWeight: 1,
+                          indicator: BoxDecoration(
+                            color: Colors.transparent,
+                            border: Border(
+                              bottom: BorderSide(
+                                color: context.theme.primaryColor,
+                                width: 1,
+                              ),
                             ),
                           ),
-                        ),
-                        tabs: homeController.categories
-                            .map(
-                              (e) => Padding(
-                                padding: EdgeInsets.symmetric(vertical: 6.h),
-                                child: Text(
-                                  e.name ?? '',
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      );
-                    }),
-                    14.verticalSpace,
-                    Expanded(
-                      child: Obx(
-                        () {
-                          return SmartRefresher(
-                            enablePullDown: true,
-                            enablePullUp: true,
-                            header: WaterDropHeader(
-                              waterDropColor: context.theme.primaryColor,
-                            ),
-                            controller: userProductRefreshController,
-                            onRefresh: userProductRefresh,
-                            onLoading: userProductLoading,
-                            child: !widget.productDetailsController
-                                        .isFetchUserProduct.value &&
-                                    widget.productDetailsController
-                                        .userProductList.isEmpty
-                                ? NoDataWidget(
-                                    title: 'No Product Found',
-                                    bottomHeight: 100.h,
-                                  )
-                                : GridView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 20.w,
-                                    ),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      mainAxisSpacing: 10.h,
-                                      crossAxisSpacing: 10.w,
-                                      mainAxisExtent: 200.h,
-                                    ),
-                                    itemBuilder: (context, index) {
-                                      return ProductGridTile(
-                                        loading: widget.productDetailsController
-                                            .isFetchUserProduct.value,
-                                        productModel: widget
-                                                .productDetailsController
-                                                .isFetchUserProduct
-                                                .value
-                                            ? null
-                                            : widget.productDetailsController
-                                                .userProductList[index],
-                                      );
-                                    },
-                                    itemCount: widget.productDetailsController
-                                            .isFetchUserProduct.value
-                                        ? 10
-                                        : widget.productDetailsController
-                                            .userProductList.length,
+                          tabs: widget
+                              .productDetailsController.userPostCategories
+                              .map(
+                                (e) => Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 6.h),
+                                  child: Text(
+                                    e.name ?? '',
                                   ),
-                          );
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              )),
+                                ),
+                              )
+                              .toList(),
+                        );
+                      }),
+                      14.verticalSpace,
+                      Expanded(
+                        child: Obx(
+                          () {
+                            return SmartRefresher(
+                              enablePullDown: true,
+                              enablePullUp: true,
+                              header: WaterDropHeader(
+                                waterDropColor: context.theme.primaryColor,
+                              ),
+                              controller: userProductRefreshController,
+                              onRefresh: userProductRefresh,
+                              onLoading: userProductLoading,
+                              child: !widget.productDetailsController
+                                          .isFetchUserProduct.value &&
+                                      widget.productDetailsController
+                                          .userProductList.isEmpty
+                                  ? NoDataWidget(
+                                      title: 'No Product Found',
+                                      bottomHeight: 100.h,
+                                    )
+                                  : GridView.builder(
+                                      physics: const BouncingScrollPhysics(),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20.w,
+                                      ),
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 10.h,
+                                        crossAxisSpacing: 10.w,
+                                        mainAxisExtent: 200.h,
+                                      ),
+                                      itemBuilder: (context, index) {
+                                        return ProductGridTile(
+                                          loading: widget
+                                              .productDetailsController
+                                              .isFetchUserProduct
+                                              .value,
+                                          productModel: widget
+                                                  .productDetailsController
+                                                  .isFetchUserProduct
+                                                  .value
+                                              ? null
+                                              : widget.productDetailsController
+                                                  .userProductList[index],
+                                        );
+                                      },
+                                      itemCount: widget.productDetailsController
+                                              .isFetchUserProduct.value
+                                          ? 10
+                                          : widget.productDetailsController
+                                              .userProductList.length,
+                                    ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              })),
         ),
       ),
     );

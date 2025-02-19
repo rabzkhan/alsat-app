@@ -42,7 +42,8 @@ Future<void> main() async {
       useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
-        LocalizationService localizationService = Get.put(LocalizationService());
+        LocalizationService localizationService =
+            Get.put(LocalizationService());
 
         return ToastificationWrapper(
           child: Obx(() {

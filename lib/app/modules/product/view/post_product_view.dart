@@ -1937,7 +1937,7 @@ class _PostProductViewState extends State<PostProductView> {
     log("productPostMap $productPostMap");
 
     await productController.postProduct(productPostMap);
-    resetForm();
+    // resetForm();
   }
 
   resetForm() {
