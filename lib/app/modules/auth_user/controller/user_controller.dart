@@ -37,7 +37,7 @@ class UserController extends GetxController {
         },
         onSuccess: (response) async {
           upgradeCodeController.clear();
-          log(response.toString());
+
           isUpgradePreimumLoading.value = false;
           AuthController authController = Get.find();
           await authController.getProfile();
@@ -46,7 +46,8 @@ class UserController extends GetxController {
         },
         onError: (error) {
           isUpgradePreimumLoading.value = false;
-          CustomSnackBar.showCustomToast(message: error.message.toString());
+          Get.back();
+          CustomSnackBar.showCustomToast(message: "Invalid Code!");
         },
       );
     } catch (e) {

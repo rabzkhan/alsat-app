@@ -784,9 +784,9 @@ class _FilterViewState extends State<FilterView> {
                                 child: Obx(
                                   () => FilterOptionWidget(
                                     title: "Color",
-                                    subTitle: controller.color.value.isEmpty
+                                    subTitle: controller.color.isEmpty
                                         ? 'Not Choose Yet'
-                                        : controller.color.value.expand((e) => [e.toString()]).join(', '),
+                                        : controller.color.expand((e) => [e.toString()]).join(', '),
                                     onTap: () {
                                       Get.bottomSheet(
                                         ColorPickerSheet(
@@ -801,10 +801,10 @@ class _FilterViewState extends State<FilterView> {
                                   ),
                                 ),
                               ),
-                              10.horizontalSpace,
-                              const Expanded(
-                                child: MileagePicker(),
-                              ),
+                              // 10.horizontalSpace,
+                              // const Expanded(
+                              //   child: MileagePicker(),
+                              // ),
                             ],
                           ),
                         ),
