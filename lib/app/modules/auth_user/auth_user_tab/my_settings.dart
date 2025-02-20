@@ -49,6 +49,9 @@ class _MySettingsState extends State<MySettings> {
       filterController.selectedCity.value =
           authController.userDataModel.value.location?.city ?? "";
       authController.selectUserCategoriesList.refresh();
+      authController.addressController.text =
+          "${authController.userDataModel.value.location?.province ?? ''}, ${authController.userDataModel.value.location?.city ?? ""}";
+
       setState(() {});
     });
     super.initState();
@@ -62,7 +65,6 @@ class _MySettingsState extends State<MySettings> {
 
   @override
   Widget build(BuildContext context) {
-    log("${authController.userDataModel.value.toJson()}");
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.h),
@@ -337,6 +339,7 @@ class _MySettingsState extends State<MySettings> {
                 20.verticalSpace,
                 InkWell(
                   onTap: () {
+                    log("${authController.userDataModel.value.location?.toJson()}-- ${authController.addressController.text}");
                     showCupertinoModalBottomSheet(
                       expand: true,
                       context: context,
@@ -589,6 +592,32 @@ class _MySettingsState extends State<MySettings> {
                                           .map((e) => e.name)
                                           .toList(),
                                     };
+
+                                    if (authController
+                                        .addressController.text.isNotEmpty) {
+                                      data.addAll({
+                                        "location": {
+                                          "province": authController
+                                                  .addressController.text
+                                                  .split(",")
+                                                  .firstOrNull ??
+                                              authController.userDataModel.value
+                                                  .location?.province ??
+                                              "",
+                                          "city": authController
+                                                  .addressController.text
+                                                  .split(",")
+                                                  .elementAtOrNull(1) ??
+                                              authController.userDataModel.value
+                                                  .location?.city ??
+                                              "",
+                                          "geo": {
+                                            "type": "point",
+                                            "coordinates": [45, 5]
+                                          }
+                                        },
+                                      });
+                                    }
 
                                     authController.updateUserInformation(
                                         data: data);

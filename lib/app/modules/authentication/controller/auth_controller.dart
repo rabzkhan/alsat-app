@@ -32,8 +32,10 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp =
+      false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess =
+      false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -55,7 +57,8 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+        await smsConfirmation(
+            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
         isLoading.value = false;
       },
       onError: (error) {
@@ -109,7 +112,8 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
+        Logger().d(
+            "Verification successful! and the token is ${varifiedModel.value.token!}");
         getProfile();
         Get.to(() => const AppHomeView());
       },
@@ -134,7 +138,7 @@ class AuthController extends GetxController {
         log('login User Info --- :${userDataModel.value.id}');
         if (addressController.text.isEmpty) {
           addressController.text =
-              "${userDataModel.value.location?.province ?? ''} ${userDataModel.value.location?.city ?? ""}";
+              "${userDataModel.value.location?.province ?? ''}, ${userDataModel.value.location?.city ?? ""}";
         }
         if (user.active == true) {
           saveFcmToken();

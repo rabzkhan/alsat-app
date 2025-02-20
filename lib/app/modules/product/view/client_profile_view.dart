@@ -18,6 +18,7 @@ import '../../../common/const/image_path.dart';
 import '../../../components/custom_appbar.dart';
 import '../../../components/product_grid_tile.dart';
 import '../../conversation/view/message_view.dart';
+import '../../story/component/story_video_player.dart';
 import '../widget/rate_bottom_sheet.dart';
 
 class ClientProfileView extends StatefulWidget {
@@ -124,6 +125,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                               ),
                                             )
                                           : Stories(
+                                              autoPlayDuration:
+                                                  const Duration(seconds: 10),
                                               highLightColor: AppColors.primary,
                                               paddingColor: AppColors.secondary,
                                               fullpageVisitedColor:
@@ -155,13 +158,24 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                                             [])
                                                         .map(
                                                       (e) => Scaffold(
+                                                        extendBody: true,
+                                                        extendBodyBehindAppBar:
+                                                            true,
                                                         body: Center(
-                                                          child:
-                                                              NetworkImagePreview(
-                                                            url:
-                                                                e.media?.name ??
-                                                                    '',
-                                                          ),
+                                                          child: (e.media?.type ==
+                                                                      "video" &&
+                                                                  e.media?.name !=
+                                                                      null &&
+                                                                  e.media!.name!
+                                                                      .isNotEmpty)
+                                                              ? StoryVideoPlayer(
+                                                                  url: e.media!
+                                                                      .name!)
+                                                              : NetworkImagePreview(
+                                                                  url: e.media
+                                                                          ?.name ??
+                                                                      '',
+                                                                ),
                                                         ),
                                                       ),
                                                     ),

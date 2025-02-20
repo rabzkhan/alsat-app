@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:stories_for_flutter/stories_for_flutter.dart';
@@ -106,6 +107,7 @@ class FullPageViewState extends State<FullPageView> {
   initPageChangeTimer() {
     if (widget.autoPlayDuration != null) {
       changePageTimer = Timer.periodic(widget.autoPlayDuration!, (timer) {
+        log("Timer called");
         nextPage(selectedIndex);
       });
     }
@@ -127,8 +129,15 @@ class FullPageViewState extends State<FullPageView> {
     fullpageThumbnailSize = widget.fullpageThumbnailSize;
     showStoryNameOnFullPage = widget.showStoryNameOnFullPage ?? true;
     storyStatusBarColor = widget.storyStatusBarColor;
-
-    initPageChangeTimer();
+    if (((combinedList[selectedIndex ?? 0] as Scaffold).body as Center)
+            .child
+            .toString() ==
+        "StoryVideoPlayer") {
+      changePageTimer?.cancel();
+      log("Timer canceled");
+    } else {
+      initPageChangeTimer();
+    }
 
     super.initState();
   }
@@ -156,6 +165,14 @@ class FullPageViewState extends State<FullPageView> {
               });
               // Running on pageChanged
               if (widget.onPageChanged != null) widget.onPageChanged!();
+
+              if (((combinedList[page] as Scaffold).body as Center)
+                      .child
+                      .toString() ==
+                  "StoryVideoPlayer") {
+                changePageTimer!.cancel();
+                log("Timer canceled");
+              }
             },
             controller: _pageController,
             scrollDirection: Axis.horizontal,
@@ -166,6 +183,7 @@ class FullPageViewState extends State<FullPageView> {
                   Scaffold(
                     body: combinedList[index],
                   ),
+
                   // Overlay to detect taps for next page & previous page
                   Row(
                     children: <Widget>[
