@@ -25,7 +25,7 @@ class _CarModelBottomSheetState extends State<CarModelBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400.h,
+      height: 600.h,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -72,8 +72,7 @@ class _CarModelBottomSheetState extends State<CarModelBottomSheet> {
                     setState(() {});
                   },
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

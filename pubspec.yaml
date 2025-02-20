@@ -110,6 +110,7 @@ dependencies:
   pro_image_editor: ^8.1.12
   better_player_plus: ^1.0.8
   wakelock_plus: ^1.2.10
+  share_plus: ^10.1.4
 
 
     

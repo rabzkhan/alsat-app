@@ -109,8 +109,7 @@ class _FilterViewState extends State<FilterView> {
                   expand: true,
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context) =>
-                      const CategorySelection(valueReturn: true),
+                  builder: (context) => const CategorySelection(valueReturn: true),
                 ).then((value) {
                   log('Category Selection: $value');
                   controller.category.value = value;
@@ -119,8 +118,7 @@ class _FilterViewState extends State<FilterView> {
               },
               child: Container(
                 decoration: borderedContainer,
-                margin:
-                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -142,9 +140,7 @@ class _FilterViewState extends State<FilterView> {
                         2.verticalSpace,
                         Obx(() {
                           return Text(
-                            (controller.category.value?.name ??
-                                    'Select Category')
-                                .toString(),
+                            (controller.category.value?.name ?? 'Select Category').toString(),
                             style: bold.copyWith(
                               fontSize: 16.sp,
                               color: Colors.black,
@@ -172,14 +168,12 @@ class _FilterViewState extends State<FilterView> {
                   expand: true,
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context) =>
-                      const LocationSelection(canSelectMultiple: true),
+                  builder: (context) => const LocationSelection(canSelectMultiple: true),
                 );
               },
               child: Container(
                 decoration: borderedContainer,
-                margin:
-                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -201,9 +195,7 @@ class _FilterViewState extends State<FilterView> {
                           2.verticalSpace,
                           Obx(() {
                             // Get the selected location text from the controller
-                            String selectedLocationText =
-                                Get.find<FilterController>()
-                                    .getSelectedLocationText();
+                            String selectedLocationText = Get.find<FilterController>().getSelectedLocationText();
                             return Row(
                               children: [
                                 Expanded(
@@ -251,8 +243,7 @@ class _FilterViewState extends State<FilterView> {
                       },
                       child: Container(
                         decoration: borderedContainer,
-                        margin: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 10.h),
+                        margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                         padding: EdgeInsets.symmetric(
                           vertical: 10.h,
                           horizontal: 12.w,
@@ -278,17 +269,14 @@ class _FilterViewState extends State<FilterView> {
                                         Expanded(
                                           child: ScrollingTextWidget(
                                             child: Text(
-                                              controller
-                                                      .selectMobileBrand.isEmpty
+                                              controller.selectMobileBrand.isEmpty
                                                   ? 'Not Choose Yet'
                                                   : controller.selectMobileBrand
-                                                      .expand(
-                                                          (e) => [e.toString()])
+                                                      .expand((e) => [e.toString()])
                                                       .join(', '),
                                               style: regular.copyWith(
                                                 fontSize: 10.sp,
-                                                color:
-                                                    context.theme.primaryColor,
+                                                color: context.theme.primaryColor,
                                               ),
                                             ),
                                           ),
@@ -308,8 +296,7 @@ class _FilterViewState extends State<FilterView> {
                         ),
                       ),
                     )
-                  : controller.category.value?.name?.toLowerCase() ==
-                          'real estate'
+                  : controller.category.value?.name?.toLowerCase() == 'real estate'
                       ? GestureDetector(
                           onTap: () {
                             Get.bottomSheet(
@@ -324,8 +311,7 @@ class _FilterViewState extends State<FilterView> {
                           },
                           child: Container(
                             decoration: borderedContainer,
-                            margin: EdgeInsets.symmetric(horizontal: 16.w)
-                                .copyWith(top: 10.h),
+                            margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                             padding: EdgeInsets.symmetric(
                               vertical: 10.h,
                               horizontal: 12.w,
@@ -335,8 +321,7 @@ class _FilterViewState extends State<FilterView> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
@@ -354,14 +339,10 @@ class _FilterViewState extends State<FilterView> {
                                                 child: Text(
                                                   controller.estateTtype.isEmpty
                                                       ? 'Not Choose Yet'
-                                                      : controller.estateTtype
-                                                          .expand((e) =>
-                                                              [e.toString()])
-                                                          .join(', '),
+                                                      : controller.estateTtype.expand((e) => [e.toString()]).join(', '),
                                                   style: regular.copyWith(
                                                     fontSize: 10.sp,
-                                                    color: context
-                                                        .theme.primaryColor,
+                                                    color: context.theme.primaryColor,
                                                   ),
                                                 ),
                                               ),
@@ -388,8 +369,7 @@ class _FilterViewState extends State<FilterView> {
           // //Condition section
           SliverToBoxAdapter(
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -419,9 +399,7 @@ class _FilterViewState extends State<FilterView> {
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      controller.accountType.value == ""
-                                          ? Colors.white
-                                          : Colors.transparent,
+                                      controller.accountType.value == "" ? Colors.white : Colors.transparent,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.r),
@@ -443,14 +421,9 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.accountType.value ==
-                                                  "Premium"
-                                              ? Colors.white
-                                              : Colors.transparent,
+                                          controller.accountType.value == "Premium" ? Colors.white : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.accountType.value = "Premium";
                                   },
@@ -465,15 +438,11 @@ class _FilterViewState extends State<FilterView> {
                           Expanded(
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
-                                      backgroundColor:
-                                          controller.accountType.value ==
-                                                  "Ordinary"
-                                              ? Colors.white
-                                              : Colors.transparent,
+                                      backgroundColor: controller.accountType.value == "Ordinary"
+                                          ? Colors.white
+                                          : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.accountType.value = "Ordinary";
                                   },
@@ -497,8 +466,7 @@ class _FilterViewState extends State<FilterView> {
           // //Price Section
           SliverToBoxAdapter(
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -532,8 +500,7 @@ class _FilterViewState extends State<FilterView> {
                             ),
                             hintText: 'From',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -556,8 +523,7 @@ class _FilterViewState extends State<FilterView> {
                             ),
                             hintText: 'To',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -572,8 +538,7 @@ class _FilterViewState extends State<FilterView> {
           // //Location Section
           SliverToBoxAdapter(
             child: Obx(() {
-              return controller.category.value?.name?.toLowerCase() ==
-                      'automobile'
+              return controller.category.value?.name?.toLowerCase() == 'automobile'
                   ? Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -600,8 +565,7 @@ class _FilterViewState extends State<FilterView> {
                           },
                           child: Container(
                             decoration: borderedContainer,
-                            margin: EdgeInsets.symmetric(horizontal: 16.w)
-                                .copyWith(top: 16.h, bottom: 10.h),
+                            margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
                             padding: EdgeInsets.symmetric(
                               vertical: 10.h,
                               horizontal: 12.w,
@@ -626,8 +590,7 @@ class _FilterViewState extends State<FilterView> {
                                         width: Get.width - 90.w,
                                         child: controller.brand.isEmpty
                                             ? Container(
-                                                margin:
-                                                    EdgeInsets.only(right: 4.w),
+                                                margin: EdgeInsets.only(right: 4.w),
                                                 padding: EdgeInsets.symmetric(
                                                   vertical: 2.h,
                                                 ),
@@ -640,30 +603,23 @@ class _FilterViewState extends State<FilterView> {
                                                 ),
                                               )
                                             : ListView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                children: controller.brand
-                                                    .map((brand) {
+                                                scrollDirection: Axis.horizontal,
+                                                children: controller.brand.map((brand) {
                                                   return Container(
                                                     decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .textFieldGray,
-                                                      borderRadius:
-                                                          BorderRadius.all(
+                                                      color: AppColors.textFieldGray,
+                                                      borderRadius: BorderRadius.all(
                                                         Radius.circular(4.0.r),
                                                       ),
                                                     ),
-                                                    margin: EdgeInsets.only(
-                                                        right: 4.w),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
+                                                    margin: EdgeInsets.only(right: 4.w),
+                                                    padding: EdgeInsets.symmetric(
                                                       vertical: 2.h,
                                                       horizontal: 4.w,
                                                     ),
                                                     child: Center(
                                                       child: Text(
-                                                        brand.brand ??
-                                                            'Choose Brand',
+                                                        brand.brand ?? 'Choose Brand',
                                                         style: medium.copyWith(
                                                           fontSize: 10.sp,
                                                           color: Colors.black54,
@@ -695,22 +651,13 @@ class _FilterViewState extends State<FilterView> {
                                 ...List.generate(
                                   controller.brandAndSelectedModel.length,
                                   (index) {
-                                    var brand =
-                                        controller.brandAndSelectedModel[index];
+                                    var brand = controller.brandAndSelectedModel[index];
                                     return SizedBox(
-                                      width: (Get.width /
-                                              (controller.brand.length > 1
-                                                  ? 2
-                                                  : 1)) -
-                                          26.w,
+                                      width: (Get.width / (controller.brand.length > 1 ? 2 : 1)) - 26.w,
                                       child: FilterOptionWidget(
                                         title: "Model ",
-                                        titleSub:
-                                            '*(${brand['brand'].brand ?? ''})',
-                                        subTitle: controller
-                                                .brandAndSelectedModel[index]
-                                                    ['model']
-                                                .isEmpty
+                                        titleSub: '*(${brand['brand'].brand ?? ''})',
+                                        subTitle: controller.brandAndSelectedModel[index]['model'].isEmpty
                                             ? 'Choose Model'
                                             : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
                                                   e.name.toString()
@@ -719,18 +666,11 @@ class _FilterViewState extends State<FilterView> {
                                           Get.bottomSheet(
                                             CarMultiModelBottomSheet(
                                               title: "Model",
-                                              data: (brand['brand'].model ??
-                                                      <CarModel>[])
-                                                  .toList(),
-                                              selectedData: controller
-                                                      .brandAndSelectedModel[
-                                                  index]['model'],
+                                              data: (brand['brand'].model ?? <CarModel>[]).toList(),
+                                              selectedData: controller.brandAndSelectedModel[index]['model'],
                                               onSelect: (p0) {
-                                                controller
-                                                        .brandAndSelectedModel[
-                                                    index]['model'] = p0;
-                                                controller.brandAndSelectedModel
-                                                    .refresh();
+                                                controller.brandAndSelectedModel[index]['model'] = p0;
+                                                controller.brandAndSelectedModel.refresh();
                                               },
                                             ),
                                           );
@@ -822,8 +762,7 @@ class _FilterViewState extends State<FilterView> {
                                           FilterBottomSheet(
                                             title: "Transmission",
                                             data: controller.dtransmission,
-                                            selectedData:
-                                                controller.transmission,
+                                            selectedData: controller.transmission,
                                           ),
                                         );
                                       },
@@ -847,9 +786,7 @@ class _FilterViewState extends State<FilterView> {
                                     title: "Color",
                                     subTitle: controller.color.value.isEmpty
                                         ? 'Not Choose Yet'
-                                        : controller.color.value
-                                            .expand((e) => [e.toString()])
-                                            .join(', '),
+                                        : controller.color.value.expand((e) => [e.toString()]).join(', '),
                                     onTap: () {
                                       Get.bottomSheet(
                                         ColorPickerSheet(
@@ -873,11 +810,9 @@ class _FilterViewState extends State<FilterView> {
                         ),
                       ],
                     )
-                  : controller.category.value?.name?.toLowerCase() ==
-                          'real estate'
+                  : controller.category.value?.name?.toLowerCase() == 'real estate'
                       ? Container(
-                          margin: EdgeInsets.symmetric(horizontal: 16.w)
-                              .copyWith(top: 16.h, bottom: 10.h),
+                          margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
                           child: Row(
                             children: [
                               Expanded(
@@ -888,15 +823,13 @@ class _FilterViewState extends State<FilterView> {
                                     onTap: () {
                                       showDialog(
                                         context: context,
-                                        builder: (context) =>
-                                            SingleDialogPicker(
+                                        builder: (context) => SingleDialogPicker(
                                           title: "Select Number of Floor",
                                           items: List.generate(
                                             50,
                                             (index) => (index + 1).toString(),
                                           ),
-                                          selectYear:
-                                              productController.selectFloor,
+                                          selectYear: productController.selectFloor,
                                         ),
                                       );
                                     },
@@ -911,15 +844,13 @@ class _FilterViewState extends State<FilterView> {
                                     onTap: () {
                                       showDialog(
                                         context: context,
-                                        builder: (context) =>
-                                            SingleDialogPicker(
+                                        builder: (context) => SingleDialogPicker(
                                           title: "Select Number of Room",
                                           items: List.generate(
                                             50,
                                             (index) => (index + 1).toString(),
                                           ),
-                                          selectYear:
-                                              productController.selectRoom,
+                                          selectYear: productController.selectRoom,
                                         ),
                                       );
                                     },
@@ -935,8 +866,7 @@ class _FilterViewState extends State<FilterView> {
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w)
-                  .copyWith(top: 20.h, left: 12.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 20.h, left: 12.w),
               child: Column(
                 children: [
                   Row(
@@ -990,8 +920,7 @@ class _FilterViewState extends State<FilterView> {
                   ),
                   10.verticalSpace,
                   Obx(() {
-                    return controller.category.value?.name?.toLowerCase() ==
-                            'automobile'
+                    return controller.category.value?.name?.toLowerCase() == 'automobile'
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1036,9 +965,7 @@ class _FilterViewState extends State<FilterView> {
                 child: Obx(() {
                   return ElevatedButton(
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: controller.category.value == null
-                          ? AppColors.liteGray
-                          : AppColors.primary,
+                      backgroundColor: controller.category.value == null ? AppColors.liteGray : AppColors.primary,
                       padding: EdgeInsets.symmetric(vertical: 18.h),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -1055,8 +982,7 @@ class _FilterViewState extends State<FilterView> {
                             if (widget.isBack) {
                               Get.back();
                             } else {
-                              Get.to(const FilterResultsView(),
-                                  transition: Transition.rightToLeft);
+                              Get.to(const FilterResultsView(), transition: Transition.rightToLeft);
                             }
                           },
                     child: Obx(() {
@@ -1118,8 +1044,7 @@ class _FilterViewState extends State<FilterView> {
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
                       fontSize: 14.sp,
-                      fontWeight:
-                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                      fontWeight: value.isEmpty ? FontWeight.normal : FontWeight.w600,
                       color: value.isEmpty ? Colors.red : Colors.black87,
                     ),
                   ),

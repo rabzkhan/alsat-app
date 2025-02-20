@@ -67,12 +67,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     } else {
                       widget.selectedData.value = widget.data[index];
                     }
-
                     setState(() {});
                   },
                   child: Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
