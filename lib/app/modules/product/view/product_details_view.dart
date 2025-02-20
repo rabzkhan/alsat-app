@@ -61,7 +61,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     productDetailsController.productCommentCount(productId: widget.productModel?.id ?? '');
     productDetailsController.getUserByUId(userId: widget.productModel?.userId ?? '').then((value) {
       if (authController.userDataModel.value.id == productDetailsController.postUserModel.value?.id) {
-        productDetailsController.getProductInsights(pId: widget.productModel?.id ?? '');
+        // productDetailsController.getProductInsights(pId: widget.productModel?.id ?? '');
       }
     });
   }
@@ -436,48 +436,49 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     ),
                   ),
                   10.verticalSpace,
-                  Obx(() {
-                    return productDetailsController.productInsightsList.isEmpty
-                        ? const Center()
-                        : ExpansionTile(
-                            collapsedBackgroundColor: Get.theme.disabledColor.withOpacity(.03),
-                            backgroundColor: Get.theme.disabledColor.withOpacity(.03),
-                            // tilePadding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide.none,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            collapsedShape: RoundedRectangleBorder(
-                              side: BorderSide.none,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            title: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  'assets/icons/sport.png',
-                                  width: 25.w,
-                                  height: 25.h,
-                                  color: Get.theme.primaryColor,
-                                ),
-                                8.horizontalSpace,
-                                const Text('Product Insights'),
-                              ],
-                            ),
-                            children: [
-                              _viewTile(
-                                title: 'Province/State',
-                                value: 'View Count',
-                              ),
-                              ...productDetailsController.productInsightsList.map((e) {
-                                return _viewTile(
-                                  title: '${e['province'].isEmpty ? 'Unknown' : e['province']}',
-                                  value: '${e['count']}',
-                                );
-                              })
-                            ],
-                          );
-                  }),
+                  // Obx(() {
+                  //   return productDetailsController.productInsightsList.isEmpty
+                  //       ? const Center()
+                  //       : ExpansionTile(
+                  //           collapsedBackgroundColor: Get.theme.disabledColor.withOpacity(.03),
+                  //           backgroundColor: Get.theme.disabledColor.withOpacity(.03),
+                  //           // tilePadding: EdgeInsets.zero,
+                  //           shape: RoundedRectangleBorder(
+                  //             side: BorderSide.none,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //           ),
+                  //           collapsedShape: RoundedRectangleBorder(
+                  //             side: BorderSide.none,
+                  //             borderRadius: BorderRadius.circular(10),
+                  //           ),
+                  //           title: Row(
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: [
+                  //               Image.asset(
+                  //                 'assets/icons/sport.png',
+                  //                 width: 25.w,
+                  //                 height: 25.h,
+                  //                 color: Get.theme.primaryColor,
+                  //               ),
+                  //               8.horizontalSpace,
+                  //               const Text('Product Insights'),
+                  //             ],
+                  //           ),
+                  //           children: [
+                  //             _viewTile(
+                  //               title: 'Province/State',
+                  //               value: 'View Count',
+                  //             ),
+                  //             ...productDetailsController.productInsightsList.map((e) {
+                  //               return _viewTile(
+                  //                 title: '${e['province'].isEmpty ? 'Unknown' : e['province']}',
+                  //                 value: '${e['count']}',
+                  //               );
+                  //             })
+                  //           ],
+                  //         );
+                  // }),
+
                   7.verticalSpace,
                   //  information
                   Text(

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
@@ -56,7 +58,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
   void userProductLoading() async {
     if (widget.productDetailsController.userProductPostListRes?.hasMore ?? false) {
       await widget.productDetailsController
-          .fetchUserProducts(nextPaginateDate: widget.productDetailsController.userProductList.value.last.createdAt);
+          .fetchUserProducts(nextPaginateDate: widget.productDetailsController.userProductList.last.createdAt);
     }
     userProductRefreshController.loadComplete();
   }
@@ -121,6 +123,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                               // addOption:,
                                               storyItemList: [
                                                 StoryItem(
+                                                  userId: "",
                                                   name: "",
                                                   thumbnail: NetworkImage(
                                                     widget.productDetailsController.userStoryList.first.user?.picture ??

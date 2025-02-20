@@ -1,7 +1,6 @@
-import 'dart:developer';
+// ignore_for_file: deprecated_member_use
 
-import 'package:alsat/app/common/const/image_path.dart';
-import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:alsat/app/modules/story/component/story_video_player.dart';
 import 'package:alsat/app/modules/story/screen/story_video_editor.dart';
 import 'package:alsat/config/theme/app_colors.dart';
@@ -10,9 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stories_for_flutter/stories_for_flutter.dart';
-
 import '../../../components/network_image_preview.dart';
 import '../../app_home/controller/home_controller.dart';
+import '../../product/view/client_profile_view.dart';
 
 class HomeStorySection extends StatelessWidget {
   const HomeStorySection({super.key});
@@ -20,7 +19,7 @@ class HomeStorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find();
-    AuthController authController = Get.find();
+
     return Obx(() {
       return Stories(
         autoPlayDuration: const Duration(seconds: 10),
@@ -30,6 +29,16 @@ class HomeStorySection extends StatelessWidget {
         fullpageUnisitedColor: Colors.grey,
         storyStatusBarColor: Colors.white,
         circlePadding: 2,
+        onPageChanged: (String userId) {
+          Get.put(ProductDetailsController());
+          Get.to(
+            () => ClientProfileView(
+              userId: userId,
+              productDetailsController: Get.find<ProductDetailsController>(),
+            ),
+            transition: Transition.fadeIn,
+          );
+        },
         addOption: Obx(() {
           return InkWell(
             onTap: homeController.isStoryPostLoading.value
@@ -54,7 +63,7 @@ class HomeStorySection extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundColor: AppColors.primary,
+                    //backgroundColor: AppColors.primary,
                     child: CircleAvatar(
                       backgroundColor: AppColors.secondary,
                       radius: 27,
@@ -64,18 +73,16 @@ class HomeStorySection extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            NetworkImagePreview(
-                              radius: 50.r,
-                              height: 50,
-                              width: 50,
-                              url:
-                                  '${authController.userDataModel.value.picture}',
-                              error: Image.asset(userDefaultIcon),
-                            ),
+                            // NetworkImagePreview(
+                            //   radius: 50.r,
+                            //   height: 50,
+                            //   width: 50,
+                            //   url: '${authController.userDataModel.value.picture}',
+                            //   error: Image.asset(userDefaultIcon),
+                            // ),
                             CircleAvatar(
                               radius: 27,
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(.3),
+                              backgroundColor: AppColors.primary.withOpacity(.5),
                               child: homeController.isStoryPostLoading.value
                                   ? const CupertinoActivityIndicator(
                                       color: Colors.white,
@@ -91,12 +98,12 @@ class HomeStorySection extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
+                  5.verticalSpace,
+                  Text(
                     'Add Story',
-                    style: TextStyle(fontSize: 13),
+                    style: TextStyle(fontSize: 13.sp),
                   ),
-                  const SizedBox(height: 4),
+                  5.verticalSpace,
                 ],
               ),
             ),
@@ -105,6 +112,7 @@ class HomeStorySection extends StatelessWidget {
         storyItemList: [
           ...homeController.storyList.map(
             (e) => StoryItem(
+              userId: "${e.user?.id}",
               name: "${e.user?.userName}",
               thumbnail: NetworkImage(
                 e.user?.picture ?? '',
@@ -115,9 +123,7 @@ class HomeStorySection extends StatelessWidget {
                     extendBody: true,
                     extendBodyBehindAppBar: true,
                     body: Center(
-                      child: (e.media?.type == "video" &&
-                              e.media?.name != null &&
-                              e.media!.name!.isNotEmpty)
+                      child: (e.media?.type == "video" && e.media?.name != null && e.media!.name!.isNotEmpty)
                           ? StoryVideoPlayer(url: e.media!.name!)
                           : NetworkImagePreview(
                               url: e.media?.name ?? '',
