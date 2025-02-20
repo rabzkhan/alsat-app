@@ -29,6 +29,7 @@ class HomeStorySection extends StatelessWidget {
         fullpageUnisitedColor: Colors.grey,
         storyStatusBarColor: Colors.white,
         circlePadding: 2,
+        //
         onPageChanged: (String userId) {
           Get.put(ProductDetailsController());
           Get.to(
