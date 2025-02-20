@@ -51,6 +51,8 @@ class _PostProductViewState extends State<PostProductView> {
           authController.userDataModel.value.location?.province ?? "";
       filterController.selectedCity.value =
           authController.userDataModel.value.location?.city ?? "";
+      productController.calculateFilledIndividualInfoFields();
+      productController.calculateFilledProductFields();
     });
     super.initState();
   }
@@ -169,6 +171,15 @@ class _PostProductViewState extends State<PostProductView> {
                                           color: Colors.red,
                                           message:
                                               "Please select at least one image",
+                                        );
+                                      } else if (productController
+                                              .individualInfoFiledCount.value !=
+                                          productController
+                                              .individualInfoFiled.value) {
+                                        CustomSnackBar.showCustomToast(
+                                          color: Colors.red,
+                                          message:
+                                              "Please select at All Required Filled",
                                         );
                                       } else {
                                         productController
@@ -748,18 +759,18 @@ class _PostProductViewState extends State<PostProductView> {
                                 textAlign: TextAlign.right,
                                 textAlignVertical: TextAlignVertical.center,
                                 style: regular.copyWith(
-                                  // fontSize: 12.sp,
-                                  color: context.theme.primaryColor,
-                                ),
+                                    // fontSize: 12.sp,
+
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w500),
                                 decoration: InputDecoration(
                                   prefixIcon: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
                                         'Product Name',
-                                        style: bold.copyWith(
-                                          fontWeight: FontWeight.w500,
-                                          color: context.theme.primaryColor,
+                                        style: regular.copyWith(
+                                          fontSize: 15.sp,
                                         ),
                                       ),
                                       10.horizontalSpace,
@@ -1464,9 +1475,9 @@ class _PostProductViewState extends State<PostProductView> {
             textAlign: TextAlign.right,
             textAlignVertical: TextAlignVertical.center,
             style: regular.copyWith(
-              // fontSize: 12.sp,
-              color: context.theme.primaryColor,
-            ),
+                // fontSize: 12.sp,
+
+                ),
             decoration: InputDecoration(
               prefixIcon: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -1937,7 +1948,7 @@ class _PostProductViewState extends State<PostProductView> {
     log("productPostMap $productPostMap");
 
     await productController.postProduct(productPostMap);
-    // resetForm();
+    resetForm();
   }
 
   resetForm() {

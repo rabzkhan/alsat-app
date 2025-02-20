@@ -267,8 +267,8 @@ class ProductController extends GetxController {
 
   //--- POST PRODUCT ---//
   Future<bool> postProduct(Map<String, dynamic> body) async {
-    // log('body: $body');
-    return await BaseClient.safeApiCall(
+    HomeController homeController = Get.find<HomeController>();
+    return BaseClient.safeApiCall(
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,
       headers: {
@@ -283,6 +283,8 @@ class ProductController extends GetxController {
         CustomSnackBar.showCustomToast(
             message: 'Product posted successfully', title: 'Success');
         Get.back();
+        homeController.getUserPostCategories();
+        homeController.fetchMyProducts();
         return true;
       },
       onError: (p0) {

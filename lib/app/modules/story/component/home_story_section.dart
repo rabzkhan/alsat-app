@@ -23,7 +23,7 @@ class HomeStorySection extends StatelessWidget {
     AuthController authController = Get.find();
     return Obx(() {
       return Stories(
-        autoPlayDuration: const Duration(seconds: 5),
+        autoPlayDuration: const Duration(seconds: 10),
         highLightColor: AppColors.primary,
         paddingColor: AppColors.secondary,
         fullpageVisitedColor: AppColors.primary,
