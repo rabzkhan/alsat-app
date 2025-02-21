@@ -223,7 +223,7 @@ class HomeController extends GetxController {
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,
             }
           }
-        : {};
+        : {"category": category.value?.name};
     if (searchText.value.isNotEmpty) {
       data.clear();
       data['search'] = searchText.value;
@@ -241,6 +241,7 @@ class HomeController extends GetxController {
       onLoading: () {
         if (nextPaginateDate == null && !isFilter) {
           isPremiumLoading.value = true;
+          isFilterLoading.value = true;
           premiumUserList.clear();
         }
         if (isFilter && nextPaginateDate == null) {
@@ -255,12 +256,14 @@ class HomeController extends GetxController {
           if (isFilter) {
             filterUserList.addAll(allUserInformationRes.data?.users ?? []);
           } else {
+            filterUserList.addAll(allUserInformationRes.data?.users ?? []);
             premiumUserList.addAll(allUserInformationRes.data?.users ?? []);
           }
         } else {
           if (isFilter) {
             filterUserList.value = allUserInformationRes.data?.users ?? [];
           } else {
+            filterUserList.value = allUserInformationRes.data?.users ?? [];
             premiumUserList.value = allUserInformationRes.data?.users ?? [];
           }
         }

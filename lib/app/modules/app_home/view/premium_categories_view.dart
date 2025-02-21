@@ -46,19 +46,14 @@ class PremiumCategoriesView extends StatelessWidget {
                   crossAxisSpacing: 10.w,
                   mainAxisSpacing: 10.h,
                 ),
-                itemCount: homeController.isCategoryLoading.value
-                    ? 10
-                    : homeController.categories.length,
+                itemCount: homeController.isCategoryLoading.value ? 10 : homeController.categories.length,
                 itemBuilder: (context, index) {
                   CategoriesModel categoriesModel =
-                      homeController.isCategoryLoading.value
-                          ? CategoriesModel()
-                          : homeController.categories[index];
+                      homeController.isCategoryLoading.value ? CategoriesModel() : homeController.categories[index];
                   return GestureDetector(
                     onTap: () {
-                      homeController.category.value =
-                          homeController.categories[index];
-                      homeController.fetchPremiumUser(isFilter: true);
+                      homeController.category.value = homeController.categories[index];
+                      homeController.fetchPremiumUser(isFilter: false);
                       filterController.clearAddress();
                       Get.to(
                         const UserFilterResultView(isBackFilter: false),
@@ -77,8 +72,7 @@ class PremiumCategoriesView extends StatelessWidget {
                             color: Colors.grey.withOpacity(0.1),
                             spreadRadius: 1,
                             blurRadius: 1,
-                            offset: const Offset(
-                                0, 1), // changes position of shadow
+                            offset: const Offset(0, 1), // changes position of shadow
                           ),
                         ],
                       ),
@@ -90,9 +84,7 @@ class PremiumCategoriesView extends StatelessWidget {
                             categoriesModel.icon.toString(),
                             width: 35.w,
                             height: 22.w,
-                            placeholderBuilder: (context) =>
-                                const CupertinoActivityIndicator
-                                    .partiallyRevealed(),
+                            placeholderBuilder: (context) => const CupertinoActivityIndicator.partiallyRevealed(),
                           ),
                           5.verticalSpace,
                           Text(
