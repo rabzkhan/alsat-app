@@ -17,6 +17,8 @@ import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'notification_view.dart';
+
 class AppHomeView extends StatefulWidget {
   const AppHomeView({super.key});
 
@@ -85,117 +87,118 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                         )
                       : null,
-                  isShowLogo: homeController.homeBottomIndex.value == 0 ||
-                      homeController.homeBottomIndex.value == 3,
+                  isShowLogo: homeController.homeBottomIndex.value == 0 || homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
-                  action: homeController.homeBottomIndex.value == 1
+                  action: homeController.homeBottomIndex.value == 0
                       ? Container(
-                          width: Get.width * 0.8,
-                          padding: EdgeInsets.only(right: 16.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.r),
-                                  child: TextFormField(
-                                    controller:
-                                        filterController.searchController,
-                                    onFieldSubmitted: (value) {
-                                      filterController.category.value = null;
-                                      filterController.isFilterLoading.value =
-                                          true;
-                                      filterController.filterMapPassed = {
-                                        "title":
-                                            filterController.searchText.value,
-                                      };
-                                      filterController.clearAddress();
-                                      filterController.applyFilter();
-                                      Get.to(
-                                        const FilterResultsView(),
-                                        transition: Transition.rightToLeft,
-                                      );
-                                    },
-                                    onChanged: (value) {
-                                      filterController.searchText.value = value;
-                                    },
-                                    decoration: InputDecoration(
-                                      suffixIcon: Obx(() {
-                                        return filterController
-                                                .searchText.value.isEmpty
-                                            ? const Text('')
-                                            : InkWell(
-                                                onTap: () {
-                                                  filterController
-                                                      .searchText.value = '';
-                                                  filterController
-                                                      .searchController
-                                                      .clear();
-                                                },
-                                                child: Icon(
-                                                  CupertinoIcons.xmark,
-                                                  color:
-                                                      Get.theme.disabledColor,
-                                                ),
-                                              );
-                                      }),
-                                      prefixIcon: Icon(
-                                        CupertinoIcons.search,
-                                        color: Get.theme.disabledColor,
-                                      ),
-                                      hintStyle: TextStyle(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w400,
-                                        color: Get.theme.disabledColor
-                                            .withOpacity(.5),
-                                      ),
-                                      hintText: 'Search Here',
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      border: InputBorder.none,
-                                      enabledBorder: InputBorder.none,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8.r),
-                                        borderSide: BorderSide(
-                                          width: .6,
-                                          color: Get.theme.primaryColor
-                                              .withOpacity(.4),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Obx(() {
-                                return filterController.searchText.value.isEmpty
-                                    ? const Center()
-                                    : InkWell(
-                                        onTap: () {
-                                          filterController.category.value =
-                                              null;
-                                          filterController
-                                              .isFilterLoading.value = true;
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            onPressed: () {
+                              Get.to(() => NotificationView());
+                            },
+                            icon: Image.asset(
+                              "assets/icons/notification.png",
+                              height: 25.h,
+                            ),
+                          ),
+                        )
+                      : homeController.homeBottomIndex.value == 1
+                          ? Container(
+                              width: Get.width * 0.8,
+                              padding: EdgeInsets.only(right: 16.w),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.r),
+                                      child: TextFormField(
+                                        controller: filterController.searchController,
+                                        onFieldSubmitted: (value) {
+                                          filterController.category.value = null;
+                                          filterController.isFilterLoading.value = true;
                                           filterController.filterMapPassed = {
-                                            "title": filterController
-                                                .searchText.value,
+                                            "title": filterController.searchText.value,
                                           };
-                                          filterController.applyFilter();
                                           filterController.clearAddress();
+                                          filterController.applyFilter();
                                           Get.to(
                                             const FilterResultsView(),
                                             transition: Transition.rightToLeft,
                                           );
                                         },
-                                        child: Padding(
-                                          padding: EdgeInsets.only(left: 15.w),
-                                          child: const Icon(Icons.search),
+                                        onChanged: (value) {
+                                          filterController.searchText.value = value;
+                                        },
+                                        decoration: InputDecoration(
+                                          suffixIcon: Obx(() {
+                                            return filterController.searchText.value.isEmpty
+                                                ? const Text('')
+                                                : InkWell(
+                                                    onTap: () {
+                                                      filterController.searchText.value = '';
+                                                      filterController.searchController.clear();
+                                                    },
+                                                    child: Icon(
+                                                      CupertinoIcons.xmark,
+                                                      color: Get.theme.disabledColor,
+                                                    ),
+                                                  );
+                                          }),
+                                          prefixIcon: Icon(
+                                            CupertinoIcons.search,
+                                            color: Get.theme.disabledColor,
+                                          ),
+                                          hintStyle: TextStyle(
+                                            fontSize: 14.sp,
+                                            fontWeight: FontWeight.w400,
+                                            color: Get.theme.disabledColor.withOpacity(.5),
+                                          ),
+                                          hintText: 'Search Here',
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          border: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(8.r),
+                                            borderSide: BorderSide(
+                                              width: .6,
+                                              color: Get.theme.primaryColor.withOpacity(.4),
+                                            ),
+                                          ),
                                         ),
-                                      );
-                              }),
-                            ],
-                          ),
-                        )
-                      : const Center(),
+                                      ),
+                                    ),
+                                  ),
+                                  Obx(() {
+                                    return filterController.searchText.value.isEmpty
+                                        ? const Center()
+                                        : InkWell(
+                                            onTap: () {
+                                              filterController.category.value = null;
+                                              filterController.isFilterLoading.value = true;
+                                              filterController.filterMapPassed = {
+                                                "title": filterController.searchText.value,
+                                              };
+                                              filterController.applyFilter();
+                                              filterController.clearAddress();
+                                              Get.to(
+                                                const FilterResultsView(),
+                                                transition: Transition.rightToLeft,
+                                              );
+                                            },
+                                            child: Padding(
+                                              padding: EdgeInsets.only(left: 15.w),
+                                              child: const Icon(Icons.search),
+                                            ),
+                                          );
+                                  }),
+                                ],
+                              ),
+                            )
+                          : const Center(),
                 );
               }),
               // Body

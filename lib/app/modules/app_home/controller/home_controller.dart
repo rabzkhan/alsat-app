@@ -24,6 +24,7 @@ import '../../product/model/product_post_list_res.dart';
 import '../../story/model/story_res.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
+import '../models/notification_res.dart';
 
 class HomeController extends GetxController {
   RxBool isShowSearch = false.obs;
@@ -67,6 +68,7 @@ class HomeController extends GetxController {
     fetchCarBrand();
     getUserPostCategories();
     userOwnStory();
+    fetchNotification();
     super.onInit();
   }
 
@@ -510,8 +512,35 @@ class HomeController extends GetxController {
 
   void myListingLoading() async {
     if (myProductPostListRes?.hasMore ?? false) {
-      await fetchMyProducts(nextPaginateDate: myProductList.value.last.createdAt);
+      await fetchMyProducts(nextPaginateDate: myProductList.last.createdAt);
     }
     myListingRefreshController.loadComplete();
+  }
+
+  //========================================Notification========================================================///
+  RxList<NotificationData> notifications = <NotificationData>[].obs;
+  RxBool isNotificationLoading = false.obs;
+  fetchNotification() async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.notification}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isNotificationLoading.value = true;
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data['data'] as List<dynamic>? ?? [];
+        notifications.value = data.map((json) => NotificationData.fromJson(json)).toList();
+        isNotificationLoading.value = false;
+        log('fetchNotification: ${notifications.length}');
+      },
+      onError: (error) {
+        log('fetchNotification: ${error.message}');
+        isStoryLoading.value = false;
+      },
+    );
   }
 }
