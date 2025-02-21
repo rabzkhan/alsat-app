@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
-import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -208,7 +207,7 @@ class HomeController extends GetxController {
   Future<void> fetchPremiumUser({String? nextPaginateDate, bool isFilter = false}) async {
     FilterController filterController = Get.find<FilterController>();
 
-    String url = '${Constants.baseUrl}/users?limit=10';
+    String url = '${Constants.baseUrl}/users?plan=premium&limit=10';
     if (nextPaginateDate != null) {
       url = "$url&next=$nextPaginateDate";
     }
@@ -216,7 +215,7 @@ class HomeController extends GetxController {
         ? {
             "category": category.value?.name,
             "online": isActiveUser.value,
-            "premium": buyerProtection.value,
+            "buyer_protection": buyerProtection.value,
             "location":
                 filterController.getSelectedLocationData().isEmpty ? null : filterController.getSelectedLocationData(),
             "sorting": {
@@ -224,11 +223,13 @@ class HomeController extends GetxController {
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,
             }
           }
-        : {"online": false, "premium": false};
+        : {};
     if (searchText.value.isNotEmpty) {
+      data.clear();
       data['search'] = searchText.value;
     }
     log('Premium User: Date: $data-- $url');
+    data.removeWhere((key, value) => value == null);
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,

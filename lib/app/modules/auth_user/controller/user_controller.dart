@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';

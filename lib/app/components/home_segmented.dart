@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../../config/theme/app_text_theme.dart';
 import '../common/const/image_path.dart';
-import '../modules/auth_user/auth_user_tab/widgets/upgrade_to_premium_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSegmented extends StatelessWidget {

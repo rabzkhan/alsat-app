@@ -21,7 +21,6 @@ import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../app_home/controller/home_controller.dart';
-import '../../authentication/controller/auth_controller.dart';
 import '../model/product_post_list_res.dart';
 
 class ProductController extends GetxController {

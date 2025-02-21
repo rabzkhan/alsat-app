@@ -25,7 +25,6 @@ import '../widgets/car_multi_model_sheet.dart';
 import '../widgets/color_picker_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
-import '../widgets/mileage_picker.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
 
 class FilterView extends StatefulWidget {
