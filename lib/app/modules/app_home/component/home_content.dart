@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/modules/app_home/component/premium_content.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/app_home/models/banner_res.dart';
@@ -148,12 +150,12 @@ class HomeContent extends StatelessWidget {
                           /// other banner
                           Skeletonizer(
                             enabled: homeController.isBannerLoading.value,
-                            effect: ShimmerEffect(
-                              baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              highlightColor: Colors.white,
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                            ),
+                            // effect: ShimmerEffect(
+                            //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                            //   highlightColor: Colors.white,
+                            //   begin: Alignment.centerLeft,
+                            //   end: Alignment.centerRight,
+                            // ),
                             child: ListView.builder(
                               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
                               physics: const NeverScrollableScrollPhysics(),
@@ -193,12 +195,12 @@ class HomeContent extends StatelessWidget {
                                   productController.isFetchProduct.value ? null : productController.productList[index];
                               return Skeletonizer(
                                 enabled: productController.isFetchProduct.value,
-                                effect: ShimmerEffect(
-                                  baseColor: Get.theme.disabledColor.withOpacity(.2),
-                                  highlightColor: Colors.white,
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
+                                // effect: ShimmerEffect(
+                                //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                                //   highlightColor: Colors.white,
+                                //   begin: Alignment.centerLeft,
+                                //   end: Alignment.centerRight,
+                                // ),
                                 child: ProductListTile(
                                   productModel: productModel,
                                 ),

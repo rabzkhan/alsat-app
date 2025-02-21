@@ -30,16 +30,14 @@ class _MyFollowingState extends State<MyFollowing> {
     super.initState();
   }
 
-  RefreshController followingRefreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController followingRefreshController = RefreshController(initialRefresh: false);
   void followingRefresh() async {
     await userController.getUserFollowing();
     followingRefreshController.refreshCompleted();
   }
 
   void followingLoading() async {
-    await userController.getUserFollowing(
-        next: userController.followingList.last.followedAt);
+    await userController.getUserFollowing(next: userController.followingList.last.followedAt);
     followingRefreshController.loadComplete();
   }
 
@@ -55,38 +53,30 @@ class _MyFollowingState extends State<MyFollowing> {
         controller: followingRefreshController,
         onRefresh: followingRefresh,
         onLoading: followingLoading,
-        child: !userController.isFollowingLoading.value &&
-                userController.followingList.isEmpty
+        child: !userController.isFollowingLoading.value && userController.followingList.isEmpty
             ? const NoDataWidget()
             : ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                   horizontal: 8.w,
                 ),
-                itemCount: userController.isFollowingLoading.value
-                    ? 10
-                    : (userController.followingList).length,
+                itemCount: userController.isFollowingLoading.value ? 10 : (userController.followingList).length,
                 itemBuilder: (context, index) {
-                  var user = userController.isFollowingLoading.value
-                      ? null
-                      : userController.followingList[index];
+                  var user = userController.isFollowingLoading.value ? null : userController.followingList[index];
                   return Skeletonizer(
                     enabled: userController.isFollowingLoading.value,
-                    effect: ShimmerEffect(
-                      baseColor: Get.theme.disabledColor.withOpacity(.2),
-                      highlightColor: Colors.white,
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
+                    // effect: ShimmerEffect(
+                    //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                    //   highlightColor: Colors.white,
+                    //   begin: Alignment.centerLeft,
+                    //   end: Alignment.centerRight,
+                    // ),
                     child: ListTile(
                       onTap: () {
                         ProductDetailsController productDetailsController =
-                            Get.put(ProductDetailsController(),
-                                tag: user?.follower?.id.toString());
-                        productDetailsController.selectUserId =
-                            user?.follower?.id ?? '';
-                        productDetailsController.getUserByUId(
-                            userId: user?.follower?.id ?? '');
+                            Get.put(ProductDetailsController(), tag: user?.follower?.id.toString());
+                        productDetailsController.selectUserId = user?.follower?.id ?? '';
+                        productDetailsController.getUserByUId(userId: user?.follower?.id ?? '');
                         Get.to(
                           () => ClientProfileView(
                             userId: user?.follower?.id ?? '',
@@ -115,9 +105,7 @@ class _MyFollowingState extends State<MyFollowing> {
                         ),
                       ),
                       subtitle: Text(
-                        DateFormat('MMMM dd yyyy').format(
-                            DateTime.tryParse(user?.followedAt ?? '') ??
-                                DateTime.now()),
+                        DateFormat('MMMM dd yyyy').format(DateTime.tryParse(user?.followedAt ?? '') ?? DateTime.now()),
                         style: regular.copyWith(
                           fontSize: 10.sp,
                         ),

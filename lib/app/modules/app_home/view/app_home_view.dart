@@ -89,7 +89,9 @@ class _AppHomeViewState extends State<AppHomeView> {
                       : null,
                   isShowLogo: homeController.homeBottomIndex.value == 0 || homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
-                  action: homeController.homeBottomIndex.value == 0
+                  action: homeController.homeBottomIndex.value == 0 ||
+                          homeController.homeBottomIndex.value == 3 ||
+                          homeController.homeBottomIndex.value == 4
                       ? Container(
                           decoration: BoxDecoration(
                             color: Colors.grey.shade200,

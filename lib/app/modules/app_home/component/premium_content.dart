@@ -64,12 +64,12 @@ class PremiumContent extends StatelessWidget {
             child: Obx(() {
               return Skeletonizer(
                 enabled: homeController.isCategoryLoading.value,
-                effect: ShimmerEffect(
-                  baseColor: Get.theme.disabledColor.withOpacity(.2),
-                  highlightColor: Colors.white,
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
+                // effect: ShimmerEffect(
+                //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                //   highlightColor: Colors.white,
+                //   begin: Alignment.centerLeft,
+                //   end: Alignment.centerRight,
+                // ),
                 child: ListView.separated(
                   padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
                   separatorBuilder: (context, index) => 10.horizontalSpace,
@@ -252,12 +252,12 @@ class PremiumContent extends StatelessWidget {
           Obx(() {
             return Skeletonizer(
               enabled: homeController.isPremiumLoading.value,
-              effect: ShimmerEffect(
-                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                highlightColor: Colors.white,
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              // effect: ShimmerEffect(
+              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+              //   highlightColor: Colors.white,
+              //   begin: Alignment.centerLeft,
+              //   end: Alignment.centerRight,
+              // ),
               child: ListView.builder(
                 itemCount: homeController.isPremiumLoading.value ? 10 : homeController.premiumUserList.length,
                 shrinkWrap: true,

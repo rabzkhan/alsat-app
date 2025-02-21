@@ -44,12 +44,12 @@ class ChatContent extends StatelessWidget {
           Obx(() {
             return Skeletonizer(
               enabled: conversationController.isConversationLoading.value,
-              effect: ShimmerEffect(
-                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                highlightColor: Colors.white,
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              // effect: ShimmerEffect(
+              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+              //   highlightColor: Colors.white,
+              //   begin: Alignment.centerLeft,
+              //   end: Alignment.centerRight,
+              // ),
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,

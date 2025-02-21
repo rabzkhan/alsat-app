@@ -518,6 +518,16 @@ class HomeController extends GetxController {
   }
 
   //========================================Notification========================================================///
+  // RefreshController notificationRefreshController = RefreshController(initialRefresh: false);
+  // void onNotificationRefresh() async {
+  //   await fetchNotification();
+  //   notificationRefreshController.refreshCompleted();
+  // }
+
+  // void onNotificationLoading() async {
+  //   notificationRefreshController.loadComplete();
+  // }
+
   RxList<NotificationData> notifications = <NotificationData>[].obs;
   RxBool isNotificationLoading = false.obs;
   fetchNotification() async {

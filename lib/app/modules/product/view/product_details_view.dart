@@ -226,12 +226,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           child: Obx(() {
                             return Skeletonizer(
                               enabled: productDetailsController.isProductView.value,
-                              effect: ShimmerEffect(
-                                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                                highlightColor: Colors.white,
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+                              // effect: ShimmerEffect(
+                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                              //   highlightColor: Colors.white,
+                              //   begin: Alignment.centerLeft,
+                              //   end: Alignment.centerRight,
+                              // ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -278,12 +278,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             return Skeletonizer(
                               enabled: productDetailsController.isProductLike.value ||
                                   productDetailsController.isProductDetailsLoading.value,
-                              effect: ShimmerEffect(
-                                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                                highlightColor: Colors.white,
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+                              // effect: ShimmerEffect(
+                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                              //   highlightColor: Colors.white,
+                              //   begin: Alignment.centerLeft,
+                              //   end: Alignment.centerRight,
+                              // ),
                               child: InkWell(
                                 onTap: () {
                                   productController
@@ -352,12 +352,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           child: Obx(() {
                             return Skeletonizer(
                               enabled: productDetailsController.isProductComment.value,
-                              effect: ShimmerEffect(
-                                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                                highlightColor: Colors.white,
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
-                              ),
+                              // effect: ShimmerEffect(
+                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                              //   highlightColor: Colors.white,
+                              //   begin: Alignment.centerLeft,
+                              //   end: Alignment.centerRight,
+                              // ),
                               child: InkWell(
                                 onTap: () {
                                   Get.to(
@@ -586,12 +586,12 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   Obx(() {
                     return Skeletonizer(
                       enabled: productDetailsController.isFetchUserLoading.value,
-                      effect: ShimmerEffect(
-                        baseColor: Get.theme.disabledColor.withOpacity(.2),
-                        highlightColor: Colors.white,
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
+                      // effect: ShimmerEffect(
+                      //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                      //   highlightColor: Colors.white,
+                      //   begin: Alignment.centerLeft,
+                      //   end: Alignment.centerRight,
+                      // ),
                       child: ListTile(
                         onTap: () {
                           Get.to(

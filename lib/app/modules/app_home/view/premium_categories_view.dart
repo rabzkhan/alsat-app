@@ -32,12 +32,12 @@ class PremiumCategoriesView extends StatelessWidget {
           () {
             return Skeletonizer(
               enabled: homeController.isCategoryLoading.value,
-              effect: ShimmerEffect(
-                baseColor: Get.theme.disabledColor.withOpacity(.2),
-                highlightColor: Colors.white,
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              ),
+              // effect: ShimmerEffect(
+              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+              //   highlightColor: Colors.white,
+              //   begin: Alignment.centerLeft,
+              //   end: Alignment.centerRight,
+              // ),
               child: GridView.builder(
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

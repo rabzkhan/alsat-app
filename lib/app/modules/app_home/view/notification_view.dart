@@ -3,6 +3,12 @@ import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+import '../../../components/formate_datetime.dart';
+import '../../../components/network_image_preview.dart';
+import '../../../components/scrolling_text.dart';
 
 class NotificationView extends GetView<HomeController> {
   const NotificationView({
@@ -17,60 +23,67 @@ class NotificationView extends GetView<HomeController> {
         elevation: 0,
         title: Text('Notifications', style: medium),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 8.h).copyWith(bottom: 50.h),
-        itemCount: controller.notifications.length,
-        itemBuilder: (context, index) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18.r),
-            ),
-            margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
-            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-            child: Row(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.amber[900],
-                  ),
-                  // child: Padding(
-                  //   padding: const EdgeInsets.all(12).r,
-                  //   child: SvgPicture.asset(
-                  //     "assets/vectors/pay-history.svg",
-                  //     height: 18.h,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
+      body: Obx(
+        () => Skeletonizer(
+          // effect: ShimmerEffect(
+          //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+          //   highlightColor: Colors.white,
+          //   begin: Alignment.centerLeft,
+          //   end: Alignment.centerRight,
+          // ),
+          enabled: controller.isNotificationLoading.value,
+          child: ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: 8.h).copyWith(bottom: 50.h),
+            itemCount: controller.notifications.length,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                12.horizontalSpace,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                child: Row(
+                  children: [
+                    NetworkImagePreview(
+                      fit: BoxFit.cover,
+                      radius: 6.r,
+                      url: controller.notifications[index].picture ?? '',
+                      height: 80.h,
+                      width: 100.w,
+                    ),
+                    12.horizontalSpace,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Appointment Confirmed", style: Theme.of(context).textTheme.bodyMedium),
+                          ScrollingTextWidget(
+                            child: Text(
+                              controller.notifications[index].title ?? '',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          4.verticalSpace,
                           Text(
-                            "9:30 am",
-                            style: Theme.of(context).textTheme.labelSmall!.copyWith(color: Colors.grey.shade700),
-                          )
+                            controller.notifications[index].body ?? '',
+                            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
+                          ),
+                          2.verticalSpace,
+                          Text(
+                            formatDateTime(controller.notifications[index].updatedAt ?? ''),
+                            style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                  color: Colors.grey.shade700,
+                                ),
+                          ),
                         ],
                       ),
-                      6.verticalSpace,
-                      Text(
-                        "Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in print...",
-                        style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          );
-        },
+              );
+            },
+          ),
+        ),
       ),
     );
   }

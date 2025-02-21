@@ -82,12 +82,12 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                           Obx(() {
                         return Skeletonizer(
                           enabled: widget.productDetailsController.isFetchUserLoading.value,
-                          effect: ShimmerEffect(
-                            baseColor: Get.theme.disabledColor.withOpacity(.2),
-                            highlightColor: Colors.white,
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
+                          // effect: ShimmerEffect(
+                          //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                          //   highlightColor: Colors.white,
+                          //   begin: Alignment.centerLeft,
+                          //   end: Alignment.centerRight,
+                          // ),
                           child: Padding(
                             padding: EdgeInsets.symmetric(
                               horizontal: 20.w,
@@ -237,12 +237,12 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                             child: Obx(() {
                                               return Skeletonizer(
                                                 enabled: widget.productDetailsController.isFetchUserLoading.value,
-                                                effect: ShimmerEffect(
-                                                  baseColor: Get.theme.disabledColor.withOpacity(.2),
-                                                  highlightColor: Colors.white,
-                                                  begin: Alignment.centerLeft,
-                                                  end: Alignment.centerRight,
-                                                ),
+                                                // effect: ShimmerEffect(
+                                                //   baseColor: Get.theme.disabledColor.withOpacity(.2),
+                                                //   highlightColor: Colors.white,
+                                                //   begin: Alignment.centerLeft,
+                                                //   end: Alignment.centerRight,
+                                                // ),
                                                 child: ElevatedButton(
                                                   onPressed: () {
                                                     widget.productDetailsController.isFetchUserLoading.value = true;
