@@ -289,9 +289,15 @@ class FullPageViewState extends State<FullPageView> {
                                 : "",
                             style: widget.fullPagetitleStyle ??
                                 const TextStyle(
-                                  color: Colors.white,
-                                  shadows: [Shadow(blurRadius: 10, color: Colors.black)],
+                                  color: Colors.black,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 4,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
                                   fontSize: 13,
+                                  fontWeight: FontWeight.bold,
                                 ),
                           ),
                         ],
