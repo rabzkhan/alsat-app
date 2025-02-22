@@ -163,13 +163,13 @@ class _PostProductViewState extends State<PostProductView> {
                                       if (productController.pickImageList.isEmpty) {
                                         CustomSnackBar.showCustomToast(
                                           color: Colors.red,
-                                          message: "Please select at least one image",
+                                          message: "at least one image",
                                         );
                                       } else if (productController.individualInfoFiledCount.value !=
                                           productController.individualInfoFiled.value) {
                                         CustomSnackBar.showCustomToast(
                                           color: Colors.red,
-                                          message: "Please select at All Required Filled",
+                                          message: "Please select all required filled",
                                         );
                                       } else {
                                         productController.isProductPosting.value = true;
@@ -716,9 +716,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     minLines: 3,
                                     maxLines: 3,
                                     name: 'discription',
-                                    style: regular.copyWith(
-                                      color: context.theme.primaryColor,
-                                    ),
+                                    style: regular,
                                     decoration: InputDecoration(
                                       isDense: true,
                                       hintText: 'Describe your product',
@@ -730,6 +728,9 @@ class _PostProductViewState extends State<PostProductView> {
                                       errorBorder: outlineBorder,
                                       focusedBorder: outlineBorder,
                                     ),
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.required(),
+                                    ]),
                                   ),
                                   Obx(() {
                                     return productController.selectCategory.value?.name?.toLowerCase() == 'automobile'
@@ -750,10 +751,7 @@ class _PostProductViewState extends State<PostProductView> {
                                                   name: 'vinCode',
                                                   onChanged: (newValue) {},
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 12.sp,
-                                                    color: Get.theme.primaryColor.withOpacity(.6),
-                                                  ),
+                                                  style: medium,
                                                   decoration: InputDecoration(
                                                     isDense: true,
                                                     alignLabelWithHint: true,
@@ -866,7 +864,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
-                                      'Price, \$',
+                                      'Price \$',
                                       style: regular,
                                     ),
                                   ),

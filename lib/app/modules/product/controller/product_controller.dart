@@ -51,8 +51,8 @@ class ProductController extends GetxController {
   RxList<File> pickImageList = RxList([]);
   RxList<File> pickVideoList = RxList([]);
   RxList<Uint8List?> videoThumbnails = <Uint8List?>[].obs;
-  Rxn<TimeOfDay> fromTime = Rxn<TimeOfDay>();
-  Rxn<TimeOfDay> toTime = Rxn<TimeOfDay>();
+  Rxn<TimeOfDay> fromTime = Rxn<TimeOfDay>(TimeOfDay(hour: 0, minute: 0));
+  Rxn<TimeOfDay> toTime = Rxn<TimeOfDay>(TimeOfDay(hour: 23, minute: 59));
 
   /// post product
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>();
