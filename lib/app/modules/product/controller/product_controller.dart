@@ -7,6 +7,7 @@ import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as google_maps_flutter;
@@ -279,6 +280,7 @@ class ProductController extends GetxController {
         isProductPosting.value = false;
         CustomSnackBar.showCustomToast(message: 'Product posted successfully', title: 'Success');
         Get.back();
+        resetForm();
         homeController.getUserPostCategories();
         homeController.fetchMyProducts();
         return true;
@@ -508,5 +510,31 @@ class ProductController extends GetxController {
         isProductDetailsLoading.value = false;
       },
     );
+  }
+
+  final postKey = GlobalKey<FormBuilderState>();
+  resetForm() {
+    isProductPosting.value = false;
+    postKey.currentState?.reset();
+    estateDealType.value = null;
+    priceController.text = '';
+    estateAddressController.clear();
+    estateType.value = null;
+    selectedPhoneBrand.value = '';
+    productNameController.clear();
+    productDescriptionController.clear();
+    vinCode.clear();
+    priceController.clear();
+    pickImageList.clear();
+    selectCategory.value = null;
+    selectSubCategory.value = null;
+    selectedBrand.value = null;
+    selectedModel.value = null;
+    selectedBodyType.value = '';
+    selectedTransmission.value = '';
+    selectedEngineType.value = '';
+    selectedColor.value = [];
+    fromTime.value = null;
+    toTime.value = null;
   }
 }

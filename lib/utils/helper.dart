@@ -175,8 +175,7 @@ String formatFollowers(int followers) {
   }
 }
 
-List<ChatMessage> messageConvert(MessageModel element,
-    Participant? selectUserInfo, AuthController authController) {
+List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserInfo, AuthController authController) {
   List<ChatMessage> coverMessage = [];
   if (element.attachments != null && (element.attachments ?? []).isNotEmpty) {
     for (Attachment e in element.attachments ?? []) {
@@ -202,8 +201,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -237,8 +235,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -272,8 +269,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -307,8 +303,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -342,8 +337,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -377,8 +371,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",

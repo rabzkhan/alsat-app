@@ -1,4 +1,4 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, deprecated_member_use
 import 'dart:developer';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
@@ -18,6 +18,7 @@ import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../components/formate_datetime.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/view/message_view.dart';
 import '../controller/product_details_controller.dart';
@@ -154,10 +155,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            DateFormat('hh a dd MMM yyyy').format(
-                              DateTime.parse(
-                                widget.productModel?.createdAt ?? '',
-                              ),
+                            formatDateTime(
+                              widget.productModel?.createdAt ?? '',
                             ),
                             style: TextStyle(
                               fontSize: 14.sp,
@@ -190,7 +189,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.productModel?.title ?? 'Hyundai Santa Fe',
+                              widget.productModel?.title ?? '',
                               style: semiBold.copyWith(
                                 fontSize: 18.sp,
                                 fontWeight: FontWeight.w600,

@@ -43,7 +43,6 @@ class _PostProductViewState extends State<PostProductView> {
   AuthController authController = Get.find();
   HomeController homeController = Get.find();
   FilterController filterController = Get.find();
-  final _formKey = GlobalKey<FormBuilderState>();
 
   @override
   void initState() {
@@ -66,7 +65,7 @@ class _PostProductViewState extends State<PostProductView> {
   @override
   Widget build(BuildContext context) {
     return FormBuilder(
-      key: _formKey,
+      key: productController.postKey,
       child: Scaffold(
         backgroundColor: Get.theme.secondaryHeaderColor,
         bottomNavigationBar: Padding(
@@ -134,7 +133,7 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                       onPressed: () {
                         Get.back();
-                        resetForm();
+                        productController.resetForm();
                       },
                     ),
                   ),
@@ -156,8 +155,8 @@ class _PostProductViewState extends State<PostProductView> {
                             : productController.isProductPosting.value
                                 ? null
                                 : () async {
-                                    _formKey.currentState!.saveAndValidate();
-                                    if (_formKey.currentState!.validate()) {
+                                    productController.postKey.currentState!.saveAndValidate();
+                                    if (productController.postKey.currentState!.validate()) {
                                       FocusScope.of(context).unfocus();
 
                                       if (productController.pickImageList.isEmpty) {
@@ -173,7 +172,7 @@ class _PostProductViewState extends State<PostProductView> {
                                         );
                                       } else {
                                         productController.isProductPosting.value = true;
-                                        await addProductDataFormate(_formKey.currentState!.value);
+                                        await addProductDataFormate(productController.postKey.currentState!.value);
                                       }
                                     }
                                   },
@@ -208,7 +207,7 @@ class _PostProductViewState extends State<PostProductView> {
           actions: [
             GestureDetector(
               onTap: () {
-                resetForm();
+                productController.resetForm();
               },
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 14.w),
@@ -1736,35 +1735,7 @@ class _PostProductViewState extends State<PostProductView> {
         ? {"brand": productController.selectedPhoneBrand.value}
         : null;
     log("productPostMap $productPostMap");
-
     await productController.postProduct(productPostMap);
-    resetForm();
-  }
-
-  resetForm() {
-    productController.isProductPosting.value = false;
-    filterController.clearAddress();
-    _formKey.currentState?.reset();
-    productController.estateDealType.value = null;
-    productController.priceController.text = '';
-    productController.estateAddressController.clear();
-    productController.estateType.value = null;
-    productController.selectedPhoneBrand.value = '';
-    productController.productNameController.clear();
-    productController.productDescriptionController.clear();
-    productController.vinCode.clear();
-    productController.priceController.clear();
-    productController.pickImageList.clear();
-    productController.selectCategory.value = null;
-    productController.selectSubCategory.value = null;
-    productController.selectedBrand.value = null;
-    productController.selectedModel.value = null;
-    productController.selectedBodyType.value = '';
-    productController.selectedTransmission.value = '';
-    productController.selectedEngineType.value = '';
-    productController.selectedColor.value = [];
-    productController.fromTime.value = null;
-    productController.toTime.value = null;
   }
 
   _tile(String title, String value, {Function()? onTap}) {
