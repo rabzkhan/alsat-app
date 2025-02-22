@@ -14,6 +14,7 @@ class Constants {
   static const postProduct = '/posts';
   static const categories = '/categories';
   static const stories = '/stories';
+  static const notification = '/notifications';
   static const banners = '/banners';
   static const user = '/users';
   static const fcmStore = '/users/device';

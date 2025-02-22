@@ -130,6 +130,7 @@ class Stories extends StatelessWidget {
 
 class StoryItem {
   /// Name of the story circle
+  String userId;
   String name;
 
   /// Image to display on the circle of the image
@@ -140,6 +141,7 @@ class StoryItem {
 
   /// Add a story
   StoryItem({
+    required this.userId,
     required this.name,
     required this.thumbnail,
     required this.stories,

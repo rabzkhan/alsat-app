@@ -3,7 +3,6 @@ import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/auth_user/auth_user_tab/my_listings.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
-import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +24,7 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => _ProfileContentState();
 }
 
-class _ProfileContentState extends State<ProfileContent>
-    with TickerProviderStateMixin {
+class _ProfileContentState extends State<ProfileContent> with TickerProviderStateMixin {
   final UserController userController = Get.find();
   final AuthController authController = Get.find();
   HomeController homeController = Get.find();
@@ -41,8 +39,7 @@ class _ProfileContentState extends State<ProfileContent>
     );
 
     mainTabController.addListener(() {
-      if (homeController.profileTabCurrentPage.value !=
-          mainTabController.index) {
+      if (homeController.profileTabCurrentPage.value != mainTabController.index) {
         homeController.profileTabCurrentPage.value = mainTabController.index;
       }
     });
@@ -80,8 +77,7 @@ class _ProfileContentState extends State<ProfileContent>
                         ),
                       ),
                       title: Obx(() => Text(
-                            authController.userDataModel.value.userName ??
-                                'Guest User',
+                            authController.userDataModel.value.userName ?? 'Guest User',
                             style: bold.copyWith(
                               fontSize: 18.sp,
                             ),
@@ -93,8 +89,7 @@ class _ProfileContentState extends State<ProfileContent>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Obx(() => Text(
-                                  authController.userDataModel.value.phone ??
-                                      ' --- ',
+                                  authController.userDataModel.value.phone ?? ' --- ',
                                   style: regular.copyWith(
                                     fontSize: 10.sp,
                                   ),
@@ -104,10 +99,7 @@ class _ProfileContentState extends State<ProfileContent>
                                 () => RatingBar.builder(
                                   itemSize: 15.h,
                                   initialRating: MySharedPref.isLoggedIn()
-                                      ? double.parse((authController
-                                                  .userDataModel.value.rating ??
-                                              "0")
-                                          .toString())
+                                      ? double.parse((authController.userDataModel.value.rating ?? "0").toString())
                                       : 0,
                                   minRating: 0,
                                   direction: Axis.horizontal,
@@ -140,10 +132,8 @@ class _ProfileContentState extends State<ProfileContent>
                                         vertical: 4.h,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Get.theme.primaryColor
-                                            .withOpacity(.15),
-                                        borderRadius:
-                                            BorderRadius.circular(5.r),
+                                        color: Get.theme.primaryColor.withOpacity(.15),
+                                        borderRadius: BorderRadius.circular(5.r),
                                       ),
                                       child: Image.asset(
                                         settingIcon,
@@ -184,7 +174,7 @@ class _ProfileContentState extends State<ProfileContent>
                     tabs: userController.profileTab.map(
                       (e) {
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
                           child: Text(
                             e,
                           ),
@@ -206,8 +196,7 @@ class _ProfileContentState extends State<ProfileContent>
                           preferredSize: const Size.fromHeight(38),
                           child: TabBar(
                             onTap: (value) {
-                              homeController.myListingSelectCategory.value =
-                                  homeController.userPostCategories[value];
+                              homeController.myListingSelectCategory.value = homeController.userPostCategories[value];
                               homeController.myListingRefresh();
                             },
                             isScrollable: true,
@@ -225,8 +214,7 @@ class _ProfileContentState extends State<ProfileContent>
                             tabs: homeController.userPostCategories
                                 .map(
                                   (e) => Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 6.h),
+                                    padding: EdgeInsets.symmetric(vertical: 6.h),
                                     child: Text(
                                       e.name ?? '',
                                     ),

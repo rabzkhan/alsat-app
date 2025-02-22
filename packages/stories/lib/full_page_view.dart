@@ -86,8 +86,8 @@ class FullPageViewState extends State<FullPageView> {
       selectedIndex = index + 1;
     });
 
-    _pageController!.animateToPage(selectedIndex!,
-        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    _pageController!
+        .animateToPage(selectedIndex!, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     initPageChangeTimer();
   }
 
@@ -99,8 +99,8 @@ class FullPageViewState extends State<FullPageView> {
     setState(() {
       selectedIndex = index - 1;
     });
-    _pageController!.animateToPage(selectedIndex!,
-        duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
+    _pageController!
+        .animateToPage(selectedIndex!, duration: const Duration(milliseconds: 200), curve: Curves.easeInOut);
     initPageChangeTimer();
   }
 
@@ -129,10 +129,7 @@ class FullPageViewState extends State<FullPageView> {
     fullpageThumbnailSize = widget.fullpageThumbnailSize;
     showStoryNameOnFullPage = widget.showStoryNameOnFullPage ?? true;
     storyStatusBarColor = widget.storyStatusBarColor;
-    if (((combinedList[selectedIndex ?? 0] as Scaffold).body as Center)
-            .child
-            .toString() ==
-        "StoryVideoPlayer") {
+    if (((combinedList[selectedIndex ?? 0] as Scaffold).body as Center).child.toString() == "StoryVideoPlayer") {
       changePageTimer?.cancel();
       log("Timer canceled");
     } else {
@@ -166,10 +163,7 @@ class FullPageViewState extends State<FullPageView> {
               // Running on pageChanged
               if (widget.onPageChanged != null) widget.onPageChanged!();
 
-              if (((combinedList[page] as Scaffold).body as Center)
-                      .child
-                      .toString() ==
-                  "StoryVideoPlayer") {
+              if (((combinedList[page] as Scaffold).body as Center).child.toString() == "StoryVideoPlayer") {
                 changePageTimer!.cancel();
                 log("Timer canceled");
               }
@@ -224,13 +218,9 @@ class FullPageViewState extends State<FullPageView> {
               displayProgress
                   ? Row(
                       children: List.generate(
-                            numOfCompleted(
-                                listLengths as List<int>, selectedIndex!),
+                            numOfCompleted(listLengths as List<int>, selectedIndex!),
                             (index) => Expanded(
-                              child: index + 1 ==
-                                          numOfCompleted(
-                                              listLengths as List<int>,
-                                              selectedIndex!) &&
+                              child: index + 1 == numOfCompleted(listLengths as List<int>, selectedIndex!) &&
                                       widget.autoPlayDuration != null
                                   ? AnimatedProgressBar(
                                       duration: widget.autoPlayDuration!,
@@ -241,25 +231,21 @@ class FullPageViewState extends State<FullPageView> {
                                       margin: const EdgeInsets.all(2),
                                       height: 3,
                                       decoration: BoxDecoration(
-                                        color: fullpageVisitedColor ??
-                                            const Color(0xff444444),
+                                        color: fullpageVisitedColor ?? const Color(0xff444444),
                                         borderRadius: BorderRadius.circular(20),
                                       ),
                                     ),
                             ),
                           ) +
                           List.generate(
-                            getCurrentLength(
-                                    listLengths as List<int>, selectedIndex!) -
-                                numOfCompleted(listLengths as List<int>,
-                                    selectedIndex!) as int,
+                            getCurrentLength(listLengths as List<int>, selectedIndex!) -
+                                numOfCompleted(listLengths as List<int>, selectedIndex!) as int,
                             (index) => Expanded(
                               child: Container(
                                 margin: const EdgeInsets.all(2),
                                 height: 3,
                                 decoration: BoxDecoration(
-                                  color: widget.fullpageUnvisitedColor ??
-                                      Colors.white,
+                                  color: widget.fullpageUnvisitedColor ?? Colors.white,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                               ),
@@ -269,44 +255,56 @@ class FullPageViewState extends State<FullPageView> {
                   : const Center(),
               const SizedBox(height: 5),
               // Story name
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: (showThumbnailOnFullPage == null ||
-                            showThumbnailOnFullPage!)
-                        ? Image(
-                            width: fullpageThumbnailSize ?? 25,
-                            height: fullpageThumbnailSize ?? 25,
-                            image: storiesMapList![getStoryIndex(
-                                    listLengths as List<int>, selectedIndex!)]
-                                .thumbnail,
-                          )
-                        : const Center(),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          showStoryNameOnFullPage
-                              ? storiesMapList![getStoryIndex(
-                                      listLengths as List<int>, selectedIndex!)]
-                                  .name
-                              : "",
-                          style: widget.fullPagetitleStyle ??
-                              const TextStyle(
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(blurRadius: 10, color: Colors.black)
-                                ],
-                                fontSize: 13,
+              InkWell(
+                onTap: () {
+                  if (widget.onPageChanged != null) {
+                    String userId = storiesMapList![getStoryIndex(listLengths as List<int>, selectedIndex!)].userId;
+                    widget.onPageChanged!(userId);
+                  }
+                },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: (showThumbnailOnFullPage == null || showThumbnailOnFullPage!)
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image(
+                                fit: BoxFit.cover,
+                                width: fullpageThumbnailSize ?? 40,
+                                height: fullpageThumbnailSize ?? 40,
+                                image:
+                                    storiesMapList![getStoryIndex(listLengths as List<int>, selectedIndex!)].thumbnail,
                               ),
-                        ),
-                      ],
+                            )
+                          : const Center(),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            showStoryNameOnFullPage
+                                ? storiesMapList![getStoryIndex(listLengths as List<int>, selectedIndex!)].name
+                                : "",
+                            style: widget.fullPagetitleStyle ??
+                                const TextStyle(
+                                  color: Colors.black,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 4,
+                                      color: Colors.grey,
+                                    ),
+                                  ],
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -406,8 +404,7 @@ class _AnimatedProgressBarState extends State<AnimatedProgressBar> {
 
   void startProgress() {
     // Total updates needed to complete progress
-    int totalUpdates =
-        (widget.duration.inMilliseconds / updateInterval).round();
+    int totalUpdates = (widget.duration.inMilliseconds / updateInterval).round();
 
     timer = Timer.periodic(Duration(milliseconds: updateInterval), (timer) {
       if (progress >= 1.0) {

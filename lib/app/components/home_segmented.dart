@@ -6,7 +6,6 @@ import 'package:get/get.dart';
 
 import '../../config/theme/app_text_theme.dart';
 import '../common/const/image_path.dart';
-import '../modules/auth_user/auth_user_tab/widgets/upgrade_to_premium_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomeSegmented extends StatelessWidget {
@@ -50,9 +49,7 @@ class HomeSegmented extends StatelessWidget {
                         localLanguage.product,
                         style: regular.copyWith(
                           fontSize: 17.sp,
-                          color: !homeController.showPremium.value
-                              ? Get.theme.primaryColor
-                              : null,
+                          color: !homeController.showPremium.value ? Get.theme.primaryColor : null,
                         ),
                       ),
                     ),
@@ -70,11 +67,12 @@ class HomeSegmented extends StatelessWidget {
             child: Obx(() {
               return InkWell(
                 onTap: () {
-                  if (!(authController.userDataModel.value.premium ?? false)) {
-                    upgradeToPremiumDialog();
-                  } else {
-                    homeController.showPremium.value = true;
-                  }
+                  // if ((authController.userDataModel.value.premium ?? false)) {
+                  //   upgradeToPremiumDialog();
+                  // } else {
+                  //   homeController.showPremium.value = true;
+                  // }
+                  homeController.showPremium.value = true;
                 },
                 child: SizedBox(
                   height: 45.h,
@@ -95,8 +93,7 @@ class HomeSegmented extends StatelessWidget {
                         children: [
                           CircleAvatar(
                             radius: 14.r,
-                            backgroundColor:
-                                Get.theme.secondaryHeaderColor.withOpacity(.5),
+                            backgroundColor: Get.theme.secondaryHeaderColor.withOpacity(.5),
                             child: Image.asset(
                               crownIcon,
                               width: 18.w,
@@ -110,9 +107,7 @@ class HomeSegmented extends StatelessWidget {
                             localLanguage.premium,
                             style: regular.copyWith(
                               fontSize: 17.sp,
-                              color: homeController.showPremium.value
-                                  ? Get.theme.primaryColor
-                                  : null,
+                              color: homeController.showPremium.value ? Get.theme.primaryColor : null,
                             ),
                           ),
                         ],

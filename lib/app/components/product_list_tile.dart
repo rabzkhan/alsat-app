@@ -14,23 +14,18 @@ class ProductListTile extends StatelessWidget {
   final ProductModel? productModel;
   final bool showBorder;
   final bool isShowLikeButton;
-  const ProductListTile(
-      {super.key,
-      this.productModel,
-      this.isShowLikeButton = false,
-      this.showBorder = true});
+  const ProductListTile({super.key, this.productModel, this.isShowLikeButton = false, this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
     ProductController productController = Get.find();
     return GestureDetector(
       onTap: () {
-        Get.to(ProductDetailsView(productModel: productModel),
-            transition: Transition.fadeIn);
+        Get.to(ProductDetailsView(productModel: productModel), transition: Transition.fadeIn);
       },
       child: Container(
         margin: EdgeInsets.symmetric(
-          vertical: 6.h,
+          vertical: 3.h,
           horizontal: 14.w,
         ),
         padding: EdgeInsets.symmetric(
@@ -94,8 +89,7 @@ class ProductListTile extends StatelessWidget {
                             maxLines: 1,
                             text: TextSpan(children: [
                               TextSpan(
-                                text:
-                                    productModel?.title ?? 'Hyundai santa fe ',
+                                text: productModel?.title ?? 'Hyundai santa fe ',
                                 style: regular.copyWith(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -105,8 +99,7 @@ class ProductListTile extends StatelessWidget {
                         Text(
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          productModel?.description ??
-                              'Lorem ipsum is placeholder text  ',
+                          productModel?.description ?? 'Lorem ipsum is placeholder text  ',
                           style: regular.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -114,8 +107,7 @@ class ProductListTile extends StatelessWidget {
                         RichText(
                             text: TextSpan(children: [
                           TextSpan(
-                            text:
-                                "\$${productModel?.priceInfo?.price ?? 96.00}  ",
+                            text: "\$${productModel?.priceInfo?.price ?? 96.00}  ",
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
@@ -139,9 +131,7 @@ class ProductListTile extends StatelessWidget {
                                       : CupertinoIcons.xmark,
                                   size: 15.r,
                                   color:
-                                      (productModel?.priceInfo?.credit ?? false)
-                                          ? Get.theme.primaryColor
-                                          : Colors.red,
+                                      (productModel?.priceInfo?.credit ?? false) ? Get.theme.primaryColor : Colors.red,
                                 ),
                                 3.horizontalSpace,
                                 Text(
@@ -157,14 +147,11 @@ class ProductListTile extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  (productModel?.priceInfo?.possibleExchange ??
-                                          false)
+                                  (productModel?.priceInfo?.possibleExchange ?? false)
                                       ? CupertinoIcons.checkmark_alt
                                       : CupertinoIcons.xmark,
                                   size: 15.r,
-                                  color: (productModel
-                                              ?.priceInfo?.possibleExchange ??
-                                          false)
+                                  color: (productModel?.priceInfo?.possibleExchange ?? false)
                                       ? Get.theme.primaryColor
                                       : Colors.red,
                                 ),
@@ -205,8 +192,7 @@ class ProductListTile extends StatelessWidget {
                     ),
                     child: Obx(() {
                       return productController.isProductLike.value &&
-                              productController.productLikeId.value ==
-                                  (productModel?.id ?? '')
+                              productController.productLikeId.value == (productModel?.id ?? '')
                           ? const CupertinoActivityIndicator(
                               color: Colors.red,
                             )

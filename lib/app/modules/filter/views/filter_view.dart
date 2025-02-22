@@ -25,7 +25,6 @@ import '../widgets/car_multi_model_sheet.dart';
 import '../widgets/color_picker_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
-import '../widgets/mileage_picker.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
 
 class FilterView extends StatefulWidget {
@@ -109,8 +108,7 @@ class _FilterViewState extends State<FilterView> {
                   expand: true,
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context) =>
-                      const CategorySelection(valueReturn: true),
+                  builder: (context) => const CategorySelection(valueReturn: true),
                 ).then((value) {
                   log('Category Selection: $value');
                   controller.category.value = value;
@@ -119,8 +117,7 @@ class _FilterViewState extends State<FilterView> {
               },
               child: Container(
                 decoration: borderedContainer,
-                margin:
-                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 14.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -142,9 +139,7 @@ class _FilterViewState extends State<FilterView> {
                         2.verticalSpace,
                         Obx(() {
                           return Text(
-                            (controller.category.value?.name ??
-                                    'Select Category')
-                                .toString(),
+                            (controller.category.value?.name ?? 'Select Category').toString(),
                             style: bold.copyWith(
                               fontSize: 16.sp,
                               color: Colors.black,
@@ -172,14 +167,12 @@ class _FilterViewState extends State<FilterView> {
                   expand: true,
                   context: context,
                   backgroundColor: Colors.transparent,
-                  builder: (context) =>
-                      const LocationSelection(canSelectMultiple: true),
+                  builder: (context) => const LocationSelection(canSelectMultiple: true),
                 );
               },
               child: Container(
                 decoration: borderedContainer,
-                margin:
-                    EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+                margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                 padding: EdgeInsets.symmetric(
                   vertical: 10.h,
                   horizontal: 12.w,
@@ -201,9 +194,7 @@ class _FilterViewState extends State<FilterView> {
                           2.verticalSpace,
                           Obx(() {
                             // Get the selected location text from the controller
-                            String selectedLocationText =
-                                Get.find<FilterController>()
-                                    .getSelectedLocationText();
+                            String selectedLocationText = Get.find<FilterController>().getSelectedLocationText();
                             return Row(
                               children: [
                                 Expanded(
@@ -235,7 +226,7 @@ class _FilterViewState extends State<FilterView> {
           ),
           SliverToBoxAdapter(
             child: Obx(() {
-              return controller.category.value?.name?.toLowerCase() == 'phone'
+              return controller.category.value?.name?.toLowerCase() == 'phones'
                   ? GestureDetector(
                       onTap: () {
                         Get.bottomSheet(
@@ -251,8 +242,7 @@ class _FilterViewState extends State<FilterView> {
                       },
                       child: Container(
                         decoration: borderedContainer,
-                        margin: EdgeInsets.symmetric(horizontal: 16.w)
-                            .copyWith(top: 10.h),
+                        margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                         padding: EdgeInsets.symmetric(
                           vertical: 10.h,
                           horizontal: 12.w,
@@ -278,17 +268,14 @@ class _FilterViewState extends State<FilterView> {
                                         Expanded(
                                           child: ScrollingTextWidget(
                                             child: Text(
-                                              controller
-                                                      .selectMobileBrand.isEmpty
+                                              controller.selectMobileBrand.isEmpty
                                                   ? 'Not Choose Yet'
                                                   : controller.selectMobileBrand
-                                                      .expand(
-                                                          (e) => [e.toString()])
+                                                      .expand((e) => [e.toString()])
                                                       .join(', '),
                                               style: regular.copyWith(
                                                 fontSize: 10.sp,
-                                                color:
-                                                    context.theme.primaryColor,
+                                                color: context.theme.primaryColor,
                                               ),
                                             ),
                                           ),
@@ -308,8 +295,7 @@ class _FilterViewState extends State<FilterView> {
                         ),
                       ),
                     )
-                  : controller.category.value?.name?.toLowerCase() ==
-                          'real estate'
+                  : controller.category.value?.name?.toLowerCase() == 'real estate'
                       ? GestureDetector(
                           onTap: () {
                             Get.bottomSheet(
@@ -324,8 +310,7 @@ class _FilterViewState extends State<FilterView> {
                           },
                           child: Container(
                             decoration: borderedContainer,
-                            margin: EdgeInsets.symmetric(horizontal: 16.w)
-                                .copyWith(top: 10.h),
+                            margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
                             padding: EdgeInsets.symmetric(
                               vertical: 10.h,
                               horizontal: 12.w,
@@ -335,8 +320,7 @@ class _FilterViewState extends State<FilterView> {
                               children: [
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
@@ -354,14 +338,10 @@ class _FilterViewState extends State<FilterView> {
                                                 child: Text(
                                                   controller.estateTtype.isEmpty
                                                       ? 'Not Choose Yet'
-                                                      : controller.estateTtype
-                                                          .expand((e) =>
-                                                              [e.toString()])
-                                                          .join(', '),
+                                                      : controller.estateTtype.expand((e) => [e.toString()]).join(', '),
                                                   style: regular.copyWith(
                                                     fontSize: 10.sp,
-                                                    color: context
-                                                        .theme.primaryColor,
+                                                    color: context.theme.primaryColor,
                                                   ),
                                                 ),
                                               ),
@@ -388,8 +368,7 @@ class _FilterViewState extends State<FilterView> {
           // //Condition section
           SliverToBoxAdapter(
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 12.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -419,9 +398,7 @@ class _FilterViewState extends State<FilterView> {
                               () => ElevatedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      controller.accountType.value == ""
-                                          ? Colors.white
-                                          : Colors.transparent,
+                                      controller.accountType.value == "" ? Colors.white : Colors.transparent,
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.r),
@@ -443,14 +420,9 @@ class _FilterViewState extends State<FilterView> {
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
                                       backgroundColor:
-                                          controller.accountType.value ==
-                                                  "Premium"
-                                              ? Colors.white
-                                              : Colors.transparent,
+                                          controller.accountType.value == "Premium" ? Colors.white : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.accountType.value = "Premium";
                                   },
@@ -465,15 +437,11 @@ class _FilterViewState extends State<FilterView> {
                           Expanded(
                             child: Obx(() => ElevatedButton(
                                   style: OutlinedButton.styleFrom(
-                                      backgroundColor:
-                                          controller.accountType.value ==
-                                                  "Ordinary"
-                                              ? Colors.white
-                                              : Colors.transparent,
+                                      backgroundColor: controller.accountType.value == "Ordinary"
+                                          ? Colors.white
+                                          : Colors.transparent,
                                       elevation: 0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8.r))),
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r))),
                                   onPressed: () {
                                     controller.accountType.value = "Ordinary";
                                   },
@@ -497,8 +465,7 @@ class _FilterViewState extends State<FilterView> {
           // //Price Section
           SliverToBoxAdapter(
             child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -532,8 +499,7 @@ class _FilterViewState extends State<FilterView> {
                             ),
                             hintText: 'From',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -556,8 +522,7 @@ class _FilterViewState extends State<FilterView> {
                             ),
                             hintText: 'To',
                             hintStyle: medium.copyWith(color: Colors.black),
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 10.h, horizontal: 10.w),
+                            contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
                         ),
                       ),
@@ -571,427 +536,408 @@ class _FilterViewState extends State<FilterView> {
           // //Brand Section
           // //Location Section
           SliverToBoxAdapter(
-            child: Obx(() {
-              return controller.category.value?.name?.toLowerCase() ==
-                      'automobile'
-                  ? Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        //*Brand Section
-                        GestureDetector(
-                          onTap: () {
-                            Get.bottomSheet(
-                              isScrollControlled: true,
-                              CarMultiBrandBottomSheet(
-                                title: "Brand",
-                                data: homeController.brandList,
-                                selectedData: controller.brand,
+            child: Obx(
+              () {
+                return controller.category.value?.name?.toLowerCase() == 'cars' ||
+                        controller.category.value?.name?.toLowerCase() == "foreign cars"
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          //*Brand Section
+                          GestureDetector(
+                            onTap: () {
+                              Get.bottomSheet(
+                                isScrollControlled: true,
+                                CarMultiBrandBottomSheet(
+                                  title: "Brand",
+                                  data: homeController.brandList,
+                                  selectedData: controller.brand,
+                                ),
+                              ).then((_) {
+                                controller.brandAndSelectedModel.clear();
+                                for (var element in controller.brand) {
+                                  controller.brandAndSelectedModel.add({
+                                    'brand': element,
+                                    'model': <CarModel>[],
+                                  });
+                                }
+                                controller.brand.refresh();
+                              });
+                            },
+                            child: Container(
+                              decoration: borderedContainer,
+                              margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10.h,
+                                horizontal: 12.w,
                               ),
-                            ).then((_) {
-                              controller.brandAndSelectedModel.clear();
-                              for (var element in controller.brand) {
-                                controller.brandAndSelectedModel.add({
-                                  'brand': element,
-                                  'model': <CarModel>[],
-                                });
-                              }
-                              controller.brand.refresh();
-                            });
-                          },
-                          child: Container(
-                            decoration: borderedContainer,
-                            margin: EdgeInsets.symmetric(horizontal: 16.w)
-                                .copyWith(top: 16.h, bottom: 10.h),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10.h,
-                              horizontal: 12.w,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Brand",
-                                      style: bold.copyWith(
-                                        fontSize: 14.sp,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Brand",
+                                        style: bold.copyWith(
+                                          fontSize: 14.sp,
+                                        ),
                                       ),
-                                    ),
-                                    3.verticalSpace,
-                                    Obx(
-                                      () => SizedBox(
-                                        height: 20.h,
-                                        width: Get.width - 90.w,
-                                        child: controller.brand.isEmpty
-                                            ? Container(
-                                                margin:
-                                                    EdgeInsets.only(right: 4.w),
-                                                padding: EdgeInsets.symmetric(
-                                                  vertical: 2.h,
-                                                ),
-                                                child: Text(
-                                                  'Choose Brand',
-                                                  style: medium.copyWith(
-                                                    fontSize: 10.sp,
-                                                    color: Colors.black54,
+                                      3.verticalSpace,
+                                      Obx(
+                                        () => SizedBox(
+                                          height: 20.h,
+                                          width: Get.width - 90.w,
+                                          child: controller.brand.isEmpty
+                                              ? Container(
+                                                  margin: EdgeInsets.only(right: 4.w),
+                                                  padding: EdgeInsets.symmetric(
+                                                    vertical: 2.h,
                                                   ),
-                                                ),
-                                              )
-                                            : ListView(
-                                                scrollDirection:
-                                                    Axis.horizontal,
-                                                children: controller.brand
-                                                    .map((brand) {
-                                                  return Container(
-                                                    decoration: BoxDecoration(
-                                                      color: AppColors
-                                                          .textFieldGray,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                        Radius.circular(4.0.r),
-                                                      ),
+                                                  child: Text(
+                                                    'Choose Brand',
+                                                    style: medium.copyWith(
+                                                      fontSize: 10.sp,
+                                                      color: Colors.black54,
                                                     ),
-                                                    margin: EdgeInsets.only(
-                                                        right: 4.w),
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                      vertical: 2.h,
-                                                      horizontal: 4.w,
-                                                    ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        brand.brand ??
-                                                            'Choose Brand',
-                                                        style: medium.copyWith(
-                                                          fontSize: 10.sp,
-                                                          color: Colors.black54,
+                                                  ),
+                                                )
+                                              : ListView(
+                                                  scrollDirection: Axis.horizontal,
+                                                  children: controller.brand.map((brand) {
+                                                    return Container(
+                                                      decoration: BoxDecoration(
+                                                        color: AppColors.textFieldGray,
+                                                        borderRadius: BorderRadius.all(
+                                                          Radius.circular(4.0.r),
                                                         ),
                                                       ),
-                                                    ),
-                                                  );
-                                                }).toList()),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Icon(
-                                  Icons.add_circle_outline,
-                                  size: 30.h,
-                                  color: AppColors.liteGray,
-                                )
-                              ],
+                                                      margin: EdgeInsets.only(right: 4.w),
+                                                      padding: EdgeInsets.symmetric(
+                                                        vertical: 2.h,
+                                                        horizontal: 4.w,
+                                                      ),
+                                                      child: Center(
+                                                        child: Text(
+                                                          brand.brand ?? 'Choose Brand',
+                                                          style: medium.copyWith(
+                                                            fontSize: 10.sp,
+                                                            color: Colors.black54,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }).toList()),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  Icon(
+                                    Icons.add_circle_outline,
+                                    size: 30.h,
+                                    color: AppColors.liteGray,
+                                  )
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        //*model section
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Obx(() {
-                            return Wrap(
-                              spacing: 10.w,
+                          //*model section
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Obx(() {
+                              return Wrap(
+                                spacing: 10.w,
+                                children: [
+                                  ...List.generate(
+                                    controller.brandAndSelectedModel.length,
+                                    (index) {
+                                      var brand = controller.brandAndSelectedModel[index];
+                                      return SizedBox(
+                                        width: (Get.width / (controller.brand.length > 1 ? 2 : 1)) - 26.w,
+                                        child: FilterOptionWidget(
+                                          title: "Model ",
+                                          titleSub: '*(${brand['brand'].brand ?? ''})',
+                                          subTitle: controller.brandAndSelectedModel[index]['model'].isEmpty
+                                              ? 'Choose Model'
+                                              : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
+                                                    e.name.toString()
+                                                  ]).join(', ')}',
+                                          onTap: () {
+                                            Get.bottomSheet(
+                                              CarMultiModelBottomSheet(
+                                                title: "Model",
+                                                data: (brand['brand'].model ?? <CarModel>[]).toList(),
+                                                selectedData: controller.brandAndSelectedModel[index]['model'],
+                                                onSelect: (p0) {
+                                                  controller.brandAndSelectedModel[index]['model'] = p0;
+                                                  controller.brandAndSelectedModel.refresh();
+                                                },
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  )
+                                ],
+                              );
+                            }),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Row(
                               children: [
-                                ...List.generate(
-                                  controller.brandAndSelectedModel.length,
-                                  (index) {
-                                    var brand =
-                                        controller.brandAndSelectedModel[index];
-                                    return SizedBox(
-                                      width: (Get.width /
-                                              (controller.brand.length > 1
-                                                  ? 2
-                                                  : 1)) -
-                                          26.w,
-                                      child: FilterOptionWidget(
-                                        title: "Model ",
-                                        titleSub:
-                                            '*(${brand['brand'].brand ?? ''})',
-                                        subTitle: controller
-                                                .brandAndSelectedModel[index]
-                                                    ['model']
-                                                .isEmpty
-                                            ? 'Choose Model'
-                                            : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
-                                                  e.name.toString()
-                                                ]).join(', ')}',
+                                Expanded(
+                                  child: Obx(() => FilterOptionWidget(
+                                        title: "Body Type",
+                                        subTitle: controller.bodyType.value,
                                         onTap: () {
                                           Get.bottomSheet(
-                                            CarMultiModelBottomSheet(
-                                              title: "Model",
-                                              data: (brand['brand'].model ??
-                                                      <CarModel>[])
-                                                  .toList(),
-                                              selectedData: controller
-                                                      .brandAndSelectedModel[
-                                                  index]['model'],
-                                              onSelect: (p0) {
-                                                controller
-                                                        .brandAndSelectedModel[
-                                                    index]['model'] = p0;
-                                                controller.brandAndSelectedModel
-                                                    .refresh();
-                                              },
+                                            FilterBottomSheet(
+                                              title: "Body Type",
+                                              data: controller.dbodyType,
+                                              selectedData: controller.bodyType,
                                             ),
                                           );
                                         },
-                                      ),
-                                    );
-                                  },
-                                )
+                                      )),
+                                ),
                               ],
-                            );
-                          }),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Obx(() => FilterOptionWidget(
-                                      title: "Body Type",
-                                      subTitle: controller.bodyType.value,
+                            ),
+                          ),
+                          // drive type
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Obx(
+                                    () => FilterOptionWidget(
+                                      title: "Drive Type",
+                                      subTitle: controller.driveType.value,
                                       onTap: () {
                                         Get.bottomSheet(
                                           FilterBottomSheet(
-                                            title: "Body Type",
-                                            data: controller.dbodyType,
-                                            selectedData: controller.bodyType,
+                                            title: "Drive Type",
+                                            data: controller.ddriveType,
+                                            selectedData: controller.driveType,
                                           ),
                                         );
                                       },
-                                    )),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // drive type
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Obx(
-                                  () => FilterOptionWidget(
-                                    title: "Drive Type",
-                                    subTitle: controller.driveType.value,
-                                    onTap: () {
-                                      Get.bottomSheet(
-                                        FilterBottomSheet(
-                                          title: "Drive Type",
-                                          data: controller.ddriveType,
-                                          selectedData: controller.driveType,
-                                        ),
-                                      );
-                                    },
+                                    ),
                                   ),
                                 ),
-                              ),
-                              10.horizontalSpace,
-                              Expanded(
-                                child: Obx(
-                                  () => FilterOptionWidget(
-                                    title: "Engine Type",
-                                    subTitle: controller.engineType.value,
-                                    onTap: () {
-                                      Get.bottomSheet(
-                                        FilterBottomSheet(
-                                          title: "Engine Type",
-                                          data: controller.dengineType,
-                                          selectedData: controller.engineType,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // transmission
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Obx(() => FilterOptionWidget(
-                                      title: "Transmission",
-                                      subTitle: controller.transmission.value,
+                                10.horizontalSpace,
+                                Expanded(
+                                  child: Obx(
+                                    () => FilterOptionWidget(
+                                      title: "Engine Type",
+                                      subTitle: controller.engineType.value,
                                       onTap: () {
                                         Get.bottomSheet(
                                           FilterBottomSheet(
-                                            title: "Transmission",
-                                            data: controller.dtransmission,
-                                            selectedData:
-                                                controller.transmission,
+                                            title: "Engine Type",
+                                            data: controller.dengineType,
+                                            selectedData: controller.engineType,
                                           ),
                                         );
                                       },
-                                    )),
-                              ),
-                              10.horizontalSpace,
-                              const Expanded(
-                                child: FilterYearRangePicker(),
-                              ),
-                            ],
-                          ),
-                        ),
-                        //color
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Obx(
-                                  () => FilterOptionWidget(
-                                    title: "Color",
-                                    subTitle: controller.color.value.isEmpty
-                                        ? 'Not Choose Yet'
-                                        : controller.color.value
-                                            .expand((e) => [e.toString()])
-                                            .join(', '),
-                                    onTap: () {
-                                      Get.bottomSheet(
-                                        ColorPickerSheet(
-                                          title: "Color",
-                                          data: controller.dcolor,
-                                          selectedData: controller.color,
-                                        ),
-                                      ).then((_) {
-                                        controller.color.refresh();
-                                      });
-                                    },
+                                    ),
                                   ),
                                 ),
-                              ),
-                              10.horizontalSpace,
-                              const Expanded(
-                                child: MileagePicker(),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    )
-                  : controller.category.value?.name?.toLowerCase() ==
-                          'real estate'
-                      ? Container(
-                          margin: EdgeInsets.symmetric(horizontal: 16.w)
-                              .copyWith(top: 16.h, bottom: 10.h),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Obx(
-                                  () => _tile(
-                                    "Floor",
-                                    productController.selectFloor.value,
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            SingleDialogPicker(
-                                          title: "Select Number of Floor",
-                                          items: List.generate(
-                                            50,
-                                            (index) => (index + 1).toString(),
+                          // transmission
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Obx(() => FilterOptionWidget(
+                                        title: "Transmission",
+                                        subTitle: controller.transmission.value,
+                                        onTap: () {
+                                          Get.bottomSheet(
+                                            FilterBottomSheet(
+                                              title: "Transmission",
+                                              data: controller.dtransmission,
+                                              selectedData: controller.transmission,
+                                            ),
+                                          );
+                                        },
+                                      )),
+                                ),
+                                10.horizontalSpace,
+                                const Expanded(
+                                  child: FilterYearRangePicker(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          //color
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Obx(
+                                    () => FilterOptionWidget(
+                                      title: "Color",
+                                      subTitle: controller.color.isEmpty
+                                          ? 'Not Choose Yet'
+                                          : controller.color.expand((e) => [e.toString()]).join(', '),
+                                      onTap: () {
+                                        Get.bottomSheet(
+                                          ColorPickerSheet(
+                                            title: "Color",
+                                            data: controller.dcolor,
+                                            selectedData: controller.color,
                                           ),
-                                          selectYear:
-                                              productController.selectFloor,
-                                        ),
-                                      );
-                                    },
+                                        ).then((_) {
+                                          controller.color.refresh();
+                                        });
+                                      },
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Expanded(
-                                child: Obx(
-                                  () => _tile(
-                                    "Room",
-                                    productController.selectRoom.value,
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            SingleDialogPicker(
-                                          title: "Select Number of Room",
-                                          items: List.generate(
-                                            50,
-                                            (index) => (index + 1).toString(),
-                                          ),
-                                          selectYear:
-                                              productController.selectRoom,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
+                                // 10.horizontalSpace,
+                                // const Expanded(
+                                //   child: MileagePicker(),
+                                // ),
+                              ],
+                            ),
                           ),
-                        )
-                      : const Center();
-            }),
+                        ],
+                      )
+                    : (controller.category.value?.name?.toLowerCase().contains("real") ?? false) ||
+                            (controller.category.value?.name?.toLowerCase().contains("house") ?? false) ||
+                            (controller.category.value?.name?.toLowerCase().contains("room") ?? false) ||
+                            (controller.category.value?.name?.toLowerCase().contains("rent") ?? false)
+                        ? Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Obx(
+                                    () => _tile(
+                                      "Floor",
+                                      productController.selectFloor.value,
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => SingleDialogPicker(
+                                            title: "Select Number of Floor",
+                                            items: List.generate(
+                                              50,
+                                              (index) => (index + 1).toString(),
+                                            ),
+                                            selectYear: productController.selectFloor,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Obx(
+                                    () => _tile(
+                                      "Room",
+                                      productController.selectRoom.value,
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => SingleDialogPicker(
+                                            title: "Select Number of Room",
+                                            items: List.generate(
+                                              50,
+                                              (index) => (index + 1).toString(),
+                                            ),
+                                            selectYear: productController.selectRoom,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : const Center();
+              },
+            ),
           ),
 
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w)
-                  .copyWith(top: 20.h, left: 12.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 20.h, left: 12.w),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          "Credit",
-                          style: bold.copyWith(fontSize: 14.sp),
-                        ),
-                      ),
-                      AdvancedSwitch(
-                        onChanged: (value) {
-                          controller.credit.value = value;
-                        },
-                        controller: credit,
-                        activeColor: AppColors.primary,
-                        inactiveColor: Colors.grey,
-                        width: 45.0,
-                        height: 25.h,
-                        enabled: true,
-                        disabledOpacity: 0.5,
-                      ),
-                    ],
-                  ),
-                  10.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          "Exchange",
-                          style: bold.copyWith(fontSize: 14.sp),
-                        ),
-                      ),
-                      AdvancedSwitch(
-                        onChanged: (value) {
-                          controller.exchange.value = value;
-                        },
-                        controller: exchange,
-                        activeColor: AppColors.primary,
-                        inactiveColor: Colors.grey,
-                        width: 45.0,
-                        height: 25.h,
-                        enabled: true,
-                        disabledOpacity: 0.5,
-                      ),
-                    ],
-                  ),
+                  Obx(() {
+                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
+                            controller.category.value?.name?.toLowerCase() == 'services' ||
+                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.w),
+                                child: Text(
+                                  "Credit",
+                                  style: bold.copyWith(fontSize: 14.sp),
+                                ),
+                              ),
+                              AdvancedSwitch(
+                                onChanged: (value) {
+                                  controller.credit.value = value;
+                                },
+                                controller: credit,
+                                activeColor: AppColors.primary,
+                                inactiveColor: Colors.grey,
+                                width: 45.0,
+                                height: 25.h,
+                                enabled: true,
+                                disabledOpacity: 0.5,
+                              ),
+                            ],
+                          );
+                  }),
                   10.verticalSpace,
                   Obx(() {
-                    return controller.category.value?.name?.toLowerCase() ==
-                            'automobile'
+                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
+                            controller.category.value?.name?.toLowerCase() == 'services' ||
+                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.w),
+                                child: Text(
+                                  "Exchange",
+                                  style: bold.copyWith(fontSize: 14.sp),
+                                ),
+                              ),
+                              AdvancedSwitch(
+                                onChanged: (value) {
+                                  controller.exchange.value = value;
+                                },
+                                controller: exchange,
+                                activeColor: AppColors.primary,
+                                inactiveColor: Colors.grey,
+                                width: 45.0,
+                                height: 25.h,
+                                enabled: true,
+                                disabledOpacity: 0.5,
+                              ),
+                            ],
+                          );
+                  }),
+                  10.verticalSpace,
+                  Obx(() {
+                    return controller.category.value?.name?.toLowerCase() == 'automobile'
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1036,9 +982,7 @@ class _FilterViewState extends State<FilterView> {
                 child: Obx(() {
                   return ElevatedButton(
                     style: OutlinedButton.styleFrom(
-                      backgroundColor: controller.category.value == null
-                          ? AppColors.liteGray
-                          : AppColors.primary,
+                      backgroundColor: controller.category.value == null ? AppColors.liteGray : AppColors.primary,
                       padding: EdgeInsets.symmetric(vertical: 18.h),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
@@ -1055,8 +999,7 @@ class _FilterViewState extends State<FilterView> {
                             if (widget.isBack) {
                               Get.back();
                             } else {
-                              Get.to(const FilterResultsView(),
-                                  transition: Transition.rightToLeft);
+                              Get.to(const FilterResultsView(), transition: Transition.rightToLeft);
                             }
                           },
                     child: Obx(() {
@@ -1118,8 +1061,7 @@ class _FilterViewState extends State<FilterView> {
                     value.isEmpty ? 'Not chosen yet' : value,
                     style: regular.copyWith(
                       fontSize: 14.sp,
-                      fontWeight:
-                          value.isEmpty ? FontWeight.normal : FontWeight.w600,
+                      fontWeight: value.isEmpty ? FontWeight.normal : FontWeight.w600,
                       color: value.isEmpty ? Colors.red : Colors.black87,
                     ),
                   ),

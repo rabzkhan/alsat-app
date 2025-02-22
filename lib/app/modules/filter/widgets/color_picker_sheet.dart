@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +24,7 @@ class ColorPickerSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: Get.height * 0.62,
+      height: Get.height * 0.8,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.only(
@@ -68,8 +70,8 @@ class ColorPickerSheet extends StatelessWidget {
               padding: EdgeInsets.symmetric(horizontal: 10.w),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                crossAxisSpacing: 10.w,
-                mainAxisSpacing: 10.h,
+                crossAxisSpacing: 0.w,
+                mainAxisSpacing: 0.h,
                 childAspectRatio: 1,
               ),
               itemCount: data.length,
@@ -82,9 +84,7 @@ class ColorPickerSheet extends StatelessWidget {
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.r),
-                      color: !isSelected
-                          ? Colors.transparent
-                          : AppColors.primary.withOpacity(0.2),
+                      color: !isSelected ? Colors.transparent : AppColors.primary.withOpacity(0.2),
                     ),
                     child: GestureDetector(
                       onTap: () {
@@ -135,7 +135,10 @@ class ColorPickerSheet extends StatelessWidget {
                 Expanded(
                   child: CupertinoButton(
                     color: AppColors.primary,
-                    child: const Text('Ok'),
+                    child: Text(
+                      'Ok',
+                      style: medium.copyWith(color: Colors.white),
+                    ),
                     onPressed: () {
                       Get.back(result: selectedData);
                     },

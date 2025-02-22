@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:developer';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
@@ -27,8 +29,7 @@ class AllUserTile extends StatelessWidget {
         productDetailsController.isFetchUserLoading.value = false;
         Get.to(
           () => ClientProfileView(
-            userId: (productDetailsController.postUserModel.value?.id ?? '')
-                .toString(),
+            userId: (productDetailsController.postUserModel.value?.id ?? '').toString(),
             productDetailsController: productDetailsController,
           ),
           transition: Transition.fadeIn,
@@ -84,7 +85,7 @@ class AllUserTile extends StatelessWidget {
                       Flexible(
                         child: Text(
                           maxLines: 1,
-                          premiumUserModel.userName ?? 'Premium User Name',
+                          premiumUserModel.userName ?? '',
                           style: bold.copyWith(fontSize: 15.sp),
                         ),
                       ),

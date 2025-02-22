@@ -115,9 +115,7 @@ class StoryCircle extends StatelessWidget {
               );
             },
             child: CircleAvatar(
-              radius: borderThickness != null
-                  ? altPadding + borderThickness!
-                  : altPadding + 1.5,
+              radius: borderThickness != null ? altPadding + borderThickness! : altPadding + 1.5,
               backgroundColor: highLightColor ?? const Color(0xffcc306C),
               child: CircleAvatar(
                 backgroundColor: paddingColor ?? Colors.white,

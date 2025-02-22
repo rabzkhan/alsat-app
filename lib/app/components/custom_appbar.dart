@@ -37,11 +37,20 @@ class CustomAppBar extends StatelessWidget {
           !isShowBackButton
               ? scaffoldKey == null
                   ? const Center()
-                  : IconButton(
-                      onPressed: () {
-                        scaffoldKey!.currentState?.openDrawer();
-                      },
-                      icon: const Icon(Icons.menu),
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          scaffoldKey!.currentState?.openDrawer();
+                        },
+                        icon: Image.asset(
+                          "assets/icons/menu.png",
+                          height: 30.h,
+                        ),
+                      ),
                     )
               : const BackButton(),
           4.horizontalSpace,

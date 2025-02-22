@@ -5,7 +5,6 @@ import 'dart:io';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
-import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +24,7 @@ import '../../product/model/product_post_list_res.dart';
 import '../../story/model/story_res.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
+import '../models/notification_res.dart';
 
 class HomeController extends GetxController {
   RxBool isShowSearch = false.obs;
@@ -68,6 +68,7 @@ class HomeController extends GetxController {
     fetchCarBrand();
     getUserPostCategories();
     userOwnStory();
+    fetchNotification();
     super.onInit();
   }
 
@@ -87,8 +88,7 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        categories.value =
-            data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         isCategoryLoading.value = false;
       },
@@ -118,8 +118,7 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        userPostCategories.value =
-            data.map((json) => CategoriesModel.fromJson(json)).toList();
+        userPostCategories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
         log('userPostCategories: ${userPostCategories.length}');
         myListingSelectCategory.value = userPostCategories.first;
         fetchMyProducts();
@@ -207,11 +206,10 @@ class HomeController extends GetxController {
   RxBool isFilterLoading = true.obs;
   RxString searchText = RxString('');
   TextEditingController searchController = TextEditingController();
-  Future<void> fetchPremiumUser(
-      {String? nextPaginateDate, bool isFilter = false}) async {
+  Future<void> fetchPremiumUser({String? nextPaginateDate, bool isFilter = false}) async {
     FilterController filterController = Get.find<FilterController>();
 
-    String url = '${Constants.baseUrl}/users?limit=10';
+    String url = '${Constants.baseUrl}/users?plan=premium&limit=10';
     if (nextPaginateDate != null) {
       url = "$url&next=$nextPaginateDate";
     }
@@ -219,20 +217,21 @@ class HomeController extends GetxController {
         ? {
             "category": category.value?.name,
             "online": isActiveUser.value,
-            "premium": buyerProtection.value,
-            "location": filterController.getSelectedLocationData().isEmpty
-                ? null
-                : filterController.getSelectedLocationData(),
+            "buyer_protection": buyerProtection.value,
+            "location":
+                filterController.getSelectedLocationData().isEmpty ? null : filterController.getSelectedLocationData(),
             "sorting": {
               "follower": followersValue.value == 'Max To Min' ? -1 : 1,
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,
             }
           }
-        : {"online": false, "premium": false};
+        : {"category": category.value?.name};
     if (searchText.value.isNotEmpty) {
+      data.clear();
       data['search'] = searchText.value;
     }
     log('Premium User: Date: $data-- $url');
+    data.removeWhere((key, value) => value == null);
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
@@ -244,6 +243,7 @@ class HomeController extends GetxController {
       onLoading: () {
         if (nextPaginateDate == null && !isFilter) {
           isPremiumLoading.value = true;
+          isFilterLoading.value = true;
           premiumUserList.clear();
         }
         if (isFilter && nextPaginateDate == null) {
@@ -258,12 +258,14 @@ class HomeController extends GetxController {
           if (isFilter) {
             filterUserList.addAll(allUserInformationRes.data?.users ?? []);
           } else {
+            filterUserList.addAll(allUserInformationRes.data?.users ?? []);
             premiumUserList.addAll(allUserInformationRes.data?.users ?? []);
           }
         } else {
           if (isFilter) {
             filterUserList.value = allUserInformationRes.data?.users ?? [];
           } else {
+            filterUserList.value = allUserInformationRes.data?.users ?? [];
             premiumUserList.value = allUserInformationRes.data?.users ?? [];
           }
         }
@@ -282,8 +284,7 @@ class HomeController extends GetxController {
     );
   }
 
-  RefreshController premiumRefreshController =
-      RefreshController(initialRefresh: true);
+  RefreshController premiumRefreshController = RefreshController(initialRefresh: true);
   void onPremiumRefresh() async {
     premiumUserList.clear();
     fetchPremiumUser();
@@ -304,8 +305,7 @@ class HomeController extends GetxController {
   }
 
   void onUserFilterLoading() async {
-    await fetchPremiumUser(
-        nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
+    await fetchPremiumUser(nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
     userFilterRefreshController.loadComplete();
   }
 
@@ -325,8 +325,7 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        List<StoryModel> story =
-            data.map((json) => StoryModel.fromJson(json)).toList();
+        List<StoryModel> story = data.map((json) => StoryModel.fromJson(json)).toList();
         storyList.addAll(story);
         isStoryLoading.value = false;
         storyList.refresh();
@@ -354,8 +353,7 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        storyList.value =
-            data.map((json) => StoryModel.fromJson(json)).toList();
+        storyList.value = data.map((json) => StoryModel.fromJson(json)).toList();
         fetchAppStores();
       },
       onError: (error) {
@@ -462,14 +460,12 @@ class HomeController extends GetxController {
     AuthController authController = Get.find();
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url =
-          '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
+      url = '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
     } else {
       url = "$url?user=${authController.userDataModel.value.id}";
     }
-    Map<String, dynamic> data = myListingSelectCategory.value != null
-        ? {"category_id": myListingSelectCategory.value!.sId ?? ""}
-        : {};
+    Map<String, dynamic> data =
+        myListingSelectCategory.value != null ? {"category_id": myListingSelectCategory.value!.sId ?? ""} : {};
     log('PostMy $url  ${data.toString()} ${myListingSelectCategory.value?.name}');
     await BaseClient.safeApiCall(
       url,
@@ -508,8 +504,7 @@ class HomeController extends GetxController {
   Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
 
   //--- Get All PRODUCT ---//
-  RefreshController myListingRefreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController myListingRefreshController = RefreshController(initialRefresh: false);
   void myListingRefresh() async {
     await fetchMyProducts();
     myListingRefreshController.refreshCompleted();
@@ -517,9 +512,45 @@ class HomeController extends GetxController {
 
   void myListingLoading() async {
     if (myProductPostListRes?.hasMore ?? false) {
-      await fetchMyProducts(
-          nextPaginateDate: myProductList.value.last.createdAt);
+      await fetchMyProducts(nextPaginateDate: myProductList.last.createdAt);
     }
     myListingRefreshController.loadComplete();
+  }
+
+  //========================================Notification========================================================///
+  // RefreshController notificationRefreshController = RefreshController(initialRefresh: false);
+  // void onNotificationRefresh() async {
+  //   await fetchNotification();
+  //   notificationRefreshController.refreshCompleted();
+  // }
+
+  // void onNotificationLoading() async {
+  //   notificationRefreshController.loadComplete();
+  // }
+
+  RxList<NotificationData> notifications = <NotificationData>[].obs;
+  RxBool isNotificationLoading = false.obs;
+  fetchNotification() async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.notification}",
+      DioRequestType.get,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isNotificationLoading.value = true;
+      },
+      onSuccess: (response) async {
+        List<dynamic> data = response.data['data'] as List<dynamic>? ?? [];
+        notifications.value = data.map((json) => NotificationData.fromJson(json)).toList();
+        isNotificationLoading.value = false;
+        log('fetchNotification: ${notifications.length}');
+      },
+      onError: (error) {
+        log('fetchNotification: ${error.message}');
+        isStoryLoading.value = false;
+      },
+    );
   }
 }
