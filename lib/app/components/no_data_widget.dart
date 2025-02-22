@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,8 +9,7 @@ class NoDataWidget extends StatelessWidget {
   final double? bottomHeight;
   final String? title;
   final bool isShowIcon;
-  const NoDataWidget(
-      {super.key, this.bottomHeight, this.title, this.isShowIcon = true});
+  const NoDataWidget({super.key, this.bottomHeight, this.title, this.isShowIcon = true});
 
   @override
   Widget build(BuildContext context) {
@@ -77,8 +78,7 @@ class NoDataWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: LinearProgressIndicator(
-                        backgroundColor:
-                            context.theme.primaryColor.withOpacity(.3),
+                        backgroundColor: context.theme.primaryColor.withOpacity(.3),
                         color: context.theme.primaryColor,
                         minHeight: 1.w,
                         value: 0,
@@ -95,8 +95,7 @@ class NoDataWidget extends StatelessWidget {
                     ),
                     Expanded(
                       child: LinearProgressIndicator(
-                        backgroundColor:
-                            context.theme.primaryColor.withOpacity(.3),
+                        backgroundColor: context.theme.primaryColor.withOpacity(.3),
                         color: Colors.white,
                         minHeight: 1.w,
                         value: 0,
@@ -111,7 +110,7 @@ class NoDataWidget extends StatelessWidget {
         ),
       ),
     ).animate().fadeIn(
-          duration: 500.ms,
+          duration: 1000.ms,
           curve: Curves.easeInOut,
         );
   }
