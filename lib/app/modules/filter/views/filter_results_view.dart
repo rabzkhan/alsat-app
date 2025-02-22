@@ -109,22 +109,17 @@ class FilterResultsView extends GetView<FilterController> {
                       itemBuilder: (BuildContext context, int index) {
                         ProductModel? productModel =
                             controller.isFilterLoading.value ? null : controller.itemList[index];
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            bottom: 5.h,
-                          ),
-                          child: Skeletonizer(
-                            enabled: controller.isFilterLoading.value,
-                            // effect: ShimmerEffect(
-                            //   baseColor:
-                            //       Get.theme.disabledColor.withOpacity(.2),
-                            //   highlightColor: Colors.white,
-                            //   begin: Alignment.centerLeft,
-                            //   end: Alignment.centerRight,
-                            // ),
-                            child: ProductListTile(
-                              productModel: productModel,
-                            ),
+                        return Skeletonizer(
+                          enabled: controller.isFilterLoading.value,
+                          // effect: ShimmerEffect(
+                          //   baseColor:
+                          //       Get.theme.disabledColor.withOpacity(.2),
+                          //   highlightColor: Colors.white,
+                          //   begin: Alignment.centerLeft,
+                          //   end: Alignment.centerRight,
+                          // ),
+                          child: ProductListTile(
+                            productModel: productModel,
                           ),
                         );
                       },

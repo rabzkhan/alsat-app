@@ -264,7 +264,7 @@ class _MySettingsState extends State<MySettings> {
                               ),
                               5.horizontalSpace,
                               Text(
-                                "Premiums",
+                                "Premium",
                                 style: regular.copyWith(
                                   fontSize: 12.sp,
                                   color: Get.theme.primaryColor,

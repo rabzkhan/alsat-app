@@ -226,7 +226,7 @@ class _FilterViewState extends State<FilterView> {
           ),
           SliverToBoxAdapter(
             child: Obx(() {
-              return controller.category.value?.name?.toLowerCase() == 'phone'
+              return controller.category.value?.name?.toLowerCase() == 'phones'
                   ? GestureDetector(
                       onTap: () {
                         Get.bottomSheet(
@@ -538,8 +538,7 @@ class _FilterViewState extends State<FilterView> {
           SliverToBoxAdapter(
             child: Obx(
               () {
-                return controller.category.value?.name?.toLowerCase() == 'automobile' ||
-                        controller.category.value?.name?.toLowerCase() == 'cars' ||
+                return controller.category.value?.name?.toLowerCase() == 'cars' ||
                         controller.category.value?.name?.toLowerCase() == "foreign cars"
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
@@ -875,55 +874,67 @@ class _FilterViewState extends State<FilterView> {
               padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 20.h, left: 12.w),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          "Credit",
-                          style: bold.copyWith(fontSize: 14.sp),
-                        ),
-                      ),
-                      AdvancedSwitch(
-                        onChanged: (value) {
-                          controller.credit.value = value;
-                        },
-                        controller: credit,
-                        activeColor: AppColors.primary,
-                        inactiveColor: Colors.grey,
-                        width: 45.0,
-                        height: 25.h,
-                        enabled: true,
-                        disabledOpacity: 0.5,
-                      ),
-                    ],
-                  ),
+                  Obx(() {
+                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
+                            controller.category.value?.name?.toLowerCase() == 'services' ||
+                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.w),
+                                child: Text(
+                                  "Credit",
+                                  style: bold.copyWith(fontSize: 14.sp),
+                                ),
+                              ),
+                              AdvancedSwitch(
+                                onChanged: (value) {
+                                  controller.credit.value = value;
+                                },
+                                controller: credit,
+                                activeColor: AppColors.primary,
+                                inactiveColor: Colors.grey,
+                                width: 45.0,
+                                height: 25.h,
+                                enabled: true,
+                                disabledOpacity: 0.5,
+                              ),
+                            ],
+                          );
+                  }),
                   10.verticalSpace,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10.w),
-                        child: Text(
-                          "Exchange",
-                          style: bold.copyWith(fontSize: 14.sp),
-                        ),
-                      ),
-                      AdvancedSwitch(
-                        onChanged: (value) {
-                          controller.exchange.value = value;
-                        },
-                        controller: exchange,
-                        activeColor: AppColors.primary,
-                        inactiveColor: Colors.grey,
-                        width: 45.0,
-                        height: 25.h,
-                        enabled: true,
-                        disabledOpacity: 0.5,
-                      ),
-                    ],
-                  ),
+                  Obx(() {
+                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
+                            controller.category.value?.name?.toLowerCase() == 'services' ||
+                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
+                        ? SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(left: 10.w),
+                                child: Text(
+                                  "Exchange",
+                                  style: bold.copyWith(fontSize: 14.sp),
+                                ),
+                              ),
+                              AdvancedSwitch(
+                                onChanged: (value) {
+                                  controller.exchange.value = value;
+                                },
+                                controller: exchange,
+                                activeColor: AppColors.primary,
+                                inactiveColor: Colors.grey,
+                                width: 45.0,
+                                height: 25.h,
+                                enabled: true,
+                                disabledOpacity: 0.5,
+                              ),
+                            ],
+                          );
+                  }),
                   10.verticalSpace,
                   Obx(() {
                     return controller.category.value?.name?.toLowerCase() == 'automobile'

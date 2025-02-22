@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/components/app_drawer.dart';
 import 'package:alsat/app/components/bottom_navigation_bar.dart';
 import 'package:alsat/app/components/custom_appbar.dart';

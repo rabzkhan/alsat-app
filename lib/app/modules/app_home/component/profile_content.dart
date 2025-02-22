@@ -174,7 +174,7 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                     tabs: userController.profileTab.map(
                       (e) {
                         return Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.symmetric(vertical: 8.h),
                           child: Text(
                             e,
                           ),
