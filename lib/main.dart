@@ -66,18 +66,20 @@ Future<void> main() async {
               getPages: AppPages.routes,
               themeMode: ThemeMode.light,
               // home: const OnboardingPage(),
+
               initialBinding: AppBinding(),
               theme: appTheme(),
               locale: Locale(localizationService.locale.value.languageCode),
               localizationsDelegates: const [
-                AppLocalizations.delegate, // Add this line
+                AppLocalizations.delegate,
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate
               ],
               supportedLocales: const [
                 Locale('en'),
-                Locale('tk'),
+                Locale('tr'),
+                Locale('ru'),
               ],
             );
           }),

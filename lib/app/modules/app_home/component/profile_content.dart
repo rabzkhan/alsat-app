@@ -24,7 +24,8 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => _ProfileContentState();
 }
 
-class _ProfileContentState extends State<ProfileContent> with TickerProviderStateMixin {
+class _ProfileContentState extends State<ProfileContent>
+    with TickerProviderStateMixin {
   final UserController userController = Get.find();
   final AuthController authController = Get.find();
   HomeController homeController = Get.find();
@@ -39,7 +40,8 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
     );
 
     mainTabController.addListener(() {
-      if (homeController.profileTabCurrentPage.value != mainTabController.index) {
+      if (homeController.profileTabCurrentPage.value !=
+          mainTabController.index) {
         homeController.profileTabCurrentPage.value = mainTabController.index;
       }
     });
@@ -57,7 +59,7 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
       ),
       child: Obx(() {
         return DefaultTabController(
-          length: homeController.userPostCategories.length,
+          length: homeController.userPostCategories.length + 1,
           child: NestedScrollView(
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverToBoxAdapter(
@@ -77,7 +79,8 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                         ),
                       ),
                       title: Obx(() => Text(
-                            authController.userDataModel.value.userName ?? 'Guest User',
+                            authController.userDataModel.value.userName ??
+                                'Guest User',
                             style: bold.copyWith(
                               fontSize: 18.sp,
                             ),
@@ -89,7 +92,8 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Obx(() => Text(
-                                  authController.userDataModel.value.phone ?? ' --- ',
+                                  authController.userDataModel.value.phone ??
+                                      ' --- ',
                                   style: regular.copyWith(
                                     fontSize: 10.sp,
                                   ),
@@ -99,7 +103,10 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                                 () => RatingBar.builder(
                                   itemSize: 15.h,
                                   initialRating: MySharedPref.isLoggedIn()
-                                      ? double.parse((authController.userDataModel.value.rating ?? "0").toString())
+                                      ? double.parse((authController
+                                                  .userDataModel.value.rating ??
+                                              "0")
+                                          .toString())
                                       : 0,
                                   minRating: 0,
                                   direction: Axis.horizontal,
@@ -132,8 +139,10 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                                         vertical: 4.h,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Get.theme.primaryColor.withOpacity(.15),
-                                        borderRadius: BorderRadius.circular(5.r),
+                                        color: Get.theme.primaryColor
+                                            .withOpacity(.15),
+                                        borderRadius:
+                                            BorderRadius.circular(5.r),
                                       ),
                                       child: Image.asset(
                                         settingIcon,
@@ -196,8 +205,16 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                           preferredSize: const Size.fromHeight(38),
                           child: TabBar(
                             onTap: (value) {
-                              homeController.myListingSelectCategory.value = homeController.userPostCategories[value];
-                              homeController.myListingRefresh();
+                              if (value == 0) {
+                                homeController.myListingSelectCategory.value =
+                                    null;
+                                homeController.myListingRefresh();
+                              } else {
+                                homeController.myListingSelectCategory.value =
+                                    homeController
+                                        .userPostCategories[value - 1];
+                                homeController.myListingRefresh();
+                              }
                             },
                             isScrollable: true,
                             unselectedLabelColor: Colors.black87,
@@ -211,16 +228,22 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                                 ),
                               ),
                             ),
-                            tabs: homeController.userPostCategories
-                                .map(
-                                  (e) => Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 6.h),
-                                    child: Text(
-                                      e.name ?? '',
-                                    ),
+                            tabs: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(vertical: 6.h),
+                                child: Text(
+                                  'All',
+                                ),
+                              ),
+                              ...homeController.userPostCategories.map(
+                                (e) => Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 6.h),
+                                  child: Text(
+                                    e.name ?? '',
                                   ),
-                                )
-                                .toList(),
+                                ),
+                              )
+                            ].toList(),
                           ),
                         ),
                       )

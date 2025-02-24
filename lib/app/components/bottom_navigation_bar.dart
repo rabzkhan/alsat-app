@@ -24,13 +24,17 @@ class AppBottomNavigationBar extends StatelessWidget {
       blur: 30,
       alignment: Alignment.bottomCenter,
       border: 0,
-      linearGradient: LinearGradient(begin: Alignment.topLeft, end: Alignment.bottomRight, colors: [
-        const Color(0xFFffffff).withOpacity(0.1),
-        const Color(0xFFFFFFFF).withOpacity(0.5),
-      ], stops: const [
-        0.1,
-        1,
-      ]),
+      linearGradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFFffffff).withOpacity(0.1),
+            const Color(0xFFFFFFFF).withOpacity(0.5),
+          ],
+          stops: const [
+            0.1,
+            1,
+          ]),
       borderGradient: LinearGradient(
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
@@ -43,7 +47,8 @@ class AppBottomNavigationBar extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 25.w),
         child: Row(
           children: [
-            ...List.generate(homeController.bottomBarItems(local).length, (index) {
+            ...List.generate(homeController.bottomBarItems(local).length,
+                (index) {
               return _bottomItem(
                 icon: homeController.bottomBarItems(local)[index]['icon'],
                 name: homeController.bottomBarItems(local)[index]['name'],
@@ -56,7 +61,8 @@ class AppBottomNavigationBar extends StatelessWidget {
     );
   }
 
-  Expanded _bottomItem({required String name, required String icon, required int index}) {
+  Expanded _bottomItem(
+      {required String name, required String icon, required int index}) {
     final homeController = Get.put(HomeController());
     return Expanded(
       child: Obx(() {
@@ -78,21 +84,27 @@ class AppBottomNavigationBar extends StatelessWidget {
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                width: homeController.homeBottomIndex.value == index ? 52.w : 47.w,
-                height: homeController.homeBottomIndex.value == index ? 27.h : 22.h,
+                width:
+                    homeController.homeBottomIndex.value == index ? 52.w : 47.w,
+                height:
+                    homeController.homeBottomIndex.value == index ? 27.h : 22.h,
                 child: Image.asset(
                   icon,
-                  color:
-                      homeController.homeBottomIndex.value == index ? Get.theme.primaryColor : Get.theme.disabledColor,
+                  color: homeController.homeBottomIndex.value == index
+                      ? Get.theme.primaryColor
+                      : Get.theme.disabledColor,
                 ),
               ),
               5.verticalSpace,
               Text(
+                maxLines: 1,
+                textAlign: TextAlign.center,
                 name,
                 style: regular.copyWith(
                   fontSize: 11.sp,
-                  color:
-                      homeController.homeBottomIndex.value == index ? Get.theme.primaryColor : Get.theme.disabledColor,
+                  color: homeController.homeBottomIndex.value == index
+                      ? Get.theme.primaryColor
+                      : Get.theme.disabledColor,
                 ),
               ),
             ],
