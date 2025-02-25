@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
@@ -134,22 +135,32 @@ Future<Map<String, dynamic>> videoToBase64(String filePath) async {
 }
 
 Future<Map<String, dynamic>> audioToBase64(String filePath) async {
-  Map<String, dynamic> fileData = {};
-  File file = File(filePath);
-  if (await file.exists()) {
-    Uint8List fileBytes = await file.readAsBytes();
-    String base64String = base64Encode(fileBytes);
-    int fileSize = file.lengthSync();
-    String hash = calculateHashAudio(fileBytes);
-    fileData = {
-      "name": base64String,
-      "type": "audio",
-      "size": fileSize,
-      "hash": hash,
-      "content_type": "audio/m4a",
-    };
+  try {
+    Map<String, dynamic> fileData = {};
+    File file = File(filePath);
+
+    if (await file.exists()) {
+      Uint8List fileBytes = await file.readAsBytes();
+      //log('audioFilePath Uint8List $fileBytes');
+      String base64String = base64Encode(fileBytes);
+
+      int fileSize = file.lengthSync();
+      // log('audioFilePath fileSize $fileSize');
+      String hash = calculateHashAudio(fileBytes);
+      //log('audioFilePath hash $hash');
+      fileData = {
+        "name": base64String,
+        "type": "audio",
+        "size": fileSize,
+        "hash": hash,
+        "content_type": "audio/m4a",
+      };
+    }
+    return fileData;
+  } catch (e) {
+    log('audioFilePath error $e');
+    return {};
   }
-  return fileData;
 }
 
 String calculateHashAudio(Uint8List fileBytes) {
@@ -175,7 +186,8 @@ String formatFollowers(int followers) {
   }
 }
 
-List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserInfo, AuthController authController) {
+List<ChatMessage> messageConvert(MessageModel element,
+    Participant? selectUserInfo, AuthController authController) {
   List<ChatMessage> coverMessage = [];
   if (element.attachments != null && (element.attachments ?? []).isNotEmpty) {
     for (Attachment e in element.attachments ?? []) {
@@ -201,7 +213,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -235,7 +248,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -269,7 +283,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -303,7 +318,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -337,7 +353,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -371,7 +388,8 @@ List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserIn
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id == element.replyTo?.sender?.id,
+                    isSender: authController.userDataModel.value.id ==
+                        element.replyTo?.sender?.id,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",

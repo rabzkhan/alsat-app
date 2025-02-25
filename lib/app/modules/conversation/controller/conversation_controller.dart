@@ -78,10 +78,12 @@ class ConversationController extends GetxController {
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         isSendingMessage.value = false;
+        return;
       },
       onError: (error) {
         isSendingMessage.value = false;
         log('Error: $error');
+        return;
       },
     );
   }
@@ -349,7 +351,7 @@ class ConversationController extends GetxController {
               ? [location.latitude, location.longitude]
               : audioPath),
     );
-    coverMessage.insert(0, message);
+    if (audioPath == null) coverMessage.insert(0, message);
     coverMessage.refresh();
     if (image != null) {
       Map<String, dynamic> data = {
@@ -373,11 +375,20 @@ class ConversationController extends GetxController {
       };
       sendMessageToServer(messageController.text, map: data);
     } else if (audioPath != null) {
+      log('audioPath: in if $audioPath');
       Map<String, dynamic> map = {
         "type": "audio",
         "file": await audioToBase64(audioPath),
       };
-      sendMessageToServer(messageController.text, map: map);
+      // log('audioPath: $audioPath  $map');//
+      if (map.isEmpty) {
+        CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
+      } else {
+        isConversationMessageLoading.value = true;
+
+        await sendMessageToServer(messageController.text, map: map);
+        getConversationsMessages();
+      }
     } else {
       sendMessageToServer(messageController.text);
     }
