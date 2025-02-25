@@ -44,10 +44,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   String audioFilePath = "";
   Future<void> startRecording() async {
-    Directory? appDirectory = await getExternalStorageDirectory();
+    audioFilePath = "";
+    Directory? appDirectory = await getApplicationDocumentsDirectory();
     audioFilePath =
-        '${appDirectory?.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
-    if (!await appDirectory!.exists()) {
+        '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+    if (!await appDirectory.exists()) {
       await appDirectory.create(recursive: true);
     }
     try {
@@ -80,9 +81,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   Future<void> stopRecording() async {
     try {
       await record.stop();
-      audioFilePath = '';
       _elapsedSeconds = 0;
-      record.cancel();
       _timer?.cancel();
       setState(() {
         isRecording = false;
