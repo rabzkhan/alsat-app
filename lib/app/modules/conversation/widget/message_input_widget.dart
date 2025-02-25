@@ -14,6 +14,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:music_visualizer/music_visualizer.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../product/controller/product_controller.dart';
 import 'package:record/record.dart';
@@ -55,7 +56,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
         String path = audioFilePath;
         await record.start(
           const RecordConfig(
-            encoder: AudioEncoder.wav,
+            encoder: AudioEncoder.aacLc,
+            bitRate: 128000,
+            sampleRate: 44100,
           ),
           path: path,
         );
@@ -68,7 +71,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
           setState(() {
             _elapsedSeconds++;
           });
-          _processAudioData(_elapsedSeconds);
         });
       }
     } catch (e) {}
@@ -77,8 +79,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
   // Stop recording
   Future<void> stopRecording() async {
     try {
-      _elapsedSeconds = 0;
       await record.stop();
+      audioFilePath = '';
+      _elapsedSeconds = 0;
+      record.cancel();
       _timer?.cancel();
       setState(() {
         isRecording = false;
@@ -209,12 +213,18 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   7.horizontalSpace,
                                   Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 10),
-                                      child: CustomPaint(
-                                        size: const Size(double.infinity, 50),
-                                        painter: WaveformPainter(
-                                          waveformData: _waveformData,
-                                        ),
+                                      padding: const EdgeInsets.only(
+                                          top: 12, bottom: 12),
+                                      child: MusicVisualizer(
+                                        barCount: 30,
+                                        curve: Curves.easeInOut,
+                                        colors: [
+                                          AppColors.primary,
+                                          AppColors.primary,
+                                          AppColors.primary,
+                                          AppColors.primary,
+                                        ],
+                                        duration: [900, 700, 600, 800, 500],
                                       ),
                                     ),
                                   ),
@@ -399,7 +409,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
                             isRecording = false;
                             setState(() {});
-
+                            log.log('audioFilePath: $audioFilePath');
                             widget.conversationController
                                 .sendMessage(audioPath: audioFilePath);
                           } else {
@@ -474,50 +484,5 @@ class _ChatInputFieldState extends State<ChatInputField> {
         ),
       );
     });
-  }
-
-  final List<double> _waveformData = [
-    ...List.generate(40, (index) {
-      return Random().nextDouble();
-    })
-  ];
-
-  void _processAudioData(int duration) {
-    double amplitude = Random().nextDouble();
-    log.log('amplitude: $amplitude');
-    _waveformData.add(amplitude);
-    log.log('waveformData: ${_waveformData.length}');
-    // setState(() {
-    //   _waveformData.add(amplitude);
-    // });
-    if (_waveformData.length > 40) {
-      _waveformData.removeAt(0);
-    }
-  }
-}
-
-class WaveformPainter extends CustomPainter {
-  final List<double> waveformData;
-  WaveformPainter({required this.waveformData});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.blue
-      ..strokeWidth = 2;
-
-    double xInterval = size.width / waveformData.length;
-    double centerY = size.height / 2;
-
-    for (int i = 0; i < waveformData.length; i++) {
-      double x = i * xInterval;
-      double y = centerY - (waveformData[i] * size.height / 2);
-      canvas.drawLine(Offset(x, centerY), Offset(x, y), paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
   }
 }

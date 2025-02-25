@@ -57,7 +57,8 @@ class AppDrawer extends StatelessWidget {
                   : ListTile(
                       onTap: () {
                         Get.back();
-                        Get.to(() => const MySettings(), transition: Transition.fadeIn);
+                        Get.to(() => const MySettings(),
+                            transition: Transition.fadeIn);
                       },
                       leading: CircleAvatar(
                         radius: 22.r,
@@ -75,7 +76,9 @@ class AppDrawer extends StatelessWidget {
                         style: bold.copyWith(fontSize: 16.sp),
                       ),
                       subtitle: Text(
-                        authController.userDataModel.value.phone ?? authController.userDataModel.value.email ?? "",
+                        authController.userDataModel.value.phone ??
+                            authController.userDataModel.value.email ??
+                            "",
                       ),
                     );
             }),
@@ -113,13 +116,16 @@ class AppDrawer extends StatelessWidget {
                     // ),
                     // 20.verticalSpace,
                     Obx(() {
-                      return conversationController.addminConversationModel.value == null
+                      return conversationController
+                                  .addminConversationModel.value ==
+                              null
                           ? const Center()
                           : InkWell(
                               onTap: () {
                                 Get.to(
                                     () => MessagesScreen(
-                                        conversation: conversationController.addminConversationModel.value!),
+                                        conversation: conversationController
+                                            .addminConversationModel.value!),
                                     transition: Transition.fadeIn);
                               },
                               child: Row(
@@ -142,7 +148,8 @@ class AppDrawer extends StatelessWidget {
                     }),
                     10.verticalSpace,
                     ExpansionTile(
-                      shape: const RoundedRectangleBorder(side: BorderSide.none),
+                      shape:
+                          const RoundedRectangleBorder(side: BorderSide.none),
                       tilePadding: EdgeInsets.zero,
                       title: Row(
                         children: [
@@ -166,15 +173,27 @@ class AppDrawer extends StatelessWidget {
                       children: [
                         TextButton.icon(
                           onPressed: () {
-                            localizationService.changeLocale(const Locale('en'));
+                            localizationService
+                                .changeLocale(const Locale('en'));
+                            Get.back();
                           },
                           label: const Text('English'),
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            localizationService.changeLocale(const Locale('tk'));
+                            localizationService
+                                .changeLocale(const Locale('tr'));
+                            Get.back();
                           },
                           label: const Text('Turkmen'),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            localizationService
+                                .changeLocale(const Locale('ru'));
+                            Get.back();
+                          },
+                          label: const Text('Russian'),
                         ),
                       ],
                     ),
