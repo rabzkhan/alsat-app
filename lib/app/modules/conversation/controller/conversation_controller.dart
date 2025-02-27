@@ -385,7 +385,6 @@ class ConversationController extends GetxController {
         CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
       } else {
         isConversationMessageLoading.value = true;
-
         await sendMessageToServer(messageController.text, map: map);
         getConversationsMessages();
       }

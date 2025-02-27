@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/modules/product/view/update_post_view.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -190,6 +191,22 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           )
                         ],
                       ),
+                      Spacer(),
+                      Obx(() => (authController.userDataModel.value.id ==
+                              productDetailsController.postUserModel.value?.id)
+                          ? ElevatedButton.icon(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Get.theme.primaryColor,
+                                elevation: 0,
+                              ),
+                              onPressed: () {
+                                Get.to(() => UpdatePostView(
+                                    productModel: widget.productModel!));
+                              },
+                              icon: const Icon(Icons.edit),
+                              label: Text('Edit'),
+                            )
+                          : Center())
                     ],
                   ),
 
@@ -243,12 +260,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             return Skeletonizer(
                               enabled:
                                   productDetailsController.isProductView.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -300,12 +318,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       .isProductLike.value ||
                                   productDetailsController
                                       .isProductDetailsLoading.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: InkWell(
                                 onTap: () {
                                   productController
@@ -320,6 +339,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       .then((_) {
                                     productDetailsController
                                         .getSingleProductDetails(
+                                            widget.productModel?.id ?? '');
+                                    productDetailsController.productLikeCount(
+                                        productId:
                                             widget.productModel?.id ?? '');
                                   });
                                 },
@@ -364,13 +386,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          Text(
-                                            '${productDetailsController.likeCount}',
-                                            style: regular.copyWith(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                          Obx(() {
+                                            return Text(
+                                              '${productDetailsController.likeCount}',
+                                              style: regular.copyWith(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            );
+                                          }),
                                         ],
                                       ),
                                     ),
@@ -393,12 +417,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             return Skeletonizer(
                               enabled: productDetailsController
                                   .isProductComment.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: InkWell(
                                 onTap: () {
                                   Get.to(
