@@ -9,11 +9,13 @@ import 'package:alsat/app/modules/authentication/model/varified_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../../utils/constants.dart';
 import '../../../data/local/my_shared_pref.dart';
+import '../../../routes/app_pages.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/view/app_home_view.dart';
 import '../widgets/sms_confirmation.dart';
@@ -230,6 +232,126 @@ class AuthController extends GetxController {
         CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
         log('profile $error <- error');
         Logger().d("$error <- error");
+      },
+    );
+  }
+
+  RxBool isDeletingAccount = false.obs;
+
+  Future<void> deleteUserAccount() async {
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        title: Text(
+          "Delete Account",
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+        ),
+        content: Text(
+          "Are you sure you want to permanently delete your account? This action cannot be undone.",
+          style: TextStyle(fontSize: 16, color: Colors.black87),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: Text("Cancel", style: TextStyle(color: Colors.black)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+            onPressed: () async {
+              Get.back();
+
+              isDeletingAccount.value = true;
+              await BaseClient.safeApiCall(
+                "${Constants.baseUrl}/users",
+                DioRequestType.delete,
+                headers: {
+                  'Authorization': Constants.token,
+                },
+                onSuccess: (response) async {
+                  await userLogOut();
+                  Restart.restartApp(
+                    notificationTitle: 'Restarting App',
+                    notificationBody: 'Please tap here to open the app again.',
+                  );
+                  isDeletingAccount.value = false;
+                },
+                onError: (error) {
+                  log('Failed to delete account: $error');
+                  isDeletingAccount.value = false;
+                },
+              );
+            },
+            child: Text("Delete", style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+  }
+
+  Future<void> userLogOut({bool isShowDialog = false}) async {
+    await MySharedPref.setIsLoggedIn(false);
+    await MySharedPref.clear();
+    await logoutDevices(isShowDialog: isShowDialog);
+  }
+
+  RxBool isLoggingOutDevices = false.obs;
+
+  Future<void> logoutDevices({bool isShowDialog = true}) async {
+    if (isShowDialog) {
+      Get.dialog(
+        AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          title: Text(
+            "Logout from all devices",
+            style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
+          ),
+          content: Text(
+            "Are you sure you want to log out from all devices?",
+            style: TextStyle(fontSize: 16, color: Colors.black87),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(),
+              child: Text("Cancel", style: TextStyle(color: Colors.black)),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+              onPressed: () async {
+                Get.back(); // Close dialog before API call
+                await _performLogoutDevices();
+              },
+              child: Text("Logout", style: TextStyle(color: Colors.white)),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
+    } else {
+      await _performLogoutDevices();
+    }
+  }
+
+  Future<void> _performLogoutDevices() async {
+    isLoggingOutDevices.value = true;
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}/logout-devices",
+      DioRequestType.post,
+      headers: {
+        'Authorization': Constants.token,
+      },
+      onSuccess: (response) {
+        log('Logged out from all devices successfully');
+        isLoggingOutDevices.value = false;
+        return;
+      },
+      onError: (error) {
+        log('Failed to logout from devices: $error');
+        isLoggingOutDevices.value = false;
+        return;
       },
     );
   }

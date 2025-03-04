@@ -16,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:music_visualizer/music_visualizer.dart';
 import 'package:path_provider/path_provider.dart';
+import '../../../components/custom_snackbar.dart';
 import '../../product/controller/product_controller.dart';
 import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
@@ -44,37 +45,44 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   String audioFilePath = "";
   Future<void> startRecording() async {
-    audioFilePath = "";
-    Directory? appDirectory = await getApplicationDocumentsDirectory();
-    audioFilePath =
-        '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
-    if (!await appDirectory.exists()) {
-      await appDirectory.create(recursive: true);
-    }
     try {
+      if (isRecording) {
+        await stopRecording();
+      }
+
+      Directory appDirectory = await getApplicationDocumentsDirectory();
+      String filePath =
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+
+      if (!await appDirectory.exists()) {
+        await appDirectory.create(recursive: true);
+      }
+
       bool isRecordingAvailable = await record.hasPermission();
       if (isRecordingAvailable) {
-        String path = audioFilePath;
         await record.start(
           const RecordConfig(
             encoder: AudioEncoder.aacLc,
             bitRate: 128000,
             sampleRate: 44100,
           ),
-          path: path,
+          path: filePath,
         );
 
         setState(() {
           isRecording = true;
-          audioFilePath = path;
+          audioFilePath = filePath;
         });
+
         _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
           setState(() {
             _elapsedSeconds++;
           });
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      print("Error starting recording: $e");
+    }
   }
 
   // Stop recording
@@ -408,9 +416,25 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
                             isRecording = false;
                             setState(() {});
-                            log.log('audioFilePath: $audioFilePath');
-                            widget.conversationController
-                                .sendMessage(audioPath: audioFilePath);
+                            Map<String, dynamic> map = {
+                              "type": "audio",
+                              "file": await audioToBase64(audioFilePath),
+                            };
+                            // log('audioPath: $audioPath  $map');//
+                            if (map.isEmpty) {
+                              CustomSnackBar.showCustomErrorToast(
+                                  message: 'Something went wrong');
+                            } else {
+                              widget.conversationController
+                                  .isConversationMessageLoading.value = true;
+                              await widget.conversationController
+                                  .sendMessageToServer(
+                                      widget.conversationController
+                                          .messageController.text,
+                                      map: map);
+                              widget.conversationController
+                                  .getConversationsMessages();
+                            }
                           } else {
                             startRecording();
 

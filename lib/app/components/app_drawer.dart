@@ -133,13 +133,15 @@ class AppDrawer extends StatelessWidget {
                                   Image.asset(
                                     adminChat,
                                     width: 25.w,
-                                    color: Colors.grey.shade900,
+                                    color: Colors.white,
                                   ),
                                   10.horizontalSpace,
                                   Text(
                                     'Chat With Admin',
                                     style: regular.copyWith(
                                       fontSize: 14.sp,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
                                 ],
@@ -156,13 +158,15 @@ class AppDrawer extends StatelessWidget {
                           Image.asset(
                             translate,
                             width: 25.w,
-                            color: Colors.grey.shade900,
+                            color: Colors.white,
                           ),
                           10.horizontalSpace,
                           Text(
                             'Language',
                             style: regular.copyWith(
                               fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
                             ),
                           ),
                         ],
@@ -177,7 +181,11 @@ class AppDrawer extends StatelessWidget {
                                 .changeLocale(const Locale('en'));
                             Get.back();
                           },
-                          label: const Text('English'),
+                          label: Text(
+                            'English',
+                            style: regular.copyWith(
+                                fontSize: 14.sp, color: Colors.white),
+                          ),
                         ),
                         TextButton.icon(
                           onPressed: () {
@@ -185,7 +193,11 @@ class AppDrawer extends StatelessWidget {
                                 .changeLocale(const Locale('tr'));
                             Get.back();
                           },
-                          label: const Text('Turkmen'),
+                          label: Text(
+                            'Turkmen',
+                            style: regular.copyWith(
+                                fontSize: 14.sp, color: Colors.white),
+                          ),
                         ),
                         TextButton.icon(
                           onPressed: () {
@@ -193,9 +205,35 @@ class AppDrawer extends StatelessWidget {
                                 .changeLocale(const Locale('ru'));
                             Get.back();
                           },
-                          label: const Text('Russian'),
+                          label: Text(
+                            'Russian',
+                            style: regular.copyWith(
+                                fontSize: 14.sp, color: Colors.white),
+                          ),
                         ),
                       ],
+                    ),
+                    10.verticalSpace,
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                        authController.userLogOut(
+                          isShowDialog: true,
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Icon(Icons.logout, color: Colors.white),
+                          10.horizontalSpace,
+                          Text(
+                            'Logout',
+                            style: regular.copyWith(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 14.sp,
+                                color: Colors.white),
+                          ),
+                        ],
+                      ),
                     ),
 
                     120.verticalSpace,

@@ -2,6 +2,7 @@
 import 'dart:developer';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
+import 'package:alsat/app/modules/product/view/update_post_view.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -190,6 +191,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           )
                         ],
                       ),
+                      Spacer(),
                     ],
                   ),
 
@@ -243,12 +245,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             return Skeletonizer(
                               enabled:
                                   productDetailsController.isProductView.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -300,12 +303,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       .isProductLike.value ||
                                   productDetailsController
                                       .isProductDetailsLoading.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: InkWell(
                                 onTap: () {
                                   productController
@@ -320,6 +324,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       .then((_) {
                                     productDetailsController
                                         .getSingleProductDetails(
+                                            widget.productModel?.id ?? '');
+                                    productDetailsController.productLikeCount(
+                                        productId:
                                             widget.productModel?.id ?? '');
                                   });
                                 },
@@ -364,13 +371,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                          Text(
-                                            '${productDetailsController.likeCount}',
-                                            style: regular.copyWith(
-                                              fontSize: 10.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                          Obx(() {
+                                            return Text(
+                                              '${productDetailsController.likeCount}',
+                                              style: regular.copyWith(
+                                                fontSize: 10.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            );
+                                          }),
                                         ],
                                       ),
                                     ),
@@ -393,12 +402,13 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             return Skeletonizer(
                               enabled: productDetailsController
                                   .isProductComment.value,
-                              // effect: ShimmerEffect(
-                              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                              //   highlightColor: Colors.white,
-                              //   begin: Alignment.centerLeft,
-                              //   end: Alignment.centerRight,
-                              // ),
+                              effect: ShimmerEffect(
+                                baseColor:
+                                    Get.theme.disabledColor.withOpacity(.2),
+                                highlightColor: Colors.white,
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                              ),
                               child: InkWell(
                                 onTap: () {
                                   Get.to(
@@ -754,9 +764,100 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
           return (productDetailsController.postUserModel.value?.id ?? "") ==
                       authController.userDataModel.value.id ||
                   productDetailsController.postUserModel.value == null
-              ? Container(
-                  height: 0,
-                )
+              ? (authController.userDataModel.value.id ==
+                      productDetailsController.postUserModel.value?.id)
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 15.w, vertical: 10.h),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Obx(() {
+                              return MaterialButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                                height: 45,
+                                color: Get.theme.disabledColor,
+                                onPressed: productDetailsController
+                                        .isDeletingPost.value
+                                    ? null
+                                    : () {
+                                        productDetailsController.deleteUserPost(
+                                          postId: widget.productModel?.id ?? '',
+                                        );
+                                      },
+                                child: productDetailsController
+                                        .isDeletingPost.value
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          CupertinoActivityIndicator(),
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.delete,
+                                            size: 22.sp,
+                                            color: Colors.white,
+                                          ),
+                                          5.horizontalSpace,
+                                          Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              fontSize: 14.sp,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                              );
+                            }),
+                          ),
+                          10.horizontalSpace,
+                          Expanded(
+                            child: MaterialButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                              height: 45,
+                              color: Get.theme.primaryColor,
+                              onPressed: () {
+                                Get.to(() => UpdatePostView(
+                                    productModel: widget.productModel!));
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                    size: 22.sp,
+                                    color: Colors.white,
+                                  ),
+                                  5.horizontalSpace,
+                                  Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : Container(
+                      height: 0,
+                    )
               : Padding(
                   padding:
                       EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),

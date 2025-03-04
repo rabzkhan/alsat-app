@@ -3,8 +3,10 @@ import 'dart:developer';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
+import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../utils/constants.dart';
@@ -78,7 +80,8 @@ class ProductDetailsController extends GetxController {
   //-- get Product view Count --//
   RxnNum viewCount = RxnNum(0);
   RxBool isProductView = RxBool(true);
-  Future<void> productViewCount({required String productId, required String productCreateTime}) async {
+  Future<void> productViewCount(
+      {required String productId, required String productCreateTime}) async {
     log("${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime");
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime",
@@ -120,7 +123,8 @@ class ProductDetailsController extends GetxController {
   }
 
   //-- get product comment list--//
-  Rxn<ProudctPostCommentRes> productCommentListRes = Rxn<ProudctPostCommentRes>();
+  Rxn<ProudctPostCommentRes> productCommentListRes =
+      Rxn<ProudctPostCommentRes>();
   RxList<CommentModel> productCommentList = RxList<CommentModel>();
   RxBool isProductCommentList = RxBool(true);
   Future<void> getProductComments({required String productId}) async {
@@ -152,7 +156,8 @@ class ProductDetailsController extends GetxController {
   //-- Add Product Comment --//
   RxBool isProductCommentAdd = RxBool(false);
 
-  Future<void> addProductComment({required String productId, required String comment}) async {
+  Future<void> addProductComment(
+      {required String productId, required String comment}) async {
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
       DioRequestType.post,
@@ -171,7 +176,8 @@ class ProductDetailsController extends GetxController {
       },
       onError: (e) {
         if (e.response?.data['result'] != null) {
-          CustomSnackBar.showCustomErrorToast(message: e.response?.data['result']);
+          CustomSnackBar.showCustomErrorToast(
+              message: e.response?.data['result']);
         }
         isProductCommentAdd.value = false;
       },
@@ -246,7 +252,8 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        userPostCategories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        userPostCategories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
         log('userPostCategories: ${userPostCategories.length}');
         selectCategory.value = userPostCategories.first;
         fetchUserProducts();
@@ -267,11 +274,14 @@ class ProductDetailsController extends GetxController {
   Future<void> fetchUserProducts({String? nextPaginateDate}) async {
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url = '$url?next=$nextPaginateDate&user=${postUserModel.value?.id ?? selectUserId}';
+      url =
+          '$url?next=$nextPaginateDate&user=${postUserModel.value?.id ?? selectUserId}';
     } else {
       url = "$url?user=${postUserModel.value?.id ?? selectUserId}";
     }
-    Map<String, dynamic> data = selectCategory.value != null ? {"category_id": selectCategory.value!.sId ?? ""} : {};
+    Map<String, dynamic> data = selectCategory.value != null
+        ? {"category_id": selectCategory.value!.sId ?? ""}
+        : {};
     log('PostMy $url  ${data.toString()}  ${selectCategory.value?.name}');
     await BaseClient.safeApiCall(
       url,
@@ -388,7 +398,8 @@ class ProductDetailsController extends GetxController {
       onSuccess: (response) {
         log("Follow Successfully: ${response.data} ${response.requestOptions.data}-- $selectUserId");
         isRateUserLoading.value = false;
-        CustomSnackBar.showCustomToast(message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
+        CustomSnackBar.showCustomToast(
+            message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
@@ -424,14 +435,16 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
-        ConversationListRes conversationListRes = ConversationListRes.fromJson(data);
+        ConversationListRes conversationListRes =
+            ConversationListRes.fromJson(data);
         conversationInfo.value = conversationListRes.data?.firstOrNull;
         isFetchUserConversationLoading.value = false;
       },
       onError: (p0) {
         log('${p0.message}${p0.url} ${Constants.token}');
         isFetchUserConversationLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Failed to get conversation info');
+        CustomSnackBar.showCustomErrorToast(
+            message: 'Failed to get conversation info');
       },
     );
   }
@@ -453,7 +466,8 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        userStoryList.value = data.map((json) => StoryModel.fromJson(json)).toList();
+        userStoryList.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
         isFetchUserStoryLoading.value = false;
         userStoryList.refresh();
         log('fetchUserStory: ${userStoryList.length}');
@@ -462,6 +476,47 @@ class ProductDetailsController extends GetxController {
         log('fetchUserStoryError: ${error.message}');
         isFetchUserStoryLoading.value = false;
         userStoryList.refresh();
+      },
+    );
+  }
+
+  RxBool isDeletingPost = false.obs;
+
+  Future<void> deleteUserPost({required String postId}) async {
+    return Get.defaultDialog(
+      title: "Information Alert",
+      backgroundColor: Colors.grey.shade200,
+      middleText: "Are you sure you want to delete this post?",
+      textConfirm: "Yes",
+      textCancel: "No",
+      onConfirm: () async {
+        Get.back(); // Close dialog before API call
+        isDeletingPost.value = true;
+        await BaseClient.safeApiCall(
+          "${Constants.baseUrl}${Constants.postProduct}/$postId",
+          DioRequestType.delete,
+          headers: {
+            //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+            'Authorization': Constants.token,
+          },
+          onSuccess: (response) {
+            CustomSnackBar.showCustomToast(
+                message: 'Post deleted successfully');
+            isDeletingPost.value = false;
+
+            Get.find<ProductController>().fetchProducts();
+            Get.find<HomeController>().fetchMyProducts();
+            Get.back();
+          },
+          onError: (error) {
+            log('Failed to delete post: $error');
+            CustomSnackBar.showCustomErrorToast(
+              message: 'Failed to delete post',
+              color: Colors.red,
+            );
+            isDeletingPost.value = false;
+          },
+        );
       },
     );
   }
