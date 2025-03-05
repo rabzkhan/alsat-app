@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,10 +9,13 @@ class NoDataWidget extends StatelessWidget {
   final double? bottomHeight;
   final String? title;
   final bool isShowIcon;
-  const NoDataWidget({super.key, this.bottomHeight, this.title, this.isShowIcon = true});
+  const NoDataWidget(
+      {super.key, this.bottomHeight, this.title, this.isShowIcon = true});
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Center(
       child: Opacity(
         opacity: 0.7,
@@ -57,7 +60,7 @@ class NoDataWidget extends StatelessWidget {
                   ),
                 2.verticalSpace,
                 Text(
-                  title ?? 'No Data Available Yet',
+                  title ?? localLanguage.no_data_available_yet,
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w400,
@@ -66,7 +69,7 @@ class NoDataWidget extends StatelessWidget {
                 ),
                 2.verticalSpace,
                 Text(
-                  "We can't find what you're looking for.",
+                  localLanguage.we_cant_find_what_youre_looking_for,
                   style: TextStyle(
                     fontSize: 15.sp,
                     fontWeight: FontWeight.w300,
@@ -78,7 +81,8 @@ class NoDataWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: LinearProgressIndicator(
-                        backgroundColor: context.theme.primaryColor.withOpacity(.3),
+                        backgroundColor:
+                            context.theme.primaryColor.withOpacity(.3),
                         color: context.theme.primaryColor,
                         minHeight: 1.w,
                         value: 0,
@@ -95,7 +99,8 @@ class NoDataWidget extends StatelessWidget {
                     ),
                     Expanded(
                       child: LinearProgressIndicator(
-                        backgroundColor: context.theme.primaryColor.withOpacity(.3),
+                        backgroundColor:
+                            context.theme.primaryColor.withOpacity(.3),
                         color: Colors.white,
                         minHeight: 1.w,
                         value: 0,

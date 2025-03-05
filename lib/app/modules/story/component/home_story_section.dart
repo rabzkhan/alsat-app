@@ -1,5 +1,5 @@
 // ignore_for_file: deprecated_member_use
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:alsat/app/modules/story/component/story_video_player.dart';
 import 'package:alsat/app/modules/story/screen/story_video_editor.dart';
@@ -18,6 +18,7 @@ class HomeStorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     final HomeController homeController = Get.find();
 
     return Obx(() {
@@ -83,7 +84,8 @@ class HomeStorySection extends StatelessWidget {
                             // ),
                             CircleAvatar(
                               radius: 27,
-                              backgroundColor: AppColors.primary.withOpacity(.5),
+                              backgroundColor:
+                                  AppColors.primary.withOpacity(.5),
                               child: homeController.isStoryPostLoading.value
                                   ? const CupertinoActivityIndicator(
                                       color: Colors.white,
@@ -101,7 +103,7 @@ class HomeStorySection extends StatelessWidget {
                   ),
                   5.verticalSpace,
                   Text(
-                    'Add Story',
+                    localLanguage.add_story,
                     style: TextStyle(fontSize: 13.sp),
                   ),
                   5.verticalSpace,
@@ -124,7 +126,9 @@ class HomeStorySection extends StatelessWidget {
                     extendBody: true,
                     extendBodyBehindAppBar: true,
                     body: Center(
-                      child: (e.media?.type == "video" && e.media?.name != null && e.media!.name!.isNotEmpty)
+                      child: (e.media?.type == "video" &&
+                              e.media?.name != null &&
+                              e.media!.name!.isNotEmpty)
                           ? StoryVideoPlayer(url: e.media!.name!)
                           : NetworkImagePreview(
                               url: e.media?.name ?? '',

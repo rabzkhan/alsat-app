@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../controller/conversation_controller.dart';
 
 Future<void> showUserBlockBottomSheet({
@@ -11,6 +11,7 @@ Future<void> showUserBlockBottomSheet({
   required ConversationController conversationController,
   bool isBlocked = true,
 }) {
+  final localLanguage = AppLocalizations.of(Get.context!)!;
   return showModalBottomSheet(
       isScrollControlled: true,
       barrierColor: Colors.black.withOpacity(.1),
@@ -20,29 +21,27 @@ Future<void> showUserBlockBottomSheet({
           height: Get.height * .5,
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              20.verticalSpace,
               Image.asset(
                 'assets/icons/block.png',
                 height: 80.h,
               ),
-              10.verticalSpace,
               ListTile(
                 leading: Icon(
                     isBlocked ? Icons.block_rounded : Icons.messenger_outline),
                 title: Text(
-                    'Prevents ${isBlocked ? "unwanted" : "wanted"} contact'),
+                    '${localLanguage.prevents} ${isBlocked ? localLanguage.unwanted : localLanguage.wanted} ${localLanguage.contact}'),
                 subtitle:
-                    const Text('They won\'t be able to send you messages'),
+                    Text(localLanguage.they_wont_be_able_to_send_you_messages),
               ),
               ListTile(
                 leading: const Icon(Icons.miscellaneous_services_sharp),
-                title: Text('They ${isBlocked ? "won't" : 'want'} be notified'),
-                subtitle: const Text(
-                    'We won\'t tell the, if you block them. Uncblock them to send messages'),
+                title: Text(
+                    '${localLanguage.they} ${isBlocked ? localLanguage.wont : localLanguage.want} ${localLanguage.be_notified}'),
+                subtitle:
+                    Text(localLanguage.we_wont_tell_them_if_you_block_them),
               ),
-              20.verticalSpace,
               Obx(() {
                 return CupertinoButton(
                   color: Colors.red,
@@ -60,16 +59,17 @@ Future<void> showUserBlockBottomSheet({
                   child: conversationController.isBlockUser.value
                       ? const CupertinoActivityIndicator()
                       : Text(
-                          isBlocked ? 'Block' : "Unblock",
+                          isBlocked
+                              ? localLanguage.block_user
+                              : localLanguage.unblock,
                           style:
                               TextStyle(color: Colors.white, fontSize: 14.sp),
                         ),
                 );
               }),
-              10.verticalSpace,
               CupertinoButton(
                 child: Text(
-                  'Cancel',
+                  localLanguage.cancel,
                   style: TextStyle(color: Colors.black, fontSize: 14.sp),
                 ),
                 onPressed: () {

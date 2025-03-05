@@ -18,6 +18,7 @@ import '../../../data/local/my_shared_pref.dart';
 import '../../../routes/app_pages.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/view/app_home_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/sms_confirmation.dart';
 
 class AuthController extends GetxController {
@@ -210,7 +211,8 @@ class AuthController extends GetxController {
   RxBool isUpdateLoading = false.obs;
 
   updateUserInformation({required Map<String, dynamic> data}) async {
-    Logger().d(data.toString());
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.user,
       DioRequestType.put,
@@ -225,11 +227,13 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         getProfile();
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomToast(message: 'Updated Successfully');
+        CustomSnackBar.showCustomToast(
+            message: localLanguage.updated_successfully);
       },
       onError: (error) {
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
+        CustomSnackBar.showCustomErrorToast(
+            message: localLanguage.something_went_wrong);
         log('profile $error <- error');
         Logger().d("$error <- error");
       },
@@ -239,22 +243,24 @@ class AuthController extends GetxController {
   RxBool isDeletingAccount = false.obs;
 
   Future<void> deleteUserAccount() async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     Get.dialog(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         title: Text(
-          "Delete Account",
+          localLanguage.delete_account,
           style: TextStyle(
               fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
         ),
         content: Text(
-          "Are you sure you want to permanently delete your account? This action cannot be undone.",
+          localLanguage.delete_account_confirmation,
           style: TextStyle(fontSize: 16, color: Colors.black87),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
-            child: Text("Cancel", style: TextStyle(color: Colors.black)),
+            child: Text(localLanguage.cancel,
+                style: TextStyle(color: Colors.black)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
@@ -282,7 +288,8 @@ class AuthController extends GetxController {
                 },
               );
             },
-            child: Text("Delete", style: TextStyle(color: Colors.white)),
+            child: Text(localLanguage.delete,
+                style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

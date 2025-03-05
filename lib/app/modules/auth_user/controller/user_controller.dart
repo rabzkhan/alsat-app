@@ -1,4 +1,3 @@
-
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/services/base_client.dart';
@@ -6,18 +5,19 @@ import 'package:alsat/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../app_home/models/follower_res.dart';
 
 class UserController extends GetxController {
   final userSettingsFormKey = GlobalKey<FormBuilderState>();
 
-  List<String> profileTab = [
-    'My Listings',
-    'Liked',
-    'Followers',
-    'Following',
-  ];
+  List<String> profileTab(AppLocalizations appLocalizations) => [
+        appLocalizations.my_listings,
+        appLocalizations.liked,
+        appLocalizations.followers,
+        appLocalizations.following,
+      ];
   //-- Upgrade to premium--//
   RxBool isUpgradePreimumLoading = false.obs;
   TextEditingController upgradeCodeController = TextEditingController();

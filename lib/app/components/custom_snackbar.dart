@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomSnackBar {
   static showCustomSnackBar(
@@ -45,6 +46,8 @@ class CustomSnackBar {
       required String message,
       Color? color,
       Duration? duration}) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     toastification.show(
       backgroundColor: color ?? AppColors.primary,
       primaryColor: Colors.white,
@@ -55,7 +58,7 @@ class CustomSnackBar {
         color: Colors.white,
       ),
       title: Text(
-        title ?? "Alert Information",
+        title ?? localLanguage.alert_information,
         style: TextStyle(
           color: Colors.white,
           fontSize: 12.sp,

@@ -21,6 +21,7 @@ import '../../product/controller/product_controller.dart';
 import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
 import '../view/map_address_picker_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChatInputField extends StatefulWidget {
   final ConversationController conversationController;
@@ -107,6 +108,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Obx(() {
       return Container(
         margin: EdgeInsets.only(
@@ -145,7 +148,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Reply Message',
+                                  localLanguage.reply_message,
                                   style: TextStyle(
                                     fontSize: 12.sp,
                                     color: Colors.black54,
@@ -315,7 +318,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                               fontSize: 14.sp,
                                             ),
                                             decoration: InputDecoration(
-                                              hintText: "Type message",
+                                              hintText:
+                                                  localLanguage.type_message,
                                               hintStyle: context
                                                   .theme.textTheme.bodyLarge,
                                               filled: true,
@@ -423,7 +427,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             // log('audioPath: $audioPath  $map');//
                             if (map.isEmpty) {
                               CustomSnackBar.showCustomErrorToast(
-                                  message: 'Something went wrong');
+                                  message: localLanguage.some_thing_went_worng);
                             } else {
                               widget.conversationController
                                   .isConversationMessageLoading.value = true;

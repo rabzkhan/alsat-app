@@ -399,7 +399,7 @@ class ProductDetailsController extends GetxController {
         log("Follow Successfully: ${response.data} ${response.requestOptions.data}-- $selectUserId");
         isRateUserLoading.value = false;
         CustomSnackBar.showCustomToast(
-            message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
+            message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');dfd
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {

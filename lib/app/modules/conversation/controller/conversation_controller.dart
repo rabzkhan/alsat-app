@@ -458,6 +458,8 @@ class ConversationController extends GetxController {
 
   //--- Block User --//
   RxBool isBlockUser = false.obs;
+  RxBool isBlockingSuccess = false.obs;
+
   Future<bool> blockUser(String id, String uId, {bool isBlock = true}) async {
     log('blockUser: $id ${'${Constants.baseUrl}${Constants.userConversationList}/$id/block'}');
     isBlockUser.value = true;
@@ -469,19 +471,24 @@ class ConversationController extends GetxController {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
         'Authorization': Constants.token,
       },
-      onLoading: () {},
+      onLoading: () {
+        isBlockUser.value = true;
+        isBlockingSuccess.value = false;
+      },
       onSuccess: (response) async {
         isBlockUser.value = false;
         CustomSnackBar.showCustomToast(message: 'User Blocked Successfully');
+        isBlockingSuccess.value = true;
         getConversations();
-        if (isBlock) Get.back();
-        Get.back();
+        if (isBlock) Get.back(result: true);
+        Get.back(result: true);
         return true;
       },
       onError: (error) {
         CustomSnackBar.showCustomToast(
             message: 'Something went wrong', color: Colors.red);
         isBlockUser.value = false;
+        isBlockingSuccess.value = false;
         log('blockUser Error: $error');
         return false;
       },

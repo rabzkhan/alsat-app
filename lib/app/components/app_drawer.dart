@@ -16,12 +16,15 @@ import '../../config/translations/localization_service.dart';
 import '../modules/auth_user/auth_user_tab/my_settings.dart';
 import '../modules/authentication/controller/auth_controller.dart';
 import '../modules/conversation/controller/conversation_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     AuthController authController = Get.find();
     ConversationController conversationController = Get.find();
     LocalizationService localizationService = Get.put(LocalizationService());
@@ -137,7 +140,7 @@ class AppDrawer extends StatelessWidget {
                                   ),
                                   10.horizontalSpace,
                                   Text(
-                                    'Chat With Admin',
+                                    localLanguage.chat_with_admin,
                                     style: regular.copyWith(
                                       fontSize: 14.sp,
                                       color: Colors.white,
@@ -226,7 +229,7 @@ class AppDrawer extends StatelessWidget {
                           Icon(Icons.logout, color: Colors.white),
                           10.horizontalSpace,
                           Text(
-                            'Logout',
+                            localLanguage.logout,
                             style: regular.copyWith(
                                 fontWeight: FontWeight.w500,
                                 fontSize: 14.sp,
