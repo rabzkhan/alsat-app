@@ -46,32 +46,24 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
     Future.delayed(Duration.zero, () {
       if (widget.productModel?.id == null) {
         Get.back();
-        CustomSnackBar.showCustomToast(message: 'Product Not Found');
+        final localLanguage = AppLocalizations.of(Get.context!)!;
+        CustomSnackBar.showCustomToast(message: localLanguage.some_thing_went_worng);
       }
     });
-    productDetailsController =
-        Get.put(ProductDetailsController(), tag: widget.productModel?.id);
+    productDetailsController = Get.put(ProductDetailsController(), tag: widget.productModel?.id);
     initMethod();
     super.initState();
   }
 
   initMethod() async {
-    productDetailsController.productLikeCount(
-        productId: widget.productModel?.id ?? '');
-    productDetailsController
-        .getSingleProductDetails(widget.productModel?.id ?? '');
-    productDetailsController.productViewCountAdding(
-        productId: widget.productModel?.id ?? '');
+    productDetailsController.productLikeCount(productId: widget.productModel?.id ?? '');
+    productDetailsController.getSingleProductDetails(widget.productModel?.id ?? '');
+    productDetailsController.productViewCountAdding(productId: widget.productModel?.id ?? '');
     productDetailsController.productViewCount(
-        productId: widget.productModel?.id ?? '',
-        productCreateTime: widget.productModel?.createdAt ?? '');
-    productDetailsController.productCommentCount(
-        productId: widget.productModel?.id ?? '');
-    productDetailsController
-        .getUserByUId(userId: widget.productModel?.userId ?? '')
-        .then((value) {
-      if (authController.userDataModel.value.id ==
-          productDetailsController.postUserModel.value?.id) {
+        productId: widget.productModel?.id ?? '', productCreateTime: widget.productModel?.createdAt ?? '');
+    productDetailsController.productCommentCount(productId: widget.productModel?.id ?? '');
+    productDetailsController.getUserByUId(userId: widget.productModel?.userId ?? '').then((value) {
+      if (authController.userDataModel.value.id == productDetailsController.postUserModel.value?.id) {
         // productDetailsController.getProductInsights(pId: widget.productModel?.id ?? '');
       }
     });
@@ -97,13 +89,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          productDetailsController.productLikeCount(
-              productId: widget.productModel?.id ?? '');
+          productDetailsController.productLikeCount(productId: widget.productModel?.id ?? '');
           productDetailsController.productViewCount(
-              productId: widget.productModel?.id ?? '',
-              productCreateTime: widget.productModel?.createdAt ?? '');
-          productDetailsController.productCommentCount(
-              productId: widget.productModel?.id ?? '');
+              productId: widget.productModel?.id ?? '', productCreateTime: widget.productModel?.createdAt ?? '');
+          productDetailsController.productCommentCount(productId: widget.productModel?.id ?? '');
         },
         child: ListView(
           physics: const BouncingScrollPhysics(),
@@ -133,8 +122,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             reverse: false,
                             autoPlay: false,
                             autoPlayInterval: const Duration(seconds: 3),
-                            autoPlayAnimationDuration:
-                                const Duration(milliseconds: 800),
+                            autoPlayAnimationDuration: const Duration(milliseconds: 800),
                             autoPlayCurve: Curves.fastOutSlowIn,
                             enlargeCenterPage: true,
                             enlargeFactor: 0.1,
@@ -180,8 +168,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           ),
                           Text(
                             widget.productModel?.createdAt != null
-                                ? timeAgo(DateTime.parse(
-                                    widget.productModel?.createdAt ?? ''))
+                                ? timeAgo(DateTime.parse(widget.productModel?.createdAt ?? ''))
                                 : '0 Days Ago',
                             style: regular.copyWith(
                               fontSize: 12.sp,
@@ -228,11 +215,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   7.verticalSpace,
 
                   Container(
-                    margin: EdgeInsets.symmetric(vertical: 10.h)
-                        .copyWith(bottom: 0),
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w)
-                            .copyWith(right: 0),
+                    margin: EdgeInsets.symmetric(vertical: 10.h).copyWith(bottom: 0),
+                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w).copyWith(right: 0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.r),
                       color: Get.theme.disabledColor.withOpacity(.03),
@@ -243,11 +227,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           flex: 2,
                           child: Obx(() {
                             return Skeletonizer(
-                              enabled:
-                                  productDetailsController.isProductView.value,
+                              enabled: productDetailsController.isProductView.value,
                               effect: ShimmerEffect(
-                                baseColor:
-                                    Get.theme.disabledColor.withOpacity(.2),
+                                baseColor: Get.theme.disabledColor.withOpacity(.2),
                                 highlightColor: Colors.white,
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
@@ -263,8 +245,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   Flexible(
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
                                           localLanguage.views,
@@ -299,13 +280,10 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           flex: 2,
                           child: Obx(() {
                             return Skeletonizer(
-                              enabled: productDetailsController
-                                      .isProductLike.value ||
-                                  productDetailsController
-                                      .isProductDetailsLoading.value,
+                              enabled: productDetailsController.isProductLike.value ||
+                                  productDetailsController.isProductDetailsLoading.value,
                               effect: ShimmerEffect(
-                                baseColor:
-                                    Get.theme.disabledColor.withOpacity(.2),
+                                baseColor: Get.theme.disabledColor.withOpacity(.2),
                                 highlightColor: Colors.white,
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
@@ -315,54 +293,36 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   productController
                                       .addProductLike(
                                     productId: widget.productModel?.id ?? '',
-                                    likeValue: !(productDetailsController
-                                            .selectPostProductModel
-                                            .value
-                                            ?.liked ??
-                                        false),
+                                    likeValue: !(productDetailsController.selectPostProductModel.value?.liked ?? false),
                                   )
                                       .then((_) {
-                                    productDetailsController
-                                        .getSingleProductDetails(
-                                            widget.productModel?.id ?? '');
-                                    productDetailsController.productLikeCount(
-                                        productId:
-                                            widget.productModel?.id ?? '');
+                                    productDetailsController.getSingleProductDetails(widget.productModel?.id ?? '');
+                                    productDetailsController.productLikeCount(productId: widget.productModel?.id ?? '');
                                   });
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     productController.isProductLike.value &&
-                                            productController
-                                                    .productLikeId.value ==
-                                                (widget.productModel?.id ?? '')
+                                            productController.productLikeId.value == (widget.productModel?.id ?? '')
                                         ? const CupertinoActivityIndicator(
                                             color: Colors.red,
                                           )
                                         : Icon(
-                                            (productDetailsController
-                                                        .selectPostProductModel
-                                                        .value
-                                                        ?.liked ??
-                                                    false)
+                                            (productDetailsController.selectPostProductModel.value?.liked ?? false)
                                                 ? Icons.favorite
                                                 : Icons.favorite_border,
-                                            color: (productDetailsController
-                                                        .selectPostProductModel
-                                                        .value
-                                                        ?.liked ??
-                                                    false)
-                                                ? Colors.red
-                                                : Colors.black,
+                                            color:
+                                                (productDetailsController.selectPostProductModel.value?.liked ?? false)
+                                                    ? Colors.red
+                                                    : Colors.black,
                                             size: 26.r,
                                           ),
                                     6.horizontalSpace,
                                     Flexible(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             localLanguage.like,
@@ -400,11 +360,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           flex: 3,
                           child: Obx(() {
                             return Skeletonizer(
-                              enabled: productDetailsController
-                                  .isProductComment.value,
+                              enabled: productDetailsController.isProductComment.value,
                               effect: ShimmerEffect(
-                                baseColor:
-                                    Get.theme.disabledColor.withOpacity(.2),
+                                baseColor: Get.theme.disabledColor.withOpacity(.2),
                                 highlightColor: Colors.white,
                                 begin: Alignment.centerLeft,
                                 end: Alignment.centerRight,
@@ -413,8 +371,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 onTap: () {
                                   Get.to(
                                     ProductCommentsView(
-                                      productDetailsController:
-                                          productDetailsController,
+                                      productDetailsController: productDetailsController,
                                       productModel: widget.productModel!,
                                     ),
                                     transition: Transition.fadeIn,
@@ -431,8 +388,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                     Flexible(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             localLanguage.comment,
@@ -469,19 +425,16 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           onPressed: () async {
                             final contentToShare =
                                 "Check out this amazing deal on ${widget.productModel?.title}! Only at ${widget.productModel?.priceInfo?.price}. Buy now on Alsat: App Link";
-                            final box =
-                                context.findRenderObject() as RenderBox?;
+                            final box = context.findRenderObject() as RenderBox?;
                             await Share.share(
                               contentToShare,
-                              sharePositionOrigin:
-                                  box!.localToGlobal(Offset.zero) & box.size,
+                              sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
                             );
                           },
                           padding: EdgeInsets.all(10).r,
                           constraints: BoxConstraints(),
                           style: const ButtonStyle(
-                            tapTargetSize: MaterialTapTargetSize
-                                .shrinkWrap, // the '2023' part
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap, // the '2023' part
                           ),
                           iconSize: 18.h,
                           icon: Icon(
@@ -563,44 +516,22 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           ? Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
+                                infoTile(name: localLanguage.brand, value: widget.productModel?.carInfo?.brand ?? ''),
                                 infoTile(
-                                    name: localLanguage.brand,
-                                    value:
-                                        widget.productModel?.carInfo?.brand ??
-                                            ''),
+                                    name: localLanguage.modelType, value: widget.productModel?.carInfo?.model ?? ''),
                                 infoTile(
-                                    name: localLanguage.modelType,
-                                    value:
-                                        widget.productModel?.carInfo?.model ??
-                                            ''),
+                                    name: localLanguage.bodyType, value: widget.productModel?.carInfo?.bodyType ?? ''),
                                 infoTile(
-                                    name: localLanguage.bodyType,
-                                    value: widget
-                                            .productModel?.carInfo?.bodyType ??
-                                        ''),
+                                    name: localLanguage.year, value: "${widget.productModel?.carInfo?.year ?? ''}"),
                                 infoTile(
-                                    name: localLanguage.year,
-                                    value:
-                                        "${widget.productModel?.carInfo?.year ?? ''}"),
-                                infoTile(
-                                    name: localLanguage.engine,
-                                    value: widget.productModel?.carInfo
-                                            ?.engineType ??
-                                        ''),
-                                infoTile(
-                                    name: localLanguage.color,
-                                    value:
-                                        widget.productModel?.carInfo?.color ??
-                                            ''),
+                                    name: localLanguage.engine, value: widget.productModel?.carInfo?.engineType ?? ''),
+                                infoTile(name: localLanguage.color, value: widget.productModel?.carInfo?.color ?? ''),
                                 infoTile(
                                     name: localLanguage.condition,
-                                    value: widget
-                                            .productModel?.carInfo?.condition ??
-                                        ''),
+                                    value: widget.productModel?.carInfo?.condition ?? ''),
                                 infoTile(
                                     name: localLanguage.passedKm,
-                                    value:
-                                        "${widget.productModel?.carInfo?.passedKm ?? ''}"),
+                                    value: "${widget.productModel?.carInfo?.passedKm ?? ''}"),
                               ],
                             )
                           : widget.productModel?.estateInfo != null
@@ -609,31 +540,21 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                   children: [
                                     infoTile(
                                         name: localLanguage.address,
-                                        value: widget.productModel?.estateInfo
-                                                ?.address ??
-                                            ''),
+                                        value: widget.productModel?.estateInfo?.address ?? ''),
                                     infoTile(
-                                        name: localLanguage.type,
-                                        value: widget.productModel?.estateInfo
-                                                ?.type ??
-                                            ''),
+                                        name: localLanguage.type, value: widget.productModel?.estateInfo?.type ?? ''),
                                     infoTile(
                                         name: localLanguage.floor,
-                                        value:
-                                            "${widget.productModel?.estateInfo?.floor ?? ''}"),
+                                        value: "${widget.productModel?.estateInfo?.floor ?? ''}"),
                                     infoTile(
                                         name: localLanguage.floorType,
-                                        value:
-                                            "${widget.productModel?.estateInfo?.floorType ?? ''}"),
+                                        value: "${widget.productModel?.estateInfo?.floorType ?? ''}"),
                                     infoTile(
                                         name: localLanguage.room,
-                                        value:
-                                            "${widget.productModel?.estateInfo?.room ?? ''}"),
+                                        value: "${widget.productModel?.estateInfo?.room ?? ''}"),
                                     infoTile(
                                         name: localLanguage.lift,
-                                        value: (widget.productModel?.estateInfo
-                                                    ?.lift ??
-                                                false)
+                                        value: (widget.productModel?.estateInfo?.lift ?? false)
                                             ? localLanguage.available
                                             : localLanguage.no),
                                   ],
@@ -644,9 +565,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       children: [
                                         infoTile(
                                             name: localLanguage.brand,
-                                            value: widget.productModel
-                                                    ?.phoneInfo?.brand ??
-                                                ''),
+                                            value: widget.productModel?.phoneInfo?.brand ?? ''),
                                       ],
                                     )
                                   : Column(
@@ -654,11 +573,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       children: [
                                         infoTile(
                                             name: localLanguage.location,
-                                            value: widget
-                                                    .productModel
-                                                    ?.individualInfo
-                                                    ?.locationCity ??
-                                                ''),
+                                            value: widget.productModel?.individualInfo?.locationCity ?? ''),
                                       ],
                                     )),
                   20.verticalSpace,
@@ -681,8 +596,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   ///user information
                   Obx(() {
                     return Skeletonizer(
-                      enabled:
-                          productDetailsController.isFetchUserLoading.value,
+                      enabled: productDetailsController.isFetchUserLoading.value,
                       // effect: ShimmerEffect(
                       //   baseColor: Get.theme.disabledColor.withOpacity(.2),
                       //   highlightColor: Colors.white,
@@ -693,11 +607,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         onTap: () {
                           Get.to(
                             () => ClientProfileView(
-                              userId: productDetailsController
-                                      .postUserModel.value?.id ??
-                                  "".toString(),
-                              productDetailsController:
-                                  productDetailsController,
+                              userId: productDetailsController.postUserModel.value?.id ?? "".toString(),
+                              productDetailsController: productDetailsController,
                             ),
                             transition: Transition.fadeIn,
                           );
@@ -707,9 +618,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           radius: 22.r,
                           child: NetworkImagePreview(
                             radius: 22.r,
-                            url: productDetailsController
-                                    .postUserModel.value?.picture ??
-                                '',
+                            url: productDetailsController.postUserModel.value?.picture ?? '',
                             height: 44.h,
                             width: 44.w,
                             fit: BoxFit.cover,
@@ -717,9 +626,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           ),
                         ),
                         title: Text(
-                          productDetailsController
-                                  .postUserModel.value?.userName ??
-                              'John Coltrane',
+                          productDetailsController.postUserModel.value?.userName ?? 'John Coltrane',
                           style: bold.copyWith(
                             fontSize: 16.sp,
                           ),
@@ -728,10 +635,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             RatingBarIndicator(
-                              rating: (productDetailsController
-                                          .postUserModel.value?.rating ??
-                                      0)
-                                  .toDouble(),
+                              rating: (productDetailsController.postUserModel.value?.rating ?? 0).toDouble(),
                               itemBuilder: (context, index) => const Icon(
                                 Icons.star_border_outlined,
                                 color: Colors.amber,
@@ -761,14 +665,11 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       ),
       bottomNavigationBar: Obx(
         () {
-          return (productDetailsController.postUserModel.value?.id ?? "") ==
-                      authController.userDataModel.value.id ||
+          return (productDetailsController.postUserModel.value?.id ?? "") == authController.userDataModel.value.id ||
                   productDetailsController.postUserModel.value == null
-              ? (authController.userDataModel.value.id ==
-                      productDetailsController.postUserModel.value?.id)
+              ? (authController.userDataModel.value.id == productDetailsController.postUserModel.value?.id)
                   ? Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 15.w, vertical: 10.h),
+                      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
                       child: Row(
                         children: [
                           Expanded(
@@ -779,26 +680,22 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 ),
                                 height: 45,
                                 color: Get.theme.disabledColor,
-                                onPressed: productDetailsController
-                                        .isDeletingPost.value
+                                onPressed: productDetailsController.isDeletingPost.value
                                     ? null
                                     : () {
                                         productDetailsController.deleteUserPost(
                                           postId: widget.productModel?.id ?? '',
                                         );
                                       },
-                                child: productDetailsController
-                                        .isDeletingPost.value
+                                child: productDetailsController.isDeletingPost.value
                                     ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           CupertinoActivityIndicator(),
                                         ],
                                       )
                                     : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Icon(
                                             Icons.delete,
@@ -828,8 +725,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               height: 45,
                               color: Get.theme.primaryColor,
                               onPressed: () {
-                                Get.to(() => UpdatePostView(
-                                    productModel: widget.productModel!));
+                                Get.to(() => UpdatePostView(productModel: widget.productModel!));
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -859,8 +755,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       height: 0,
                     )
               : Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
@@ -874,11 +769,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                       10.verticalSpace,
                       Row(
                         children: [
-                          if (isCallAvailable(
-                              widget
-                                  .productModel?.individualInfo?.freeToCallFrom,
-                              widget
-                                  .productModel?.individualInfo?.freeToCallTo))
+                          if (isCallAvailable(widget.productModel?.individualInfo?.freeToCallFrom,
+                              widget.productModel?.individualInfo?.freeToCallTo))
                             Expanded(
                               child: MaterialButton(
                                 shape: RoundedRectangleBorder(
@@ -890,8 +782,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 height: 45,
                                 color: Get.theme.scaffoldBackgroundColor,
                                 onPressed: () async {
-                                  final url =
-                                      'tel:${widget.productModel?.individualInfo?.phoneNumber}';
+                                  final url = 'tel:${widget.productModel?.individualInfo?.phoneNumber}';
                                   if (await canLaunchUrl(Uri.parse(url))) {
                                     await launchUrl(Uri.parse(url));
                                   } else {
@@ -918,11 +809,8 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 ),
                               ),
                             ),
-                          if (isCallAvailable(
-                              widget
-                                  .productModel?.individualInfo?.freeToCallFrom,
-                              widget
-                                  .productModel?.individualInfo?.freeToCallTo))
+                          if (isCallAvailable(widget.productModel?.individualInfo?.freeToCallFrom,
+                              widget.productModel?.individualInfo?.freeToCallTo))
                             30.horizontalSpace,
                           Expanded(
                             child: Obx(() {
@@ -932,34 +820,25 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 ),
                                 height: 45,
                                 color: Get.theme.primaryColor,
-                                onPressed: productDetailsController
-                                        .isFetchUserConversationLoading.value
+                                onPressed: productDetailsController.isFetchUserConversationLoading.value
                                     ? null
                                     : () {
                                         productDetailsController
                                             .getConversationInfoByUserId(
-                                                productDetailsController
-                                                        .postUserModel
-                                                        .value
-                                                        ?.id ??
-                                                    "")
+                                                productDetailsController.postUserModel.value?.id ?? "")
                                             .then((value) {
                                           Get.to(
                                             MessagesScreen(
-                                              conversation:
-                                                  productDetailsController
-                                                      .conversationInfo.value!,
+                                              conversation: productDetailsController.conversationInfo.value!,
                                             ),
                                             transition: Transition.fadeIn,
                                           );
                                         });
                                       },
-                                child: productDetailsController
-                                        .isFetchUserConversationLoading.value
+                                child: productDetailsController.isFetchUserConversationLoading.value
                                     ? const CupertinoActivityIndicator()
                                     : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                        mainAxisAlignment: MainAxisAlignment.center,
                                         children: [
                                           Icon(
                                             Icons.messenger_rounded,
@@ -991,8 +870,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
   Padding _viewTile({required String title, required String value}) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w)
-          .copyWith(top: 0),
+      padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w).copyWith(top: 0),
       child: Row(
         children: [
           Text(
@@ -1055,8 +933,7 @@ bool isCallAvailable(String? freeFrom, String? freeTo) {
   int fromTimeInMinutes = fromHour * 60 + fromMinute;
   int toTimeInMinutes = toHour * 60 + toMinute;
   int currentTimeInMinutes = currentHour * 60 + currentMinute;
-  if (fromTimeInMinutes <= currentTimeInMinutes &&
-      currentTimeInMinutes <= toTimeInMinutes) {
+  if (fromTimeInMinutes <= currentTimeInMinutes && currentTimeInMinutes <= toTimeInMinutes) {
     isAvailable = true;
   } else {
     isAvailable = false;

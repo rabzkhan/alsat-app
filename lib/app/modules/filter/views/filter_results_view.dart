@@ -12,12 +12,15 @@ import '../../../common/const/image_path.dart';
 import '../../../components/product_list_tile.dart';
 import '../../product/model/product_post_list_res.dart';
 import '../controllers/filter_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterResultsView extends GetView<FilterController> {
   const FilterResultsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return WillPopScope(
       onWillPop: () async {
         controller.itemList.clear();
@@ -65,10 +68,10 @@ class FilterResultsView extends GetView<FilterController> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _shortTile(title: 'Default'),
-                    _shortTile(title: 'The Newest'),
-                    _shortTile(title: 'The Cheaper price first'),
-                    _shortTile(title: 'The Highest price first'),
+                    _shortTile(title: localLanguage.default_),
+                    _shortTile(title: localLanguage.the_newest),
+                    _shortTile(title: localLanguage.the_cheaper_price_first),
+                    _shortTile(title: localLanguage.the_highest_price_first),
                   ],
                 ),
               ),
@@ -76,7 +79,7 @@ class FilterResultsView extends GetView<FilterController> {
                 return Padding(
                   padding: EdgeInsets.only(right: 15.w, left: 5.w),
                   child: Image.asset(
-                    controller.sortDonwnToUp.value ? sortDown : sortUp,
+                    controller.sortDownToUp.value ? sortDown : sortUp,
                     height: 23.h,
                     width: 23.w,
                   ),
@@ -135,7 +138,7 @@ class FilterResultsView extends GetView<FilterController> {
     return InkWell(
       onTap: () {
         controller.sortValue.value = title;
-        controller.sortDonwnToUp.value = title.contains('Cheaper');
+        controller.sortDownToUp.value = title.contains('Cheaper');
         controller.isFilterLoading.value = true;
         controller.applyFilter();
       },

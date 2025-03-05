@@ -6,6 +6,7 @@ import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/models/location_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LocationSelection extends StatelessWidget {
   final bool canSelectMultiple;
@@ -17,11 +18,12 @@ class LocationSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FilterController filterController = Get.find();
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text(
-            'Select Location',
+            localLanguage.select_location,
             style: bold.copyWith(fontSize: 16.sp),
           ),
           trailing: IconButton(

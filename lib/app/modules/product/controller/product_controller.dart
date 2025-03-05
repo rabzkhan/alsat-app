@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:alsat/utils/helper.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
@@ -177,11 +179,12 @@ class ProductController extends GetxController {
   }
 
   // PICK IMAGE FOR POST PRODUCT
-  Future<List<File>?> pickImage(BuildContext context, {bool external = false, bool both = false}) async {
+  Future<List<File>?> pickImage(BuildContext context,
+      {bool external = false, bool both = false, int? pickItems}) async {
     List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
       context,
       pickerConfig: AssetPickerConfig(
-        maxAssets: external ? 1 : 10,
+        maxAssets: pickItems ?? (external ? 1 : 10),
         requestType: both ? RequestType.all : RequestType.image,
       ),
     );
@@ -210,7 +213,7 @@ class ProductController extends GetxController {
 
   // PICK VIDEO FOR POST PRODUCT
   File? pickVideoFile;
-  Future<void> pickVideo(BuildContext context) async {
+  Future<File?> pickVideo(BuildContext context, {bool external = false}) async {
     List<AssetEntity>? pickVideo = await AssetPicker.pickAssets(context,
         pickerConfig: const AssetPickerConfig(
           maxAssets: 1,
@@ -225,10 +228,14 @@ class ProductController extends GetxController {
           pickVideoFile = file;
         }
       }
-
-      generateThumbnails();
-      update();
+      if (external) {
+        return pickVideoFile;
+      } else {
+        generateThumbnails();
+        update();
+      }
     }
+    return null;
   }
 
   Future<void> generateThumbnails() async {
@@ -265,6 +272,7 @@ class ProductController extends GetxController {
 
   //--- POST PRODUCT ---//
   Future<bool> postProduct(Map<String, dynamic> body) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find<HomeController>();
     return BaseClient.safeApiCall(
       Constants.baseUrl + Constants.postProduct,
@@ -276,9 +284,9 @@ class ProductController extends GetxController {
       data: body,
       onLoading: () {},
       onSuccess: (response) {
-        log("postProduct Success: ${response.data}");
         isProductPosting.value = false;
-        CustomSnackBar.showCustomToast(message: 'Product posted successfully', title: 'Success');
+        CustomSnackBar.showCustomToast(
+            message: localLanguage.product_posted_successfully, title: localLanguage.successfully);
         Get.back();
         resetForm();
         homeController.getUserPostCategories();
@@ -286,9 +294,8 @@ class ProductController extends GetxController {
         return true;
       },
       onError: (p0) {
-        log("postProduct Error: ${p0.message} --${p0.response?.statusCode} ${p0.response?.data}");
         isProductPosting.value = false;
-        CustomSnackBar.showCustomToast(color: Colors.red, message: 'Product posting failed');
+        CustomSnackBar.showCustomToast(color: Colors.red, message: localLanguage.product_posting_failed);
         return false;
       },
     );
@@ -299,6 +306,7 @@ class ProductController extends GetxController {
   ProductPostListRes? productPostListRes;
   RxBool isFetchProduct = RxBool(true);
   Future<void> fetchProducts({String? nextPaginateDate}) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
       url = '$url?next=$nextPaginateDate';
@@ -330,9 +338,8 @@ class ProductController extends GetxController {
       },
       onError: (p0) {
         log('${p0.url} ${Constants.token}');
-        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
+        CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
@@ -367,7 +374,7 @@ class ProductController extends GetxController {
     } else {
       url = "$url?liked";
     }
-
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
@@ -397,7 +404,7 @@ class ProductController extends GetxController {
         log('${p0.url} ${Constants.token}');
         log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchLikeProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
+        CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
@@ -420,6 +427,7 @@ class ProductController extends GetxController {
   RxBool isProductLike = RxBool(false);
   RxString productLikeId = RxString('');
   Future<void> addProductLike({required String productId, required bool likeValue}) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
     log('$url ${Constants.token}');
@@ -439,13 +447,15 @@ class ProductController extends GetxController {
         log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         isProductLike.value = false;
         CustomSnackBar.showCustomToast(
-            message: 'Product ${likeValue ? "liked" : "Unliked"} Successfully', title: 'Success');
+            message:
+                '${localLanguage.product} ${likeValue ? localLanguage.liked : localLanguage.unliked} ${localLanguage.successfully}',
+            title: localLanguage.successfully);
         fetchMyLikeProducts();
       },
       onError: (p0) {
         log("Product like failed: ${p0.response} ${p0.response?.data}");
         isProductLike.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Product like failed');
+        CustomSnackBar.showCustomToast(message: localLanguage.product_like_failed);
       },
     );
   }
@@ -536,5 +546,69 @@ class ProductController extends GetxController {
     selectedColor.value = [];
     fromTime.value = null;
     toTime.value = null;
+  }
+
+  //--- add Image Video In  Post---//
+  RxList<File> pickUpdateImageList = RxList([]);
+  RxList<File> pickUpdateVideoList = RxList([]);
+  RxBool isUploadingMediaImageInPost = false.obs;
+  RxBool isUploadingMediaVideoInPost = false.obs;
+  Future<void> uploadMediaInPost({required String postId, bool isVideoUpload = false}) async {
+    final HomeController homeController = Get.find();
+    List<Map<String, dynamic>> mediaData = [];
+    if (pickUpdateImageList.isNotEmpty && !isVideoUpload) {
+      for (var image in pickUpdateImageList) {
+        final imageMap = await imageToBase64(image.path);
+        mediaData.add(imageMap);
+      }
+    }
+    if (pickUpdateVideoList.isNotEmpty && isVideoUpload) {
+      for (var video in pickUpdateVideoList) {
+        final videoMap = await videoToBase64(video.path);
+        mediaData.add(videoMap);
+      }
+    }
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.postProduct}/$postId/media/add-many",
+      DioRequestType.put,
+      headers: {
+        'Authorization': Constants.token,
+      },
+      data: mediaData,
+      onLoading: () {
+        if (isVideoUpload) {
+          isUploadingMediaVideoInPost.value = true;
+        } else {
+          isUploadingMediaImageInPost.value = true;
+        }
+      },
+      onSuccess: (response) async {
+        await homeController.fetchMyProducts();
+        if (isVideoUpload) {
+          isUploadingMediaVideoInPost.value = false;
+          pickUpdateVideoList.clear();
+          CustomSnackBar.showCustomToast(
+            message: 'Video uploaded successfully',
+          );
+        } else {
+          isUploadingMediaImageInPost.value = false;
+          pickUpdateImageList.clear();
+          CustomSnackBar.showCustomToast(
+            message: 'Image uploaded successfully',
+          );
+        }
+      },
+      onError: (error) {
+        CustomSnackBar.showCustomToast(
+          message: 'Failed to update post',
+          color: Colors.red,
+        );
+        if (isVideoUpload) {
+          isUploadingMediaVideoInPost.value = false;
+        } else {
+          isUploadingMediaImageInPost.value = false;
+        }
+      },
+    );
   }
 }

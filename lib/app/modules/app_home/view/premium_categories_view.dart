@@ -9,12 +9,14 @@ import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/user_filter_result_view.dart';
 import '../controller/home_controller.dart';
 import '../models/category_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PremiumCategoriesView extends StatelessWidget {
   const PremiumCategoriesView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     final HomeController homeController = Get.find();
     FilterController filterController = Get.find<FilterController>();
 
@@ -22,7 +24,7 @@ class PremiumCategoriesView extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          "Premium Categories",
+          localLanguage.category,
           style: Get.textTheme.titleMedium,
         ),
       ),

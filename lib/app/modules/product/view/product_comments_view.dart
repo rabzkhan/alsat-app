@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../components/network_image_preview.dart';
 import '../model/product_post_list_res.dart';
 
@@ -36,6 +36,7 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -81,7 +82,7 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                               height: 300.h,
                               child: Center(
                                 child: Text(
-                                  'No Comment Avalable Right Now',
+                                  localLanguage.no_comment_available_right_now,
                                   style: regular.copyWith(
                                     fontSize: 14.sp,
                                     color: context.theme.textTheme.bodyLarge?.color?.withOpacity(.4),
@@ -193,12 +194,12 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                             controller: commentController,
                             validator: (value) {
                               if (value!.isEmpty) {
-                                return 'Please enter comment';
+                                return localLanguage.please_enter_comment;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              hintText: 'Write a comment',
+                              hintText: localLanguage.write_a_comment,
                               hintStyle: regular.copyWith(
                                 fontSize: 14.sp,
                                 color: context.theme.textTheme.bodyLarge?.color?.withOpacity(.6),
