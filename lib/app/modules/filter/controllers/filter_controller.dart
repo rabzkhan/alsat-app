@@ -324,7 +324,6 @@ class FilterController extends GetxController {
       onError: (error) {
         isFilterLoading.value = false;
         log.log("error: $error");
-        log.log("error: ${error.response?.data}");
         Logger().d("$error <- error");
       },
     );

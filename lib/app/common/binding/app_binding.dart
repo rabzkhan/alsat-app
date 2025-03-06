@@ -18,7 +18,7 @@ class AppBinding extends Bindings {
     //Get.lazyPut<AuthController>(() => AuthController());
     Get.lazyPut<HomeController>(() => HomeController());
     Get.lazyPut<UserController>(() => UserController());
-    Get.lazyPut<ProductController>(() => ProductController());
+    // Get.lazyPut<ProductController>(() => ProductController());
     Get.lazyPut<ConversationController>(() => ConversationController());
   }
 }

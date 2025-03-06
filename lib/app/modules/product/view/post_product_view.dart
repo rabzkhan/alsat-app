@@ -1746,7 +1746,7 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['phone_info'] = productController.selectCategory.value?.name?.toLowerCase() == 'phone'
         ? {"brand": productController.selectedPhoneBrand.value}
         : null;
-    log("productPostMap $productPostMap");
+
     await productController.postProduct(productPostMap);
   }
 

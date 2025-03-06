@@ -1,12 +1,15 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
+import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../utils/constants.dart';
@@ -476,40 +479,124 @@ class ProductDetailsController extends GetxController {
 
   Future<void> deleteUserPost({required String postId}) async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
-    return Get.defaultDialog(
-      title: "Information Alert",
-      backgroundColor: Colors.grey.shade200,
-      middleText: "Are you sure you want to delete this post?",
-      textConfirm: "Yes",
-      textCancel: "No",
-      onConfirm: () async {
-        Get.back(); // Close dialog before API call
-        isDeletingPost.value = true;
-        await BaseClient.safeApiCall(
-          "${Constants.baseUrl}${Constants.postProduct}/$postId",
-          DioRequestType.delete,
-          headers: {
-            //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-            'Authorization': Constants.token,
-          },
-          onSuccess: (response) {
-            CustomSnackBar.showCustomToast(message: localLanguage.post_deleted_successfully);
-            isDeletingPost.value = false;
+    return Get.dialog(
+      Center(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+            margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+            width: Get.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20).r,
+              color: Colors.white,
+            ),
+            child: Material(
+              color: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  10.verticalSpace,
+                  Text(
+                    "Information Alert",
+                    style: Get.theme.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    "Are you sure you want to delete this post?",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  ),
+                  20.verticalSpace,
+                  SizedBox(
+                    height: 40.h,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              side: BorderSide(
+                                color: Get.theme.primaryColor,
+                                width: 1,
+                              ),
+                              fixedSize: const Size.fromHeight(48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: regular.copyWith(
+                                color: Get.theme.primaryColor,
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.back();
+                            },
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        Expanded(
+                          flex: 3,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              fixedSize: const Size.fromHeight(48),
+                              backgroundColor: Get.theme.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            onPressed: () async {
+                              Get.back(); // Close dialog before API call
+                              isDeletingPost.value = true;
+                              await BaseClient.safeApiCall(
+                                "${Constants.baseUrl}${Constants.postProduct}/$postId",
+                                DioRequestType.delete,
+                                headers: {
+                                  //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+                                  'Authorization': Constants.token,
+                                },
+                                onSuccess: (response) {
+                                  CustomSnackBar.showCustomToast(message: localLanguage.post_deleted_successfully);
+                                  isDeletingPost.value = false;
 
-            Get.find<ProductController>().fetchProducts();
-            Get.find<HomeController>().fetchMyProducts();
-            Get.back();
-          },
-          onError: (error) {
-            log('Failed to delete post: $error');
-            CustomSnackBar.showCustomToast(
-              message: localLanguage.failed_to_delete_post,
-              color: Colors.red,
-            );
-            isDeletingPost.value = false;
-          },
-        );
-      },
+                                  Get.find<ProductController>().fetchProducts();
+                                  Get.find<HomeController>().fetchMyProducts();
+                                  Get.back();
+                                },
+                                onError: (error) {
+                                  log('Failed to delete post: $error');
+                                  CustomSnackBar.showCustomToast(
+                                    message: localLanguage.failed_to_delete_post,
+                                    color: Colors.red,
+                                  );
+                                  isDeletingPost.value = false;
+                                },
+                              );
+                            },
+                            child: Text(
+                              "Yes",
+                              style: regular.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  30.verticalSpace,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -283,19 +283,21 @@ class ProductController extends GetxController {
       },
       data: body,
       onLoading: () {},
-      onSuccess: (response) {
+      onSuccess: (response) async {
         isProductPosting.value = false;
         CustomSnackBar.showCustomToast(
-            message: localLanguage.product_posted_successfully, title: localLanguage.successfully);
+          message: localLanguage.product_posted_successfully,
+        );
         Get.back();
         resetForm();
-        homeController.getUserPostCategories();
-        homeController.fetchMyProducts();
+        await homeController.getUserPostCategories();
+        await homeController.fetchMyProducts();
         return true;
       },
       onError: (p0) {
+        log('Product Post Error ${p0.message}');
         isProductPosting.value = false;
-        CustomSnackBar.showCustomToast(color: Colors.red, message: localLanguage.product_posting_failed);
+        CustomSnackBar.showCustomToast(color: Colors.red, message: p0.message);
         return false;
       },
     );
@@ -306,7 +308,7 @@ class ProductController extends GetxController {
   ProductPostListRes? productPostListRes;
   RxBool isFetchProduct = RxBool(true);
   Future<void> fetchProducts({String? nextPaginateDate}) async {
-    final localLanguage = AppLocalizations.of(Get.context!)!;
+    // final localLanguage = AppLocalizations.of(Get.context!)!;
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
       url = '$url?next=$nextPaginateDate';
@@ -326,7 +328,7 @@ class ProductController extends GetxController {
         }
       },
       onSuccess: (response) {
-        log('${response.requestOptions.baseUrl} ${response.requestOptions.path}');
+        log('HomePage:-${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         Map<String, dynamic> responseData = response.data;
         productPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
@@ -339,7 +341,7 @@ class ProductController extends GetxController {
       onError: (p0) {
         log('${p0.url} ${Constants.token}');
         isFetchProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
+        // CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
@@ -535,7 +537,7 @@ class ProductController extends GetxController {
   final postKey = GlobalKey<FormBuilderState>();
   resetForm() {
     isProductPosting.value = false;
-    postKey.currentState?.reset();
+    // postKey.currentState?.reset();
     estateDealType.value = null;
     priceController.text = '';
     estateAddressController.clear();
