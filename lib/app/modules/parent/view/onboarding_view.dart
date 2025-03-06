@@ -1,5 +1,4 @@
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
-import 'package:alsat/app/modules/authentication/view/signup_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -176,26 +175,25 @@ class OnboardingPage extends StatelessWidget {
                                                       ),
                                                     ),
                                                   ),
-                                                  Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                      horizontal: 10.w,
-                                                    ),
-                                                    color: Get.theme.dividerColor,
-                                                    width: 1,
-                                                    height: 15.h,
-                                                  ),
-                                                  TextButton(
-                                                    onPressed: () async {
-                                                      await MySharedPref.setOnboardingComplete(true);
-                                                      Get.to(const SignUpView(), transition: Transition.fadeIn);
-                                                    },
-                                                    child: Text(
-                                                      localLanguage.sign_up,
-                                                      style: Get.theme.textTheme.titleSmall!.copyWith(
-                                                        fontSize: 14.sp,
-                                                      ),
-                                                    ),
-                                                  ),
+                                                  // Container(
+                                                  //   margin: EdgeInsets.symmetric(
+                                                  //     horizontal: 10.w,
+                                                  //   ),
+                                                  //   color: Get.theme.dividerColor,
+                                                  //   width: 1,
+                                                  //   height: 15.h,
+                                                  // ),
+                                                  // TextButton(
+                                                  //   onPressed: () async {
+                                                  //     await MySharedPref.setOnboardingComplete(true);
+                                                  //   },
+                                                  //   child: Text(
+                                                  //     localLanguage.sign_up,
+                                                  //     style: Get.theme.textTheme.titleSmall!.copyWith(
+                                                  //       fontSize: 14.sp,
+                                                  //     ),
+                                                  //   ),
+                                                  // ),
                                                 ],
                                               ).animate().fadeIn(delay: 600.ms));
                                       }),

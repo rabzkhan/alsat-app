@@ -498,7 +498,7 @@ class ProductDetailsController extends GetxController {
                 children: [
                   10.verticalSpace,
                   Text(
-                    "Information Alert",
+                    "Delete Post ?",
                     style: Get.theme.textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -590,7 +590,6 @@ class ProductDetailsController extends GetxController {
                       ],
                     ),
                   ),
-                  30.verticalSpace,
                 ],
               ),
             ),

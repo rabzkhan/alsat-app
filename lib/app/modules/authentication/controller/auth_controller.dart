@@ -1,21 +1,26 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
+import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:restart_app/restart_app.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../config/theme/app_text_theme.dart';
 import '../../../../utils/constants.dart';
 import '../../../data/local/my_shared_pref.dart';
-import '../../../routes/app_pages.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/view/app_home_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,10 +40,8 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp =
-      false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess =
-      false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -60,8 +63,7 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await smsConfirmation(
-            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
         isLoading.value = false;
       },
       onError: (error) {
@@ -115,8 +117,7 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d(
-            "Verification successful! and the token is ${varifiedModel.value.token!}");
+        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
         getProfile();
         Get.to(() => const AppHomeView());
       },
@@ -227,13 +228,11 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         getProfile();
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomToast(
-            message: localLanguage.updated_successfully);
+        CustomSnackBar.showCustomToast(message: localLanguage.updated_successfully);
       },
       onError: (error) {
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(
-            message: localLanguage.something_went_wrong);
+        CustomSnackBar.showCustomErrorToast(message: localLanguage.something_went_wrong);
         log('profile $error <- error');
         Logger().d("$error <- error");
       },
@@ -245,55 +244,117 @@ class AuthController extends GetxController {
   Future<void> deleteUserAccount() async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     Get.dialog(
-      AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        title: Text(
-          localLanguage.delete_account,
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-        ),
-        content: Text(
-          localLanguage.delete_account_confirmation,
-          style: TextStyle(fontSize: 16, color: Colors.black87),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: Text(localLanguage.cancel,
-                style: TextStyle(color: Colors.black)),
+      Center(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+            margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+            width: Get.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20).r,
+              color: Colors.white,
+            ),
+            child: Material(
+              color: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  10.verticalSpace,
+                  Text(
+                    "Delete Account?",
+                    style: Get.theme.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    "Are you sure you want to delete your account ?",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  ),
+                  20.verticalSpace,
+                  SizedBox(
+                    height: 40.h,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              side: BorderSide(
+                                color: Get.theme.primaryColor,
+                                width: 1,
+                              ),
+                              fixedSize: const Size.fromHeight(48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            child: Text(
+                              localLanguage.cancel,
+                              style: regular.copyWith(
+                                color: Get.theme.primaryColor,
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.back();
+                            },
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        Expanded(
+                          flex: 3,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              fixedSize: const Size.fromHeight(48),
+                              backgroundColor: Get.theme.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            onPressed: () async {
+                              Get.back();
+                              isDeletingAccount.value = true;
+                              await BaseClient.safeApiCall(
+                                "${Constants.baseUrl}/users",
+                                DioRequestType.delete,
+                                headers: {
+                                  'Authorization': Constants.token,
+                                },
+                                onSuccess: (response) async {
+                                  await userLogOut();
+                                  Restart.restartApp(
+                                    notificationTitle: 'Restarting App',
+                                    notificationBody: 'Please tap here to open the app again.',
+                                  );
+                                  isDeletingAccount.value = false;
+                                },
+                                onError: (error) {
+                                  log('Failed to delete account: $error');
+                                  isDeletingAccount.value = false;
+                                },
+                              );
+                            },
+                            child: Text(
+                              localLanguage.delete,
+                              style: regular.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            onPressed: () async {
-              Get.back();
-
-              isDeletingAccount.value = true;
-              await BaseClient.safeApiCall(
-                "${Constants.baseUrl}/users",
-                DioRequestType.delete,
-                headers: {
-                  'Authorization': Constants.token,
-                },
-                onSuccess: (response) async {
-                  await userLogOut();
-                  Restart.restartApp(
-                    notificationTitle: 'Restarting App',
-                    notificationBody: 'Please tap here to open the app again.',
-                  );
-                  isDeletingAccount.value = false;
-                },
-                onError: (error) {
-                  log('Failed to delete account: $error');
-                  isDeletingAccount.value = false;
-                },
-              );
-            },
-            child: Text(localLanguage.delete,
-                style: TextStyle(color: Colors.white)),
-          ),
-        ],
+        ),
       ),
-      barrierDismissible: false,
     );
   }
 
@@ -306,36 +367,101 @@ class AuthController extends GetxController {
   RxBool isLoggingOutDevices = false.obs;
 
   Future<void> logoutDevices({bool isShowDialog = true}) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     if (isShowDialog) {
       Get.dialog(
-        AlertDialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          title: Text(
-            "Logout from all devices",
-            style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blue),
-          ),
-          content: Text(
-            "Are you sure you want to log out from all devices?",
-            style: TextStyle(fontSize: 16, color: Colors.black87),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Get.back(),
-              child: Text("Cancel", style: TextStyle(color: Colors.black)),
+        Center(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+              margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+              width: Get.width,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20).r,
+                color: Colors.white,
+              ),
+              child: Material(
+                color: Colors.white,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    10.verticalSpace,
+                    Text(
+                      "Logout",
+                      style: Get.theme.textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    8.verticalSpace,
+                    Text(
+                      "Are you sure you want to logout from all devices ?",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                    ),
+                    20.verticalSpace,
+                    SizedBox(
+                      height: 40.h,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                                side: BorderSide(
+                                  color: Get.theme.primaryColor,
+                                  width: 1,
+                                ),
+                                fixedSize: const Size.fromHeight(48),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                              ),
+                              child: Text(
+                                localLanguage.cancel,
+                                style: regular.copyWith(
+                                  color: Get.theme.primaryColor,
+                                ),
+                              ),
+                              onPressed: () {
+                                Get.back();
+                              },
+                            ),
+                          ),
+                          10.horizontalSpace,
+                          Expanded(
+                            flex: 3,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                elevation: 0,
+                                fixedSize: const Size.fromHeight(48),
+                                backgroundColor: Get.theme.primaryColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                ),
+                              ),
+                              onPressed: () async {
+                                Get.back();
+                                await _performLogoutDevices();
+                              },
+                              child: Text(
+                                "Logout",
+                                style: regular.copyWith(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-              onPressed: () async {
-                Get.back(); // Close dialog before API call
-                await _performLogoutDevices();
-              },
-              child: Text("Logout", style: TextStyle(color: Colors.white)),
-            ),
-          ],
+          ),
         ),
-        barrierDismissible: false,
       );
     } else {
       await _performLogoutDevices();
@@ -352,6 +478,7 @@ class AuthController extends GetxController {
       },
       onSuccess: (response) {
         log('Logged out from all devices successfully');
+        Get.offAll(() => LoginView());
         isLoggingOutDevices.value = false;
         return;
       },
