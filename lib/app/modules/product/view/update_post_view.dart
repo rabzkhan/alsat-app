@@ -647,10 +647,11 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                           productController.postUpdateFromKey.currentState?.save();
                           if (productController.postUpdateFromKey.currentState!.validate()) {
                             Map<String, dynamic> data = {
-                              'title': productController.postUpdateFromKey.currentState?.value['title'],
-                              'description': productController.postUpdateFromKey.currentState?.value['description'],
+                              "title": productController.postUpdateFromKey.currentState?.value['title'],
+                              "description": productController.postUpdateFromKey.currentState?.value['description'],
                               "price_info": {
-                                'price': productController.postUpdateFromKey.currentState?.value['price'] ?? '0',
+                                "price": double.parse(
+                                    productController.postUpdateFromKey.currentState?.value['price'].toString() ?? '')
                               },
                             };
                             productController.updatePost(postId: widget.productModel.id ?? '', data: data);

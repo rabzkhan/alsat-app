@@ -16,6 +16,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart' as google_maps_flu
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
@@ -657,6 +658,7 @@ class ProductController extends GetxController {
     required String postId,
     required Map<String, dynamic> data,
   }) async {
+    Logger().d(data.toString());
     final HomeController homeController = Get.find();
     isUpdatingPost.value = true;
     await BaseClient.safeApiCall(
