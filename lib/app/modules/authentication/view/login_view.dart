@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../../../data/local/my_shared_pref.dart';
@@ -16,6 +16,7 @@ class LoginView extends GetView<AuthController> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -31,7 +32,7 @@ class LoginView extends GetView<AuthController> {
             padding: EdgeInsets.only(bottom: 15.h),
             child: CircleAvatar(
               radius: 60.r,
-              backgroundColor: Get.theme.disabledColor.withOpacity(.05),
+              backgroundColor: Get.theme.disabledColor.withValues(alpha: .05),
               child: InkWell(
                 onTap: () async {
                   await MySharedPref.clear();
@@ -57,7 +58,7 @@ class LoginView extends GetView<AuthController> {
       ),
       body: Container(
         decoration: BoxDecoration(
-            color: Get.theme.appBarTheme.backgroundColor!.withOpacity(.7),
+            color: Get.theme.appBarTheme.backgroundColor!.withValues(alpha: .7),
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(60.r),
               topRight: Radius.circular(60.r),
@@ -83,7 +84,7 @@ class LoginView extends GetView<AuthController> {
                   isDense: true,
                   alignLabelWithHint: true,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelText: 'Phone Number',
+                  labelText: localLanguage.phone_number,
                   labelStyle: TextStyle(
                     fontSize: 14.sp,
                     color: Get.theme.shadowColor.withOpacity(.6),
@@ -106,7 +107,9 @@ class LoginView extends GetView<AuthController> {
                       20.verticalSpace,
                       Center(
                         child: Text(
-                          controller.canResendOtp.value ? "" : "Resend OTP in $minutes:$seconds min",
+                          controller.canResendOtp.value
+                              ? ""
+                              : "${localLanguage.resend_otp_in} $minutes:$seconds ${localLanguage.min}",
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: Get.theme.primaryColor,
@@ -122,7 +125,7 @@ class LoginView extends GetView<AuthController> {
                               }
                             : null, // Disable button until countdown is over
                         child: Text(
-                          'Resend OTP',
+                          localLanguage.resend_otp,
                           style: TextStyle(fontSize: 14.sp),
                         ),
                       ),
@@ -146,7 +149,7 @@ class LoginView extends GetView<AuthController> {
                             },
                       child: Obx(() {
                         return Text(
-                          controller.isLoading.value ? "Varifying.." : 'Varify & Login',
+                          controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
                         );
                       }),

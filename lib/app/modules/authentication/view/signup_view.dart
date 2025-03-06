@@ -4,7 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../controller/auth_controller.dart';
@@ -15,6 +15,7 @@ class SignUpView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AuthController authController = Get.find();
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -61,7 +62,7 @@ class SignUpView extends StatelessWidget {
                   isDense: true,
                   alignLabelWithHint: true,
                   floatingLabelBehavior: FloatingLabelBehavior.always,
-                  labelText: 'Phone Number',
+                  labelText: localLanguage.phone_number,
                   labelStyle: TextStyle(
                     fontSize: 14.sp,
                     color: Get.theme.shadowColor.withOpacity(.6),
@@ -202,9 +203,7 @@ class SignUpView extends StatelessWidget {
                   ),
                   6.horizontalSpace,
                   InkWell(
-                    onDoubleTap: () {
-
-                    },
+                    onDoubleTap: () {},
                     child: Text(
                       'Login',
                       style: TextStyle(

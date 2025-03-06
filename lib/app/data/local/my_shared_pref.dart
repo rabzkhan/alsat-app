@@ -37,7 +37,8 @@ class MySharedPref {
 
   /// Get current locale
   static Locale getCurrentLocal() {
-    return const Locale('en');
+    String? currentLocal = _sharedPreferences.getString(_currentLocalKey);
+    return currentLocal != null ? Locale(currentLocal) : const Locale('en');
   }
 
   /// Save generated FCM token

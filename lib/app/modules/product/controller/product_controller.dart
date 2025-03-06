@@ -12,8 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart'
-    as google_maps_flutter;
+import 'package:google_maps_flutter/google_maps_flutter.dart' as google_maps_flutter;
 import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:location/location.dart';
 import 'package:get/get.dart';
@@ -197,8 +196,8 @@ class ProductController extends GetxController {
           if (file != null) {
             tempFile.add(file);
           }
-          return tempFile;
         }
+        return tempFile;
       } else {
         for (AssetEntity imagePick in pickImage) {
           File? file = await imagePick.file;
@@ -287,8 +286,7 @@ class ProductController extends GetxController {
       onSuccess: (response) {
         isProductPosting.value = false;
         CustomSnackBar.showCustomToast(
-            message: localLanguage.product_posted_successfully,
-            title: localLanguage.successfully);
+            message: localLanguage.product_posted_successfully, title: localLanguage.successfully);
         Get.back();
         resetForm();
         homeController.getUserPostCategories();
@@ -297,8 +295,7 @@ class ProductController extends GetxController {
       },
       onError: (p0) {
         isProductPosting.value = false;
-        CustomSnackBar.showCustomToast(
-            color: Colors.red, message: localLanguage.product_posting_failed);
+        CustomSnackBar.showCustomToast(color: Colors.red, message: localLanguage.product_posting_failed);
         return false;
       },
     );
@@ -342,15 +339,13 @@ class ProductController extends GetxController {
       onError: (p0) {
         log('${p0.url} ${Constants.token}');
         isFetchProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(
-            message: localLanguage.product_fetching_failed);
+        CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController homeRefreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController homeRefreshController = RefreshController(initialRefresh: false);
   void onHomeRefresh() async {
     final HomeController homeController = Get.find();
     homeController.getBanner();
@@ -409,15 +404,13 @@ class ProductController extends GetxController {
         log('${p0.url} ${Constants.token}');
         log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchLikeProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(
-            message: localLanguage.product_fetching_failed);
+        CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController myLikePostRefreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController myLikePostRefreshController = RefreshController(initialRefresh: false);
   void myLikePostRefresh() async {
     await fetchMyLikeProducts();
     myLikePostRefreshController.refreshCompleted();
@@ -425,8 +418,7 @@ class ProductController extends GetxController {
 
   void myLikePostLoading() async {
     if (productPostListRes?.hasMore ?? false) {
-      await fetchMyLikeProducts(
-          nextPaginateDate: myLikeProductList.last.createdAt);
+      await fetchMyLikeProducts(nextPaginateDate: myLikeProductList.last.createdAt);
     }
     myLikePostRefreshController.loadComplete();
   }
@@ -434,8 +426,7 @@ class ProductController extends GetxController {
   /// product like
   RxBool isProductLike = RxBool(false);
   RxString productLikeId = RxString('');
-  Future<void> addProductLike(
-      {required String productId, required bool likeValue}) async {
+  Future<void> addProductLike({required String productId, required bool likeValue}) async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
@@ -464,18 +455,15 @@ class ProductController extends GetxController {
       onError: (p0) {
         log("Product like failed: ${p0.response} ${p0.response?.data}");
         isProductLike.value = false;
-        CustomSnackBar.showCustomToast(
-            message: localLanguage.product_like_failed);
+        CustomSnackBar.showCustomToast(message: localLanguage.product_like_failed);
       },
     );
   }
 
   //-- get my current location--//
   google_maps_flutter.LatLng? selectLatLon;
-  google_maps_flutter.LatLng selectPosition =
-      const google_maps_flutter.LatLng(0, 0);
-  final Completer<google_maps_flutter.GoogleMapController> mapController =
-      Completer();
+  google_maps_flutter.LatLng selectPosition = const google_maps_flutter.LatLng(0, 0);
+  final Completer<google_maps_flutter.GoogleMapController> mapController = Completer();
   Rxn<LocationData> currentLocation = Rxn();
   RxList<geocoding.Placemark> placemarks = RxList([]);
 
@@ -503,8 +491,7 @@ class ProductController extends GetxController {
 
   getLatLngToAddress(google_maps_flutter.LatLng latLng) async {
     selectLatLon = latLng;
-    placemarks.value = await geocoding.placemarkFromCoordinates(
-        latLng.latitude, latLng.longitude);
+    placemarks.value = await geocoding.placemarkFromCoordinates(latLng.latitude, latLng.longitude);
 
     calculateFilledIndividualInfoFields();
   }
@@ -512,7 +499,8 @@ class ProductController extends GetxController {
   //-Get Product Details --//
   RxBool isProductDetailsLoading = RxBool(true);
   Rxn<ProductModel> selectPostProductModel = Rxn<ProductModel>();
-  Future<void> getSingleProductDetails(String pId) async {
+  Rxn<ProductModel> selectExtraPostProductModel = Rxn<ProductModel>();
+  Future<void> getSingleProductDetails(String pId, {bool external = false}) async {
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId",
       DioRequestType.get,
@@ -522,15 +510,24 @@ class ProductController extends GetxController {
       },
       onLoading: () {
         isProductDetailsLoading.value = true;
-        selectPostProductModel.value = null;
+        if (!external) {
+          selectPostProductModel.value = null;
+        }
       },
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
-        selectPostProductModel.value = ProductModel.fromJson(data);
+        if (external) {
+          selectExtraPostProductModel.value = ProductModel.fromJson(data);
+        } else {
+          selectPostProductModel.value = ProductModel.fromJson(data);
+        }
         isProductDetailsLoading.value = false;
+        return selectPostProductModel.value;
       },
       onError: (p0) {
+        log('Single product fetching failed: ${p0.message}');
         isProductDetailsLoading.value = false;
+        return null;
       },
     );
   }
@@ -566,8 +563,7 @@ class ProductController extends GetxController {
   RxList<File> pickUpdateVideoList = RxList([]);
   RxBool isUploadingMediaImageInPost = false.obs;
   RxBool isUploadingMediaVideoInPost = false.obs;
-  Future<void> uploadMediaInPost(
-      {required String postId, bool isVideoUpload = false}) async {
+  Future<void> uploadMediaInPost({required String postId, bool isVideoUpload = false}) async {
     final HomeController homeController = Get.find();
     List<Map<String, dynamic>> mediaData = [];
     if (pickUpdateImageList.isNotEmpty && !isVideoUpload) {
@@ -582,7 +578,7 @@ class ProductController extends GetxController {
         mediaData.add(videoMap);
       }
     }
-    await BaseClient.safeApiCall(
+    return BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$postId/media/add-many",
       DioRequestType.put,
       headers: {
@@ -628,8 +624,7 @@ class ProductController extends GetxController {
 
   //--- delete Media In  Post---//
   RxBool isDeletingMediaInPost = false.obs;
-  Future<void> deleteMediaInPost(
-      {required String pId, required String mediaId}) async {
+  Future<void> deleteMediaInPost({required String pId, required String mediaId}) async {
     final HomeController homeController = Get.find();
     return BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId/media/delete-many",
