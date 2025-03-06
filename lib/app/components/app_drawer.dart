@@ -4,6 +4,7 @@ import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/conversation/view/message_view.dart';
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -16,12 +17,15 @@ import '../../config/translations/localization_service.dart';
 import '../modules/auth_user/auth_user_tab/my_settings.dart';
 import '../modules/authentication/controller/auth_controller.dart';
 import '../modules/conversation/controller/conversation_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     AuthController authController = Get.find();
     ConversationController conversationController = Get.find();
     LocalizationService localizationService = Get.put(LocalizationService());
@@ -57,8 +61,7 @@ class AppDrawer extends StatelessWidget {
                   : ListTile(
                       onTap: () {
                         Get.back();
-                        Get.to(() => const MySettings(),
-                            transition: Transition.fadeIn);
+                        Get.to(() => const MySettings(), transition: Transition.fadeIn);
                       },
                       leading: CircleAvatar(
                         radius: 22.r,
@@ -76,9 +79,7 @@ class AppDrawer extends StatelessWidget {
                         style: bold.copyWith(fontSize: 16.sp),
                       ),
                       subtitle: Text(
-                        authController.userDataModel.value.phone ??
-                            authController.userDataModel.value.email ??
-                            "",
+                        authController.userDataModel.value.phone ?? authController.userDataModel.value.email ?? "",
                       ),
                     );
             }),
@@ -116,16 +117,13 @@ class AppDrawer extends StatelessWidget {
                     // ),
                     // 20.verticalSpace,
                     Obx(() {
-                      return conversationController
-                                  .addminConversationModel.value ==
-                              null
+                      return conversationController.adminConversationModel.value == null
                           ? const Center()
                           : InkWell(
                               onTap: () {
                                 Get.to(
                                     () => MessagesScreen(
-                                        conversation: conversationController
-                                            .addminConversationModel.value!),
+                                        conversation: conversationController.adminConversationModel.value!),
                                     transition: Transition.fadeIn);
                               },
                               child: Row(
@@ -137,7 +135,7 @@ class AppDrawer extends StatelessWidget {
                                   ),
                                   10.horizontalSpace,
                                   Text(
-                                    'Chat With Admin',
+                                    localLanguage.chat_with_admin,
                                     style: regular.copyWith(
                                       fontSize: 14.sp,
                                       color: Colors.white,
@@ -150,8 +148,7 @@ class AppDrawer extends StatelessWidget {
                     }),
                     10.verticalSpace,
                     ExpansionTile(
-                      shape:
-                          const RoundedRectangleBorder(side: BorderSide.none),
+                      shape: const RoundedRectangleBorder(side: BorderSide.none),
                       tilePadding: EdgeInsets.zero,
                       title: Row(
                         children: [
@@ -177,38 +174,58 @@ class AppDrawer extends StatelessWidget {
                       children: [
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('en'));
+                            localizationService.changeLocale(const Locale('en'));
                             Get.back();
                           },
                           label: Text(
                             'English',
                             style: regular.copyWith(
-                                fontSize: 14.sp, color: Colors.white),
+                              fontSize: 14.sp,
+                              color: localizationService.locale.value.languageCode == 'en'
+                                  ? AppColors.primary
+                                  : Colors.white,
+                              fontWeight: localizationService.locale.value.languageCode == 'en'
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('tr'));
+                            localizationService.changeLocale(const Locale('tr'));
                             Get.back();
                           },
-                          label: Text(
-                            'Turkmen',
-                            style: regular.copyWith(
-                                fontSize: 14.sp, color: Colors.white),
+                          label: Obx(
+                            () => Text(
+                              'Turkmen',
+                              style: regular.copyWith(
+                                fontSize: 14.sp,
+                                color: localizationService.locale.value.languageCode == 'tr'
+                                    ? AppColors.primary
+                                    : Colors.white,
+                                fontWeight: localizationService.locale.value.languageCode == 'tr'
+                                    ? FontWeight.w600
+                                    : FontWeight.normal,
+                              ),
+                            ),
                           ),
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('ru'));
+                            localizationService.changeLocale(const Locale('ru'));
                             Get.back();
                           },
                           label: Text(
                             'Russian',
                             style: regular.copyWith(
-                                fontSize: 14.sp, color: Colors.white),
+                              fontSize: 14.sp,
+                              color: localizationService.locale.value.languageCode == 'ru'
+                                  ? AppColors.primary
+                                  : Colors.white,
+                              fontWeight: localizationService.locale.value.languageCode == 'ru'
+                                  ? FontWeight.w600
+                                  : FontWeight.normal,
+                            ),
                           ),
                         ),
                       ],
@@ -226,11 +243,8 @@ class AppDrawer extends StatelessWidget {
                           Icon(Icons.logout, color: Colors.white),
                           10.horizontalSpace,
                           Text(
-                            'Logout',
-                            style: regular.copyWith(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 14.sp,
-                                color: Colors.white),
+                            localLanguage.logout,
+                            style: regular.copyWith(fontWeight: FontWeight.w500, fontSize: 14.sp, color: Colors.white),
                           ),
                         ],
                       ),

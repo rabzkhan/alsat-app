@@ -7,13 +7,15 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../controller/conversation_controller.dart';
 
 showUserReportBottomSheet(
     {required Participant participant,
     required ConversationController conversationController}) {
+  final localLanguage = AppLocalizations.of(Get.context!)!;
+
   return showModalBottomSheet(
       isScrollControlled: true,
       barrierColor: Colors.black.withOpacity(.1),
@@ -45,7 +47,7 @@ showUserReportBottomSheet(
                         isDense: true,
                         alignLabelWithHint: true,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'Report Reason',
+                        labelText: localLanguage.report_reason,
                         labelStyle: TextStyle(
                           fontSize: 14.sp,
                           color: Get.theme.shadowColor.withOpacity(.6),
@@ -68,7 +70,7 @@ showUserReportBottomSheet(
                         isDense: true,
                         alignLabelWithHint: true,
                         floatingLabelBehavior: FloatingLabelBehavior.always,
-                        labelText: 'Report Description',
+                        labelText: localLanguage.report_description,
                         labelStyle: TextStyle(
                           fontSize: 14.sp,
                           color: Get.theme.shadowColor.withOpacity(.6),
@@ -109,7 +111,7 @@ showUserReportBottomSheet(
                             ? const CupertinoActivityIndicator(
                                 color: Colors.white)
                             : Text(
-                                'Report',
+                                localLanguage.report,
                                 style: TextStyle(
                                     fontSize: 16.sp,
                                     color: Colors.white,
@@ -120,7 +122,7 @@ showUserReportBottomSheet(
                     10.verticalSpace,
                     CupertinoButton(
                       child: Text(
-                        'Cancel',
+                        localLanguage.cancel,
                         style: TextStyle(color: Colors.black, fontSize: 14.sp),
                       ),
                       onPressed: () {

@@ -1,5 +1,4 @@
-// ignore_for_file: deprecated_member_use
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:alsat/app/modules/app_home/component/premium_content.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/app_home/models/banner_res.dart';
@@ -220,13 +219,14 @@ class HomeContent extends StatelessWidget {
 
 onBannerTab(HomeController homeController, ProductController productController, FilterController filterController,
     BannerModel bannerModel) {
+  final localLanguage = AppLocalizations.of(Get.context!)!;
   //if product
   if ('${bannerModel.type}'.toUpperCase() == 'POST') {
     showLoading();
     productController.getSingleProductDetails(bannerModel.entityId ?? "").then((_) {
       Get.back();
       if (productController.selectPostProductModel.value?.id == null) {
-        CustomSnackBar.showCustomToast(message: 'Product Not Found');
+        CustomSnackBar.showCustomToast(message: localLanguage.product_not_found);
       } else {
         Get.to(
             ProductDetailsView(
@@ -244,7 +244,7 @@ onBannerTab(HomeController homeController, ProductController productController, 
     productDetailsController.getUserByUId(userId: bannerModel.entityId ?? "").then((_) {
       Get.back();
       if (productDetailsController.postUserModel.value?.id == null) {
-        CustomSnackBar.showCustomToast(message: 'User Not Found');
+        CustomSnackBar.showCustomToast(message: localLanguage.user_not_found);
       } else {
         Get.to(
           () => ClientProfileView(

@@ -23,6 +23,7 @@ import '../widget/message_input_widget.dart';
 import '../widget/message_tile.dart';
 import '../widget/user_block_bottom_sheet.dart';
 import '../widget/user_report_bottom_sheet.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MessagesScreen extends StatefulWidget {
   final ConversationModel conversation;
@@ -57,6 +58,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return WillPopScope(
       onWillPop: () async {
         if (messageController.selectMessage.value != null) {
@@ -108,12 +111,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   authController.userDataModel.value.id))!,
                           conversationController: conversationController,
                         ).then((onValue) {
-                          widget.conversation.haveBlocked = true;
-                          setState(() {});
+                          if (conversationController.isBlockingSuccess.value) {
+                            widget.conversation.haveBlocked = true;
+                            setState(() {});
+                          }
                         });
                       },
                       title: Text(
-                        'Block User',
+                        localLanguage.block_user,
                         style: regular.copyWith(
                           fontSize: 14.sp,
                           color: Colors.white,
@@ -141,7 +146,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         );
                       },
                       title: Text(
-                        'Report',
+                        localLanguage.report,
                         style: regular.copyWith(
                           fontSize: 14.sp,
                           color: Colors.white,
@@ -189,67 +194,72 @@ class _MessagesScreenState extends State<MessagesScreen> {
                   transition: Transition.fadeIn,
                 );
               },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.grey.shade300,
-                    child: NetworkImagePreview(
-                      radius: 30.r,
-                      url: conversationController
-                              .selectConversation.value?.participants
-                              ?.firstWhereOrNull((e) =>
-                                  e.id != authController.userDataModel.value.id)
-                              ?.picture ??
-                          "",
-                      height: 44.h,
-                      width: 44.w,
-                      error: (widget.conversation.isAdminChat ?? false)
-                          ? Image.asset("assets/icons/admin.png")
-                          : Image.asset(userDefaultIcon),
+              child: SizedBox(
+                width: Get.width * .8,
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: Colors.grey.shade300,
+                      child: NetworkImagePreview(
+                        radius: 30.r,
+                        url: conversationController
+                                .selectConversation.value?.participants
+                                ?.firstWhereOrNull((e) =>
+                                    e.id !=
+                                    authController.userDataModel.value.id)
+                                ?.picture ??
+                            "",
+                        height: 44.h,
+                        width: 44.w,
+                        error: (widget.conversation.isAdminChat ?? false)
+                            ? Image.asset("assets/icons/admin.png")
+                            : Image.asset(userDefaultIcon),
+                      ),
                     ),
-                  ),
-                  8.horizontalSpace,
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+                    8.horizontalSpace,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            (widget.conversation.isAdminChat ?? false)
-                                ? 'Alsat Admin'
-                                : '${conversationController.selectConversation.value?.participants?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)?.userName}',
-                            style: bold.copyWith(
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                          if (widget.conversation.isAdminChat ?? false)
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5),
-                              child: Icon(
-                                Icons.verified,
-                                color: Colors.blue,
-                                size: 18.sp,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                (widget.conversation.isAdminChat ?? false)
+                                    ? 'Alsat Admin'
+                                    : '${conversationController.selectConversation.value?.participants?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)?.userName}',
+                                style: bold.copyWith(
+                                  fontSize: 15.sp,
+                                ),
                               ),
-                            )
+                              if (widget.conversation.isAdminChat ?? false)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: Icon(
+                                    Icons.verified,
+                                    color: Colors.blue,
+                                    size: 18.sp,
+                                  ),
+                                )
+                            ],
+                          ),
+                          1.verticalSpace,
+                          Obx(() {
+                            return Text(
+                              messageController.isOnlineUser.value
+                                  ? localLanguage.active_now
+                                  : '${localLanguage.last_seen} ${DateFormat('hh:mm a dd MMM', Get.locale!.languageCode).format(messageController.lastSeen.value ?? DateTime.now())}',
+                              style: regular.copyWith(
+                                fontSize: 11.sp,
+                              ),
+                            );
+                          })
                         ],
                       ),
-                      1.verticalSpace,
-                      Obx(() {
-                        return Text(
-                          messageController.isOnlineUser.value
-                              ? 'Active Now'
-                              : 'Last seen ${DateFormat('hh:mm a dd MMM').format(messageController.lastSeen.value ?? DateTime.now())}',
-                          style: regular.copyWith(
-                            fontSize: 11.sp,
-                          ),
-                        );
-                      })
-                    ],
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             );
           }),
@@ -277,8 +287,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         : !conversationController
                                     .isConversationMessageLoading.value &&
                                 conversationController.coverMessage.isEmpty
-                            ? const NoDataWidget(
-                                isShowIcon: false, title: 'No Messages')
+                            ? NoDataWidget(
+                                isShowIcon: false,
+                                title: localLanguage.no_messages)
                             : ListView.builder(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0),
@@ -309,7 +320,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'You have blocked this user',
+                            localLanguage.you_have_blocked_this_user,
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w500,
@@ -317,7 +328,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           ),
                           2.verticalSpace,
                           Text(
-                            "You can't send message to this user",
+                            localLanguage.you_cant_send_message_to_this_user,
                             style: TextStyle(
                               fontSize: 12.sp,
                               fontWeight: FontWeight.w400,
@@ -329,8 +340,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               children: [
                                 Expanded(
                                   child: CupertinoButton(
-                                    color: Colors.grey,
-                                    child: const Text('UnBlock'),
+                                    color: Colors.green,
+                                    child: Text(
+                                      localLanguage.unblock,
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                     onPressed: () {
                                       showUserBlockBottomSheet(
                                         isBlocked: false,
@@ -359,7 +377,14 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               Expanded(
                                 child: CupertinoButton(
                                   color: Colors.grey,
-                                  child: const Text('Report'),
+                                  child: Text(
+                                    localLanguage.report,
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.black,
+                                    ),
+                                  ),
                                   onPressed: () {
                                     showUserReportBottomSheet(
                                       participant: (conversationController
@@ -416,7 +441,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                             ),
                                             4.verticalSpace,
                                             Text(
-                                              'Reply',
+                                              localLanguage.reply,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12.sp,
@@ -444,7 +469,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                             ),
                                             4.verticalSpace,
                                             Text(
-                                              'Delete',
+                                              localLanguage.delete,
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12.sp,

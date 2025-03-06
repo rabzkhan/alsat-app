@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:developer';
+// import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
@@ -41,8 +41,7 @@ class BaseClient {
     required Function(Response response) onSuccess,
     Function(ApiException)? onError,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)?
-        onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
     Function? onLoading,
     dynamic data,
   }) async {
@@ -91,8 +90,8 @@ class BaseClient {
         response = await _dio.delete(
           url,
           data: data,
-          queryParameters: queryParameters,
-          options: Options(headers: headers),
+          queryParameters: queryParameters ?? {},
+          options: Options(headers: headers ?? {}),
         );
       }
       // 3) return response (api done successfully)
@@ -108,7 +107,7 @@ class BaseClient {
       _handleTimeoutException(url: url, onError: onError);
     } catch (error, stackTrace) {
       // print the line of code that throw unexpected exception
-      log('error: ${error.toString()}-- $url--$queryParameters - $data');
+      // log('error: ${error.toString()}-- $url--$queryParameters - $data');
       Logger().e(stackTrace);
       // unexpected error for example (parsing json error)
       _handleUnexpectedException(url: url, onError: onError, error: error);
@@ -139,10 +138,7 @@ class BaseClient {
   }
 
   /// handle unexpected error
-  static _handleUnexpectedException(
-      {Function(ApiException)? onError,
-      required String url,
-      required Object error}) {
+  static _handleUnexpectedException({Function(ApiException)? onError, required String url, required Object error}) {
     if (onError != null) {
       onError(ApiException(
         message: error.toString(),
@@ -154,38 +150,31 @@ class BaseClient {
   }
 
   /// handle timeout exception
-  static _handleTimeoutException(
-      {Function(ApiException)? onError, required String url}) {
+  static _handleTimeoutException({Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: AppLocalizations.of(getx.Get.context!)!.server_not_responding,
         url: url,
       ));
     } else {
-      _handleError(
-          AppLocalizations.of(getx.Get.context!)!.server_not_responding);
+      _handleError(AppLocalizations.of(getx.Get.context!)!.server_not_responding);
     }
   }
 
   /// handle timeout exception
-  static _handleSocketException(
-      {Function(ApiException)? onError, required String url}) {
+  static _handleSocketException({Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
         url: url,
       ));
     } else {
-      _handleError(
-          AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
+      _handleError(AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
     }
   }
 
   /// handle Dio error
-  static _handleDioError(
-      {required DioException error,
-      Function(ApiException)? onError,
-      required String url}) {
+  static _handleDioError({required DioException error, Function(ApiException)? onError, required String url}) {
     if (error.response?.statusCode == 404) {
       if (onError != null) {
         return onError(ApiException(
@@ -194,23 +183,19 @@ class BaseClient {
           statusCode: 404,
         ));
       } else {
-        return _handleError(
-            AppLocalizations.of(getx.Get.context!)!.url_not_found);
+        return _handleError(AppLocalizations.of(getx.Get.context!)!.url_not_found);
       }
     }
 
     // no internet connection
-    if (error.message != null &&
-        error.message!.toLowerCase().contains('socket')) {
+    if (error.message != null && error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
-          message:
-              AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
+          message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
           url: url,
         ));
       } else {
-        return _handleError(
-            AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
+        return _handleError(AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
       }
     }
 

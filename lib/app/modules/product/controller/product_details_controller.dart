@@ -1,12 +1,15 @@
 import 'dart:developer';
+import 'dart:ui';
 
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
+import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../utils/constants.dart';
@@ -16,6 +19,7 @@ import '../../app_home/models/category_model.dart';
 import '../../authentication/model/user_data_model.dart';
 import '../../story/model/story_res.dart';
 import '../model/product_post_res.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetailsController extends GetxController {
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>(null);
@@ -80,8 +84,7 @@ class ProductDetailsController extends GetxController {
   //-- get Product view Count --//
   RxnNum viewCount = RxnNum(0);
   RxBool isProductView = RxBool(true);
-  Future<void> productViewCount(
-      {required String productId, required String productCreateTime}) async {
+  Future<void> productViewCount({required String productId, required String productCreateTime}) async {
     log("${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime");
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime",
@@ -123,8 +126,7 @@ class ProductDetailsController extends GetxController {
   }
 
   //-- get product comment list--//
-  Rxn<ProudctPostCommentRes> productCommentListRes =
-      Rxn<ProudctPostCommentRes>();
+  Rxn<ProudctPostCommentRes> productCommentListRes = Rxn<ProudctPostCommentRes>();
   RxList<CommentModel> productCommentList = RxList<CommentModel>();
   RxBool isProductCommentList = RxBool(true);
   Future<void> getProductComments({required String productId}) async {
@@ -156,8 +158,7 @@ class ProductDetailsController extends GetxController {
   //-- Add Product Comment --//
   RxBool isProductCommentAdd = RxBool(false);
 
-  Future<void> addProductComment(
-      {required String productId, required String comment}) async {
+  Future<void> addProductComment({required String productId, required String comment}) async {
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
       DioRequestType.post,
@@ -176,8 +177,7 @@ class ProductDetailsController extends GetxController {
       },
       onError: (e) {
         if (e.response?.data['result'] != null) {
-          CustomSnackBar.showCustomErrorToast(
-              message: e.response?.data['result']);
+          CustomSnackBar.showCustomToast(message: e.response?.data['result']);
         }
         isProductCommentAdd.value = false;
       },
@@ -252,8 +252,7 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        userPostCategories.value =
-            data.map((json) => CategoriesModel.fromJson(json)).toList();
+        userPostCategories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
         log('userPostCategories: ${userPostCategories.length}');
         selectCategory.value = userPostCategories.first;
         fetchUserProducts();
@@ -272,17 +271,16 @@ class ProductDetailsController extends GetxController {
   ProductPostListRes? userProductPostListRes;
   String selectUserId = '';
   Future<void> fetchUserProducts({String? nextPaginateDate}) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url =
-          '$url?next=$nextPaginateDate&user=${postUserModel.value?.id ?? selectUserId}';
+      url = '$url?next=$nextPaginateDate&user=${postUserModel.value?.id ?? selectUserId}';
     } else {
       url = "$url?user=${postUserModel.value?.id ?? selectUserId}";
     }
-    Map<String, dynamic> data = selectCategory.value != null
-        ? {"category_id": selectCategory.value!.sId ?? ""}
-        : {};
-    log('PostMy $url  ${data.toString()}  ${selectCategory.value?.name}');
+    Map<String, dynamic> data = selectCategory.value != null ? {"category_id": selectCategory.value!.sId ?? ""} : {};
+
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
@@ -309,10 +307,8 @@ class ProductDetailsController extends GetxController {
         isFetchUserProduct.value = false;
       },
       onError: (p0) {
-        log('${p0.url} ${Constants.token}');
-        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchUserProduct.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
+        CustomSnackBar.showCustomToast(message: localLanguage.product_fetching_failed);
       },
     );
   }
@@ -321,6 +317,7 @@ class ProductDetailsController extends GetxController {
   RxBool isRateUserLoading = RxBool(false);
   RxDouble userRate = RxDouble(3);
   Future<void> rateUser() async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.user}/$selectUserId/rate",
       DioRequestType.post,
@@ -335,13 +332,13 @@ class ProductDetailsController extends GetxController {
       onSuccess: (response) {
         isRateUserLoading.value = false;
         Get.back();
-        CustomSnackBar.showCustomToast(message: 'Rate Successfully');
+        CustomSnackBar.showCustomToast(message: localLanguage.rate_successfully);
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
         log('${p0.message} ${"${Constants.baseUrl}${Constants.user}/$selectUserId/rate"}');
         isRateUserLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(message: 'Rate Failed');
+        CustomSnackBar.showCustomToast(message: localLanguage.rate_failed);
       },
     );
   }
@@ -378,6 +375,7 @@ class ProductDetailsController extends GetxController {
     required String userId,
     required bool isFollow,
   }) async {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     AuthController authController = Get.find();
     selectUserId = userId;
     await BaseClient.safeApiCall(
@@ -399,7 +397,7 @@ class ProductDetailsController extends GetxController {
         log("Follow Successfully: ${response.data} ${response.requestOptions.data}-- $selectUserId");
         isRateUserLoading.value = false;
         CustomSnackBar.showCustomToast(
-            message: '${!isFollow ? "UnFollow" : 'Follow'} Successfully');
+            message: '${!isFollow ? localLanguage.unfollow : localLanguage.follow} ${localLanguage.successfully}');
         getUserByUId(userId: selectUserId);
       },
       onError: (p0) {
@@ -413,7 +411,7 @@ class ProductDetailsController extends GetxController {
         log('$data--${p0.message}${p0.url} ${Constants.token}');
         isRateUserLoading.value = false;
         isFetchUserLoading.value = true;
-        CustomSnackBar.showCustomErrorToast(message: 'Follow Failed');
+        CustomSnackBar.showCustomToast(message: 'Follow Failed');
       },
     );
   }
@@ -435,16 +433,14 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
-        ConversationListRes conversationListRes =
-            ConversationListRes.fromJson(data);
+        ConversationListRes conversationListRes = ConversationListRes.fromJson(data);
         conversationInfo.value = conversationListRes.data?.firstOrNull;
         isFetchUserConversationLoading.value = false;
       },
       onError: (p0) {
-        log('${p0.message}${p0.url} ${Constants.token}');
+        final localLanguage = AppLocalizations.of(Get.context!)!;
         isFetchUserConversationLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(
-            message: 'Failed to get conversation info');
+        CustomSnackBar.showCustomToast(message: localLanguage.failed_to_get_conversation_info);
       },
     );
   }
@@ -466,8 +462,7 @@ class ProductDetailsController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        userStoryList.value =
-            data.map((json) => StoryModel.fromJson(json)).toList();
+        userStoryList.value = data.map((json) => StoryModel.fromJson(json)).toList();
         isFetchUserStoryLoading.value = false;
         userStoryList.refresh();
         log('fetchUserStory: ${userStoryList.length}');
@@ -483,41 +478,125 @@ class ProductDetailsController extends GetxController {
   RxBool isDeletingPost = false.obs;
 
   Future<void> deleteUserPost({required String postId}) async {
-    return Get.defaultDialog(
-      title: "Information Alert",
-      backgroundColor: Colors.grey.shade200,
-      middleText: "Are you sure you want to delete this post?",
-      textConfirm: "Yes",
-      textCancel: "No",
-      onConfirm: () async {
-        Get.back(); // Close dialog before API call
-        isDeletingPost.value = true;
-        await BaseClient.safeApiCall(
-          "${Constants.baseUrl}${Constants.postProduct}/$postId",
-          DioRequestType.delete,
-          headers: {
-            //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-            'Authorization': Constants.token,
-          },
-          onSuccess: (response) {
-            CustomSnackBar.showCustomToast(
-                message: 'Post deleted successfully');
-            isDeletingPost.value = false;
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+    return Get.dialog(
+      Center(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+            margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+            width: Get.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20).r,
+              color: Colors.white,
+            ),
+            child: Material(
+              color: Colors.white,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  10.verticalSpace,
+                  Text(
+                    "Information Alert",
+                    style: Get.theme.textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  8.verticalSpace,
+                  Text(
+                    "Are you sure you want to delete this post?",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  ),
+                  20.verticalSpace,
+                  SizedBox(
+                    height: 40.h,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              side: BorderSide(
+                                color: Get.theme.primaryColor,
+                                width: 1,
+                              ),
+                              fixedSize: const Size.fromHeight(48),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            child: Text(
+                              'Cancel',
+                              style: regular.copyWith(
+                                color: Get.theme.primaryColor,
+                              ),
+                            ),
+                            onPressed: () {
+                              Get.back();
+                            },
+                          ),
+                        ),
+                        10.horizontalSpace,
+                        Expanded(
+                          flex: 3,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              fixedSize: const Size.fromHeight(48),
+                              backgroundColor: Get.theme.primaryColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.r),
+                              ),
+                            ),
+                            onPressed: () async {
+                              Get.back(); // Close dialog before API call
+                              isDeletingPost.value = true;
+                              await BaseClient.safeApiCall(
+                                "${Constants.baseUrl}${Constants.postProduct}/$postId",
+                                DioRequestType.delete,
+                                headers: {
+                                  //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+                                  'Authorization': Constants.token,
+                                },
+                                onSuccess: (response) {
+                                  CustomSnackBar.showCustomToast(message: localLanguage.post_deleted_successfully);
+                                  isDeletingPost.value = false;
 
-            Get.find<ProductController>().fetchProducts();
-            Get.find<HomeController>().fetchMyProducts();
-            Get.back();
-          },
-          onError: (error) {
-            log('Failed to delete post: $error');
-            CustomSnackBar.showCustomErrorToast(
-              message: 'Failed to delete post',
-              color: Colors.red,
-            );
-            isDeletingPost.value = false;
-          },
-        );
-      },
+                                  Get.find<ProductController>().fetchProducts();
+                                  Get.find<HomeController>().fetchMyProducts();
+                                  Get.back();
+                                },
+                                onError: (error) {
+                                  log('Failed to delete post: $error');
+                                  CustomSnackBar.showCustomToast(
+                                    message: localLanguage.failed_to_delete_post,
+                                    color: Colors.red,
+                                  );
+                                  isDeletingPost.value = false;
+                                },
+                              );
+                            },
+                            child: Text(
+                              "Yes",
+                              style: regular.copyWith(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  30.verticalSpace,
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -26,6 +26,7 @@ import '../widgets/color_picker_sheet.dart';
 import '../widgets/filter_bottom_sheet.dart';
 import '../widgets/filter_option_widget.dart';
 import '../widgets/multi_filter_bottom_sheet.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterView extends StatefulWidget {
   final bool isBack;
@@ -69,6 +70,7 @@ class _FilterViewState extends State<FilterView> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     final credit = ValueNotifier<bool>(controller.credit.value);
     final exchange = ValueNotifier<bool>(controller.exchange.value);
     final hasVin = ValueNotifier<bool>(controller.hasVinCode.value);
@@ -92,7 +94,7 @@ class _FilterViewState extends State<FilterView> {
             child: Padding(
               padding: EdgeInsets.only(top: 10.h),
               child: Text(
-                "Filter",
+                localLanguage.filter,
                 textAlign: TextAlign.center,
                 style: medium.copyWith(
                   fontSize: 16.sp,
@@ -130,7 +132,7 @@ class _FilterViewState extends State<FilterView> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Category",
+                          localLanguage.category,
                           style: bold.copyWith(
                             fontSize: 12.sp,
                             color: Colors.black54,
@@ -139,7 +141,7 @@ class _FilterViewState extends State<FilterView> {
                         2.verticalSpace,
                         Obx(() {
                           return Text(
-                            (controller.category.value?.name ?? 'Select Category').toString(),
+                            (controller.category.value?.name ?? localLanguage.select_category).toString(),
                             style: bold.copyWith(
                               fontSize: 16.sp,
                               color: Colors.black,
@@ -186,7 +188,7 @@ class _FilterViewState extends State<FilterView> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(
-                            "Location",
+                            localLanguage.location,
                             style: bold.copyWith(
                               fontSize: 14.sp,
                             ),
@@ -232,7 +234,7 @@ class _FilterViewState extends State<FilterView> {
                         Get.bottomSheet(
                           isScrollControlled: true,
                           MultiFilterBottomSheet(
-                            title: "Mobile Brand",
+                            title: localLanguage.mobile_brand,
                             data: controller.mobileBrand,
                             selectedData: controller.selectMobileBrand,
                           ),
@@ -256,7 +258,7 @@ class _FilterViewState extends State<FilterView> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Text(
-                                    "Brand",
+                                    localLanguage.brand,
                                     style: bold.copyWith(
                                       fontSize: 14.sp,
                                     ),
@@ -269,7 +271,7 @@ class _FilterViewState extends State<FilterView> {
                                           child: ScrollingTextWidget(
                                             child: Text(
                                               controller.selectMobileBrand.isEmpty
-                                                  ? 'Not Choose Yet'
+                                                  ? localLanguage.not_chosen_yet
                                                   : controller.selectMobileBrand
                                                       .expand((e) => [e.toString()])
                                                       .join(', '),
@@ -300,12 +302,12 @@ class _FilterViewState extends State<FilterView> {
                           onTap: () {
                             Get.bottomSheet(
                               MultiFilterBottomSheet(
-                                title: "Mobile Brand",
-                                data: controller.estateTtypeList,
-                                selectedData: controller.estateTtype,
+                                title: localLanguage.estate_type,
+                                data: controller.estateTypeList,
+                                selectedData: controller.estateType,
                               ),
                             ).then((_) {
-                              controller.estateTtype.refresh();
+                              controller.estateType.refresh();
                             });
                           },
                           child: Container(
@@ -324,7 +326,7 @@ class _FilterViewState extends State<FilterView> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Estate Type",
+                                        localLanguage.estate_type,
                                         style: bold.copyWith(
                                           fontSize: 14.sp,
                                         ),
@@ -336,9 +338,9 @@ class _FilterViewState extends State<FilterView> {
                                             Expanded(
                                               child: ScrollingTextWidget(
                                                 child: Text(
-                                                  controller.estateTtype.isEmpty
-                                                      ? 'Not Choose Yet'
-                                                      : controller.estateTtype.expand((e) => [e.toString()]).join(', '),
+                                                  controller.estateType.isEmpty
+                                                      ? localLanguage.not_chosen_yet
+                                                      : controller.estateType.expand((e) => [e.toString()]).join(', '),
                                                   style: regular.copyWith(
                                                     fontSize: 10.sp,
                                                     color: context.theme.primaryColor,
@@ -375,7 +377,7 @@ class _FilterViewState extends State<FilterView> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.w),
                     child: Text(
-                      "Account Type",
+                      localLanguage.account_type,
                       style: bold.copyWith(
                         fontSize: 16.sp,
                       ),
@@ -407,8 +409,8 @@ class _FilterViewState extends State<FilterView> {
                                 onPressed: () {
                                   controller.accountType.value = "";
                                 },
-                                child: const Text(
-                                  "All",
+                                child: Text(
+                                  localLanguage.all,
                                   style: TextStyle(
                                     color: Colors.black,
                                   ),
@@ -426,8 +428,8 @@ class _FilterViewState extends State<FilterView> {
                                   onPressed: () {
                                     controller.accountType.value = "Premium";
                                   },
-                                  child: const Text(
-                                    "Premium",
+                                  child: Text(
+                                    localLanguage.premium,
                                     style: TextStyle(
                                       color: Colors.black,
                                     ),
@@ -445,8 +447,8 @@ class _FilterViewState extends State<FilterView> {
                                   onPressed: () {
                                     controller.accountType.value = "Ordinary";
                                   },
-                                  child: const Text(
-                                    "Ordinary",
+                                  child: Text(
+                                    localLanguage.ordinary,
                                     style: TextStyle(
                                       color: Colors.black,
                                     ),
@@ -472,7 +474,7 @@ class _FilterViewState extends State<FilterView> {
                   Padding(
                     padding: EdgeInsets.only(left: 12.w, top: 10.h),
                     child: Text(
-                      "Price",
+                      localLanguage.price,
                       style: bold.copyWith(
                         fontSize: 16.sp,
                       ),
@@ -497,7 +499,7 @@ class _FilterViewState extends State<FilterView> {
                               borderRadius: BorderRadius.circular(8.0.r),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'From',
+                            hintText: localLanguage.from,
                             hintStyle: medium.copyWith(color: Colors.black),
                             contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
@@ -520,7 +522,7 @@ class _FilterViewState extends State<FilterView> {
                               borderRadius: BorderRadius.circular(8.0.r),
                               borderSide: BorderSide.none,
                             ),
-                            hintText: 'To',
+                            hintText: localLanguage.to,
                             hintStyle: medium.copyWith(color: Colors.black),
                             contentPadding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                           ),
@@ -549,7 +551,7 @@ class _FilterViewState extends State<FilterView> {
                               Get.bottomSheet(
                                 isScrollControlled: true,
                                 CarMultiBrandBottomSheet(
-                                  title: "Brand",
+                                  title: localLanguage.brand,
                                   data: homeController.brandList,
                                   selectedData: controller.brand,
                                 ),
@@ -579,7 +581,7 @@ class _FilterViewState extends State<FilterView> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Brand",
+                                        localLanguage.brand,
                                         style: bold.copyWith(
                                           fontSize: 14.sp,
                                         ),
@@ -596,7 +598,7 @@ class _FilterViewState extends State<FilterView> {
                                                     vertical: 2.h,
                                                   ),
                                                   child: Text(
-                                                    'Choose Brand',
+                                                    localLanguage.choose_brand,
                                                     style: medium.copyWith(
                                                       fontSize: 10.sp,
                                                       color: Colors.black54,
@@ -620,7 +622,7 @@ class _FilterViewState extends State<FilterView> {
                                                       ),
                                                       child: Center(
                                                         child: Text(
-                                                          brand.brand ?? 'Choose Brand',
+                                                          brand.brand ?? localLanguage.choose_brand,
                                                           style: medium.copyWith(
                                                             fontSize: 10.sp,
                                                             color: Colors.black54,
@@ -656,17 +658,17 @@ class _FilterViewState extends State<FilterView> {
                                       return SizedBox(
                                         width: (Get.width / (controller.brand.length > 1 ? 2 : 1)) - 26.w,
                                         child: FilterOptionWidget(
-                                          title: "Model ",
+                                          title: localLanguage.model,
                                           titleSub: '*(${brand['brand'].brand ?? ''})',
                                           subTitle: controller.brandAndSelectedModel[index]['model'].isEmpty
-                                              ? 'Choose Model'
+                                              ? localLanguage.not_chosen_yet
                                               : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
                                                     e.name.toString()
                                                   ]).join(', ')}',
                                           onTap: () {
                                             Get.bottomSheet(
                                               CarMultiModelBottomSheet(
-                                                title: "Model",
+                                                title: localLanguage.model,
                                                 data: (brand['brand'].model ?? <CarModel>[]).toList(),
                                                 selectedData: controller.brandAndSelectedModel[index]['model'],
                                                 onSelect: (p0) {
@@ -690,13 +692,13 @@ class _FilterViewState extends State<FilterView> {
                               children: [
                                 Expanded(
                                   child: Obx(() => FilterOptionWidget(
-                                        title: "Body Type",
+                                        title: localLanguage.body_type,
                                         subTitle: controller.bodyType.value,
                                         onTap: () {
                                           Get.bottomSheet(
                                             FilterBottomSheet(
-                                              title: "Body Type",
-                                              data: controller.dbodyType,
+                                              title: localLanguage.body_type,
+                                              data: controller.dBodyType,
                                               selectedData: controller.bodyType,
                                             ),
                                           );
@@ -714,13 +716,13 @@ class _FilterViewState extends State<FilterView> {
                                 Expanded(
                                   child: Obx(
                                     () => FilterOptionWidget(
-                                      title: "Drive Type",
+                                      title: localLanguage.drive_type,
                                       subTitle: controller.driveType.value,
                                       onTap: () {
                                         Get.bottomSheet(
                                           FilterBottomSheet(
-                                            title: "Drive Type",
-                                            data: controller.ddriveType,
+                                            title: localLanguage.drive_type,
+                                            data: controller.dDriveType,
                                             selectedData: controller.driveType,
                                           ),
                                         );
@@ -732,13 +734,13 @@ class _FilterViewState extends State<FilterView> {
                                 Expanded(
                                   child: Obx(
                                     () => FilterOptionWidget(
-                                      title: "Engine Type",
+                                      title: localLanguage.engine_type,
                                       subTitle: controller.engineType.value,
                                       onTap: () {
                                         Get.bottomSheet(
                                           FilterBottomSheet(
-                                            title: "Engine Type",
-                                            data: controller.dengineType,
+                                            title: localLanguage.engine_type,
+                                            data: controller.dEngineType,
                                             selectedData: controller.engineType,
                                           ),
                                         );
@@ -756,13 +758,13 @@ class _FilterViewState extends State<FilterView> {
                               children: [
                                 Expanded(
                                   child: Obx(() => FilterOptionWidget(
-                                        title: "Transmission",
+                                        title: localLanguage.transmission,
                                         subTitle: controller.transmission.value,
                                         onTap: () {
                                           Get.bottomSheet(
                                             FilterBottomSheet(
-                                              title: "Transmission",
-                                              data: controller.dtransmission,
+                                              title: localLanguage.transmission,
+                                              data: controller.dTransmission,
                                               selectedData: controller.transmission,
                                             ),
                                           );
@@ -784,15 +786,15 @@ class _FilterViewState extends State<FilterView> {
                                 Expanded(
                                   child: Obx(
                                     () => FilterOptionWidget(
-                                      title: "Color",
+                                      title: localLanguage.color,
                                       subTitle: controller.color.isEmpty
-                                          ? 'Not Choose Yet'
+                                          ? localLanguage.not_chosen_yet
                                           : controller.color.expand((e) => [e.toString()]).join(', '),
                                       onTap: () {
                                         Get.bottomSheet(
                                           ColorPickerSheet(
-                                            title: "Color",
-                                            data: controller.dcolor,
+                                            title: localLanguage.color,
+                                            data: controller.dColor,
                                             selectedData: controller.color,
                                           ),
                                         ).then((_) {
@@ -822,13 +824,13 @@ class _FilterViewState extends State<FilterView> {
                                 Expanded(
                                   child: Obx(
                                     () => _tile(
-                                      "Floor",
+                                      localLanguage.floor,
                                       productController.selectFloor.value,
                                       onTap: () {
                                         showDialog(
                                           context: context,
                                           builder: (context) => SingleDialogPicker(
-                                            title: "Select Number of Floor",
+                                            title: localLanguage.select_number_of_floor,
                                             items: List.generate(
                                               50,
                                               (index) => (index + 1).toString(),
@@ -843,13 +845,13 @@ class _FilterViewState extends State<FilterView> {
                                 Expanded(
                                   child: Obx(
                                     () => _tile(
-                                      "Room",
+                                      localLanguage.room,
                                       productController.selectRoom.value,
                                       onTap: () {
                                         showDialog(
                                           context: context,
                                           builder: (context) => SingleDialogPicker(
-                                            title: "Select Number of Room",
+                                            title: localLanguage.select_number_of_room,
                                             items: List.generate(
                                               50,
                                               (index) => (index + 1).toString(),
@@ -885,7 +887,7 @@ class _FilterViewState extends State<FilterView> {
                               Padding(
                                 padding: EdgeInsets.only(left: 10.w),
                                 child: Text(
-                                  "Credit",
+                                  localLanguage.credit,
                                   style: bold.copyWith(fontSize: 14.sp),
                                 ),
                               ),
@@ -916,7 +918,7 @@ class _FilterViewState extends State<FilterView> {
                               Padding(
                                 padding: EdgeInsets.only(left: 10.w),
                                 child: Text(
-                                  "Exchange",
+                                  localLanguage.exchange,
                                   style: bold.copyWith(fontSize: 14.sp),
                                 ),
                               ),
@@ -944,7 +946,7 @@ class _FilterViewState extends State<FilterView> {
                               Padding(
                                 padding: EdgeInsets.only(left: 10.w),
                                 child: Text(
-                                  "Has A VIN Code",
+                                  localLanguage.has_a_vin_code,
                                   style: bold.copyWith(fontSize: 14.sp),
                                 ),
                               ),
@@ -992,7 +994,6 @@ class _FilterViewState extends State<FilterView> {
                     onPressed: controller.category.value == null
                         ? null
                         : () {
-                            log('filter');
                             controller.isFilterLoading.value = true;
                             controller.filterMapPassed = null;
                             controller.applyFilter();
@@ -1015,8 +1016,8 @@ class _FilterViewState extends State<FilterView> {
                           ),
                         );
                       }
-                      return const Text(
-                        "Filter",
+                      return Text(
+                        localLanguage.filter,
                         style: TextStyle(
                           color: Colors.white,
                         ),

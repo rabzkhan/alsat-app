@@ -16,6 +16,7 @@ import '../../auth_user/auth_user_tab/my_like_post.dart';
 import '../../auth_user/auth_user_tab/my_settings.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../controller/home_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileContent extends StatefulWidget {
   const ProfileContent({super.key});
@@ -34,7 +35,8 @@ class _ProfileContentState extends State<ProfileContent>
   @override
   void initState() {
     mainTabController = TabController(
-      length: userController.profileTab.length,
+      length:
+          userController.profileTab(AppLocalizations.of(Get.context!)!).length,
       vsync: this,
       initialIndex: homeController.profileTabCurrentPage.value,
     );
@@ -50,6 +52,8 @@ class _ProfileContentState extends State<ProfileContent>
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: 12.w,
@@ -130,7 +134,8 @@ class _ProfileContentState extends State<ProfileContent>
                                 ? CupertinoActivityIndicator()
                                 : IconButton(
                                     onPressed: () {
-                                      Get.to(() => const MySettings());
+                                      Get.to(() => const MySettings(),
+                                          transition: Transition.fadeIn);
                                     },
                                     icon: Container(
                                       width: 30.w,
@@ -180,7 +185,7 @@ class _ProfileContentState extends State<ProfileContent>
                       borderRadius: BorderRadius.circular(8.r),
                     ),
                     isScrollable: true,
-                    tabs: userController.profileTab.map(
+                    tabs: userController.profileTab(localLanguage).map(
                       (e) {
                         return Padding(
                           padding: EdgeInsets.symmetric(vertical: 8.h),

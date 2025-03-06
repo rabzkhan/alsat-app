@@ -22,6 +22,7 @@ import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/location_selection.dart';
 import '../controller/user_controller.dart';
 import 'widgets/upgrade_to_premium_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MySettings extends StatefulWidget {
   const MySettings({super.key});
@@ -64,6 +65,7 @@ class _MySettingsState extends State<MySettings> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60.h),
@@ -203,7 +205,7 @@ class _MySettingsState extends State<MySettings> {
                       : Row(
                           children: [
                             Text(
-                              "Upgrade to premium",
+                              localLanguage.upgrade_to_premium,
                               style: bold,
                             ),
                             const Spacer(),
@@ -231,7 +233,7 @@ class _MySettingsState extends State<MySettings> {
                                     ),
                                     5.horizontalSpace,
                                     Text(
-                                      "Upgrade",
+                                      localLanguage.upgrade,
                                       style: regular.copyWith(
                                         fontSize: 12.sp,
                                         color: Get.theme.primaryColor,
@@ -246,7 +248,7 @@ class _MySettingsState extends State<MySettings> {
                 }),
                 10.verticalSpace,
                 Text(
-                  "Account",
+                  localLanguage.account,
                   style: medium.copyWith(
                     color: Colors.grey.shade800,
                   ),
@@ -281,7 +283,7 @@ class _MySettingsState extends State<MySettings> {
                               ),
                               5.horizontalSpace,
                               Text(
-                                "Premium",
+                                localLanguage.premium,
                                 style: regular.copyWith(
                                   fontSize: 12.sp,
                                   color: Get.theme.primaryColor,
@@ -294,7 +296,7 @@ class _MySettingsState extends State<MySettings> {
                       isDense: true,
                       alignLabelWithHint: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelText: 'User Name',
+                      labelText: localLanguage.user_name,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         color: Get.theme.shadowColor.withOpacity(.6),
@@ -322,7 +324,7 @@ class _MySettingsState extends State<MySettings> {
                       isDense: true,
                       alignLabelWithHint: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelText: 'About Me',
+                      labelText: localLanguage.about_me,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         color: Get.theme.shadowColor.withOpacity(.6),
@@ -376,10 +378,10 @@ class _MySettingsState extends State<MySettings> {
                           isDense: true,
                           alignLabelWithHint: true,
                           floatingLabelBehavior: FloatingLabelBehavior.always,
-                          labelText: 'Location',
+                          labelText: localLanguage.location,
                           labelStyle: TextStyle(
                             fontSize: 14.sp,
-                            color: Get.theme.shadowColor.withOpacity(.6),
+                            color: Get.theme.shadowColor.withValues(alpha: .6),
                           ),
                           border: outlineBorder,
                           enabledBorder: outlineBorder,
@@ -461,7 +463,7 @@ class _MySettingsState extends State<MySettings> {
                       isDense: true,
                       alignLabelWithHint: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,
-                      labelText: 'Category',
+                      labelText: localLanguage.category,
                       labelStyle: TextStyle(
                         fontSize: 14.sp,
                         color: Get.theme.shadowColor.withOpacity(.6),
@@ -639,7 +641,7 @@ class _MySettingsState extends State<MySettings> {
                           child: authController.isUpdateLoading.value
                               ? const CupertinoActivityIndicator()
                               : Text(
-                                  "Save",
+                                  localLanguage.save,
                                   style: regular.copyWith(
                                     color: Colors.white,
                                   ),
@@ -661,7 +663,7 @@ class _MySettingsState extends State<MySettings> {
                                 authController.deleteUserAccount();
                               },
                               child: Text(
-                                "Delete Account",
+                                localLanguage.delete_account,
                                 textAlign: TextAlign.center,
                                 style: regular,
                               ),

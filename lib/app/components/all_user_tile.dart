@@ -12,6 +12,7 @@ import '../common/const/image_path.dart';
 import '../modules/authentication/model/user_data_model.dart';
 import '../modules/product/controller/product_details_controller.dart';
 import '../modules/product/view/client_profile_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'network_image_preview.dart';
 
 class AllUserTile extends StatelessWidget {
@@ -20,6 +21,8 @@ class AllUserTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return InkWell(
       onTap: () {
         log('premiumUserModel.id: ${premiumUserModel.id}');
@@ -29,7 +32,8 @@ class AllUserTile extends StatelessWidget {
         productDetailsController.isFetchUserLoading.value = false;
         Get.to(
           () => ClientProfileView(
-            userId: (productDetailsController.postUserModel.value?.id ?? '').toString(),
+            userId: (productDetailsController.postUserModel.value?.id ?? '')
+                .toString(),
             productDetailsController: productDetailsController,
           ),
           transition: Transition.fadeIn,
@@ -127,7 +131,7 @@ class AllUserTile extends StatelessWidget {
                           ),
                         )
                       : Text(
-                          "No Location",
+                          localLanguage.no_location,
                           style: regular.copyWith(
                             fontSize: 12.sp,
                             color: context.theme.disabledColor,
@@ -148,7 +152,7 @@ class AllUserTile extends StatelessWidget {
                           ),
                           3.horizontalSpace,
                           Text(
-                            'Buyer Protection',
+                            localLanguage.buyer_protection,
                             style: regular.copyWith(
                               fontSize: 12.sp,
                             ),
@@ -157,7 +161,7 @@ class AllUserTile extends StatelessWidget {
                       ),
                       20.horizontalSpace,
                       Text(
-                        'Follower ${formatFollowers((premiumUserModel.followers ?? 0).toInt())}',
+                        '${localLanguage.followers} ${formatFollowers((premiumUserModel.followers ?? 0).toInt())}',
                         style: regular.copyWith(
                           color: Get.theme.primaryColor,
                           fontSize: 12.sp,

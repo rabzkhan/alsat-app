@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
@@ -21,6 +21,7 @@ class UserFilterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
     return Scaffold(
       appBar: PreferredSize(
@@ -51,7 +52,7 @@ class UserFilterView extends StatelessWidget {
               ),
               4.horizontalSpace,
               Text(
-                "Find Users",
+                localLanguage.find_users,
                 textAlign: TextAlign.center,
                 style: regular.copyWith(
                   fontSize: 14.sp,
@@ -87,7 +88,7 @@ class UserFilterView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
-                        "Category",
+                        localLanguage.category,
                         style: bold.copyWith(
                           fontSize: 12.sp,
                           color: Colors.black54,
@@ -96,7 +97,7 @@ class UserFilterView extends StatelessWidget {
                       2.verticalSpace,
                       Obx(() {
                         return Text(
-                          (homeController.category.value?.name ?? 'Select Category').toString(),
+                          (homeController.category.value?.name ?? localLanguage.select_category).toString(),
                           style: bold.copyWith(
                             fontSize: 16.sp,
                             color: Colors.black,
@@ -140,7 +141,7 @@ class UserFilterView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Location",
+                          localLanguage.location,
                           style: bold.copyWith(
                             fontSize: 14.sp,
                           ),
@@ -199,12 +200,12 @@ class UserFilterView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     title: Text(
-                      'Followers',
+                      localLanguage.followers,
                       style: bold.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Obx(() {
                       return Text(
-                        homeController.followersValue.value ?? 'Not Chose Yet',
+                        homeController.followersValue.value ?? localLanguage.not_chosen_yet,
                         style: regular.copyWith(fontSize: 10.sp),
                       );
                     }),
@@ -223,7 +224,7 @@ class UserFilterView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                'Min To Max',
+                                localLanguage.min_to_max,
                                 style: regular.copyWith(fontSize: 12.sp),
                               ),
                             ),
@@ -248,7 +249,7 @@ class UserFilterView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                'Max To Min',
+                                localLanguage.max_to_min,
                                 style: regular.copyWith(fontSize: 12.sp),
                               ),
                             ),
@@ -286,12 +287,12 @@ class UserFilterView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.r),
                     ),
                     title: Text(
-                      'Registration',
+                      localLanguage.registration,
                       style: bold.copyWith(fontSize: 14.sp, fontWeight: FontWeight.w500),
                     ),
                     subtitle: Obx(() {
                       return Text(
-                        homeController.registrationValue.value ?? 'Not Chose Yet',
+                        homeController.registrationValue.value ?? localLanguage.not_chosen_yet,
                         style: regular.copyWith(fontSize: 10.sp),
                       );
                     }),
@@ -310,7 +311,7 @@ class UserFilterView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                'New To Old',
+                                localLanguage.new_to_old,
                                 style: regular.copyWith(fontSize: 12.sp),
                               ),
                             ),
@@ -335,7 +336,7 @@ class UserFilterView extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Text(
-                                'Old To New',
+                                localLanguage.old_to_new,
                                 style: regular.copyWith(fontSize: 12.sp),
                               ),
                             ),
@@ -362,7 +363,7 @@ class UserFilterView extends StatelessWidget {
           Obx(() {
             return SwitchListTile(
               title: Text(
-                'Active Account',
+                localLanguage.active_account,
                 style: bold.copyWith(
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w500,
@@ -379,7 +380,7 @@ class UserFilterView extends StatelessWidget {
           Obx(() {
             return SwitchListTile(
                 title: Text(
-                  'Buyer Protection',
+                  localLanguage.buyer_protection,
                   style: bold.copyWith(
                     fontSize: 14.sp,
                     fontWeight: FontWeight.w500,
@@ -426,8 +427,8 @@ class UserFilterView extends StatelessWidget {
                               ),
                             );
                           }
-                          return const Text(
-                            "Filter",
+                          return Text(
+                            localLanguage.filter,
                             style: TextStyle(
                               color: Colors.white,
                             ),

@@ -31,18 +31,18 @@ class FilterController extends GetxController {
   RxString transmission = "Not Chosen Yet".obs;
   RxList<String> color = <String>[].obs;
   RxList<String> selectMobileBrand = <String>[].obs;
-  RxList<String> estateTtype = <String>[].obs;
+  RxList<String> estateType = <String>[].obs;
   RxString sortValue = RxString('Default');
-  RxBool sortDonwnToUp = RxBool(true);
+  RxBool sortDownToUp = RxBool(true);
 
   // Real state variables
 
-  RxList<String> dbodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
-  RxList<String> ddriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
-  RxList<String> dengineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
-  RxList<String> dtransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
-  RxList<String> estateTtypeList = <String>["house"].obs;
-  RxList<Map<String, Color>> dcolor = RxList<Map<String, Color>>([
+  RxList<String> dBodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
+  RxList<String> dEngineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
+  RxList<String> dTransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
+  RxList<String> estateTypeList = <String>["house"].obs;
+  RxList<Map<String, Color>> dColor = RxList<Map<String, Color>>([
     {"Red": Colors.red},
     {"Black": Colors.black},
     {"Silver": Colors.grey}, // Usually, Silver is a shade of grey
@@ -276,7 +276,7 @@ class FilterController extends GetxController {
       "year_from": choseFirstYear.value,
       "year_to": choseLastYear.value,
       "location": getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
-      "brand": brand.isEmpty ? [] : brandformate(),
+      "brand": brand.isEmpty ? [] : branFormate(),
       "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
       "drive_type": driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
       "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
@@ -285,7 +285,7 @@ class FilterController extends GetxController {
       "credit": credit.value,
       "exchange": exchange.value,
       "has_vin_code": hasVinCode.value,
-      'sort_price': sortDonwnToUp.value ? 1 : -1,
+      'sort_price': sortDownToUp.value ? 1 : -1,
     };
 
     final filterData = Map<String, dynamic>.from(map);
@@ -324,14 +324,13 @@ class FilterController extends GetxController {
       onError: (error) {
         isFilterLoading.value = false;
         log.log("error: $error");
-        log.log("error: ${error.response?.data}");
         Logger().d("$error <- error");
       },
     );
   }
 
   // ============== end of filter ================== //
-  List<Map<String, dynamic>> brandformate() {
+  List<Map<String, dynamic>> branFormate() {
     List<Map<String, dynamic>> brandList = [];
     for (var brandAndModel in brandAndSelectedModel) {
       BrandModel brandSelected = brandAndModel["brand"];

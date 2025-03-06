@@ -27,10 +27,8 @@ class _SplashViewState extends State<SplashView> {
         // MySharedPref.clear();
         bool onboardingCompleted = MySharedPref.isOnboardingComplete();
         Logger().d(onboardingCompleted); // Check if onboarding is completed
-        bool isLoggedIn =
-            MySharedPref.isLoggedIn(); // Check if user is logged in
-        String? token = MySharedPref
-            .getAuthToken(); // Get the token from shared preferences
+        bool isLoggedIn = MySharedPref.isLoggedIn(); // Check if user is logged in
+        String? token = MySharedPref.getAuthToken(); // Get the token from shared preferences
         log("token: $token");
         // Navigate based on onboarding and login status
         if (!onboardingCompleted) {

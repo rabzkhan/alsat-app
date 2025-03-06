@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../controller/product_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategorySelection extends StatelessWidget {
   final bool valueReturn;
@@ -13,13 +14,14 @@ class CategorySelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
     ProductController productController = Get.find();
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
           middle: Text(
-            'Select Ctaegory',
+            localLanguage.select_category,
             style: bold.copyWith(
               fontSize: 16.sp,
             ),
@@ -48,8 +50,7 @@ class CategorySelection extends StatelessWidget {
                         title: GestureDetector(
                           onTap: () {
                             if (!valueReturn) {
-                              productController.selectCategory.value =
-                                  homeController.categories[index];
+                              productController.selectCategory.value = homeController.categories[index];
                             }
                             Get.back(result: homeController.categories[index]);
                           },
@@ -57,8 +58,7 @@ class CategorySelection extends StatelessWidget {
                             children: [
                               6.horizontalSpace,
                               SvgPicture.network(
-                                homeController.categories[index].icon
-                                    .toString(),
+                                homeController.categories[index].icon.toString(),
                                 width: 35.w,
                                 height: 22.w,
                               ),

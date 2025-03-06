@@ -31,6 +31,8 @@ import '../video_edit/crop_video.dart';
 import '../widget/post_category_selection.dart';
 import '../widget/single_year_picker.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class PostProductView extends StatefulWidget {
   const PostProductView({super.key});
 
@@ -64,6 +66,8 @@ class _PostProductViewState extends State<PostProductView> {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return FormBuilder(
       key: productController.postKey,
       child: Scaffold(
@@ -94,8 +98,10 @@ class _PostProductViewState extends State<PostProductView> {
                           fontSize: 12.sp,
                           height: 1.5,
                         ),
-                        children: const [
-                          TextSpan(text: 'By Posting, you confirm the agreement with terms and conditions of'),
+                        children: [
+                          TextSpan(
+                            text: localLanguage.by_posting_you_confirm,
+                          ),
                           TextSpan(
                             text: ' Alsat',
                             style: TextStyle(
@@ -126,7 +132,7 @@ class _PostProductViewState extends State<PostProductView> {
                         ),
                       ),
                       child: Text(
-                        'Cancel',
+                        localLanguage.cancel,
                         style: regular.copyWith(
                           color: context.theme.primaryColor,
                         ),
@@ -162,13 +168,13 @@ class _PostProductViewState extends State<PostProductView> {
                                       if (productController.pickImageList.isEmpty) {
                                         CustomSnackBar.showCustomToast(
                                           color: Colors.red,
-                                          message: "at least one image",
+                                          message: localLanguage.at_least_one_image,
                                         );
                                       } else if (productController.individualInfoFiledCount.value !=
                                           productController.individualInfoFiled.value) {
                                         CustomSnackBar.showCustomToast(
                                           color: Colors.red,
-                                          message: "Please select all required filled",
+                                          message: localLanguage.please_select_all_required_fields,
                                         );
                                       } else {
                                         productController.isProductPosting.value = true;
@@ -179,7 +185,7 @@ class _PostProductViewState extends State<PostProductView> {
                         child: productController.isProductPosting.value
                             ? const CupertinoActivityIndicator()
                             : Text(
-                                "Post",
+                                localLanguage.post,
                                 style: regular.copyWith(
                                   color: Colors.white,
                                 ),
@@ -197,7 +203,7 @@ class _PostProductViewState extends State<PostProductView> {
           backgroundColor: Get.theme.scaffoldBackgroundColor,
           elevation: 0,
           title: Text(
-            'Add Your Stuff',
+            localLanguage.add_your_stuff,
             style: TextStyle(
               fontSize: 16.sp,
               color: Colors.black,
@@ -243,7 +249,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 horizontal: 10.w,
                                 vertical: 5.h,
                               ),
-                              width: Get.width * .5,
+                              width: Get.width * .6,
                               height: Get.width > 600 ? 60.h : 40.h,
                               decoration: BoxDecoration(
                                   color: Colors.white,
@@ -261,9 +267,9 @@ class _PostProductViewState extends State<PostProductView> {
                                     AnimatedPositioned(
                                       height: Get.width > 600 ? 60.h : 30.h,
                                       duration: 300.ms,
-                                      left: !productController.isShowPostProductVideo.value ? 0 : Get.width * .22,
+                                      left: !productController.isShowPostProductVideo.value ? 0 : Get.width * .27,
                                       child: Container(
-                                        width: Get.width * .22,
+                                        width: Get.width * .27,
                                         height: Get.width > 600 ? 60.h : 40.h,
                                         decoration: BoxDecoration(
                                           color: Get.theme.primaryColor,
@@ -282,7 +288,7 @@ class _PostProductViewState extends State<PostProductView> {
                                               alignment: Alignment.center,
                                               child: Obx(() {
                                                 return Text(
-                                                  'Image',
+                                                  localLanguage.image,
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     color: !productController.isShowPostProductVideo.value
@@ -303,7 +309,7 @@ class _PostProductViewState extends State<PostProductView> {
                                               alignment: Alignment.center,
                                               child: Obx(() {
                                                 return Text(
-                                                  'Video',
+                                                  localLanguage.video,
                                                   style: TextStyle(
                                                     fontSize: 14.sp,
                                                     color: productController.isShowPostProductVideo.value
@@ -414,7 +420,7 @@ class _PostProductViewState extends State<PostProductView> {
                                                 color: context.theme.disabledColor.withOpacity(.4),
                                               ),
                                               Text(
-                                                "Add",
+                                                localLanguage.add,
                                                 style: regular.copyWith(
                                                   color: context.theme.disabledColor.withOpacity(.4),
                                                   fontSize: 12.sp,
@@ -527,7 +533,7 @@ class _PostProductViewState extends State<PostProductView> {
                                                 color: context.theme.disabledColor.withOpacity(.4),
                                               ),
                                               Text(
-                                                "Add",
+                                                localLanguage.add,
                                                 style: regular.copyWith(
                                                   color: context.theme.disabledColor.withOpacity(.4),
                                                   fontSize: 12.sp,
@@ -585,14 +591,14 @@ class _PostProductViewState extends State<PostProductView> {
                           ),
                           subtitle: Obx(() {
                             return Text(
-                              '${productController.totalProductFiledCount.value}/${productController.totalProductFiled.value} filled',
+                              '${productController.totalProductFiledCount.value}/${productController.totalProductFiled.value} ${localLanguage.filled}',
                               style: regular.copyWith(
                                 fontSize: 10.sp,
                               ),
                             );
                           }),
                           title: Text(
-                            'Product',
+                            localLanguage.product,
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
@@ -603,8 +609,8 @@ class _PostProductViewState extends State<PostProductView> {
                               height: 1,
                             ),
                             Obx(() => _tile(
-                                  "Category",
-                                  productController.selectCategory.value?.name ?? "Not choosen yet",
+                                  localLanguage.category,
+                                  productController.selectCategory.value?.name ?? localLanguage.not_chosen_yet,
                                   onTap: () {
                                     showCupertinoModalBottomSheet(
                                       expand: true,
@@ -619,8 +625,8 @@ class _PostProductViewState extends State<PostProductView> {
                             Obx(() => productController.selectSubCategory.value?.name == null
                                 ? const Center()
                                 : _tile(
-                                    "Sub Category",
-                                    productController.selectSubCategory.value?.name ?? "Not choosen yet",
+                                    localLanguage.sub_category,
+                                    productController.selectSubCategory.value?.name ?? localLanguage.not_chosen_yet,
                                     onTap: () {
                                       showCupertinoModalBottomSheet(
                                         expand: true,
@@ -666,7 +672,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        'Product Name',
+                                        localLanguage.product_name,
                                         style: regular.copyWith(
                                           fontSize: 15.sp,
                                         ),
@@ -703,7 +709,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'Description',
+                                    localLanguage.description,
                                     style: bold.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -718,7 +724,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     style: regular,
                                     decoration: InputDecoration(
                                       isDense: true,
-                                      hintText: 'Describe your product',
+                                      hintText: localLanguage.describe_your_product,
                                       hintStyle: regular.copyWith(
                                         color: context.theme.disabledColor,
                                       ),
@@ -740,7 +746,7 @@ class _PostProductViewState extends State<PostProductView> {
                                             child: Row(
                                               children: [
                                                 Text(
-                                                  'VIN code',
+                                                  localLanguage.vin_code,
                                                   style: bold,
                                                 ),
                                                 10.horizontalSpace,
@@ -825,14 +831,14 @@ class _PostProductViewState extends State<PostProductView> {
                           }),
                           subtitle: Obx(() {
                             return Text(
-                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} filled',
+                              '${productController.productPriceFiledCount.value}/${productController.productPriceFiled.value} ${localLanguage.filled}',
                               style: regular.copyWith(
                                 fontSize: 10.sp,
                               ),
                             );
                           }),
                           title: Text(
-                            'Price',
+                            localLanguage.price,
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
@@ -863,7 +869,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
-                                      'Price \$',
+                                      '${localLanguage.price} \$',
                                       style: regular,
                                     ),
                                   ),
@@ -895,7 +901,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Possible Exchange',
+                                    localLanguage.possible_exchange,
                                     style: regular,
                                   ),
                                   Transform.scale(
@@ -918,7 +924,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Credit',
+                                    localLanguage.credit,
                                     style: regular,
                                   ),
                                   Transform.scale(
@@ -986,14 +992,14 @@ class _PostProductViewState extends State<PostProductView> {
                           }),
                           subtitle: Obx(() {
                             return Text(
-                              '${productController.individualInfoFiledCount.value}/${productController.individualInfoFiled.value} filled',
+                              '${productController.individualInfoFiledCount.value}/${productController.individualInfoFiled.value} ${localLanguage.filled}',
                               style: regular.copyWith(
                                 fontSize: 10.sp,
                               ),
                             );
                           }),
                           title: Text(
-                            'Individual Info',
+                            localLanguage.individual_info,
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
@@ -1018,7 +1024,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 );
                               }),
                               title: Text(
-                                "Location",
+                                localLanguage.location,
                                 style: regular,
                               ),
                               trailing: Icon(
@@ -1046,7 +1052,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 enabled: false,
                                 initialValue: "${authController.userDataModel.value.phone}",
                                 decoration: InputDecoration(
-                                  hintText: 'Phone Number',
+                                  hintText: localLanguage.phone_number,
                                   hintStyle: TextStyle(
                                     fontSize: 12.sp,
                                   ),
@@ -1075,7 +1081,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Text(
-                                    'When I Am Free To Call',
+                                    localLanguage.when_i_am,
                                     style: TextStyle(
                                       fontSize: 12.sp,
                                       fontWeight: FontWeight.bold,
@@ -1094,8 +1100,8 @@ class _PostProductViewState extends State<PostProductView> {
                                           child: Obx(() {
                                             return Text(
                                               productController.fromTime.value == null
-                                                  ? "From N/A"
-                                                  : 'From ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
+                                                  ? localLanguage.from_na
+                                                  : '${localLanguage.from} ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -1114,8 +1120,8 @@ class _PostProductViewState extends State<PostProductView> {
                                           child: Obx(() {
                                             return Text(
                                               productController.toTime.value == null
-                                                  ? "TO N/A"
-                                                  : 'To ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
+                                                  ? localLanguage.to_na
+                                                  : '${localLanguage.to} ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -1139,7 +1145,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Allow me to call',
+                                    localLanguage.allow_me_to_call,
                                     style: regular,
                                   ),
                                   Transform.scale(
@@ -1166,7 +1172,7 @@ class _PostProductViewState extends State<PostProductView> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Contact only in chat',
+                                    localLanguage.contact_only_in_chat,
                                     style: regular,
                                   ),
                                   Transform.scale(
@@ -1201,6 +1207,8 @@ class _PostProductViewState extends State<PostProductView> {
   }
 
   Widget _realEstate(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1223,7 +1231,7 @@ class _PostProductViewState extends State<PostProductView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Estate type',
+                    localLanguage.estate_type,
                     style: bold.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -1302,7 +1310,7 @@ class _PostProductViewState extends State<PostProductView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Address',
+                    localLanguage.address,
                     style: bold.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -1347,7 +1355,7 @@ class _PostProductViewState extends State<PostProductView> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Deal type',
+                    localLanguage.deal_type,
                     style: bold.copyWith(
                       fontWeight: FontWeight.w500,
                     ),
@@ -1409,13 +1417,13 @@ class _PostProductViewState extends State<PostProductView> {
             Expanded(
               child: Obx(
                 () => _tile(
-                  "Floor",
+                  localLanguage.floor,
                   productController.selectFloor.value,
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) => SingleDialogPicker(
-                        title: "Select Number of Floor",
+                        title: localLanguage.select_number_of_floor,
                         items: List.generate(
                           50,
                           (index) => (index + 1).toString(),
@@ -1430,13 +1438,13 @@ class _PostProductViewState extends State<PostProductView> {
             Expanded(
               child: Obx(
                 () => _tile(
-                  "Room",
+                  localLanguage.room,
                   productController.selectRoom.value,
                   onTap: () {
                     showDialog(
                       context: context,
                       builder: (context) => SingleDialogPicker(
-                        title: "Select Number of Room",
+                        title: localLanguage.select_number_of_room,
                         items: List.generate(
                           50,
                           (index) => (index + 1).toString(),
@@ -1459,7 +1467,7 @@ class _PostProductViewState extends State<PostProductView> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Lift Available',
+                      localLanguage.lift_available,
                       style: bold.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
@@ -1486,18 +1494,20 @@ class _PostProductViewState extends State<PostProductView> {
   }
 
   Widget _phoneCategory(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Obx(
           () => _tile(
-            "Brand",
+            localLanguage.brand,
             productController.selectedPhoneBrand.value,
             onTap: () {
               Get.bottomSheet(
                 isScrollControlled: true,
                 FilterBottomSheet(
-                  title: "Brand",
+                  title: localLanguage.brand,
                   data: filterController.mobileBrand,
                   selectedData: productController.selectedPhoneBrand,
                 ),
@@ -1512,6 +1522,7 @@ class _PostProductViewState extends State<PostProductView> {
   }
 
   Column _autoMobile(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -1523,13 +1534,13 @@ class _PostProductViewState extends State<PostProductView> {
                   children: [
                     Obx(
                       () => _tile(
-                        "Brand",
+                        localLanguage.brand,
                         productController.selectedBrand.value?.brand ?? '',
                         onTap: () {
                           Get.bottomSheet(
                             isScrollControlled: true,
                             CarBrandBottomSheet(
-                              title: "Brand",
+                              title: localLanguage.brand,
                               data: homeController.brandList,
                               selectedData: productController.selectedBrand,
                             ),
@@ -1540,14 +1551,14 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                     ),
                     Obx(() => _tile(
-                          "Model",
+                          localLanguage.model,
                           productController.selectedModel.value?.name ?? '',
                           onTap: (productController.selectedBrand.value?.model ?? []).isEmpty
                               ? null
                               : () {
                                   Get.bottomSheet(
                                     CarModelBottomSheet(
-                                      title: "Model",
+                                      title: localLanguage.model,
                                       data: productController.selectedBrand.value!.model!,
                                       selectedData: productController.selectedModel,
                                     ),
@@ -1560,12 +1571,12 @@ class _PostProductViewState extends State<PostProductView> {
                                 },
                         )),
                     Obx(() => _tile(
-                          "Body Type",
+                          localLanguage.body_type,
                           productController.selectedBodyType.value,
                           onTap: () {
                             Get.bottomSheet(
                               FilterBottomSheet(
-                                title: "Body Type",
+                                title: localLanguage.body_type,
                                 data: productController.selectModelCarClass,
                                 selectedData: productController.selectedBodyType,
                               ),
@@ -1575,13 +1586,13 @@ class _PostProductViewState extends State<PostProductView> {
                           },
                         )),
                     Obx(() => _tile(
-                          "Transmission",
+                          localLanguage.transmission,
                           productController.selectedTransmission.value,
                           onTap: () {
                             Get.bottomSheet(
                               FilterBottomSheet(
-                                title: "Transmission",
-                                data: filterController.dtransmission,
+                                title: localLanguage.transmission,
+                                data: filterController.dTransmission,
                                 selectedData: productController.selectedTransmission,
                               ),
                             ).then((_) {
@@ -1590,13 +1601,13 @@ class _PostProductViewState extends State<PostProductView> {
                           },
                         )),
                     Obx(() => _tile(
-                          "Engine Type",
+                          localLanguage.engine_type,
                           productController.selectedEngineType.value,
                           onTap: () {
                             Get.bottomSheet(
                               EngineTypeSheet(
-                                title: "Engine Type",
-                                data: filterController.dengineType,
+                                title: localLanguage.engine_type,
+                                data: filterController.dEngineType,
                                 selectedData: productController.selectedEngineType,
                               ),
                             ).then((_) {
@@ -1605,12 +1616,12 @@ class _PostProductViewState extends State<PostProductView> {
                           },
                         )),
                     Obx(() => _tile(
-                          "Passed, km",
+                          localLanguage.passedKm,
                           productController.selectedPassed.value,
                           onTap: () {
                             Get.bottomSheet(
                               EngineTypeSheet(
-                                title: "Passed, km",
+                                title: localLanguage.passedKm,
                                 data: RxList.generate(200, (index) => (index * 100).toString()),
                                 selectedData: productController.selectedPassed,
                               ),
@@ -1621,12 +1632,13 @@ class _PostProductViewState extends State<PostProductView> {
                         )),
                     Obx(
                       () => _tile(
-                        "Year",
+                        localLanguage.year,
                         productController.selectedYear.value,
                         onTap: () {
                           showDialog(
                             context: context,
                             builder: (context) => SingleDialogPicker(
+                              title: localLanguage.year,
                               selectYear: productController.selectedYear,
                             ),
                           );
@@ -1634,15 +1646,15 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                     ),
                     Obx(() => _tile(
-                          "Color",
+                          localLanguage.color,
                           productController.selectedColor.firstOrNull ?? '',
                           onTap: () {
                             productController.selectedColor.clear();
                             Get.bottomSheet(
                               isScrollControlled: true,
                               ColorPickerSheet(
-                                title: "Color",
-                                data: filterController.dcolor,
+                                title: localLanguage.color,
+                                data: filterController.dColor,
                                 isMulti: false,
                                 selectedData: productController.selectedColor,
                               ),
@@ -1734,11 +1746,13 @@ class _PostProductViewState extends State<PostProductView> {
     productPostMap['phone_info'] = productController.selectCategory.value?.name?.toLowerCase() == 'phone'
         ? {"brand": productController.selectedPhoneBrand.value}
         : null;
-    log("productPostMap $productPostMap");
+
     await productController.postProduct(productPostMap);
   }
 
   _tile(String title, String value, {Function()? onTap}) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return InkWell(
       onTap: onTap,
       child: SizedBox(
@@ -1762,7 +1776,7 @@ class _PostProductViewState extends State<PostProductView> {
                     child: Text(
                       textAlign: TextAlign.end,
                       maxLines: 1,
-                      value.isEmpty ? 'Not chosen yet' : value,
+                      value.isEmpty ? localLanguage.not_chosen_yet : value,
                       style: regular.copyWith(
                         fontSize: 14.sp,
                         fontWeight: value.isEmpty ? FontWeight.normal : FontWeight.w600,
