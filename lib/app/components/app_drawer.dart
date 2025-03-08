@@ -223,27 +223,27 @@ class AppDrawer extends StatelessWidget {
                       ],
                     ),
                     10.verticalSpace,
-                    InkWell(
-                      onTap: () {
-                        Get.back();
-                        authController.userLogOut(
-                          isShowDialog: true,
-                        );
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.logout,
-                            // color: Colors.white,
-                          ),
-                          10.horizontalSpace,
-                          Text(
-                            localLanguage.logout,
-                            style: semiBold,
-                          ),
-                        ],
-                      ),
-                    ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     Get.back();
+                    //     authController.userLogOut(
+                    //       isShowDialog: true,
+                    //     );
+                    //   },
+                    //   child: Row(
+                    //     children: [
+                    //       Icon(
+                    //         Icons.logout,
+                    //         // color: Colors.white,
+                    //       ),
+                    //       10.horizontalSpace,
+                    //       Text(
+                    //         localLanguage.logout,
+                    //         style: semiBold,
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
 
                     120.verticalSpace,
                   ],
