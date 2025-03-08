@@ -1,4 +1,5 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/app_home/widgets/notification_dialog.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -36,49 +37,61 @@ class NotificationView extends GetView<HomeController> {
             padding: EdgeInsets.symmetric(vertical: 8.h).copyWith(bottom: 50.h),
             itemCount: controller.notifications.length,
             itemBuilder: (context, index) {
-              return Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.r),
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
-                child: Row(
-                  children: [
-                    NetworkImagePreview(
-                      fit: BoxFit.cover,
-                      radius: 6.r,
-                      url: controller.notifications[index].picture ?? '',
-                      height: 80.h,
-                      width: 100.w,
-                    ),
-                    12.horizontalSpace,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ScrollingTextWidget(
-                            child: Text(
-                              controller.notifications[index].title ?? '',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          ),
-                          4.verticalSpace,
-                          Text(
-                            controller.notifications[index].body ?? '',
-                            style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
-                          ),
-                          2.verticalSpace,
-                          Text(
-                            formatDateTime(controller.notifications[index].updatedAt ?? ''),
-                            style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                                  color: Colors.grey.shade700,
-                                ),
-                          ),
-                        ],
+              return GestureDetector(
+                onTap: () {
+                  notificationDialog(
+                    data: controller.notifications[index],
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.r),
+                  ),
+                  margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
+                  child: Row(
+                    children: [
+                      NetworkImagePreview(
+                        fit: BoxFit.cover,
+                        radius: 6.r,
+                        url: controller.notifications[index].picture ?? '',
+                        height: 80.h,
+                        width: 100.w,
                       ),
-                    ),
-                  ],
+                      12.horizontalSpace,
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ScrollingTextWidget(
+                              child: Text(
+                                controller.notifications[index].title ?? '',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                            4.verticalSpace,
+                            Text(
+                              controller.notifications[index].body ?? '',
+                              style: Theme.of(context).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
+                            ),
+                            2.verticalSpace,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  formatDateTime(controller.notifications[index].updatedAt ?? ''),
+                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                        color: Colors.grey.shade700,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
