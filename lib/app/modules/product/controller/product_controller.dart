@@ -27,6 +27,16 @@ import '../../app_home/controller/home_controller.dart';
 import '../model/product_post_list_res.dart';
 
 class ProductController extends GetxController {
+  List<String> exceptionCategoryForCreditExchange = [
+    "car",
+    "real",
+    "rent",
+    "house",
+    "room",
+    "apartment",
+    "phone",
+  ];
+
   List<String> estateTypeList = [
     'House',
     'Apartment',

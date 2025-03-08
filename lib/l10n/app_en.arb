@@ -219,7 +219,7 @@
   "dont_have_code": "Don’t have a code? Contact support to learn more about premium features.",
   "apply": "apply",
   "logout_confirmation": "Are you sure you want to logout from all devices ?",
-  "refresh_completed" : "Refresh Completed",
+  "refresh_completed": "Refresh Completed",
   "pull_up_load": "Pull up to load more",
   "load_failed": "Load failed!",
   "release_to_load_more": "Release to load more",

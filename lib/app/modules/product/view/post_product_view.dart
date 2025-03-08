@@ -855,11 +855,9 @@ class _PostProductViewState extends State<PostProductView> {
                                   }
                                 },
                                 keyboardType: TextInputType.number,
-                                inputFormatters: [
-                                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
-                                ],
                                 validator: FormBuilderValidators.compose([
                                   FormBuilderValidators.required(),
+                                  FormBuilderValidators.numeric(),
                                 ]),
                                 name: 'price',
                                 controller: productController.priceController,
@@ -869,7 +867,7 @@ class _PostProductViewState extends State<PostProductView> {
                                     alignment: Alignment.center,
                                     child: Text(
                                       textAlign: TextAlign.center,
-                                      '${localLanguage.price} \$',
+                                      '${localLanguage.price} : ',
                                       style: regular,
                                     ),
                                   ),
@@ -895,51 +893,67 @@ class _PostProductViewState extends State<PostProductView> {
                                 ),
                               ),
                             ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    localLanguage.possible_exchange,
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value: productController.isExchange.value,
-                                        onChanged: (value) {
-                                          productController.isExchange.value = value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    localLanguage.credit,
-                                    style: regular,
-                                  ),
-                                  Transform.scale(
-                                    scale: 0.7,
-                                    child: Obx(() {
-                                      return CupertinoSwitch(
-                                        value: productController.isCredit.value,
-                                        onChanged: (value) {
-                                          productController.isCredit.value = value;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                ],
-                              ),
+                            Obx(
+                              () {
+                                bool isExceptionCategory = productController.exceptionCategoryForCreditExchange.any(
+                                  (exception) =>
+                                      productController.selectCategory.value?.name?.toLowerCase().contains(exception) ??
+                                      false,
+                                );
+
+                                return isExceptionCategory
+                                    ? Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  localLanguage.possible_exchange,
+                                                  style: regular,
+                                                ),
+                                                Transform.scale(
+                                                  scale: 0.7,
+                                                  child: Obx(() {
+                                                    return CupertinoSwitch(
+                                                      value: productController.isExchange.value,
+                                                      onChanged: (value) {
+                                                        productController.isExchange.value = value;
+                                                      },
+                                                    );
+                                                  }),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Text(
+                                                  localLanguage.credit,
+                                                  style: regular,
+                                                ),
+                                                Transform.scale(
+                                                  scale: 0.7,
+                                                  child: Obx(() {
+                                                    return CupertinoSwitch(
+                                                      value: productController.isCredit.value,
+                                                      onChanged: (value) {
+                                                        productController.isCredit.value = value;
+                                                      },
+                                                    );
+                                                  }),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox();
+                              },
                             ),
                             10.verticalSpace,
                           ],

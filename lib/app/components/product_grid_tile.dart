@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/view/product_details_view.dart';
@@ -21,12 +23,6 @@ class ProductGridTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: loading,
-      // effect: ShimmerEffect(
-      //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-      //   highlightColor: Colors.white,
-      //   begin: Alignment.centerLeft,
-      //   end: Alignment.centerRight,
-      // ),
       child: GestureDetector(
         onTap: () {
           Get.to(
@@ -51,6 +47,7 @@ class ProductGridTile extends StatelessWidget {
           child: Stack(
             children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
@@ -111,53 +108,56 @@ class ProductGridTile extends StatelessWidget {
                               ),
                             ),
                           ])),
-                          Row(
-                            children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    (productModel?.priceInfo?.credit ?? false)
-                                        ? CupertinoIcons.checkmark_alt
-                                        : CupertinoIcons.xmark,
-                                    size: 15.r,
-                                    color: (productModel?.priceInfo?.credit ?? false)
-                                        ? Get.theme.primaryColor
-                                        : Colors.red,
-                                  ),
-                                  3.horizontalSpace,
-                                  Text(
-                                    'Credit',
-                                    style: regular.copyWith(
-                                      fontSize: 12.sp,
+                          if ((productModel?.carInfo?.brand?.isNotEmpty ?? false) ||
+                              (productModel?.phoneInfo?.brand?.isNotEmpty ?? false) ||
+                              (productModel?.estateInfo?.address?.isNotEmpty ?? false))
+                            Row(
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      (productModel?.priceInfo?.credit ?? false)
+                                          ? CupertinoIcons.checkmark_alt
+                                          : CupertinoIcons.xmark,
+                                      size: 15.r,
+                                      color: (productModel?.priceInfo?.credit ?? false)
+                                          ? Get.theme.primaryColor
+                                          : Colors.red,
                                     ),
-                                  )
-                                ],
-                              ),
-                              5.horizontalSpace,
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    (productModel?.priceInfo?.possibleExchange ?? false)
-                                        ? CupertinoIcons.checkmark_alt
-                                        : CupertinoIcons.xmark,
-                                    size: 15.r,
-                                    color: (productModel?.priceInfo?.possibleExchange ?? false)
-                                        ? Get.theme.primaryColor
-                                        : Colors.red,
-                                  ),
-                                  3.horizontalSpace,
-                                  Text(
-                                    'exchange',
-                                    style: regular.copyWith(
-                                      fontSize: 12.sp,
+                                    3.horizontalSpace,
+                                    Text(
+                                      'Credit',
+                                      style: regular.copyWith(
+                                        fontSize: 12.sp,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                5.horizontalSpace,
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      (productModel?.priceInfo?.possibleExchange ?? false)
+                                          ? CupertinoIcons.checkmark_alt
+                                          : CupertinoIcons.xmark,
+                                      size: 15.r,
+                                      color: (productModel?.priceInfo?.possibleExchange ?? false)
+                                          ? Get.theme.primaryColor
+                                          : Colors.red,
                                     ),
-                                  )
-                                ],
-                              ),
-                            ],
-                          ),
+                                    3.horizontalSpace,
+                                    Text(
+                                      'exchange',
+                                      style: regular.copyWith(
+                                        fontSize: 12.sp,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
                           5.verticalSpace,
                         ],
                       ),

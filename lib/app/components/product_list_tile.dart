@@ -120,52 +120,56 @@ class ProductListTile extends StatelessWidget {
                             ),
                           ),
                         ])),
-                        Row(
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  (productModel?.priceInfo?.credit ?? false)
-                                      ? CupertinoIcons.checkmark_alt
-                                      : CupertinoIcons.xmark,
-                                  size: 15.r,
-                                  color:
-                                      (productModel?.priceInfo?.credit ?? false) ? Get.theme.primaryColor : Colors.red,
-                                ),
-                                3.horizontalSpace,
-                                Text(
-                                  'Credit',
-                                  style: regular.copyWith(
-                                    fontSize: 12.sp,
+                        if ((productModel?.carInfo?.brand?.isNotEmpty ?? false) ||
+                            (productModel?.phoneInfo?.brand?.isNotEmpty ?? false) ||
+                            (productModel?.estateInfo?.address?.isNotEmpty ?? false))
+                          Row(
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    (productModel?.priceInfo?.credit ?? false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
+                                    size: 15.r,
+                                    color: (productModel?.priceInfo?.credit ?? false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
-                                )
-                              ],
-                            ),
-                            5.horizontalSpace,
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  (productModel?.priceInfo?.possibleExchange ?? false)
-                                      ? CupertinoIcons.checkmark_alt
-                                      : CupertinoIcons.xmark,
-                                  size: 15.r,
-                                  color: (productModel?.priceInfo?.possibleExchange ?? false)
-                                      ? Get.theme.primaryColor
-                                      : Colors.red,
-                                ),
-                                3.horizontalSpace,
-                                Text(
-                                  'exchange',
-                                  style: regular.copyWith(
-                                    fontSize: 12.sp,
+                                  3.horizontalSpace,
+                                  Text(
+                                    'Credit',
+                                    style: regular.copyWith(
+                                      fontSize: 12.sp,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              5.horizontalSpace,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    (productModel?.priceInfo?.possibleExchange ?? false)
+                                        ? CupertinoIcons.checkmark_alt
+                                        : CupertinoIcons.xmark,
+                                    size: 15.r,
+                                    color: (productModel?.priceInfo?.possibleExchange ?? false)
+                                        ? Get.theme.primaryColor
+                                        : Colors.red,
                                   ),
-                                )
-                              ],
-                            ),
-                          ],
-                        )
+                                  3.horizontalSpace,
+                                  Text(
+                                    'exchange',
+                                    style: regular.copyWith(
+                                      fontSize: 12.sp,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ],
+                          )
                       ],
                     ),
                   ),
