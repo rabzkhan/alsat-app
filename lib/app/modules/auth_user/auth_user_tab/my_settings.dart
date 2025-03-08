@@ -41,13 +41,10 @@ class _MySettingsState extends State<MySettings> {
     filterController.clearAddress();
     Future.microtask(() {
       authController.selectUserCategoriesList.value = homeController.categories
-          .where((e) => (authController.userDataModel.value.categories ?? [])
-              .contains(e.name))
+          .where((e) => (authController.userDataModel.value.categories ?? []).contains(e.name))
           .toList();
-      filterController.selectedProvince.value =
-          authController.userDataModel.value.location?.province ?? "";
-      filterController.selectedCity.value =
-          authController.userDataModel.value.location?.city ?? "";
+      filterController.selectedProvince.value = authController.userDataModel.value.location?.province ?? "";
+      filterController.selectedCity.value = authController.userDataModel.value.location?.city ?? "";
       authController.selectUserCategoriesList.refresh();
       authController.addressController.text =
           "${authController.userDataModel.value.location?.province ?? ''}, ${authController.userDataModel.value.location?.city ?? ""}";
@@ -102,21 +99,16 @@ class _MySettingsState extends State<MySettings> {
                                 Radius.circular(100.r),
                               ),
                               child: Obx(() {
-                                return authController
-                                        .isProfilePictureLoading.value
+                                return authController.isProfilePictureLoading.value
                                     ? const CircularProgressIndicator()
-                                    : authController
-                                                .userDataModel.value.picture ==
-                                            null
+                                    : authController.userDataModel.value.picture == null
                                         ? Image.asset(
                                             userDefaultIcon,
                                             height: 140.h,
                                             width: 140.h,
                                           )
                                         : NetworkImagePreview(
-                                            url: authController.userDataModel
-                                                    .value.picture ??
-                                                '',
+                                            url: authController.userDataModel.value.picture ?? '',
                                             height: 140.h,
                                             width: 140.h,
                                             fit: BoxFit.cover,
@@ -130,8 +122,7 @@ class _MySettingsState extends State<MySettings> {
                           right: 6.w,
                           child: IconButton(
                             onPressed: () async {
-                              List<AssetEntity>? pickImage =
-                                  await AssetPicker.pickAssets(
+                              List<AssetEntity>? pickImage = await AssetPicker.pickAssets(
                                 context,
                                 pickerConfig: const AssetPickerConfig(
                                   maxAssets: 1,
@@ -141,8 +132,7 @@ class _MySettingsState extends State<MySettings> {
                               if (pickImage != null) {
                                 // log("image path ${pickImage[0].file.path}");
                                 File? file = await pickImage.first.file;
-                                await authController
-                                    .updateProfilePicture(file!);
+                                await authController.updateProfilePicture(file!);
                               }
                             },
                             icon: Image.asset(
@@ -159,8 +149,7 @@ class _MySettingsState extends State<MySettings> {
                     () => Column(
                       children: [
                         Text(
-                          authController.userDataModel.value.userName ??
-                              'Guest User',
+                          authController.userDataModel.value.userName ?? 'Guest User',
                           style: bold.copyWith(
                             fontSize: 16.sp,
                           ),
@@ -183,9 +172,7 @@ class _MySettingsState extends State<MySettings> {
             key: userController.userSettingsFormKey,
             initialValue: {
               'category': homeController.categories
-                  .where((e) =>
-                      (authController.userDataModel.value.categories ?? [])
-                          .contains(e.name))
+                  .where((e) => (authController.userDataModel.value.categories ?? []).contains(e.name))
                   .toList()
                   .firstOrNull,
               'bio': authController.userDataModel.value.bio ?? '',
@@ -215,12 +202,10 @@ class _MySettingsState extends State<MySettings> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color:
-                                      Get.theme.primaryColor.withOpacity(0.1),
+                                  color: Get.theme.primaryColor.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(6.r),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 6.h, horizontal: 6.w),
+                                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -257,8 +242,7 @@ class _MySettingsState extends State<MySettings> {
                 Obx(() {
                   return FormBuilderTextField(
                     initialValue: authController.userDataModel.value.userName,
-                    enabled:
-                        (authController.userDataModel.value.premium ?? false),
+                    enabled: (authController.userDataModel.value.premium ?? false),
                     name: 'user_name',
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -269,8 +253,7 @@ class _MySettingsState extends State<MySettings> {
                             color: Get.theme.primaryColor.withOpacity(0.1),
                             borderRadius: BorderRadius.circular(6.r),
                           ),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 6.h, horizontal: 6.w),
+                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -316,8 +299,7 @@ class _MySettingsState extends State<MySettings> {
                 20.verticalSpace,
                 Obx(
                   () => FormBuilderTextField(
-                    enabled:
-                        (authController.userDataModel.value.premium ?? false),
+                    enabled: (authController.userDataModel.value.premium ?? false),
                     maxLines: 3,
                     name: 'bio',
                     decoration: InputDecoration(
@@ -345,18 +327,15 @@ class _MySettingsState extends State<MySettings> {
                 Obx(
                   () => InkWell(
                     onTap: () {
-                      if ((authController.userDataModel.value.premium ??
-                          false)) {
+                      if ((authController.userDataModel.value.premium ?? false)) {
                         showCupertinoModalBottomSheet(
                           expand: true,
                           context: context,
                           backgroundColor: Colors.transparent,
-                          builder: (context) =>
-                              const LocationSelection(canSelectMultiple: false),
+                          builder: (context) => const LocationSelection(canSelectMultiple: false),
                         ).then((value) {
                           if (value != null) {
-                            authController.addressController.text =
-                                filterController.getSelectedLocationText();
+                            authController.addressController.text = filterController.getSelectedLocationText();
                           }
                         });
                       }
@@ -365,8 +344,7 @@ class _MySettingsState extends State<MySettings> {
                       ignoring: true,
                       child: FormBuilderTextField(
                         controller: authController.addressController,
-                        enabled: (authController.userDataModel.value.premium ??
-                            false),
+                        enabled: (authController.userDataModel.value.premium ?? false),
                         name: 'location',
                         keyboardType: TextInputType.phone,
                         decoration: InputDecoration(
@@ -404,10 +382,7 @@ class _MySettingsState extends State<MySettings> {
                     dropdownBuilder: (context, selectedItem) {
                       return Obx(() {
                         return Text(
-                          authController.selectUserCategoriesList
-                              .map((e) => e.name)
-                              .toList()
-                              .join(","),
+                          authController.selectUserCategoriesList.map((e) => e.name).toList().join(","),
                         );
                       });
                     },
@@ -426,8 +401,7 @@ class _MySettingsState extends State<MySettings> {
                             child: Obx(() {
                               return Icon(
                                 Icons.check,
-                                color: authController.selectUserCategoriesList
-                                        .contains(item)
+                                color: authController.selectUserCategoriesList.contains(item)
                                     ? AppColors.primary
                                     : Colors.transparent,
                               );
@@ -439,16 +413,13 @@ class _MySettingsState extends State<MySettings> {
                       fit: FlexFit.loose,
                       showSelectedItems: true,
                     ),
-                    enabled:
-                        (authController.userDataModel.value.premium ?? false),
+                    enabled: (authController.userDataModel.value.premium ?? false),
                     name: 'category',
                     onChanged: (value) {
-                      if (authController.selectUserCategoriesList
-                          .contains(value)) {
+                      if (authController.selectUserCategoriesList.contains(value)) {
                         authController.selectUserCategoriesList.remove(value);
                       } else {
-                        if (authController.selectUserCategoriesList.length ==
-                            3) {
+                        if (authController.selectUserCategoriesList.length == 3) {
                           CustomSnackBar.showCustomToast(
                             color: Colors.red,
                             message: 'You can select only 3 categories',
@@ -586,13 +557,8 @@ class _MySettingsState extends State<MySettings> {
                           onPressed: authController.isUpdateLoading.value
                               ? null
                               : () {
-                                  if (userController
-                                      .userSettingsFormKey.currentState!
-                                      .saveAndValidate()) {
-                                    Map formData = userController
-                                        .userSettingsFormKey
-                                        .currentState!
-                                        .value;
+                                  if (userController.userSettingsFormKey.currentState!.saveAndValidate()) {
+                                    Map formData = userController.userSettingsFormKey.currentState!.value;
                                     Map<String, dynamic> data = {
                                       // "messaging": [
                                       //   {"id": formData['youtube'] ?? "No Link", "type": "youtube"},
@@ -602,29 +568,17 @@ class _MySettingsState extends State<MySettings> {
 
                                       "bio": formData['bio'] ?? "",
                                       "user_name": formData['user_name'] ?? "",
-                                      "categories": authController
-                                          .selectUserCategoriesList
-                                          .map((e) => e.name)
-                                          .toList(),
+                                      "categories": authController.selectUserCategoriesList.map((e) => e.name).toList(),
                                     };
 
-                                    if (authController
-                                        .addressController.text.isNotEmpty) {
+                                    if (authController.addressController.text.isNotEmpty) {
                                       data.addAll({
                                         "location": {
-                                          "province": authController
-                                                  .addressController.text
-                                                  .split(",")
-                                                  .firstOrNull ??
-                                              authController.userDataModel.value
-                                                  .location?.province ??
+                                          "province": authController.addressController.text.split(",").firstOrNull ??
+                                              authController.userDataModel.value.location?.province ??
                                               "",
-                                          "city": authController
-                                                  .addressController.text
-                                                  .split(",")
-                                                  .elementAtOrNull(1) ??
-                                              authController.userDataModel.value
-                                                  .location?.city ??
+                                          "city": authController.addressController.text.split(",").elementAtOrNull(1) ??
+                                              authController.userDataModel.value.location?.city ??
                                               "",
                                           "geo": {
                                             "type": "point",
@@ -634,8 +588,7 @@ class _MySettingsState extends State<MySettings> {
                                       });
                                     }
 
-                                    authController.updateUserInformation(
-                                        data: data);
+                                    authController.updateUserInformation(data: data);
                                   }
                                 },
                           child: authController.isUpdateLoading.value

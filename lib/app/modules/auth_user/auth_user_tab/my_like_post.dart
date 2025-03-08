@@ -7,6 +7,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
+
 class MyLikePost extends StatelessWidget {
   const MyLikePost({super.key});
 
@@ -21,14 +24,12 @@ class MyLikePost extends StatelessWidget {
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
-          header: WaterDropHeader(
-            waterDropColor: context.theme.primaryColor,
-          ),
+          header: CusomHeaderWidget(),
+          footer: CustomFooterWidget(),
           controller: productController.myLikePostRefreshController,
           onRefresh: productController.myLikePostRefresh,
           onLoading: productController.myLikePostLoading,
-          child: !productController.isFetchLikeProduct.value &&
-                  productController.myLikeProductList.isEmpty
+          child: !productController.isFetchLikeProduct.value && productController.myLikeProductList.isEmpty
               ? const NoDataWidget()
               : GridView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -51,9 +52,8 @@ class MyLikePost extends StatelessWidget {
                           : productController.myLikeProductList[index],
                     );
                   },
-                  itemCount: productController.isFetchLikeProduct.value
-                      ? 10
-                      : productController.myLikeProductList.length,
+                  itemCount:
+                      productController.isFetchLikeProduct.value ? 10 : productController.myLikeProductList.length,
                 ),
         );
       },

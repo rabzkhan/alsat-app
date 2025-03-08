@@ -32,8 +32,7 @@ class AllUserTile extends StatelessWidget {
         productDetailsController.isFetchUserLoading.value = false;
         Get.to(
           () => ClientProfileView(
-            userId: (productDetailsController.postUserModel.value?.id ?? '')
-                .toString(),
+            userId: (productDetailsController.postUserModel.value?.id ?? '').toString(),
             productDetailsController: productDetailsController,
           ),
           transition: Transition.fadeIn,

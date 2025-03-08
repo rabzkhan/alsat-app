@@ -212,6 +212,16 @@
   "skip": "Пропустить",
   "next": "Далее",
   "login": "Войти",
-  "sign_up": "Зарегистрироваться"
+  "sign_up": "Зарегистрироваться",
+  "unlock_premium": "Разблокировать Премиум",
+  "upgrade_code": "Обновите до премиум, введя ваш 8-значный код.",
+  "dont_have_code": "Нет кода? Свяжитесь с поддержкой, чтобы узнать больше о премиум-функциях.",
+  "apply": "применить",
+  "logout_confirmation": "Вы уверены, что хотите выйти со всех устройств?",
+  "refresh_completed": "Обновление завершено"
+  "pull_up_load": "Has köp ýükläp almak üçin ýokara çekiň",
+  "load_failed": "Ýükleme şowsuz! Gaýtadan synanyşmak üçin basyň.",
+  "release_to_load_more": "Has köp ýükläp almak üçin goýberiň",
+  "no_more_data": "Başga maglumat ýok"
 
   }

@@ -65,6 +65,7 @@
   "add_story": "Add Story",
   "chat_with_admin": "Chat With Admin",
   "logout": "Logout",
+  "logout_confirmation": "Are you sure you want to logout from all devices ?",
   "chat_history": "Chat History",
   "search_here": "Search Here",
   "by_posting_you_confirm": "By posting, you confirm the agreement with terms and conditions of",
@@ -212,5 +213,16 @@
   "skip": "Skip",
   "next": "Next",
   "login": "Login",
-  "sign_up": "Sign Up"
+  "sign_up": "Sign Up",
+  "unlock_premium": "Unlock Premium",
+  "upgrade_code": "Upgrade to premium by entering your 8-digit code.",
+  "dont_have_code": "Don’t have a code? Contact support to learn more about premium features.",
+  "apply": "apply",
+  "logout_confirmation": "Are you sure you want to logout from all devices ?",
+  "refresh_completed" : "Refresh Completed",
+  "pull_up_load": "Pull up to load more",
+  "load_failed": "Load failed!",
+  "release_to_load_more": "Release to load more",
+  "no_more_data": "No more data available"
+ 
 }

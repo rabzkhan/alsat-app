@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../../components/no_data_widget.dart';
 import '../../app_home/controller/home_controller.dart';
 
@@ -21,14 +23,12 @@ class MyListings extends StatelessWidget {
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
-          header: WaterDropHeader(
-            waterDropColor: context.theme.primaryColor,
-          ),
+          header: CusomHeaderWidget(),
+          footer: CustomFooterWidget(),
           controller: homeController.myListingRefreshController,
           onRefresh: homeController.myListingRefresh,
           onLoading: homeController.myListingLoading,
-          child: !homeController.isFetchMyProduct.value &&
-                  homeController.myProductList.isEmpty
+          child: !homeController.isFetchMyProduct.value && homeController.myProductList.isEmpty
               ? const NoDataWidget()
               : GridView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -45,14 +45,10 @@ class MyListings extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ProductGridTile(
                       loading: homeController.isFetchMyProduct.value,
-                      productModel: homeController.isFetchMyProduct.value
-                          ? null
-                          : homeController.myProductList[index],
+                      productModel: homeController.isFetchMyProduct.value ? null : homeController.myProductList[index],
                     );
                   },
-                  itemCount: homeController.isFetchMyProduct.value
-                      ? 10
-                      : homeController.myProductList.length,
+                  itemCount: homeController.isFetchMyProduct.value ? 10 : homeController.myProductList.length,
                 ),
         );
       },

@@ -9,6 +9,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../common/const/image_path.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../../components/product_list_tile.dart';
 import '../../product/model/product_post_list_res.dart';
 import '../controllers/filter_controller.dart';
@@ -98,7 +100,8 @@ class FilterResultsView extends GetView<FilterController> {
             return SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
-              header: const WaterDropHeader(),
+              header: CusomHeaderWidget(),
+              footer: CustomFooterWidget(),
               controller: controller.refreshController,
               onRefresh: controller.onRefresh,
               onLoading: controller.onLoading,

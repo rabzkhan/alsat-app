@@ -212,5 +212,15 @@
    "skip": "Geç",
   "next": "Indiki",
   "login": "Giriş",
-  "sign_up": "Hasap döret"
+  "sign_up": "Hasap döret",
+  "unlock_premium": "Premiumy Aç",
+  "upgrade_code": "8 belgili koduňyzy girizip premium derejä geçiň.",
+  "dont_have_code": "Kodyňyz ýokmy? Premium aýratynlyklary barada has giňişleýin bilmek üçin goldaw bilen habarlaşyň.",
+  "apply": "ulanyň",
+  "logout_confirmation": "Ähli enjamdan çykmak isleýärsiňizmi?",
+  "refresh_completed": "Täzelenme tamamlandy",
+  "pull_up_load": "Has köp ýükläp almak üçin ýokara çekiň",
+  "load_failed": "Ýükleme şowsuz! Gaýtadan synanyşmak üçin basyň.",
+  "release_to_load_more": "Has köp ýükläp almak üçin goýberiň",
+  "no_more_data": "Başga maglumat ýok"
 }

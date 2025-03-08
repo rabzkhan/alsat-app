@@ -11,6 +11,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/controller/conversation_controller.dart';
 import '../../conversation/view/message_view.dart';
@@ -25,9 +27,8 @@ class ChatContent extends StatelessWidget {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      header: WaterDropHeader(
-        waterDropColor: context.theme.primaryColor,
-      ),
+      header: CusomHeaderWidget(),
+      footer: CustomFooterWidget(),
       controller: conversationController.conversationRefreshController,
       onRefresh: conversationController.conversationRefresh,
       onLoading: conversationController.conversationLoading,

@@ -10,9 +10,11 @@ import 'package:pinput/pinput.dart';
 import '../../../../../config/theme/app_text_theme.dart';
 import '../../../../common/const/image_path.dart';
 import '../../controller/user_controller.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 upgradeToPremiumDialog() {
   final UserController userController = Get.find();
+  final localLanguage = AppLocalizations.of(Get.context!)!;
   Get.dialog(
     Center(
       child: BackdropFilter(
@@ -37,17 +39,16 @@ upgradeToPremiumDialog() {
                   color: Get.theme.primaryColor,
                 ),
                 Text(
-                  "Unlock Premium",
+                  localLanguage.unlock_premium,
                   style: Get.theme.textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 6.verticalSpace,
                 Text(
-                  "Upgrade to premium by entering your 8-digit code.",
+                  localLanguage.upgrade_code,
                   textAlign: TextAlign.center,
-                  style:
-                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -100,8 +101,7 @@ upgradeToPremiumDialog() {
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor:
-                                Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -112,7 +112,7 @@ upgradeToPremiumDialog() {
                             ),
                           ),
                           child: Text(
-                            'Cancel',
+                            localLanguage.cancel,
                             style: regular.copyWith(
                               color: Get.theme.primaryColor,
                             ),
@@ -139,15 +139,14 @@ upgradeToPremiumDialog() {
                               onPressed: () async {
                                 await userController.upgradeToPremium();
                               },
-                              child:
-                                  userController.isUpgradePreimumLoading.value
-                                      ? const CupertinoActivityIndicator()
-                                      : Text(
-                                          "Apply",
-                                          style: regular.copyWith(
-                                            color: Colors.white,
-                                          ),
-                                        ),
+                              child: userController.isUpgradePreimumLoading.value
+                                  ? const CupertinoActivityIndicator()
+                                  : Text(
+                                      localLanguage.apply,
+                                      style: regular.copyWith(
+                                        color: Colors.white,
+                                      ),
+                                    ),
                             );
                           },
                         ),
@@ -157,10 +156,9 @@ upgradeToPremiumDialog() {
                 ),
                 30.verticalSpace,
                 Text(
-                  "Don’t have a code? Contact support to learn more about premium features.",
+                  localLanguage.dont_have_code,
                   textAlign: TextAlign.center,
-                  style:
-                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 )
               ],
             ),

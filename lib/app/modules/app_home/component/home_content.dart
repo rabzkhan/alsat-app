@@ -13,6 +13,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../../utils/loading_dialog.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../../components/home_segmented.dart';
 import '../../../components/network_image_preview.dart';
@@ -34,6 +36,7 @@ class HomeContent extends StatelessWidget {
     final productController = Get.find<ProductController>();
     final ConversationController _ = Get.find();
     FilterController filterController = Get.find();
+
     return Column(
       children: [
         const HomeSegmented(),
@@ -45,9 +48,8 @@ class HomeContent extends StatelessWidget {
                   : SmartRefresher(
                       enablePullDown: true,
                       enablePullUp: true,
-                      header: WaterDropHeader(
-                        waterDropColor: context.theme.primaryColor,
-                      ),
+                      header: CusomHeaderWidget(),
+                      footer: CustomFooterWidget(),
                       controller: productController.homeRefreshController,
                       onRefresh: productController.onHomeRefresh,
                       onLoading: productController.onHomeLoading,

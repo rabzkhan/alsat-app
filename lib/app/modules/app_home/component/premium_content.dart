@@ -10,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../components/all_user_tile.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../conversation/controller/conversation_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/user_filter_result_view.dart';
@@ -32,9 +34,8 @@ class PremiumContent extends StatelessWidget {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      header: WaterDropHeader(
-        waterDropColor: context.theme.primaryColor,
-      ),
+      header: CusomHeaderWidget(),
+      footer: CustomFooterWidget(),
       controller: homeController.premiumRefreshController,
       onRefresh: homeController.onPremiumRefresh,
       onLoading: homeController.onPremiumLoading,
@@ -77,23 +78,17 @@ class PremiumContent extends StatelessWidget {
                 //   end: Alignment.centerRight,
                 // ),
                 child: ListView.separated(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
                   separatorBuilder: (context, index) => 10.horizontalSpace,
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemCount: homeController.isCategoryLoading.value
-                      ? 10
-                      : homeController.categories.length,
+                  itemCount: homeController.isCategoryLoading.value ? 10 : homeController.categories.length,
                   itemBuilder: (context, index) {
                     CategoriesModel categoriesModel =
-                        homeController.isCategoryLoading.value
-                            ? CategoriesModel()
-                            : homeController.categories[index];
+                        homeController.isCategoryLoading.value ? CategoriesModel() : homeController.categories[index];
                     return GestureDetector(
                       onTap: () {
-                        homeController.category.value =
-                            homeController.categories[index];
+                        homeController.category.value = homeController.categories[index];
                         homeController.fetchPremiumUser(isFilter: false);
                         filterController.clearAddress();
                         Get.to(
@@ -115,8 +110,7 @@ class PremiumContent extends StatelessWidget {
                               color: Colors.grey.withOpacity(0.1),
                               spreadRadius: 1,
                               blurRadius: 1,
-                              offset: const Offset(
-                                  0, 1), // changes position of shadow
+                              offset: const Offset(0, 1), // changes position of shadow
                             ),
                           ],
                         ),
@@ -128,9 +122,7 @@ class PremiumContent extends StatelessWidget {
                               categoriesModel.icon.toString(),
                               width: 35.w,
                               height: 22.w,
-                              placeholderBuilder: (context) =>
-                                  const CupertinoActivityIndicator
-                                      .partiallyRevealed(),
+                              placeholderBuilder: (context) => const CupertinoActivityIndicator.partiallyRevealed(),
                             ),
                             5.verticalSpace,
                             Text(
@@ -155,8 +147,7 @@ class PremiumContent extends StatelessWidget {
           //--- Premium Content ---//
 
           Padding(
-            padding: EdgeInsets.only(
-                top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
+            padding: EdgeInsets.only(top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
             child: TextFormField(
               controller: homeController.searchController,
               onFieldSubmitted: (value) {
@@ -220,8 +211,7 @@ class PremiumContent extends StatelessWidget {
                                 homeController.category.value = null;
                                 homeController.fetchPremiumUser(isFilter: true);
                                 Get.to(
-                                  const UserFilterResultView(
-                                      isBackFilter: false),
+                                  const UserFilterResultView(isBackFilter: false),
                                   transition: Transition.rightToLeft,
                                 );
                               },
@@ -276,16 +266,12 @@ class PremiumContent extends StatelessWidget {
               //   end: Alignment.centerRight,
               // ),
               child: ListView.builder(
-                itemCount: homeController.isPremiumLoading.value
-                    ? 10
-                    : homeController.premiumUserList.length,
+                itemCount: homeController.isPremiumLoading.value ? 10 : homeController.premiumUserList.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   UserDataModel premiumUserModel =
-                      homeController.isPremiumLoading.value
-                          ? UserDataModel()
-                          : homeController.premiumUserList[index];
+                      homeController.isPremiumLoading.value ? UserDataModel() : homeController.premiumUserList[index];
                   return AllUserTile(premiumUserModel: premiumUserModel);
                 },
               ),

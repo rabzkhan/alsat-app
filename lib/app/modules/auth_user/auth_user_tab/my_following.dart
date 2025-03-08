@@ -9,6 +9,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../../components/network_image_preview.dart';
 import '../../../components/no_data_widget.dart';
 import '../../product/view/client_profile_view.dart';
@@ -47,9 +49,8 @@ class _MyFollowingState extends State<MyFollowing> {
       return SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: WaterDropHeader(
-          waterDropColor: context.theme.primaryColor,
-        ),
+        header: CusomHeaderWidget(),
+        footer: CustomFooterWidget(),
         controller: followingRefreshController,
         onRefresh: followingRefresh,
         onLoading: followingLoading,

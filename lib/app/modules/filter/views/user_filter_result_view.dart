@@ -8,6 +8,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../common/const/image_path.dart';
 import '../../../components/all_user_tile.dart';
 import '../../../components/custom_appbar.dart';
+import '../../../components/custom_footer_widget.dart';
+import '../../../components/custom_header_widget.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../../authentication/model/user_data_model.dart';
 import 'user_filter_view.dart';
@@ -49,9 +51,8 @@ class UserFilterResultView extends StatelessWidget {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: WaterDropHeader(
-          waterDropColor: context.theme.primaryColor,
-        ),
+        header: CusomHeaderWidget(),
+        footer: CustomFooterWidget(),
         controller: homeController.userFilterRefreshController,
         onRefresh: homeController.onUserFilterRefresh,
         onLoading: homeController.onUserFilterLoading,

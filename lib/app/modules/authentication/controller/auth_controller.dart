@@ -262,14 +262,14 @@ class AuthController extends GetxController {
                 children: [
                   10.verticalSpace,
                   Text(
-                    "Delete Account?",
+                    localLanguage.delete_account,
                     style: Get.theme.textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   8.verticalSpace,
                   Text(
-                    "Are you sure you want to delete your account ?",
+                    localLanguage.delete_account_confirmation,
                     textAlign: TextAlign.center,
                     style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                   ),
@@ -388,14 +388,14 @@ class AuthController extends GetxController {
                   children: [
                     10.verticalSpace,
                     Text(
-                      "Logout",
+                      localLanguage.logout,
                       style: Get.theme.textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     8.verticalSpace,
                     Text(
-                      "Are you sure you want to logout from all devices ?",
+                      localLanguage.logout_confirmation,
                       textAlign: TextAlign.center,
                       style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                     ),
@@ -446,7 +446,7 @@ class AuthController extends GetxController {
                                 await _performLogoutDevices();
                               },
                               child: Text(
-                                "Logout",
+                                localLanguage.logout,
                                 style: regular.copyWith(
                                   color: Colors.white,
                                 ),
