@@ -131,16 +131,12 @@ class AppDrawer extends StatelessWidget {
                                   Image.asset(
                                     adminChat,
                                     width: 25.w,
-                                    color: Colors.white,
+                                    // color: Colors.white,
                                   ),
                                   10.horizontalSpace,
                                   Text(
                                     localLanguage.chat_with_admin,
-                                    style: regular.copyWith(
-                                      fontSize: 14.sp,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                    style: semiBold,
                                   ),
                                 ],
                               ),
@@ -155,16 +151,12 @@ class AppDrawer extends StatelessWidget {
                           Image.asset(
                             translate,
                             width: 25.w,
-                            color: Colors.white,
+                            // color: Colors.white,
                           ),
                           10.horizontalSpace,
                           Text(
                             'Language',
-                            style: regular.copyWith(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white,
-                            ),
+                            style: semiBold,
                           ),
                         ],
                       ),
@@ -202,7 +194,7 @@ class AppDrawer extends StatelessWidget {
                                 fontSize: 14.sp,
                                 color: localizationService.locale.value.languageCode == 'tr'
                                     ? AppColors.primary
-                                    : Colors.white,
+                                    : Colors.black54,
                                 fontWeight: localizationService.locale.value.languageCode == 'tr'
                                     ? FontWeight.w600
                                     : FontWeight.normal,
@@ -221,7 +213,7 @@ class AppDrawer extends StatelessWidget {
                               fontSize: 14.sp,
                               color: localizationService.locale.value.languageCode == 'ru'
                                   ? AppColors.primary
-                                  : Colors.white,
+                                  : Colors.black54,
                               fontWeight: localizationService.locale.value.languageCode == 'ru'
                                   ? FontWeight.w600
                                   : FontWeight.normal,
@@ -240,11 +232,14 @@ class AppDrawer extends StatelessWidget {
                       },
                       child: Row(
                         children: [
-                          Icon(Icons.logout, color: Colors.white),
+                          Icon(
+                            Icons.logout,
+                            // color: Colors.white,
+                          ),
                           10.horizontalSpace,
                           Text(
                             localLanguage.logout,
-                            style: regular.copyWith(fontWeight: FontWeight.w500, fontSize: 14.sp, color: Colors.white),
+                            style: semiBold,
                           ),
                         ],
                       ),
