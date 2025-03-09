@@ -38,27 +38,20 @@ class ProductController extends GetxController {
   ];
 
   List<String> estateTypeList = [
-    'House',
     'Apartment',
-    'Condo',
+    'Elite',
+    'Half-Elite',
+    'Cottage',
     'Villa',
-    'Studio',
-    'Townhouse',
-    'Penthouse',
-    'Duplex',
-    'Commercial Property',
   ];
+
   List<String> estateDealTypeList = [
-    'Buy',
-    'Sell',
-    'Rent',
-    'Lease',
-    'Mortgage',
-    'Invest',
-    'Short-Term Rent',
-    'Vacation Rental',
-    'Co-ownership',
-    'Foreclosure',
+    'Cosmetic',
+    'Government',
+    'Euro',
+    'Designer',
+    'Regular',
+    'Renovation',
   ];
   RxBool isShowPostProductVideo = RxBool(false);
   RxBool isProductPosting = RxBool(false);
@@ -79,7 +72,7 @@ class ProductController extends GetxController {
   RxString selectedEngineType = RxString("");
   RxList<String> selectedColor = RxList<String>([]);
   RxString selectedYear = RxString(DateTime.now().year.toString());
-  RxString selectedPassed = RxString('7000');
+  //RxString selectedPassed = RxString('7000');
   //-- post product count --//
   RxInt totalProductFiled = RxInt(3);
   RxInt totalProductFiledCount = RxInt(0);
@@ -125,7 +118,7 @@ class ProductController extends GetxController {
     //-- Category check to find the total field --//
     if (selectCategory.value != null) {
       if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
-        totalProductFiled.value = 11;
+        totalProductFiled.value = 9;
       }
       if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
         totalProductFiled.value = 7;
@@ -143,7 +136,7 @@ class ProductController extends GetxController {
         if (selectedBodyType.value.isNotEmpty) filledCount++;
         if (selectedTransmission.value.isNotEmpty) filledCount++;
         if (selectedEngineType.value.isNotEmpty) filledCount++;
-        if (selectedPassed.value.isNotEmpty) filledCount++;
+        //if (selectedPassed.value.isNotEmpty) filledCount++;
         if (selectedYear.value.isNotEmpty) filledCount++;
         if (selectedColor.isNotEmpty) filledCount++;
         // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;

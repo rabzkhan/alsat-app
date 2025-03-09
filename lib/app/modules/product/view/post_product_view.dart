@@ -649,54 +649,61 @@ class _PostProductViewState extends State<PostProductView> {
                                         ? _phoneCategory(context)
                                         : const Center()),
                             //product Name
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-                              child: FormBuilderTextField(
-                                validator: FormBuilderValidators.compose([
-                                  FormBuilderValidators.required(),
-                                ]),
-                                name: 'productName',
-                                onChanged: (newValue) {
-                                  productController.calculateFilledProductFields();
-                                },
-                                controller: productController.productNameController,
-                                textAlign: TextAlign.right,
-                                textAlignVertical: TextAlignVertical.center,
-                                style: regular.copyWith(
-                                    // fontSize: 12.sp,
-
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w500),
-                                decoration: InputDecoration(
-                                  prefixIcon: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        localLanguage.product_name,
+                            Obx(
+                              () => productController.selectCategory.value?.name?.toLowerCase() == 'automobile' &&
+                                      (productController.selectSubCategory.value?.name ?? "")
+                                          .toLowerCase()
+                                          .contains('car')
+                                  ? SizedBox()
+                                  : Padding(
+                                      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                                      child: FormBuilderTextField(
+                                        validator: FormBuilderValidators.compose([
+                                          FormBuilderValidators.required(),
+                                        ]),
+                                        name: 'productName',
+                                        onChanged: (newValue) {
+                                          productController.calculateFilledProductFields();
+                                        },
+                                        controller: productController.productNameController,
+                                        textAlign: TextAlign.right,
+                                        textAlignVertical: TextAlignVertical.center,
                                         style: regular.copyWith(
-                                          fontSize: 15.sp,
+                                            // fontSize: 12.sp,
+
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500),
+                                        decoration: InputDecoration(
+                                          prefixIcon: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                localLanguage.product_name,
+                                                style: regular.copyWith(
+                                                  fontSize: 15.sp,
+                                                ),
+                                              ),
+                                              10.horizontalSpace,
+                                            ],
+                                          ),
+                                          border: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: context.theme.shadowColor.withOpacity(.3),
+                                            ),
+                                          ),
+                                          focusedBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: context.theme.shadowColor.withOpacity(.3),
+                                            ),
+                                          ),
+                                          enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: context.theme.shadowColor.withOpacity(.3),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      10.horizontalSpace,
-                                    ],
-                                  ),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
                                     ),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
-                                    ),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(
-                                      color: context.theme.shadowColor.withOpacity(.3),
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ),
                             // product discription
                             Padding(
@@ -1439,7 +1446,7 @@ class _PostProductViewState extends State<PostProductView> {
                       builder: (context) => SingleDialogPicker(
                         title: localLanguage.select_number_of_floor,
                         items: List.generate(
-                          50,
+                          15,
                           (index) => (index + 1).toString(),
                         ),
                         selectYear: productController.selectFloor,
@@ -1460,7 +1467,7 @@ class _PostProductViewState extends State<PostProductView> {
                       builder: (context) => SingleDialogPicker(
                         title: localLanguage.select_number_of_room,
                         items: List.generate(
-                          50,
+                          10,
                           (index) => (index + 1).toString(),
                         ),
                         selectYear: productController.selectRoom,
@@ -1629,21 +1636,21 @@ class _PostProductViewState extends State<PostProductView> {
                             });
                           },
                         )),
-                    Obx(() => _tile(
-                          localLanguage.passedKm,
-                          productController.selectedPassed.value,
-                          onTap: () {
-                            Get.bottomSheet(
-                              EngineTypeSheet(
-                                title: localLanguage.passedKm,
-                                data: RxList.generate(200, (index) => (index * 100).toString()),
-                                selectedData: productController.selectedPassed,
-                              ),
-                            ).then((_) {
-                              productController.calculateFilledProductFields();
-                            });
-                          },
-                        )),
+                    // Obx(() => _tile(
+                    //       localLanguage.passedKm,
+                    //       productController.selectedPassed.value,
+                    //       onTap: () {
+                    //         Get.bottomSheet(
+                    //           EngineTypeSheet(
+                    //             title: localLanguage.passedKm,
+                    //             data: RxList.generate(200, (index) => (index * 100).toString()),
+                    //             selectedData: productController.selectedPassed,
+                    //           ),
+                    //         ).then((_) {
+                    //           productController.calculateFilledProductFields();
+                    //         });
+                    //       },
+                    //     )),
                     Obx(
                       () => _tile(
                         localLanguage.year,
@@ -1739,7 +1746,7 @@ class _PostProductViewState extends State<PostProductView> {
             "body_type": productController.selectedBodyType.value,
             "transmission": productController.selectedTransmission.value,
             "engine_type": productController.selectedEngineType.value,
-            "passed_km": num.parse(productController.selectedPassed.value).toInt(),
+            //"passed_km": num.parse(productController.selectedPassed.value).toInt(),
             "year": num.parse(productController.selectedYear.value).toInt(),
             "color": productController.selectedColor.first,
             "vin_code": map['vinCode'],

@@ -832,7 +832,7 @@ class _FilterViewState extends State<FilterView> {
                                           builder: (context) => SingleDialogPicker(
                                             title: localLanguage.select_number_of_floor,
                                             items: List.generate(
-                                              50,
+                                              15,
                                               (index) => (index + 1).toString(),
                                             ),
                                             selectYear: productController.selectFloor,
@@ -853,7 +853,7 @@ class _FilterViewState extends State<FilterView> {
                                           builder: (context) => SingleDialogPicker(
                                             title: localLanguage.select_number_of_room,
                                             items: List.generate(
-                                              50,
+                                              10,
                                               (index) => (index + 1).toString(),
                                             ),
                                             selectYear: productController.selectRoom,
