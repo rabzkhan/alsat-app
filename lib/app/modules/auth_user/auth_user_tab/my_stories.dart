@@ -5,7 +5,6 @@ import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/story/model/story_res.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -42,11 +41,19 @@ class MyStories extends StatelessWidget {
                                 [])
                             .isEmpty)
                         ? Center()
-                        : Text(
-                            'My Available Stories',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.black54,
+                        : Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.w),
+                            child: Row(
+                              children: [
+                                Icon(Icons.play_arrow_rounded, size: 18.sp),
+                                Text(
+                                  'Available Stories',
+                                  style: TextStyle(
+                                    fontSize: 14.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ],
                             ),
                           );
                   }),
@@ -127,16 +134,26 @@ class MyStories extends StatelessWidget {
             actions: [
               _items(e, height: 200.h),
               if (isArchive)
-                CupertinoActionSheetAction(
-                  isDefaultAction: true,
-                  onPressed: () {/*...*/},
-                  child: const Text('Re-Post'),
-                ),
+                Obx(() {
+                  return CupertinoActionSheetAction(
+                    isDefaultAction: true,
+                    onPressed: homeController.isStoryReporting.value
+                        ? () {/*...*/}
+                        : () {
+                            homeController.rePostStory(e?.id ?? "");
+                          },
+                    child: homeController.isStoryReporting.value
+                        ? CupertinoActivityIndicator()
+                        : const Text('Re-Post'),
+                  );
+                }),
               Obx(() {
                 return CupertinoActionSheetAction(
-                  onPressed: () {
-                    homeController.deleteStory(e!);
-                  },
+                  onPressed: homeController.isStoryDeleting.value
+                      ? () {}
+                      : () {
+                          homeController.deleteStory(e!);
+                        },
                   child: homeController.isStoryDeleting.value
                       ? CupertinoActivityIndicator()
                       : const Text('Delete'),

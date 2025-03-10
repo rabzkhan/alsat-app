@@ -122,18 +122,11 @@ class HomeStorySection extends StatelessWidget {
               ),
               stories: [
                 ...(e.stories ?? []).map(
-                  (e) => Scaffold(
-                    extendBody: true,
-                    extendBodyBehindAppBar: true,
-                    body: Center(
-                      child: (e.media?.type == "video" &&
-                              e.media?.name != null &&
-                              e.media!.name!.isNotEmpty)
-                          ? StoryVideoPlayer(url: e.media!.name!)
-                          : NetworkImagePreview(
-                              url: e.media?.name ?? '',
-                            ),
-                    ),
+                  (e) => StoryMainModel(
+                    isVideo: (e.media?.type == "video" &&
+                        e.media?.name != null &&
+                        e.media!.name!.isNotEmpty),
+                    url: e.media?.name ?? '',
                   ),
                 ),
               ],

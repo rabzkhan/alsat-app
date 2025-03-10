@@ -457,6 +457,30 @@ class HomeController extends GetxController {
     );
   }
 
+  RxBool isStoryReporting = false.obs;
+  rePostStory(String sId) async {
+    await BaseClient.safeApiCall(
+      "${Constants.baseUrl}${Constants.stories}/$sId",
+      DioRequestType.put,
+      headers: {
+        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
+        'Authorization': Constants.token,
+      },
+      onLoading: () {
+        isStoryReporting.value = true;
+      },
+      onSuccess: (response) async {
+        log('reportStory: ${response.data}');
+        isStoryReporting.value = false;
+        Get.back();
+      },
+      onError: (error) {
+        isStoryReporting.value = false;
+        log('reportStoryError: ${error.message}-- $sId');
+      },
+    );
+  }
+
   //========================================Story Image Picker========================================================///
   List<File> pickStoryImageList = [];
   List<File> pickStoryVideoList = [];

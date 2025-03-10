@@ -40,8 +40,10 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp =
+      false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess =
+      false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -63,7 +65,8 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+        await smsConfirmation(
+            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
         isLoading.value = false;
       },
       onError: (error) {
@@ -117,7 +120,8 @@ class AuthController extends GetxController {
         verificationTimer?.cancel(); // Stop periodic verification
         await MySharedPref.setIsLoggedIn(true); // Set user as logged in
         await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d("Verification successful! and the token is ${varifiedModel.value.token!}");
+        Logger().d(
+            "Verification successful! and the token is ${varifiedModel.value.token!}");
         getProfile();
         Get.to(() => const AppHomeView());
       },
@@ -228,11 +232,13 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         getProfile();
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomToast(message: localLanguage.updated_successfully);
+        CustomSnackBar.showCustomToast(
+            message: localLanguage.updated_successfully);
       },
       onError: (error) {
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(message: localLanguage.something_went_wrong);
+        CustomSnackBar.showCustomErrorToast(
+            message: localLanguage.something_went_wrong);
         log('profile $error <- error');
         Logger().d("$error <- error");
       },
@@ -271,7 +277,8 @@ class AuthController extends GetxController {
                   Text(
                     localLanguage.delete_account_confirmation,
                     textAlign: TextAlign.center,
-                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                    style:
+                        Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                   ),
                   20.verticalSpace,
                   SizedBox(
@@ -282,7 +289,8 @@ class AuthController extends GetxController {
                           flex: 2,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              backgroundColor:
+                                  Get.theme.primaryColor.withOpacity(.1),
                               side: BorderSide(
                                 color: Get.theme.primaryColor,
                                 width: 1,
@@ -328,7 +336,8 @@ class AuthController extends GetxController {
                                   await userLogOut();
                                   Restart.restartApp(
                                     notificationTitle: 'Restarting App',
-                                    notificationBody: 'Please tap here to open the app again.',
+                                    notificationBody:
+                                        'Please tap here to open the app again.',
                                   );
                                   isDeletingAccount.value = false;
                                 },
@@ -397,7 +406,10 @@ class AuthController extends GetxController {
                     Text(
                       localLanguage.logout_confirmation,
                       textAlign: TextAlign.center,
-                      style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                      style: Theme.of(Get.context!)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(),
                     ),
                     20.verticalSpace,
                     SizedBox(
@@ -408,7 +420,8 @@ class AuthController extends GetxController {
                             flex: 2,
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                                backgroundColor:
+                                    Get.theme.primaryColor.withOpacity(.1),
                                 side: BorderSide(
                                   color: Get.theme.primaryColor,
                                   width: 1,
