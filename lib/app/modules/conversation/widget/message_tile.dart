@@ -1,4 +1,3 @@
-
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
@@ -54,7 +53,7 @@ class MessageTile extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16.0),
       child: Slidable(
         key: const ValueKey(0),
-        endActionPane: ActionPane(
+        startActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
@@ -99,7 +98,9 @@ class MessageTile extends StatelessWidget {
               Flexible(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: !message.isSender
+                    ? CrossAxisAlignment.start
+                    : CrossAxisAlignment.end,
                 children: [
                   if (message.replyMessage != null)
                     Container(

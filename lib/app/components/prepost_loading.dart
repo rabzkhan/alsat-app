@@ -22,17 +22,19 @@ class _PrePostLoadingState extends State<PrePostLoading> {
   }
 
   init() {
-    final ProductDetailsController controller =
-        Get.put(ProductDetailsController(), tag: widget.postId);
-    controller.getSingleProductDetails(widget.postId).then((value) {
-      if (controller.selectPostProductModel.value?.id == null) {
-        CustomSnackBar.showCustomToast(message: 'Product Not Found');
-        Get.back();
-      } else {
-        Get.off(() => ProductDetailsView(
-              productModel: controller.selectPostProductModel.value,
-            ));
-      }
+    Future.microtask(() {
+      final ProductDetailsController controller =
+          Get.put(ProductDetailsController(), tag: widget.postId);
+      controller.getSingleProductDetails(widget.postId).then((value) {
+        if (controller.selectPostProductModel.value?.id == null) {
+          CustomSnackBar.showCustomToast(message: 'Product Not Found');
+          Get.back();
+        } else {
+          Get.off(() => ProductDetailsView(
+                productModel: controller.selectPostProductModel.value,
+              ));
+        }
+      });
     });
   }
 

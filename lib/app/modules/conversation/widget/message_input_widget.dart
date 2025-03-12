@@ -37,6 +37,7 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   final _scrollController = ScrollController();
+
   bool _emojiShowing = false;
   String? recordedFilePath;
   bool isRecording = false;
@@ -279,22 +280,33 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                         EdgeInsets.symmetric(horizontal: 12.w),
                                     child: Row(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            FocusScope.of(context).unfocus();
-                                            setState(() {
-                                              _emojiShowing = !_emojiShowing;
-                                            });
-                                          },
-                                          child: Opacity(
-                                            opacity: _emojiShowing ? .2 : 1,
-                                            child: Image.asset(
-                                              'assets/icons/emoji.png',
-                                              height: 25.h,
-                                              width: 25.w,
-                                            ),
-                                          ),
-                                        ),
+                                        Obx(() {
+                                          return widget
+                                                      .messageController
+                                                      .selectProductModel
+                                                      .value ==
+                                                  null
+                                              ? GestureDetector(
+                                                  onTap: () async {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    setState(() {
+                                                      _emojiShowing =
+                                                          !_emojiShowing;
+                                                    });
+                                                  },
+                                                  child: Opacity(
+                                                    opacity:
+                                                        _emojiShowing ? .2 : 1,
+                                                    child: Image.asset(
+                                                      'assets/icons/emoji.png',
+                                                      height: 25.h,
+                                                      width: 25.w,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Center();
+                                        }),
                                         Expanded(
                                           child: TextFormField(
                                             onTap: () {
@@ -333,8 +345,15 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                           ),
                                         ),
                                         Obx(
-                                          () => widget.conversationController
-                                                  .typeMessageText.isNotEmpty
+                                          () => widget
+                                                      .conversationController
+                                                      .typeMessageText
+                                                      .isNotEmpty ||
+                                                  widget
+                                                          .messageController
+                                                          .selectProductModel
+                                                          .value !=
+                                                      null
                                               ? const Center()
                                               : Row(
                                                   mainAxisSize:
@@ -412,8 +431,23 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       onTap: () async {
                         _emojiShowing = false;
                         if (widget.conversationController.typeMessageText
-                            .isNotEmpty) {
-                          widget.conversationController.sendMessage();
+                                .isNotEmpty ||
+                            widget.messageController.selectProductModel.value !=
+                                null) {
+                          if (widget
+                                  .messageController.selectProductModel.value ==
+                              null) {
+                            widget.conversationController.sendMessage();
+                          } else {
+                            widget.conversationController.sendMessage(
+                                product: widget
+                                    .messageController.selectProductModel.value,
+                                postId: widget.messageController
+                                    .selectProductModel.value?.id
+                                    .toString());
+                            widget.messageController.selectProductModel.value =
+                                null;
+                          }
                         } else {
                           if (isRecording) {
                             stopRecording();
@@ -449,7 +483,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       },
                       child: widget.conversationController.typeMessageText
                                   .isEmpty &&
-                              !isRecording
+                              !isRecording &&
+                              widget.messageController.selectProductModel
+                                      .value ==
+                                  null
                           ? CircleAvatar(
                               radius: 27,
                               backgroundColor: Theme.of(context).primaryColor,

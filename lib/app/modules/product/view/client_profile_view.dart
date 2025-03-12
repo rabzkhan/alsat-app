@@ -27,10 +27,12 @@ import '../widget/rate_bottom_sheet.dart';
 
 class ClientProfileView extends StatefulWidget {
   final String userId;
+  final bool isFromMessage;
   final ProductDetailsController productDetailsController;
   const ClientProfileView(
       {super.key,
       required this.userId,
+      this.isFromMessage = false,
       required this.productDetailsController});
 
   @override
@@ -356,26 +358,29 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                                       .value
                                                   ? null
                                                   : () {
-                                                      widget
-                                                          .productDetailsController
-                                                          .getConversationInfoByUserId(widget
-                                                                  .productDetailsController
-                                                                  .postUserModel
-                                                                  .value
-                                                                  ?.id ??
-                                                              "")
-                                                          .then((value) {
-                                                        Get.to(
-                                                          MessagesScreen(
-                                                            conversation: widget
-                                                                .productDetailsController
-                                                                .conversationInfo
-                                                                .value!,
-                                                          ),
-                                                          transition:
-                                                              Transition.fadeIn,
-                                                        );
-                                                      });
+                                                      widget.isFromMessage
+                                                          ? Get.back()
+                                                          : widget
+                                                              .productDetailsController
+                                                              .getConversationInfoByUserId(widget
+                                                                      .productDetailsController
+                                                                      .postUserModel
+                                                                      .value
+                                                                      ?.id ??
+                                                                  "")
+                                                              .then((value) {
+                                                              Get.to(
+                                                                MessagesScreen(
+                                                                  conversation: widget
+                                                                      .productDetailsController
+                                                                      .conversationInfo
+                                                                      .value!,
+                                                                ),
+                                                                transition:
+                                                                    Transition
+                                                                        .fadeIn,
+                                                              );
+                                                            });
                                                     },
                                               style: OutlinedButton.styleFrom(
                                                 side: BorderSide(
@@ -530,6 +535,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                       ),
                                       itemBuilder: (context, index) {
                                         return ProductGridTile(
+                                          isFromMessage: widget.isFromMessage,
                                           loading: widget
                                               .productDetailsController
                                               .isFetchUserProduct
