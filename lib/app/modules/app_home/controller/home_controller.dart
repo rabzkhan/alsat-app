@@ -77,6 +77,8 @@ class HomeController extends GetxController {
   getCategories() async {
     log('CategoryCall: ${Constants.baseUrl + Constants.categories}');
     await BaseClient.safeApiCall(
+      isDataCache: true,
+      cacheAgeInMinute: 30 * 24 * 60,
       Constants.baseUrl + Constants.categories,
       DioRequestType.get,
       headers: {
@@ -85,6 +87,13 @@ class HomeController extends GetxController {
       },
       onLoading: () {
         isCategoryLoading.value = true;
+      },
+      onCacheData: (cachedata) {
+        List<dynamic> data = cachedata ?? [];
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
+
+        isCategoryLoading.value = false;
       },
       onSuccess: (response) async {
         Logger().d(response.data.toString());
