@@ -59,6 +59,7 @@ class ConversationController extends GetxController {
             "reply_to": messageController.selectReplyMessage.value?.id ?? '',
             "attachments": [map]
           };
+    // log('messagesMap $messagesMap');
     String url = Constants.baseUrl + Constants.conversationMessages;
     messageController.selectReplyMessage.value = null;
     if (receiverId == null) {
@@ -83,7 +84,7 @@ class ConversationController extends GetxController {
       },
       onError: (error) {
         isSendingMessage.value = false;
-        log('Error: $error');
+        log('Error: ${error.message}');
         return;
       },
     );
