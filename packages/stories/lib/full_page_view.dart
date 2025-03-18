@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stories_for_flutter/stories_for_flutter.dart';
+import 'package:stories_for_flutter/story_video_player.dart';
 
 class FullPageView extends StatefulWidget {
   final List<StoryItem>? storiesMapList;
@@ -62,6 +65,7 @@ class FullPageViewState extends State<FullPageView> {
   List<StoryItem>? storiesMapList;
   int? storyNumber;
   late List<Widget> combinedList;
+  late List<bool> combinedListType;
   late List listLengths;
   int? selectedIndex;
   PageController? _pageController;
@@ -120,6 +124,7 @@ class FullPageViewState extends State<FullPageView> {
     storyNumber = widget.storyNumber;
 
     combinedList = getStoryList(storiesMapList!);
+    combinedListType = getStoryListType(storiesMapList!);
     listLengths = getStoryLengths(storiesMapList!);
     selectedIndex = getInitialIndex(storyNumber!, storiesMapList);
 
@@ -130,10 +135,7 @@ class FullPageViewState extends State<FullPageView> {
     fullpageThumbnailSize = widget.fullpageThumbnailSize;
     showStoryNameOnFullPage = widget.showStoryNameOnFullPage ?? true;
     storyStatusBarColor = widget.storyStatusBarColor;
-    if (((combinedList[selectedIndex ?? 0] as Scaffold).body as Center)
-            .child
-            .toString() ==
-        "StoryVideoPlayer") {
+    if (combinedListType[selectedIndex ?? 0]) {
       changePageTimer?.cancel();
       log("Timer canceled");
     } else {
@@ -161,10 +163,7 @@ class FullPageViewState extends State<FullPageView> {
           // Overlay to detect taps for next page & previous page
           PageView(
             onPageChanged: (page) {
-              if (((combinedList[page] as Scaffold).body as Center)
-                      .child
-                      .toString() ==
-                  "StoryVideoPlayer") {
+              if (combinedListType[page]) {
                 changePageTimer!.cancel();
                 log("Timer canceled");
               }
@@ -341,7 +340,31 @@ List<Widget> getStoryList(List<StoryItem> storiesMapList) {
   List<Widget> imagesList = [];
   for (int i = 0; i < storiesMapList.length; i++) {
     for (int j = 0; j < storiesMapList[i].stories.length; j++) {
-      imagesList.add(storiesMapList[i].stories[j]);
+      imagesList.add(Scaffold(
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        body: Center(
+          child: (storiesMapList[i].stories[j].isVideo)
+              ? StoryVideoPlayer(url: storiesMapList[i].stories[j].url ?? "")
+              : CachedNetworkImage(
+                  imageUrl: storiesMapList[i].stories[j].url ?? '',
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => const Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                ),
+        ),
+      ));
+    }
+  }
+  return imagesList;
+}
+
+List<bool> getStoryListType(List<StoryItem> storiesMapList) {
+  List<bool> imagesList = [];
+  for (int i = 0; i < storiesMapList.length; i++) {
+    for (int j = 0; j < storiesMapList[i].stories.length; j++) {
+      imagesList.add((storiesMapList[i].stories[j].isVideo));
     }
   }
   return imagesList;

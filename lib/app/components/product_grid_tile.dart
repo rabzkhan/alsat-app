@@ -17,7 +17,13 @@ class ProductGridTile extends StatelessWidget {
   final ProductModel? productModel;
   final bool loading;
   final bool isShowFavoriteButton;
-  const ProductGridTile({super.key, this.productModel, required this.loading, this.isShowFavoriteButton = false});
+  final bool isFromMessage;
+  const ProductGridTile(
+      {super.key,
+      this.productModel,
+      required this.loading,
+      this.isShowFavoriteButton = false,
+      this.isFromMessage = false});
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +33,7 @@ class ProductGridTile extends StatelessWidget {
         onTap: () {
           Get.to(
             ProductDetailsView(
+              isFromMessage: isFromMessage,
               productModel: productModel,
             ),
             transition: Transition.fadeIn,
@@ -85,7 +92,8 @@ class ProductGridTile extends StatelessWidget {
                               maxLines: 1,
                               text: TextSpan(children: [
                                 TextSpan(
-                                  text: productModel?.title ?? 'No Product Name',
+                                  text:
+                                      productModel?.title ?? 'No Product Name',
                                   style: bold.copyWith(
                                     fontSize: 16.sp,
                                   ),
@@ -94,7 +102,8 @@ class ProductGridTile extends StatelessWidget {
                           Text(
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            productModel?.description ?? 'There Has No Description',
+                            productModel?.description ??
+                                'There Has No Description',
                             style: regular.copyWith(
                               fontSize: 13.sp,
                             ),
@@ -102,15 +111,19 @@ class ProductGridTile extends StatelessWidget {
                           RichText(
                               text: TextSpan(children: [
                             TextSpan(
-                              text: "\$${productModel?.priceInfo?.price ?? 00.00}",
+                              text:
+                                  "\$${productModel?.priceInfo?.price ?? 00.00}",
                               style: bold.copyWith(
                                 fontSize: 17.sp,
                               ),
                             ),
                           ])),
-                          if ((productModel?.carInfo?.brand?.isNotEmpty ?? false) ||
-                              (productModel?.phoneInfo?.brand?.isNotEmpty ?? false) ||
-                              (productModel?.estateInfo?.address?.isNotEmpty ?? false))
+                          if ((productModel?.carInfo?.brand?.isNotEmpty ??
+                                  false) ||
+                              (productModel?.phoneInfo?.brand?.isNotEmpty ??
+                                  false) ||
+                              (productModel?.estateInfo?.address?.isNotEmpty ??
+                                  false))
                             Row(
                               children: [
                                 Row(
@@ -121,7 +134,8 @@ class ProductGridTile extends StatelessWidget {
                                           ? CupertinoIcons.checkmark_alt
                                           : CupertinoIcons.xmark,
                                       size: 15.r,
-                                      color: (productModel?.priceInfo?.credit ?? false)
+                                      color: (productModel?.priceInfo?.credit ??
+                                              false)
                                           ? Get.theme.primaryColor
                                           : Colors.red,
                                     ),
@@ -139,11 +153,15 @@ class ProductGridTile extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
-                                      (productModel?.priceInfo?.possibleExchange ?? false)
+                                      (productModel?.priceInfo
+                                                  ?.possibleExchange ??
+                                              false)
                                           ? CupertinoIcons.checkmark_alt
                                           : CupertinoIcons.xmark,
                                       size: 15.r,
-                                      color: (productModel?.priceInfo?.possibleExchange ?? false)
+                                      color: (productModel?.priceInfo
+                                                  ?.possibleExchange ??
+                                              false)
                                           ? Get.theme.primaryColor
                                           : Colors.red,
                                     ),

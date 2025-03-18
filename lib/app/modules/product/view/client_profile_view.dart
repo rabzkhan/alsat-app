@@ -27,8 +27,13 @@ import '../widget/rate_bottom_sheet.dart';
 
 class ClientProfileView extends StatefulWidget {
   final String userId;
+  final bool isFromMessage;
   final ProductDetailsController productDetailsController;
-  const ClientProfileView({super.key, required this.userId, required this.productDetailsController});
+  const ClientProfileView(
+      {super.key,
+      required this.userId,
+      this.isFromMessage = false,
+      required this.productDetailsController});
 
   @override
   State<ClientProfileView> createState() => _ClientProfileViewState();
@@ -42,7 +47,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
     // if (widget.productDetailsController.userPostCategories.isEmpty) {
     //   widget.productDetailsController.getUserPostCategories();
     // }
-    widget.productDetailsController.getUserPostCategories(userId: widget.userId);
+    widget.productDetailsController
+        .getUserPostCategories(userId: widget.userId);
     Future.microtask(() {
       widget.productDetailsController.isFetchUserLoading.value = true;
       widget.productDetailsController.getUserByUId(userId: widget.userId);
@@ -52,16 +58,19 @@ class _ClientProfileViewState extends State<ClientProfileView> {
   }
 
   //--- Get All PRODUCT ---//
-  RefreshController userProductRefreshController = RefreshController(initialRefresh: false);
+  RefreshController userProductRefreshController =
+      RefreshController(initialRefresh: false);
   void userProductRefresh() async {
     await widget.productDetailsController.fetchUserProducts();
     userProductRefreshController.refreshCompleted();
   }
 
   void userProductLoading() async {
-    if (widget.productDetailsController.userProductPostListRes?.hasMore ?? false) {
-      await widget.productDetailsController
-          .fetchUserProducts(nextPaginateDate: widget.productDetailsController.userProductList.last.createdAt);
+    if (widget.productDetailsController.userProductPostListRes?.hasMore ??
+        false) {
+      await widget.productDetailsController.fetchUserProducts(
+          nextPaginateDate:
+              widget.productDetailsController.userProductList.last.createdAt);
     }
     userProductRefreshController.loadComplete();
   }
@@ -86,7 +95,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                       child: // // user information
                           Obx(() {
                         return Skeletonizer(
-                          enabled: widget.productDetailsController.isFetchUserLoading.value,
+                          enabled: widget.productDetailsController
+                              .isFetchUserLoading.value,
                           // effect: ShimmerEffect(
                           //   baseColor: Get.theme.disabledColor.withOpacity(.2),
                           //   highlightColor: Colors.white,
@@ -104,24 +114,34 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 Row(
                                   children: [
                                     Obx(() {
-                                      return widget.productDetailsController.userStoryList.isEmpty
+                                      return widget.productDetailsController
+                                              .userStoryList.isEmpty
                                           ? CircleAvatar(
                                               radius: 28.r,
                                               child: NetworkImagePreview(
                                                 radius: 26.r,
-                                                url: widget.productDetailsController.postUserModel.value?.picture ?? '',
+                                                url: widget
+                                                        .productDetailsController
+                                                        .postUserModel
+                                                        .value
+                                                        ?.picture ??
+                                                    '',
                                                 height: 52.h,
                                                 width: 52.w,
-                                                error: Image.asset(userDefaultIcon),
+                                                error: Image.asset(
+                                                    userDefaultIcon),
                                                 fit: BoxFit.cover,
                                               ),
                                             )
                                           : Stories(
-                                              autoPlayDuration: const Duration(seconds: 10),
+                                              autoPlayDuration:
+                                                  const Duration(seconds: 10),
                                               highLightColor: AppColors.primary,
                                               paddingColor: AppColors.secondary,
-                                              fullpageVisitedColor: AppColors.primary,
-                                              fullpageUnisitedColor: AppColors.primary,
+                                              fullpageVisitedColor:
+                                                  AppColors.primary,
+                                              fullpageUnisitedColor:
+                                                  AppColors.primary,
                                               storyStatusBarColor: Colors.white,
                                               circlePadding: 2,
                                               showStoryName: false,
@@ -131,25 +151,32 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                                   userId: "",
                                                   name: "",
                                                   thumbnail: NetworkImage(
-                                                    widget.productDetailsController.userStoryList.first.user?.picture ??
+                                                    widget
+                                                            .productDetailsController
+                                                            .userStoryList
+                                                            .first
+                                                            .user
+                                                            ?.picture ??
                                                         '',
                                                   ),
                                                   stories: [
-                                                    ...(widget.productDetailsController.userStoryList.first.stories ??
+                                                    ...(widget
+                                                                .productDetailsController
+                                                                .userStoryList
+                                                                .first
+                                                                .stories ??
                                                             [])
                                                         .map(
-                                                      (e) => Scaffold(
-                                                        extendBody: true,
-                                                        extendBodyBehindAppBar: true,
-                                                        body: Center(
-                                                          child: (e.media?.type == "video" &&
-                                                                  e.media?.name != null &&
-                                                                  e.media!.name!.isNotEmpty)
-                                                              ? StoryVideoPlayer(url: e.media!.name!)
-                                                              : NetworkImagePreview(
-                                                                  url: e.media?.name ?? '',
-                                                                ),
-                                                        ),
+                                                      (e) => StoryMainModel(
+                                                        isVideo: (e.media
+                                                                    ?.type ==
+                                                                "video" &&
+                                                            e.media?.name !=
+                                                                null &&
+                                                            e.media!.name!
+                                                                .isNotEmpty),
+                                                        url:
+                                                            e.media?.name ?? '',
                                                       ),
                                                     ),
                                                   ],
@@ -161,7 +188,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                     Expanded(
                                       child: Column(
                                         mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             '${widget.productDetailsController.postUserModel.value?.userName}',
@@ -175,10 +203,15 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               RatingBarIndicator(
-                                                rating:
-                                                    (widget.productDetailsController.postUserModel.value?.rating ?? 0)
-                                                        .toDouble(),
-                                                itemBuilder: (context, index) => const Icon(
+                                                rating: (widget
+                                                            .productDetailsController
+                                                            .postUserModel
+                                                            .value
+                                                            ?.rating ??
+                                                        0)
+                                                    .toDouble(),
+                                                itemBuilder: (context, index) =>
+                                                    const Icon(
                                                   Icons.star_border_outlined,
                                                   color: Colors.amber,
                                                 ),
@@ -220,7 +253,9 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                 ),
                                 //-- Follow and chat buttons--//
 
-                                if (widget.productDetailsController.postUserModel.value?.bio?.isNotEmpty ?? false)
+                                if (widget.productDetailsController
+                                        .postUserModel.value?.bio?.isNotEmpty ??
+                                    false)
                                   Padding(
                                     padding: EdgeInsets.only(top: 10.h),
                                     child: Text(
@@ -234,14 +269,18 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                     ),
                                   ),
                                 authController.userDataModel.value.id ==
-                                        widget.productDetailsController.postUserModel.value?.id
+                                        widget.productDetailsController
+                                            .postUserModel.value?.id
                                     ? const Center()
                                     : Row(
                                         children: [
                                           Expanded(
                                             child: Obx(() {
                                               return Skeletonizer(
-                                                enabled: widget.productDetailsController.isFetchUserLoading.value,
+                                                enabled: widget
+                                                    .productDetailsController
+                                                    .isFetchUserLoading
+                                                    .value,
                                                 // effect: ShimmerEffect(
                                                 //   baseColor: Get.theme.disabledColor.withOpacity(.2),
                                                 //   highlightColor: Colors.white,
@@ -250,33 +289,60 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                                 // ),
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    widget.productDetailsController.isFetchUserLoading.value = true;
-                                                    widget.productDetailsController.followingAUser(
-                                                      userId:
-                                                          widget.productDetailsController.postUserModel.value?.id ?? '',
+                                                    widget
+                                                        .productDetailsController
+                                                        .isFetchUserLoading
+                                                        .value = true;
+                                                    widget
+                                                        .productDetailsController
+                                                        .followingAUser(
+                                                      userId: widget
+                                                              .productDetailsController
+                                                              .postUserModel
+                                                              .value
+                                                              ?.id ??
+                                                          '',
                                                       isFollow: !(widget
-                                                              .productDetailsController.postUserModel.value?.followed ??
+                                                              .productDetailsController
+                                                              .postUserModel
+                                                              .value
+                                                              ?.followed ??
                                                           false),
                                                     );
                                                   },
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     elevation: 0,
-                                                    backgroundColor: (widget.productDetailsController.postUserModel
-                                                                .value?.followed ??
+                                                    backgroundColor: (widget
+                                                                .productDetailsController
+                                                                .postUserModel
+                                                                .value
+                                                                ?.followed ??
                                                             false)
-                                                        ? context.theme.disabledColor.withOpacity(.5)
-                                                        : Theme.of(context).primaryColor,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(12.r),
+                                                        ? context
+                                                            .theme.disabledColor
+                                                            .withOpacity(.5)
+                                                        : Theme.of(context)
+                                                            .primaryColor,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12.r),
                                                     ),
                                                   ),
                                                   child: Text(
-                                                    (widget.productDetailsController.postUserModel.value?.followed ??
+                                                    (widget
+                                                                .productDetailsController
+                                                                .postUserModel
+                                                                .value
+                                                                ?.followed ??
                                                             false)
                                                         ? localLanguage.unfollow
                                                         : localLanguage.follow,
                                                     style: regular.copyWith(
-                                                      color: Get.theme.scaffoldBackgroundColor,
+                                                      color: Get.theme
+                                                          .scaffoldBackgroundColor,
                                                     ),
                                                   ),
                                                 ),
@@ -287,22 +353,34 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                           Expanded(
                                             child: OutlinedButton(
                                               onPressed: widget
-                                                      .productDetailsController.isFetchUserConversationLoading.value
+                                                      .productDetailsController
+                                                      .isFetchUserConversationLoading
+                                                      .value
                                                   ? null
                                                   : () {
-                                                      widget.productDetailsController
-                                                          .getConversationInfoByUserId(
-                                                              widget.productDetailsController.postUserModel.value?.id ??
+                                                      widget.isFromMessage
+                                                          ? Get.back()
+                                                          : widget
+                                                              .productDetailsController
+                                                              .getConversationInfoByUserId(widget
+                                                                      .productDetailsController
+                                                                      .postUserModel
+                                                                      .value
+                                                                      ?.id ??
                                                                   "")
-                                                          .then((value) {
-                                                        Get.to(
-                                                          MessagesScreen(
-                                                            conversation:
-                                                                widget.productDetailsController.conversationInfo.value!,
-                                                          ),
-                                                          transition: Transition.fadeIn,
-                                                        );
-                                                      });
+                                                              .then((value) {
+                                                              Get.to(
+                                                                MessagesScreen(
+                                                                  conversation: widget
+                                                                      .productDetailsController
+                                                                      .conversationInfo
+                                                                      .value!,
+                                                                ),
+                                                                transition:
+                                                                    Transition
+                                                                        .fadeIn,
+                                                              );
+                                                            });
                                                     },
                                               style: OutlinedButton.styleFrom(
                                                 side: BorderSide(
@@ -310,34 +388,45 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                                 ),
                                                 elevation: 0,
                                                 shape: RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.circular(12.r),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.r),
                                                 ),
                                               ),
-                                              child:
-                                                  widget.productDetailsController.isFetchUserConversationLoading.value
-                                                      ? const CupertinoActivityIndicator()
-                                                      : Text(
-                                                          localLanguage.message,
-                                                          style: regular.copyWith(
-                                                            color: Get.theme.primaryColor,
-                                                          ),
-                                                        ),
+                                              child: widget
+                                                      .productDetailsController
+                                                      .isFetchUserConversationLoading
+                                                      .value
+                                                  ? const CupertinoActivityIndicator()
+                                                  : Text(
+                                                      localLanguage.message,
+                                                      style: regular.copyWith(
+                                                        color: Get
+                                                            .theme.primaryColor,
+                                                      ),
+                                                    ),
                                             ),
                                           ),
                                           10.horizontalSpace,
                                           InkWell(
                                             onTap: () {
-                                              showRateBottomSheet(context, widget.productDetailsController);
+                                              showRateBottomSheet(
+                                                  context,
+                                                  widget
+                                                      .productDetailsController);
                                             },
                                             child: Container(
                                               decoration: BoxDecoration(
                                                 border: Border.all(
-                                                  color: Get.theme.primaryColor, // Set border color
+                                                  color: Get.theme
+                                                      .primaryColor, // Set border color
                                                 ),
-                                                borderRadius: BorderRadius.circular(10.r),
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
                                               ),
                                               child: Padding(
-                                                padding: const EdgeInsets.symmetric(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
                                                   horizontal: 8,
                                                   vertical: 5,
                                                 ),
@@ -359,25 +448,32 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                     )
                   ],
               body: Obx(() {
-                if (widget.productDetailsController.userPostCategories.isEmpty) {
+                if (widget
+                    .productDetailsController.userPostCategories.isEmpty) {
                   return SizedBox();
                 }
                 return DefaultTabController(
-                  initialIndex: widget.productDetailsController.isUserPostCategoryLoading.value
+                  initialIndex: widget.productDetailsController
+                          .isUserPostCategoryLoading.value
                       ? 0
-                      : widget.productDetailsController.selectCategory.value == null
+                      : widget.productDetailsController.selectCategory.value ==
+                              null
                           ? 0
                           : (widget.productDetailsController.userPostCategories
-                              .indexOf(widget.productDetailsController.selectCategory.value)),
-                  length: widget.productDetailsController.userPostCategories.length,
+                              .indexOf(widget.productDetailsController
+                                  .selectCategory.value)),
+                  length:
+                      widget.productDetailsController.userPostCategories.length,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Obx(() {
                         return TabBar(
                           onTap: (value) {
-                            widget.productDetailsController.selectCategory.value =
-                                widget.productDetailsController.userPostCategories[value];
+                            widget.productDetailsController.selectCategory
+                                    .value =
+                                widget.productDetailsController
+                                    .userPostCategories[value];
                             userProductRefresh();
                           },
                           isScrollable: true,
@@ -392,7 +488,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                               ),
                             ),
                           ),
-                          tabs: widget.productDetailsController.userPostCategories
+                          tabs: widget
+                              .productDetailsController.userPostCategories
                               .map(
                                 (e) => Padding(
                                   padding: EdgeInsets.symmetric(vertical: 6.h),
@@ -416,8 +513,10 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                               controller: userProductRefreshController,
                               onRefresh: userProductRefresh,
                               onLoading: userProductLoading,
-                              child: !widget.productDetailsController.isFetchUserProduct.value &&
-                                      widget.productDetailsController.userProductList.isEmpty
+                              child: !widget.productDetailsController
+                                          .isFetchUserProduct.value &&
+                                      widget.productDetailsController
+                                          .userProductList.isEmpty
                                   ? NoDataWidget(
                                       title: 'No Product Found',
                                       bottomHeight: 100.h,
@@ -427,7 +526,8 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 20.w,
                                       ),
-                                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
                                         mainAxisSpacing: 10.h,
                                         crossAxisSpacing: 10.w,
@@ -435,15 +535,25 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                       ),
                                       itemBuilder: (context, index) {
                                         return ProductGridTile(
-                                          loading: widget.productDetailsController.isFetchUserProduct.value,
-                                          productModel: widget.productDetailsController.isFetchUserProduct.value
+                                          isFromMessage: widget.isFromMessage,
+                                          loading: widget
+                                              .productDetailsController
+                                              .isFetchUserProduct
+                                              .value,
+                                          productModel: widget
+                                                  .productDetailsController
+                                                  .isFetchUserProduct
+                                                  .value
                                               ? null
-                                              : widget.productDetailsController.userProductList[index],
+                                              : widget.productDetailsController
+                                                  .userProductList[index],
                                         );
                                       },
-                                      itemCount: widget.productDetailsController.isFetchUserProduct.value
+                                      itemCount: widget.productDetailsController
+                                              .isFetchUserProduct.value
                                           ? 10
-                                          : widget.productDetailsController.userProductList.length,
+                                          : widget.productDetailsController
+                                              .userProductList.length,
                                     ),
                             );
                           },

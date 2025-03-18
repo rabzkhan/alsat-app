@@ -16,6 +16,7 @@ class Constants {
   static const postProduct = '/posts';
   static const categories = '/categories';
   static const stories = '/stories';
+  static const storiesArchive = '/stories/archives';
   static const notification = '/notifications';
   static const banners = '/banners';
   static const user = '/users';
@@ -24,5 +25,6 @@ class Constants {
   static const following = '/users/following';
   static const carBrandEndPoint = '/carBrands?limit=200000';
   static const upgradeToPremium = '/users/upgrade';
-  static const updateProfilePicture = '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
+  static const updateProfilePicture =
+      '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
 }

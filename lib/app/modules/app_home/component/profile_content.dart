@@ -14,6 +14,7 @@ import '../../auth_user/auth_user_tab/my_followers.dart';
 import '../../auth_user/auth_user_tab/my_following.dart';
 import '../../auth_user/auth_user_tab/my_like_post.dart';
 import '../../auth_user/auth_user_tab/my_settings.dart';
+import '../../auth_user/auth_user_tab/my_stories.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../controller/home_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -263,6 +264,7 @@ class _ProfileContentState extends State<ProfileContent>
                 controller: mainTabController,
                 children: [
                   const MyListings(),
+                  const MyStories(),
                   const MyLikePost(),
                   const MyFollowers(),
                   const MyFollowing(),

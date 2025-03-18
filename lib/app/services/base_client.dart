@@ -1,6 +1,7 @@
 import 'dart:async';
 // import 'dart:developer';
 import 'dart:io';
+import 'package:alsat/app/services/data_cache_servise.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
 import 'package:logger/logger.dart';
@@ -37,15 +38,23 @@ class BaseClient {
     String url,
     DioRequestType requestType, {
     Map<String, dynamic>? headers,
+    bool isDataCache = false,
+    int cacheAgeInMinute = 60,
     Map<String, dynamic>? queryParameters,
     required Function(Response response) onSuccess,
     Function(ApiException)? onError,
+    Function(dynamic data)? onCacheData,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)?
+        onSendProgress, // while sending (uploading) progress
     Function? onLoading,
     dynamic data,
   }) async {
     try {
+      if (isDataCache) {
+        dynamic cacheData = await DataCacheService(apiEndPoint: url).getData();
+        onCacheData?.call(cacheData);
+      }
       await onLoading?.call();
       late Response response;
       if (requestType == DioRequestType.get) {
@@ -58,6 +67,10 @@ class BaseClient {
             headers: headers,
           ),
         );
+        if (isDataCache) {
+          DataCacheService(apiEndPoint: url)
+              .setData(response.data, expiryTimeMinute: cacheAgeInMinute);
+        }
       } else if (requestType == DioRequestType.post) {
         Logger().d(data.toString());
         response = await _dio.post(
@@ -138,7 +151,10 @@ class BaseClient {
   }
 
   /// handle unexpected error
-  static _handleUnexpectedException({Function(ApiException)? onError, required String url, required Object error}) {
+  static _handleUnexpectedException(
+      {Function(ApiException)? onError,
+      required String url,
+      required Object error}) {
     if (onError != null) {
       onError(ApiException(
         message: error.toString(),
@@ -150,31 +166,38 @@ class BaseClient {
   }
 
   /// handle timeout exception
-  static _handleTimeoutException({Function(ApiException)? onError, required String url}) {
+  static _handleTimeoutException(
+      {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: AppLocalizations.of(getx.Get.context!)!.server_not_responding,
         url: url,
       ));
     } else {
-      _handleError(AppLocalizations.of(getx.Get.context!)!.server_not_responding);
+      _handleError(
+          AppLocalizations.of(getx.Get.context!)!.server_not_responding);
     }
   }
 
   /// handle timeout exception
-  static _handleSocketException({Function(ApiException)? onError, required String url}) {
+  static _handleSocketException(
+      {Function(ApiException)? onError, required String url}) {
     if (onError != null) {
       onError(ApiException(
         message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
         url: url,
       ));
     } else {
-      _handleError(AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
+      _handleError(
+          AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
     }
   }
 
   /// handle Dio error
-  static _handleDioError({required DioException error, Function(ApiException)? onError, required String url}) {
+  static _handleDioError(
+      {required DioException error,
+      Function(ApiException)? onError,
+      required String url}) {
     if (error.response?.statusCode == 404) {
       if (onError != null) {
         return onError(ApiException(
@@ -183,19 +206,23 @@ class BaseClient {
           statusCode: 404,
         ));
       } else {
-        return _handleError(AppLocalizations.of(getx.Get.context!)!.url_not_found);
+        return _handleError(
+            AppLocalizations.of(getx.Get.context!)!.url_not_found);
       }
     }
 
     // no internet connection
-    if (error.message != null && error.message!.toLowerCase().contains('socket')) {
+    if (error.message != null &&
+        error.message!.toLowerCase().contains('socket')) {
       if (onError != null) {
         return onError(ApiException(
-          message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
+          message:
+              AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
           url: url,
         ));
       } else {
-        return _handleError(AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
+        return _handleError(
+            AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
       }
     }
 

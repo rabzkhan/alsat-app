@@ -6,9 +6,11 @@ import 'package:get/get.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import '../../../../utils/constants.dart';
+import '../../product/model/product_post_list_res.dart';
 import '../model/message_model.dart';
 
 class MessageController extends GetxController {
+  Rxn<ProductModel> selectProductModel = Rxn<ProductModel>();
   Rxn<ChatMessage> selectMessage = Rxn<ChatMessage>();
   Rxn<ChatMessage> selectReplyMessage = Rxn<ChatMessage>();
   RxBool isOnlineUser = RxBool(false);

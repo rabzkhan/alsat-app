@@ -65,7 +65,6 @@
   "add_story": "Add Story",
   "chat_with_admin": "Chat With Admin",
   "logout": "Logout",
-  "logout_confirmation": "Are you sure you want to logout from all devices ?",
   "chat_history": "Chat History",
   "search_here": "Search Here",
   "by_posting_you_confirm": "By posting, you confirm the agreement with terms and conditions of",
@@ -185,7 +184,7 @@
   "failed_to_get_conversation_info": "Failed to get conversation info",
   "post_deleted_successfully": "Post deleted successfully",
   "failed_to_delete_post": "Failed to delete post",
-   "product_not_found": "Product Not Found",
+  "product_not_found": "Product Not Found",
   "user_not_found": "User Not Found",
   "product_posted_successfully": "Product posted successfully",
   "product_posting_failed": "Product posting failed",
@@ -204,7 +203,7 @@
   "upload_videos": "Upload Videos",
   "post_title": "Post Title",
   "edit": "Edit",
-   "update_info": "Update Info",
+  "update_info": "Update Info",
   "resend_otp_in": "Resend OTP in",
   "min": "min",
   "resend_otp": "Resend OTP",
@@ -223,6 +222,6 @@
   "pull_up_load": "Pull up to load more",
   "load_failed": "Load failed!",
   "release_to_load_more": "Release to load more",
-  "no_more_data": "No more data available"
- 
+  "no_more_data": "No more data available",
+  "my_stories": "My Stories"
 }

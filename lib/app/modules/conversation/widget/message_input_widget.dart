@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as log;
 import 'dart:io';
 import 'dart:math';
+import 'dart:convert';
 
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
@@ -22,6 +23,7 @@ import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
 import '../view/map_address_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:crypto/crypto.dart';
 
 class ChatInputField extends StatefulWidget {
   final ConversationController conversationController;
@@ -37,6 +39,7 @@ class ChatInputField extends StatefulWidget {
 
 class _ChatInputFieldState extends State<ChatInputField> {
   final _scrollController = ScrollController();
+
   bool _emojiShowing = false;
   String? recordedFilePath;
   bool isRecording = false;
@@ -97,6 +100,52 @@ class _ChatInputFieldState extends State<ChatInputField> {
       });
     } catch (e) {
       print("Error stopping recording: $e");
+    }
+  }
+
+  // Convert audio file to base64 and return in the required format
+  Future<Map<String, dynamic>> audioToBase64(String filePath) async {
+    try {
+      if (filePath.isEmpty) {
+        print('Error: Empty file path provided');
+        return {};
+      }
+
+      final File file = File(filePath);
+
+      // Check if file exists
+      if (!await file.exists()) {
+        print('Error: Audio file does not exist at path: $filePath');
+        return {};
+      }
+
+      // Read file as bytes
+      final List<int> audioBytes = await file.readAsBytes();
+
+      // Get file size
+      final int fileSize = audioBytes.length;
+
+      // Generate SHA-256 hash
+      final String hash = sha256.convert(audioBytes).toString();
+
+      // Convert bytes to base64
+      final String base64Audio = base64Encode(audioBytes);
+
+      // Create the required format
+      final Map<String, dynamic> fileData = {
+        "name": base64Audio,
+        "type": "audio",
+        "size": fileSize,
+        "hash": hash,
+        "content_type": "audio/m4a",
+      };
+
+      print(
+          'Audio successfully converted to required format. Size: $fileSize bytes');
+      return fileData;
+    } catch (e) {
+      print('Error converting audio to base64: $e');
+      return {};
     }
   }
 
@@ -279,22 +328,33 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                         EdgeInsets.symmetric(horizontal: 12.w),
                                     child: Row(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () async {
-                                            FocusScope.of(context).unfocus();
-                                            setState(() {
-                                              _emojiShowing = !_emojiShowing;
-                                            });
-                                          },
-                                          child: Opacity(
-                                            opacity: _emojiShowing ? .2 : 1,
-                                            child: Image.asset(
-                                              'assets/icons/emoji.png',
-                                              height: 25.h,
-                                              width: 25.w,
-                                            ),
-                                          ),
-                                        ),
+                                        Obx(() {
+                                          return widget
+                                                      .messageController
+                                                      .selectProductModel
+                                                      .value ==
+                                                  null
+                                              ? GestureDetector(
+                                                  onTap: () async {
+                                                    FocusScope.of(context)
+                                                        .unfocus();
+                                                    setState(() {
+                                                      _emojiShowing =
+                                                          !_emojiShowing;
+                                                    });
+                                                  },
+                                                  child: Opacity(
+                                                    opacity:
+                                                        _emojiShowing ? .2 : 1,
+                                                    child: Image.asset(
+                                                      'assets/icons/emoji.png',
+                                                      height: 25.h,
+                                                      width: 25.w,
+                                                    ),
+                                                  ),
+                                                )
+                                              : Center();
+                                        }),
                                         Expanded(
                                           child: TextFormField(
                                             onTap: () {
@@ -333,8 +393,15 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                           ),
                                         ),
                                         Obx(
-                                          () => widget.conversationController
-                                                  .typeMessageText.isNotEmpty
+                                          () => widget
+                                                      .conversationController
+                                                      .typeMessageText
+                                                      .isNotEmpty ||
+                                                  widget
+                                                          .messageController
+                                                          .selectProductModel
+                                                          .value !=
+                                                      null
                                               ? const Center()
                                               : Row(
                                                   mainAxisSize:
@@ -412,19 +479,66 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       onTap: () async {
                         _emojiShowing = false;
                         if (widget.conversationController.typeMessageText
-                            .isNotEmpty) {
-                          widget.conversationController.sendMessage();
+                                .isNotEmpty ||
+                            widget.messageController.selectProductModel.value !=
+                                null) {
+                          if (widget
+                                  .messageController.selectProductModel.value ==
+                              null) {
+                            widget.conversationController.sendMessage();
+                          } else {
+                            widget.conversationController.sendMessage(
+                                product: widget
+                                    .messageController.selectProductModel.value,
+                                postId: widget.messageController
+                                    .selectProductModel.value?.id
+                                    .toString());
+                            widget.messageController.selectProductModel.value =
+                                null;
+                          }
                         } else {
                           if (isRecording) {
                             stopRecording();
 
                             isRecording = false;
                             setState(() {});
+
+                            // Get the file
+                            final File file = File(audioFilePath);
+
+                            // Check if file exists
+                            if (!await file.exists()) {
+                              CustomSnackBar.showCustomErrorToast(
+                                  message: localLanguage.some_thing_went_worng);
+                              return;
+                            }
+
+                            // Read file as bytes
+                            final List<int> audioBytes =
+                                await file.readAsBytes();
+
+                            // Get file size
+                            final int fileSize = audioBytes.length;
+
+                            // Generate SHA-256 hash
+                            final String hash =
+                                sha256.convert(audioBytes).toString();
+
+                            // Convert bytes to base64
+                            final String base64Audio = base64Encode(audioBytes);
+
+                            // Create the map structure exactly as expected by the server
                             Map<String, dynamic> map = {
                               "type": "audio",
-                              "file": await audioToBase64(audioFilePath),
+                              "file": {
+                                "name": base64Audio,
+                                "type": "audio",
+                                "size": fileSize,
+                                "hash": hash,
+                                "content_type": "audio/m4a",
+                              }
                             };
-                            // log('audioPath: $audioPath  $map');//
+
                             if (map.isEmpty) {
                               CustomSnackBar.showCustomErrorToast(
                                   message: localLanguage.some_thing_went_worng);
@@ -449,7 +563,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
                       },
                       child: widget.conversationController.typeMessageText
                                   .isEmpty &&
-                              !isRecording
+                              !isRecording &&
+                              widget.messageController.selectProductModel
+                                      .value ==
+                                  null
                           ? CircleAvatar(
                               radius: 27,
                               backgroundColor: Theme.of(context).primaryColor,

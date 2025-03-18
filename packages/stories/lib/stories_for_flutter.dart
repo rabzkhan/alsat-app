@@ -137,7 +137,7 @@ class StoryItem {
   ImageProvider thumbnail;
 
   /// List of pages to display as stories under this story
-  List<Scaffold> stories;
+  List<StoryMainModel> stories;
 
   /// Add a story
   StoryItem({
@@ -145,5 +145,14 @@ class StoryItem {
     required this.name,
     required this.thumbnail,
     required this.stories,
+  });
+}
+
+class StoryMainModel {
+  String? url;
+  bool isVideo;
+  StoryMainModel({
+    this.url,
+    this.isVideo = false,
   });
 }
