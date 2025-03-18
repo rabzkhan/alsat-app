@@ -502,12 +502,43 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
                             isRecording = false;
                             setState(() {});
-                            Map<String, dynamic> mapCovertMap =
-                                await audioToBase64(audioFilePath);
+
+                            // Get the file
+                            final File file = File(audioFilePath);
+
+                            // Check if file exists
+                            if (!await file.exists()) {
+                              CustomSnackBar.showCustomErrorToast(
+                                  message: localLanguage.some_thing_went_worng);
+                              return;
+                            }
+
+                            // Read file as bytes
+                            final List<int> audioBytes =
+                                await file.readAsBytes();
+
+                            // Get file size
+                            final int fileSize = audioBytes.length;
+
+                            // Generate SHA-256 hash
+                            final String hash =
+                                sha256.convert(audioBytes).toString();
+
+                            // Convert bytes to base64
+                            final String base64Audio = base64Encode(audioBytes);
+
+                            // Create the map structure exactly as expected by the server
                             Map<String, dynamic> map = {
                               "type": "audio",
-                              "file": mapCovertMap,
+                              "file": {
+                                "name": base64Audio,
+                                "type": "audio",
+                                "size": fileSize,
+                                "hash": hash,
+                                "content_type": "audio/m4a",
+                              }
                             };
+
                             if (map.isEmpty) {
                               CustomSnackBar.showCustomErrorToast(
                                   message: localLanguage.some_thing_went_worng);
