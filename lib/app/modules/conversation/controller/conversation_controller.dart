@@ -246,12 +246,12 @@ class ConversationController extends GetxController {
             messages[0].payload as MqttPublishMessage;
         final String messageJson = MqttPublishPayload.bytesToStringAsString(
             recMessage.payload.message);
-        log("Received message JSON: $messageJson");
+        // log("Received message JSON: $messageJson");
         try {
           final messageData = jsonDecode(messageJson);
           MqttMessageModel messageModel =
               MqttMessageModel.fromJson(messageData);
-          log("MqttMessageModel  ${messageModel.toJson()}");
+          log("MqttMessageModel  ${messageModel.chatId}");
           checkMessagesToPush(messageModel);
         } catch (e) {
           log("Error parsing message JSON: $e");
@@ -281,23 +281,20 @@ class ConversationController extends GetxController {
       attachments: mqttMessageModel.attachments ?? [],
       status: mqttMessageModel.status ?? '',
     );
-    ConversationModel? conversation = conversationList.firstWhereOrNull(
-        (element) =>
-            element.participants?.lastOrNull?.id ==
-            mqttMessageModel.sender?.id);
+    ConversationModel? conversation = conversationList
+        .firstWhereOrNull((element) => element.id == mqttMessageModel.chatId);
     //-- Check if conversation exist --//
     if (conversation == null) {
       getConversations();
     }
     //-- Check if conversation is selected --//
-    if (selectConversation.value?.participants?.lastOrNull?.id ==
-        mqttMessageModel.sender?.id) {
-      // ReplyTo? replyTo,
-
+    if (selectConversation.value?.id == mqttMessageModel.chatId) {
       List<ChatMessage> newMessage =
           messageConvert(messageModel, selectUserInfo.value, authController);
       for (var element in newMessage) {
-        coverMessage.insert(0, element);
+        if (coverMessage.first.id != element.id) {
+          coverMessage.insert(0, element);
+        }
       }
       coverMessage.refresh();
     }

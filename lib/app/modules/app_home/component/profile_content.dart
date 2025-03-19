@@ -264,10 +264,10 @@ class _ProfileContentState extends State<ProfileContent>
                 controller: mainTabController,
                 children: [
                   const MyListings(),
-                  const MyStories(),
                   const MyLikePost(),
                   const MyFollowers(),
                   const MyFollowing(),
+                  const MyStories(),
                 ],
               ),
             ),
