@@ -14,10 +14,10 @@ class UserController extends GetxController {
 
   List<String> profileTab(AppLocalizations appLocalizations) => [
         appLocalizations.my_listings,
-        appLocalizations.my_stories,
         appLocalizations.liked,
         appLocalizations.followers,
         appLocalizations.following,
+        appLocalizations.my_stories,
       ];
   //-- Upgrade to premium--//
   RxBool isUpgradePreimumLoading = false.obs;

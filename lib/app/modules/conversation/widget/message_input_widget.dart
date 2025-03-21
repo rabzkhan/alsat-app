@@ -15,6 +15,7 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:music_visualizer/music_visualizer.dart';
 import 'package:path_provider/path_provider.dart';
 import '../../../components/custom_snackbar.dart';
@@ -107,7 +108,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
   Future<Map<String, dynamic>> audioToBase64(String filePath) async {
     try {
       if (filePath.isEmpty) {
-        print('Error: Empty file path provided');
+        log.log('Error: Empty file path provided');
         return {};
       }
 
@@ -115,7 +116,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
       // Check if file exists
       if (!await file.exists()) {
-        print('Error: Audio file does not exist at path: $filePath');
+        log.log('Error: Audio file does not exist at path: $filePath');
         return {};
       }
 
@@ -139,12 +140,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
         "hash": hash,
         "content_type": "audio/m4a",
       };
-
-      print(
-          'Audio successfully converted to required format. Size: $fileSize bytes');
+      log.log('Error ld');
+      Logger().e(fileData.toString());
       return fileData;
     } catch (e) {
-      print('Error converting audio to base64: $e');
+      log.log('Error converting audio to base64: $e');
       return {};
     }
   }

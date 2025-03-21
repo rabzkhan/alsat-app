@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -54,14 +53,22 @@ class PostMessageTile extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10.r),
-                        child: NetworkImagePreview(
-                          radius: 10.r,
-                          url: message?.data?['media'][0]['name'] ?? "",
-                          height: 50.h,
-                          width: 60.h,
-                          fit: BoxFit.cover,
-                          // fit: BoxFit.cover,
-                        ),
+                        child: (message?.data?['media']).isEmpty
+                            ? Container(
+                                height: 50.h,
+                                width: 60.h,
+                                color: Colors.grey.shade300,
+                              )
+                            : NetworkImagePreview(
+                                radius: 10.r,
+                                url: (message?.data?['media'])
+                                        .elementAtOrNull(0)['name'] ??
+                                    "",
+                                height: 50.h,
+                                width: 60.h,
+                                fit: BoxFit.cover,
+                                // fit: BoxFit.cover,
+                              ),
                       ),
                       10.horizontalSpace,
                       Expanded(
