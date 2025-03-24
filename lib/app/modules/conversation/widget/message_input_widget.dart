@@ -7,6 +7,8 @@ import 'dart:convert';
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
+import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:alsat/config/theme/app_colors.dart';
@@ -53,7 +55,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
       }
 
       Directory appDirectory = await getApplicationDocumentsDirectory();
-      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.opus';
 
       if (!await appDirectory.exists()) {
         await appDirectory.create(recursive: true);
@@ -63,9 +65,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
       if (isRecordingAvailable) {
         await record.start(
           const RecordConfig(
-            encoder: AudioEncoder.aacLc,
-            bitRate: 128000,
-            sampleRate: 44100,
+            encoder: AudioEncoder.opus, // 🔹 Use Opus instead of AAC
+            bitRate: 16000, // 🔹 Reduce bit rate for smaller file size
+            sampleRate: 12000, // 🔹 Lower sample rate to save space
+            numChannels: 1, // 🔹 Use mono for efficient storage
           ),
           path: filePath,
         );
@@ -144,51 +147,60 @@ class _ChatInputFieldState extends State<ChatInputField> {
   //     return {};
   //   }
   // }
-
   Future<Map<String, dynamic>> audioToBase64(String inputFilePath) async {
+    Logger().d("Processing file: ${inputFilePath.toString()}");
+
     try {
-      // Define the compressed file path
-      String outputFilePath = '${inputFilePath}_compressed.m4a';
+      String outputFilePath = '${inputFilePath}_compressed.opus';
 
-      // FFmpeg command to reduce file size (adjust bitrate/sample rate as needed)
-      ProcessResult result = await Process.run('ffmpeg', [
-        '-i', inputFilePath, // Input file
-        '-b:a', '64k', // Reduce bitrate (64kbps)
-        '-ar', '22050', // Reduce sample rate (22.05 kHz)
-        '-ac', '1', // Mono audio (smaller size)
-        outputFilePath // Output file
-      ]);
+      // 🔹 Delete existing compressed file if present
+      final File existingFile = File(outputFilePath);
+      if (await existingFile.exists()) {
+        await existingFile.delete();
+      }
 
-      if (result.exitCode != 0) {
-        Logger().d('FFmpeg error: ${result.stderr}');
+      // 🔥 Ultra Compression (6kbps bitrate, 3200Hz sample rate, mono audio)
+      final session =
+          await FFmpegKit.execute('-i "$inputFilePath" -c:a libopus -b:a 6k -ar 3200 -ac 1 "$outputFilePath"');
+
+      final returnCode = await session.getReturnCode();
+      if (returnCode == null || !ReturnCode.isSuccess(returnCode)) {
+        Logger().d('❌ FFmpeg Compression Failed! Code: $returnCode');
         return {};
       }
 
-      // Read compressed file
-      final File file = File(outputFilePath);
-      if (!await file.exists()) {
-        Logger().d('Error: Compressed file not found.');
-        return {};
+      // 🔹 Wait until the file is fully written
+      int retries = 0;
+      while (!await existingFile.exists() || await existingFile.length() == 0) {
+        if (retries > 10) {
+          Logger().d('❌ Error: Compressed file not found or empty after multiple retries.');
+          return {};
+        }
+        await Future.delayed(const Duration(milliseconds: 300)); // 🔹 Dynamic wait time
+        retries++;
       }
 
-      final List<int> audioBytes = await file.readAsBytes();
+      // ✅ Read file bytes
+      final List<int> audioBytes = await existingFile.readAsBytes();
       final int fileSize = audioBytes.length;
       final String hash = sha256.convert(audioBytes).toString();
-      final String base64Audio = base64Encode(audioBytes);
+      final String base64Audio = "data:audio/opus;base64," + base64Encode(audioBytes);
 
-      // Delete temporary compressed file
-      await file.delete();
+      // 🔥 Delete compressed file after encoding to save space
+      await existingFile.delete();
+
+      Logger().d('✅ Audio compression successful! Final size: $fileSize bytes');
 
       return {
-        "name": file.uri.pathSegments.last,
+        "name": existingFile.uri.pathSegments.last,
         "type": "audio",
         "size": fileSize,
         "hash": hash,
-        "content_type": "audio/m4a",
+        "content_type": "audio/opus",
         "base64": base64Audio,
       };
     } catch (e) {
-      Logger().d('Error during compression and encoding: $e');
+      Logger().d('❌ Error during compression and encoding: $e');
       return {};
     }
   }
@@ -535,7 +547,6 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             }
                           } else {
                             startRecording();
-
                             isRecording = true;
                             setState(() {});
                           }
