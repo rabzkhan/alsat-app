@@ -7,6 +7,7 @@ import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +24,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProductDetailsController extends GetxController {
   Rxn<CategoriesModel> selectCategory = Rxn<CategoriesModel>(null);
+  CarouselSliderController carouselSliderController =
+      CarouselSliderController();
+  RxInt carouselCurrentIndex = 0.obs;
   //-- get Product Like Count --//
 
   @override

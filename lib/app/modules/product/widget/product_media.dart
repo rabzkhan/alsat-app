@@ -106,7 +106,18 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
               alignment: Alignment.center,
               children: [
                 videoFile == null
-                    ? const CupertinoActivityIndicator()
+                    ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Please Wait...  ',
+                            style: TextStyle(color: Colors.black26),
+                          ),
+                          CupertinoActivityIndicator(
+                            radius: 8.r,
+                          ),
+                        ],
+                      )
                     : Image.memory(
                         videoFile!,
                         width: Get.width,

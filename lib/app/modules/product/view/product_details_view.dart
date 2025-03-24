@@ -122,12 +122,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                 children: [
                   widget.productModel?.media?.firstOrNull?.name != null
                       ? CarouselSlider(
+                          carouselController:
+                              productDetailsController.carouselSliderController,
                           items: (widget.productModel?.media ?? [])
                               .map(
                                 (e) => ProductMediaWidget(e: e),
                               )
                               .toList(),
                           options: CarouselOptions(
+                            onPageChanged: (index, reason) {
+                              productDetailsController
+                                  .carouselCurrentIndex.value = index;
+                            },
                             height: 400.h,
                             aspectRatio: 16 / 9,
                             viewportFraction: 1,
@@ -148,6 +154,38 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                           fit: BoxFit.fill,
                           width: Get.width,
                         ),
+                  Positioned(
+                    right: 10.w,
+                    bottom: 10.h,
+                    child: Obx(() {
+                      bool haveVideo = ((widget.productModel?.media ?? [])
+                              .firstWhereOrNull((e) => (e.contentType ?? '')
+                                  .toLowerCase()
+                                  .contains('video')) !=
+                          null);
+                      int indexOfVideo = (widget.productModel?.media ?? [])
+                          .indexWhere((e) => (e.contentType ?? '')
+                              .toLowerCase()
+                              .contains('video'));
+                      return haveVideo &&
+                              productDetailsController
+                                      .carouselCurrentIndex.value !=
+                                  indexOfVideo
+                          ? CircleAvatar(
+                              backgroundColor: AppColors.primary,
+                              child: IconButton.filled(
+                                color: Colors.white,
+                                onPressed: () {
+                                  productDetailsController
+                                      .carouselSliderController
+                                      .animateToPage(indexOfVideo);
+                                },
+                                icon: Icon(Icons.play_arrow),
+                              ),
+                            )
+                          : SizedBox.shrink();
+                    }),
+                  ),
                 ],
               ),
             ),

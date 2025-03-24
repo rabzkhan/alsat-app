@@ -243,7 +243,9 @@ class BaseClient {
 
     var exception = ApiException(
         url: url,
-        message: error.message ?? 'Un Expected Api Error!',
+        message: error.response?.data['result'] ??
+            error.message ??
+            'Un Expected Api Error!',
         response: error.response,
         statusCode: error.response?.statusCode);
     if (onError != null) {
