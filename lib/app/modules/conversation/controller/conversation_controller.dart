@@ -360,7 +360,7 @@ class ConversationController extends GetxController {
                   ? product?.toJson()
                   : audioPath),
     );
-    if (audioPath == null) coverMessage.insert(0, message);
+    coverMessage.insert(0, message);
     coverMessage.refresh();
     if (image != null) {
       Map<String, dynamic> data = {
@@ -390,7 +390,6 @@ class ConversationController extends GetxController {
       };
       sendMessageToServer(messageController.text, map: data);
     } else if (audioPath != null) {
-      log('audioPath: in if $audioPath');
       Map<String, dynamic> map = {
         "type": "audio",
         "file": await audioToBase64(audioPath),
@@ -399,9 +398,7 @@ class ConversationController extends GetxController {
       if (map.isEmpty) {
         CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
       } else {
-        isConversationMessageLoading.value = true;
         await sendMessageToServer(messageController.text, map: map);
-        getConversationsMessages();
       }
     } else {
       sendMessageToServer(messageController.text);

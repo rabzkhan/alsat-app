@@ -62,7 +62,8 @@ class PostMessageTile extends StatelessWidget {
                             : NetworkImagePreview(
                                 radius: 10.r,
                                 url: (message?.data?['media'])
-                                        .elementAtOrNull(0)['name'] ??
+                                        .toList()
+                                        .first['name'] ??
                                     "",
                                 height: 50.h,
                                 width: 60.h,
