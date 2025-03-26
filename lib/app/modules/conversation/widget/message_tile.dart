@@ -103,21 +103,42 @@ class MessageTile extends StatelessWidget {
                     : CrossAxisAlignment.end,
                 children: [
                   if (message.replyMessage != null)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 5.h,
-                        horizontal: 10.w,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.only(
-                          topRight: Radius.circular(10.r),
-                          topLeft: Radius.circular(10.r),
-                          bottomLeft: Radius.circular(10.r),
+                    Column(
+                      crossAxisAlignment: !message.isSender
+                          ? CrossAxisAlignment.start
+                          : CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Replayed Message ${message.replyMessage?.isSender == true ? 'From You' : 'From ${message.replyMessage?.otherUser.name}'}',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                      child: messageConvertByType(message.replyMessage!,
-                          isReply: true),
+                        SizedBox(height: 4.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 7,
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                            borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(20.r),
+                              topLeft: Radius.circular(20.r),
+                              bottomLeft: Radius.circular(20.r),
+                            ),
+                          ),
+                          child: messageConvertByType(message.replyMessage!,
+                              isReply: true),
+                        ),
+                      ],
                     ),
                   messageConvertByType(message),
                 ],

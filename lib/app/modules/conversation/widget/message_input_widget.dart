@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:convert';
 
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
+import 'package:alsat/app/modules/conversation/widget/music_ui.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
@@ -17,16 +18,12 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
-import 'package:music_visualizer/music_visualizer.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../components/custom_snackbar.dart';
 import '../../product/controller/product_controller.dart';
 import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
 import '../view/map_address_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:crypto/crypto.dart';
 
 class ChatInputField extends StatefulWidget {
   final ConversationController conversationController;
@@ -59,7 +56,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
 
       Directory appDirectory = await getApplicationDocumentsDirectory();
       String filePath =
-          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.opus';
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
 
       if (!await appDirectory.exists()) {
         await appDirectory.create(recursive: true);
@@ -99,8 +96,10 @@ class _ChatInputFieldState extends State<ChatInputField> {
       await record.stop();
       _elapsedSeconds = 0;
       _timer?.cancel();
-      setState(() {
-        isRecording = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          isRecording = false;
+        });
       });
     } catch (e) {
       print("Error stopping recording: $e");
@@ -295,14 +294,14 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                           top: 12, bottom: 12),
                                       child: MusicVisualizer(
                                         barCount: 30,
-                                        curve: Curves.easeInOut,
                                         colors: [
-                                          AppColors.primary,
-                                          AppColors.primary,
-                                          AppColors.primary,
-                                          AppColors.primary,
+                                          Colors.blueAccent,
+                                          Colors.purpleAccent,
+                                          Colors.lightBlue,
                                         ],
-                                        duration: [900, 700, 600, 800, 500],
+                                        duration: Duration(milliseconds: 400),
+                                        barWidth: 3,
+                                        maxBarHeight: 50,
                                       ),
                                     ),
                                   ),
@@ -310,9 +309,7 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   InkWell(
                                     onTap: () {
                                       stopRecording();
-                                      setState(() {
-                                        isRecording = false;
-                                      });
+
                                       widget.conversationController.recordTime
                                           .value = Duration.zero;
                                     },
@@ -518,54 +515,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                         } else {
                           if (isRecording) {
                             stopRecording();
-                            log.log('audioPath: $audioFilePath');
                             widget.conversationController.sendMessage(
                               audioPath: audioFilePath,
                             );
-
-                            // // Get the file
-                            // final File file = File(audioFilePath);
-
-                            // // Check if file exists
-                            // if (!await file.exists()) {
-                            //   CustomSnackBar.showCustomErrorToast(
-                            //       message: localLanguage.some_thing_went_worng);
-                            //   return;
-                            // }
-                            // final List<int> audioBytes =
-                            //     await file.readAsBytes();
-                            // final int fileSize = audioBytes.length;
-                            // final String hash =
-                            //     sha256.convert(audioBytes).toString();
-                            // final String base64Audio = base64Encode(audioBytes);
-                            // Map<String, dynamic> map = {
-                            //   "type": "audio",
-                            //   "file": {
-                            //     "name": base64Audio,
-                            //     "type": "audio",
-                            //     "size": fileSize,
-                            //     "hash": hash,
-                            //     "content_type": "audio/m4a",
-                            //   }
-                            // };
-
-                            // if (map.isEmpty) {
-                            //   CustomSnackBar.showCustomErrorToast(
-                            //       message: localLanguage.some_thing_went_worng);
-                            // } else {
-                            //   widget.conversationController.sendMessage(
-                            //     audioPath: audioFilePath,
-                            //   );
-                            //   // widget.conversationController
-                            //   //     .isConversationMessageLoading.value = true;
-                            //   // await widget.conversationController
-                            //   //     .sendMessageToServer(
-                            //   //         widget.conversationController
-                            //   //             .messageController.text,
-                            //   //         map: map);
-                            //   // widget.conversationController
-                            //   //     .getConversationsMessages();
-                            // }
                           } else {
                             startRecording();
                             isRecording = true;

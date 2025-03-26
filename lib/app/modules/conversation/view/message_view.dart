@@ -291,25 +291,29 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     child: conversationController
                             .isConversationMessageLoading.value
                         ? const Center(child: CupertinoActivityIndicator())
-                        : !conversationController
-                                    .isConversationMessageLoading.value &&
-                                conversationController.coverMessage.isEmpty
+                        : conversationController.coverMessage.isEmpty
                             ? NoDataWidget(
                                 isShowIcon: false,
-                                title: localLanguage.no_messages)
-                            : ListView.builder(
+                                title: localLanguage.no_messages,
+                              )
+                            : AnimatedList(
+                                key: conversationController.animatedListKey,
+                                reverse: true,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0),
-                                reverse: true,
                                 controller:
                                     conversationController.scrollController,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount:
+                                initialItemCount:
                                     conversationController.coverMessage.length,
-                                itemBuilder: (context, index) => MessageTile(
-                                  message: conversationController
-                                      .coverMessage[index],
-                                ),
+                                itemBuilder: (context, index, animation) {
+                                  final message = conversationController
+                                      .coverMessage[index];
+                                  return SizeTransition(
+                                    sizeFactor: animation,
+                                    child: MessageTile(message: message),
+                                  );
+                                },
                               ),
                   );
                 }),

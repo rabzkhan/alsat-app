@@ -75,13 +75,6 @@ class HomeStorySection extends StatelessWidget {
                         child: Stack(
                           alignment: Alignment.center,
                           children: [
-                            // NetworkImagePreview(
-                            //   radius: 50.r,
-                            //   height: 50,
-                            //   width: 50,
-                            //   url: '${authController.userDataModel.value.picture}',
-                            //   error: Image.asset(userDefaultIcon),
-                            // ),
                             CircleAvatar(
                               radius: 27,
                               backgroundColor:

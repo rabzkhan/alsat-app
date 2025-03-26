@@ -83,6 +83,10 @@ class StoryCircle extends StatelessWidget {
       altPadding = altRadius! + 3;
     }
     return Container(
+      width: (borderThickness != null
+              ? altPadding + borderThickness!
+              : altPadding + 1.5) *
+          2,
       margin: EdgeInsets.fromLTRB(
         spaceBetweenStories ?? 5,
         0,
@@ -115,7 +119,10 @@ class StoryCircle extends StatelessWidget {
               );
             },
             child: CircleAvatar(
-              radius: borderThickness != null ? altPadding + borderThickness! : altPadding + 1.5,
+              radius: (borderThickness != null
+                      ? altPadding + borderThickness!
+                      : altPadding + 1.5) *
+                  .98,
               backgroundColor: highLightColor ?? const Color(0xffcc306C),
               child: CircleAvatar(
                 backgroundColor: paddingColor ?? Colors.white,
@@ -130,6 +137,8 @@ class StoryCircle extends StatelessWidget {
           const SizedBox(height: 5),
           showStoryName
               ? Text(
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   story![selectedIndex!].name,
                   style: storyCircleTextStyle ?? const TextStyle(fontSize: 13),
                 )

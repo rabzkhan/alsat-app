@@ -211,7 +211,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -246,7 +246,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -281,7 +281,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -316,7 +316,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -351,7 +351,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -386,7 +386,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
                     isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.sender?.id,
+                        element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -418,4 +418,128 @@ List<ChatMessage> messageConvert(MessageModel element,
     );
   }
   return coverMessage;
+}
+
+ChatMessage convertMessageHelper(MessageModel element,
+    Participant? selectUserInfo, AuthController authController) {
+  log('convertMessageHelper: ${authController.userDataModel.value.id}-- #${element.senderId}');
+  if (element.attachments?.firstOrNull?.type == 'image') {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.image,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: element.attachments?.firstOrNull?.data,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  }
+  if (element.attachments?.firstOrNull?.type == 'video') {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.video,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: element.attachments?.firstOrNull?.data,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  }
+  if (element.attachments?.firstOrNull?.type == 'location') {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.map,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: element.attachments?.firstOrNull?.data,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  }
+  if (element.attachments?.firstOrNull?.type == 'audio') {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.audio,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: element.attachments?.firstOrNull?.data,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  }
+  if (element.attachments?.firstOrNull?.type == 'post') {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.post,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: element.attachments?.firstOrNull?.data,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  } else {
+    return ChatMessage(
+      id: element.id ?? '0',
+      text: element.content ?? '',
+      messageType: ChatMessageType.text,
+      messageStatus: MessageStatus.viewed,
+      isSender: authController.userDataModel.value.id == element.senderId,
+      time: element.createdAt ?? DateTime.now(),
+      otherUser: ChatUser(
+        id: selectUserInfo?.id ?? "",
+        name: selectUserInfo?.userName ?? '',
+        imageUrl: selectUserInfo?.picture ?? '',
+      ),
+      data: null,
+      replyMessage: element.replyTo == null
+          ? null
+          : convertMessageHelper(
+              element.replyTo!, selectUserInfo, authController),
+    );
+  }
 }

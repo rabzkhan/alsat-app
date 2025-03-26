@@ -67,7 +67,7 @@ class MessageModel {
   final String? receiverId;
   final String? chatId;
   final String? content;
-  final ReplyTo? replyTo;
+  final MessageModel? replyTo;
   final List<Attachment>? attachments;
   final String? status;
 
@@ -96,13 +96,13 @@ class MessageModel {
         accessedAt: json["accessed_at"] == null
             ? null
             : DateTime.parse(json["accessed_at"]),
-        senderId: json["sender_id"],
+        senderId: json["sender_id"] ?? json['sender']['_id'],
         receiverId: json["receiver_id"],
         chatId: json["chat_id"],
         content: json["content"],
         replyTo: json["reply_to"] == null
             ? null
-            : ReplyTo.fromJson(json["reply_to"]),
+            : MessageModel.fromJson(json["reply_to"]),
         attachments: json["attachments"] == null
             ? []
             : List<Attachment>.from(
