@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:alsat/app/components/multi_image_preview.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,9 +16,11 @@ import '../../../components/network_image_preview.dart';
 
 class ProductMediaWidget extends StatefulWidget {
   final Media e;
+  final List<Media> galleryItems;
   const ProductMediaWidget({
     super.key,
     required this.e,
+    required this.galleryItems,
   });
 
   @override
@@ -82,13 +85,24 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
   @override
   Widget build(BuildContext context) {
     return (widget.e.contentType ?? '').toLowerCase().contains('image')
-        ? NetworkImagePreview(
-            previewImage: true,
-            radius: 0.r,
-            url: widget.e.name ?? '',
-            height: 90.h,
-            width: Get.width,
-            fit: BoxFit.cover,
+        ? InkWell(
+            onTap: () {
+              Get.to(() => MultiImagePreview(
+                    galleryItems: widget.galleryItems
+                        .where((e) => (e.contentType ?? '')
+                            .toLowerCase()
+                            .contains('image'))
+                        .toList(),
+                    initialIndex: 0,
+                  ));
+            },
+            child: NetworkImagePreview(
+              radius: 0.r,
+              url: widget.e.name ?? '',
+              height: 90.h,
+              width: Get.width,
+              fit: BoxFit.cover,
+            ),
           )
         : InkWell(
             onTap: () {

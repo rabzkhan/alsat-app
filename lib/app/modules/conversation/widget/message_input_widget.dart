@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:convert';
 
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
+import 'package:alsat/app/modules/conversation/widget/music_ui.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
@@ -17,21 +18,20 @@ import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
-import 'package:music_visualizer/music_visualizer.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../components/custom_snackbar.dart';
 import '../../product/controller/product_controller.dart';
 import 'package:record/record.dart';
 import '../controller/conversation_controller.dart';
 import '../view/map_address_picker_view.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:crypto/crypto.dart';
 
 class ChatInputField extends StatefulWidget {
   final ConversationController conversationController;
   final MessageController messageController;
-  const ChatInputField({super.key, required this.conversationController, required this.messageController});
+  const ChatInputField(
+      {super.key,
+      required this.conversationController,
+      required this.messageController});
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -55,7 +55,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
       }
 
       Directory appDirectory = await getApplicationDocumentsDirectory();
-      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.opus';
+      String filePath =
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
 
       if (!await appDirectory.exists()) {
         await appDirectory.create(recursive: true);
@@ -95,115 +96,76 @@ class _ChatInputFieldState extends State<ChatInputField> {
       await record.stop();
       _elapsedSeconds = 0;
       _timer?.cancel();
-      setState(() {
-        isRecording = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          isRecording = false;
+        });
       });
     } catch (e) {
       print("Error stopping recording: $e");
     }
   }
 
-  // // Convert audio file to base64 and return in the required format
-  // Future<Map<String, dynamic>> audioToBase64(String filePath) async {
+  // Future<Map<String, dynamic>> audioToBase64(String inputFilePath) async {
+  //   Logger().d("Processing file: ${inputFilePath.toString()}");
+
   //   try {
-  //     if (filePath.isEmpty) {
-  //       log.log('Error: Empty file path provided');
+  //     String outputFilePath = '${inputFilePath}_compressed.opus';
+
+  //     // 🔹 Delete existing compressed file if present
+  //     final File existingFile = File(outputFilePath);
+  //     if (await existingFile.exists()) {
+  //       await existingFile.delete();
+  //     }
+
+  //     // 🔥 Ultra Compression (6kbps bitrate, 3200Hz sample rate, mono audio)
+  //     final session = await FFmpegKit.execute(
+  //         '-i "$inputFilePath" -c:a libopus -b:a 6k -ar 3200 -ac 1 "$outputFilePath"');
+
+  //     final returnCode = await session.getReturnCode();
+  //     if (returnCode == null || !ReturnCode.isSuccess(returnCode)) {
+  //       Logger().d('❌ FFmpeg Compression Failed! Code: $returnCode');
   //       return {};
   //     }
 
-  //     final File file = File(filePath);
-
-  //     // Check if file exists
-  //     if (!await file.exists()) {
-  //       log.log('Error: Audio file does not exist at path: $filePath');
-  //       return {};
+  //     // 🔹 Wait until the file is fully written
+  //     int retries = 0;
+  //     while (!await existingFile.exists() || await existingFile.length() == 0) {
+  //       if (retries > 10) {
+  //         Logger().d(
+  //             '❌ Error: Compressed file not found or empty after multiple retries.');
+  //         return {};
+  //       }
+  //       await Future.delayed(
+  //           const Duration(milliseconds: 300)); // 🔹 Dynamic wait time
+  //       retries++;
   //     }
 
-  //     // Read file as bytes
-  //     final List<int> audioBytes = await file.readAsBytes();
-
-  //     // Get file size
+  //     // ✅ Read file bytes
+  //     final List<int> audioBytes = await existingFile.readAsBytes();
   //     final int fileSize = audioBytes.length;
-
-  //     // Generate SHA-256 hash
   //     final String hash = sha256.convert(audioBytes).toString();
+  //     final String base64Audio =
+  //         "data:audio/opus;base64,${base64Encode(audioBytes)}";
 
-  //     // Convert bytes to base64
-  //     final String base64Audio = base64Encode(audioBytes);
+  //     // 🔥 Delete compressed file after encoding to save space
+  //     await existingFile.delete();
 
-  //     // Create the required format
-  //     final Map<String, dynamic> fileData = {
-  //       "name": base64Audio,
+  //     Logger().d('✅ Audio compression successful! Final size: $fileSize bytes');
+
+  //     return {
+  //       "name": existingFile.uri.pathSegments.last,
   //       "type": "audio",
   //       "size": fileSize,
   //       "hash": hash,
-  //       "content_type": "audio/m4a",
+  //       "content_type": "audio/opus",
+  //       "base64": base64Audio,
   //     };
-  //     log.log('Error ld');
-  //     Logger().e(fileData.toString());
-  //     return fileData;
   //   } catch (e) {
-  //     log.log('Error converting audio to base64: $e');
+  //     Logger().d('❌ Error during compression and encoding: $e');
   //     return {};
   //   }
   // }
-  Future<Map<String, dynamic>> audioToBase64(String inputFilePath) async {
-    Logger().d("Processing file: ${inputFilePath.toString()}");
-
-    try {
-      String outputFilePath = '${inputFilePath}_compressed.opus';
-
-      // 🔹 Delete existing compressed file if present
-      final File existingFile = File(outputFilePath);
-      if (await existingFile.exists()) {
-        await existingFile.delete();
-      }
-
-      // 🔥 Ultra Compression (6kbps bitrate, 3200Hz sample rate, mono audio)
-      final session =
-          await FFmpegKit.execute('-i "$inputFilePath" -c:a libopus -b:a 6k -ar 3200 -ac 1 "$outputFilePath"');
-
-      final returnCode = await session.getReturnCode();
-      if (returnCode == null || !ReturnCode.isSuccess(returnCode)) {
-        Logger().d('❌ FFmpeg Compression Failed! Code: $returnCode');
-        return {};
-      }
-
-      // 🔹 Wait until the file is fully written
-      int retries = 0;
-      while (!await existingFile.exists() || await existingFile.length() == 0) {
-        if (retries > 10) {
-          Logger().d('❌ Error: Compressed file not found or empty after multiple retries.');
-          return {};
-        }
-        await Future.delayed(const Duration(milliseconds: 300)); // 🔹 Dynamic wait time
-        retries++;
-      }
-
-      // ✅ Read file bytes
-      final List<int> audioBytes = await existingFile.readAsBytes();
-      final int fileSize = audioBytes.length;
-      final String hash = sha256.convert(audioBytes).toString();
-      final String base64Audio = "data:audio/opus;base64," + base64Encode(audioBytes);
-
-      // 🔥 Delete compressed file after encoding to save space
-      await existingFile.delete();
-
-      Logger().d('✅ Audio compression successful! Final size: $fileSize bytes');
-
-      return {
-        "name": existingFile.uri.pathSegments.last,
-        "type": "audio",
-        "size": fileSize,
-        "hash": hash,
-        "content_type": "audio/opus",
-        "base64": base64Audio,
-      };
-    } catch (e) {
-      Logger().d('❌ Error during compression and encoding: $e');
-      return {};
-    }
-  }
 
   @override
   void dispose() {
@@ -265,7 +227,13 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        (widget.messageController.selectReplyMessage.value?.text ?? '').isEmpty
+                                        (widget
+                                                        .messageController
+                                                        .selectReplyMessage
+                                                        .value
+                                                        ?.text ??
+                                                    '')
+                                                .isEmpty
                                             ? '${widget.messageController.selectReplyMessage.value?.messageType.name.toUpperCase()}'
                                             : '${widget.messageController.selectReplyMessage.value?.text}',
                                         maxLines: 2,
@@ -283,7 +251,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
-                                widget.messageController.selectReplyMessage.value = null;
+                                widget.messageController.selectReplyMessage
+                                    .value = null;
                               },
                               child: Icon(
                                 CupertinoIcons.xmark_circle_fill,
@@ -321,17 +290,18 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   7.horizontalSpace,
                                   Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 12, bottom: 12),
+                                      padding: const EdgeInsets.only(
+                                          top: 12, bottom: 12),
                                       child: MusicVisualizer(
                                         barCount: 30,
-                                        curve: Curves.easeInOut,
                                         colors: [
-                                          AppColors.primary,
-                                          AppColors.primary,
-                                          AppColors.primary,
-                                          AppColors.primary,
+                                          Colors.blueAccent,
+                                          Colors.purpleAccent,
+                                          Colors.lightBlue,
                                         ],
-                                        duration: [900, 700, 600, 800, 500],
+                                        duration: Duration(milliseconds: 400),
+                                        barWidth: 3,
+                                        maxBarHeight: 50,
                                       ),
                                     ),
                                   ),
@@ -339,10 +309,9 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   InkWell(
                                     onTap: () {
                                       stopRecording();
-                                      setState(() {
-                                        isRecording = false;
-                                      });
-                                      widget.conversationController.recordTime.value = Duration.zero;
+
+                                      widget.conversationController.recordTime
+                                          .value = Duration.zero;
                                     },
                                     child: CircleAvatar(
                                       radius: 11.r,
@@ -371,20 +340,28 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 12.w),
                                     child: Row(
                                       children: [
                                         Obx(() {
-                                          return widget.messageController.selectProductModel.value == null
+                                          return widget
+                                                      .messageController
+                                                      .selectProductModel
+                                                      .value ==
+                                                  null
                                               ? GestureDetector(
                                                   onTap: () async {
-                                                    FocusScope.of(context).unfocus();
+                                                    FocusScope.of(context)
+                                                        .unfocus();
                                                     setState(() {
-                                                      _emojiShowing = !_emojiShowing;
+                                                      _emojiShowing =
+                                                          !_emojiShowing;
                                                     });
                                                   },
                                                   child: Opacity(
-                                                    opacity: _emojiShowing ? .2 : 1,
+                                                    opacity:
+                                                        _emojiShowing ? .2 : 1,
                                                     child: Image.asset(
                                                       'assets/icons/emoji.png',
                                                       height: 25.h,
@@ -401,36 +378,56 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                 _emojiShowing = false;
                                               });
                                             },
-                                            controller: widget.conversationController.messageController,
+                                            controller: widget
+                                                .conversationController
+                                                .messageController,
                                             onChanged: (value) {
-                                              widget.conversationController.typeMessageText.value = value;
+                                              widget
+                                                  .conversationController
+                                                  .typeMessageText
+                                                  .value = value;
                                             },
-                                            style: context.theme.textTheme.bodyLarge?.copyWith(
+                                            style: context
+                                                .theme.textTheme.bodyLarge
+                                                ?.copyWith(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14.sp,
                                             ),
                                             decoration: InputDecoration(
-                                              hintText: localLanguage.type_message,
-                                              hintStyle: context.theme.textTheme.bodyLarge,
+                                              hintText:
+                                                  localLanguage.type_message,
+                                              hintStyle: context
+                                                  .theme.textTheme.bodyLarge,
                                               filled: true,
                                               fillColor: Colors.white,
                                               border: OutlineInputBorder(
                                                 borderSide: BorderSide.none,
-                                                borderRadius: BorderRadius.circular(20.r),
+                                                borderRadius:
+                                                    BorderRadius.circular(20.r),
                                               ),
                                             ),
                                           ),
                                         ),
                                         Obx(
-                                          () => widget.conversationController.typeMessageText.isNotEmpty ||
-                                                  widget.messageController.selectProductModel.value != null
+                                          () => widget
+                                                      .conversationController
+                                                      .typeMessageText
+                                                      .isNotEmpty ||
+                                                  widget
+                                                          .messageController
+                                                          .selectProductModel
+                                                          .value !=
+                                                      null
                                               ? const Center()
                                               : Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        ProductController productController = Get.find();
+                                                        ProductController
+                                                            productController =
+                                                            Get.find();
                                                         productController
                                                             .pickImage(
                                                           context,
@@ -440,13 +437,20 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                             .then(
                                                           (value) async {
                                                             if (value != null) {
-                                                              if (isImage(value.first)) {
-                                                                widget.conversationController.sendMessage(
-                                                                  image: value.first,
+                                                              if (isImage(value
+                                                                  .first)) {
+                                                                widget
+                                                                    .conversationController
+                                                                    .sendMessage(
+                                                                  image: value
+                                                                      .first,
                                                                 );
                                                               } else {
-                                                                widget.conversationController.sendMessage(
-                                                                  video: value.first,
+                                                                widget
+                                                                    .conversationController
+                                                                    .sendMessage(
+                                                                  video: value
+                                                                      .first,
                                                                 );
                                                               }
                                                             }
@@ -462,8 +466,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                     6.horizontalSpace,
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to(() => const LocationFromMapView(),
-                                                            transition: Transition.cupertinoDialog);
+                                                        Get.to(
+                                                            () =>
+                                                                const LocationFromMapView(),
+                                                            transition: Transition
+                                                                .cupertinoDialog);
                                                       },
                                                       child: Image.asset(
                                                         'assets/icons/location.png',
@@ -487,64 +494,30 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     return GestureDetector(
                       onTap: () async {
                         _emojiShowing = false;
-                        if (widget.conversationController.typeMessageText.isNotEmpty ||
-                            widget.messageController.selectProductModel.value != null) {
-                          if (widget.messageController.selectProductModel.value == null) {
+                        if (widget.conversationController.typeMessageText
+                                .isNotEmpty ||
+                            widget.messageController.selectProductModel.value !=
+                                null) {
+                          if (widget
+                                  .messageController.selectProductModel.value ==
+                              null) {
                             widget.conversationController.sendMessage();
                           } else {
                             widget.conversationController.sendMessage(
-                                product: widget.messageController.selectProductModel.value,
-                                postId: widget.messageController.selectProductModel.value?.id.toString());
-                            widget.messageController.selectProductModel.value = null;
+                                product: widget
+                                    .messageController.selectProductModel.value,
+                                postId: widget.messageController
+                                    .selectProductModel.value?.id
+                                    .toString());
+                            widget.messageController.selectProductModel.value =
+                                null;
                           }
                         } else {
                           if (isRecording) {
                             stopRecording();
-
-                            isRecording = false;
-                            setState(() {});
-
-                            // Get the file
-                            final File file = File(audioFilePath);
-
-                            // Check if file exists
-                            if (!await file.exists()) {
-                              CustomSnackBar.showCustomErrorToast(message: localLanguage.some_thing_went_worng);
-                              return;
-                            }
-
-                            // Read file as bytes
-                            final List<int> audioBytes = await file.readAsBytes();
-
-                            // Get file size
-                            final int fileSize = audioBytes.length;
-
-                            // Generate SHA-256 hash
-                            final String hash = sha256.convert(audioBytes).toString();
-
-                            // Convert bytes to base64
-                            final String base64Audio = base64Encode(audioBytes);
-
-                            // Create the map structure exactly as expected by the server
-                            Map<String, dynamic> map = {
-                              "type": "audio",
-                              "file": {
-                                "name": base64Audio,
-                                "type": "audio",
-                                "size": fileSize,
-                                "hash": hash,
-                                "content_type": "audio/m4a",
-                              }
-                            };
-
-                            if (map.isEmpty) {
-                              CustomSnackBar.showCustomErrorToast(message: localLanguage.some_thing_went_worng);
-                            } else {
-                              widget.conversationController.isConversationMessageLoading.value = true;
-                              await widget.conversationController
-                                  .sendMessageToServer(widget.conversationController.messageController.text, map: map);
-                              widget.conversationController.getConversationsMessages();
-                            }
+                            widget.conversationController.sendMessage(
+                              audioPath: audioFilePath,
+                            );
                           } else {
                             startRecording();
                             isRecording = true;
@@ -552,9 +525,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
                           }
                         }
                       },
-                      child: widget.conversationController.typeMessageText.isEmpty &&
+                      child: widget.conversationController.typeMessageText
+                                  .isEmpty &&
                               !isRecording &&
-                              widget.messageController.selectProductModel.value == null
+                              widget.messageController.selectProductModel
+                                      .value ==
+                                  null
                           ? CircleAvatar(
                               radius: 27,
                               backgroundColor: Theme.of(context).primaryColor,
@@ -582,10 +558,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 offstage: !_emojiShowing,
                 child: EmojiPicker(
                   onEmojiSelected: (category, emoji) {
-                    widget.conversationController.typeMessageText.value =
-                        widget.conversationController.messageController.text.toString();
+                    widget.conversationController.typeMessageText.value = widget
+                        .conversationController.messageController.text
+                        .toString();
                   },
-                  textEditingController: widget.conversationController.messageController,
+                  textEditingController:
+                      widget.conversationController.messageController,
                   scrollController: _scrollController,
                   config: Config(
                     height: 256,
@@ -593,7 +571,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     viewOrderConfig: const ViewOrderConfig(),
                     emojiViewConfig: EmojiViewConfig(
                       backgroundColor: context.theme.scaffoldBackgroundColor,
-                      emojiSizeMax: 28 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.2 : 1.0),
+                      emojiSizeMax: 28 *
+                          (foundation.defaultTargetPlatform ==
+                                  TargetPlatform.iOS
+                              ? 1.2
+                              : 1.0),
                     ),
                     skinToneConfig: const SkinToneConfig(),
                     categoryViewConfig: CategoryViewConfig(

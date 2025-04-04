@@ -149,6 +149,9 @@ class ConversationController extends GetxController {
   Rxn<ConversationMessagesRes> conversationMessagesRes =
       Rxn<ConversationMessagesRes>();
   RxList<ChatMessage> coverMessage = RxList<ChatMessage>([]);
+  final GlobalKey<AnimatedListState> animatedListKey =
+      GlobalKey<AnimatedListState>();
+
   AuthController authController = Get.find<AuthController>();
   Rxn<Participant> selectUserInfo = Rxn();
   //cover message model
@@ -193,9 +196,9 @@ class ConversationController extends GetxController {
         );
 
         for (var element in selectConversationMessageList) {
-          List<ChatMessage> convertMessages =
-              messageConvert(element, selectUserInfo.value, authController);
-          coverMessage.addAll(convertMessages);
+          ChatMessage convertMessages = convertMessageHelper(
+              element, selectUserInfo.value, authController);
+          coverMessage.add(convertMessages);
         }
         coverMessage.refresh();
 
@@ -293,6 +296,7 @@ class ConversationController extends GetxController {
           messageConvert(messageModel, selectUserInfo.value, authController);
       for (var element in newMessage) {
         if (coverMessage.first.id != element.id) {
+          animatedListKey.currentState?.insertItem(0);
           coverMessage.insert(0, element);
         }
       }
@@ -330,7 +334,10 @@ class ConversationController extends GetxController {
     ProductModel? product,
   }) async {
     scrollToBottom();
+    MessageController controller =
+        Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     ChatMessage message = ChatMessage(
+      replyMessage: controller.selectReplyMessage.value,
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       text: typeMessageText.value,
       messageType: image != null
@@ -360,8 +367,10 @@ class ConversationController extends GetxController {
                   ? product?.toJson()
                   : audioPath),
     );
-    if (audioPath == null) coverMessage.insert(0, message);
+    animatedListKey.currentState?.insertItem(0);
+    coverMessage.insert(0, message);
     coverMessage.refresh();
+
     if (image != null) {
       Map<String, dynamic> data = {
         "type": "image",
@@ -390,7 +399,6 @@ class ConversationController extends GetxController {
       };
       sendMessageToServer(messageController.text, map: data);
     } else if (audioPath != null) {
-      log('audioPath: in if $audioPath');
       Map<String, dynamic> map = {
         "type": "audio",
         "file": await audioToBase64(audioPath),
@@ -399,9 +407,7 @@ class ConversationController extends GetxController {
       if (map.isEmpty) {
         CustomSnackBar.showCustomErrorToast(message: 'Something went wrong');
       } else {
-        isConversationMessageLoading.value = true;
         await sendMessageToServer(messageController.text, map: map);
-        getConversationsMessages();
       }
     } else {
       sendMessageToServer(messageController.text);
