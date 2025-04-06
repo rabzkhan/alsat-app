@@ -77,8 +77,7 @@ class HomeStorySection extends StatelessWidget {
                           children: [
                             CircleAvatar(
                               radius: 27,
-                              backgroundColor:
-                                  AppColors.primary.withOpacity(.5),
+                              backgroundColor: AppColors.primary.withOpacity(.5),
                               child: homeController.isStoryPostLoading.value
                                   ? const CupertinoActivityIndicator(
                                       color: Colors.white,
@@ -116,9 +115,7 @@ class HomeStorySection extends StatelessWidget {
               stories: [
                 ...(e.stories ?? []).map(
                   (e) => StoryMainModel(
-                    isVideo: (e.media?.type == "video" &&
-                        e.media?.name != null &&
-                        e.media!.name!.isNotEmpty),
+                    isVideo: (e.media?.type == "video" && e.media?.name != null && e.media!.name!.isNotEmpty),
                     url: e.media?.name ?? '',
                   ),
                 ),
