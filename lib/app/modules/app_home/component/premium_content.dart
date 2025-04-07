@@ -34,7 +34,7 @@ class PremiumContent extends StatelessWidget {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      header: CusomHeaderWidget(),
+      header: CustomHeaderWidget(),
       footer: CustomFooterWidget(),
       controller: homeController.premiumRefreshController,
       onRefresh: homeController.onPremiumRefresh,

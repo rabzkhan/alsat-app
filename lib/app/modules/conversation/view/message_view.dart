@@ -283,7 +283,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     physics: const BouncingScrollPhysics(),
                     enablePullDown: false,
                     enablePullUp: true,
-                    header: CusomHeaderWidget(),
+                    header: CustomHeaderWidget(),
                     footer: CustomFooterWidget(),
                     controller: conversationController.refreshMessageController,
                     onRefresh: conversationController.onRefreshMessage,

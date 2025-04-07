@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 // import 'dart:developer';
 import 'dart:io';
 import 'package:alsat/app/services/data_cache_servise.dart';
@@ -240,14 +241,24 @@ class BaseClient {
         return handleApiError(exception);
       }
     }
+    var responseData = error.response?.data;
+
+    String message;
+    if (responseData is Map && responseData.containsKey('result')) {
+      message = responseData['result'].toString();
+    } else if (responseData is List && responseData.isNotEmpty) {
+      message = responseData[0].toString();
+    } else {
+      message = error.message ?? 'Unexpected API Error!';
+    }
 
     var exception = ApiException(
-        url: url,
-        message: error.response?.data['result'] ??
-            error.message ??
-            'Un Expected Api Error!',
-        response: error.response,
-        statusCode: error.response?.statusCode);
+      url: url,
+      message: message,
+      response: (error.response.toString().isEmpty) ? null : responseData,
+      statusCode: error.response?.statusCode,
+    );
+
     if (onError != null) {
       return onError(exception);
     } else {

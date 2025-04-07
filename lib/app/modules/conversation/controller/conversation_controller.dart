@@ -28,10 +28,17 @@ class ConversationController extends GetxController {
 
   @override
   void onInit() {
-    getConversations();
-    connectToMqtt();
-    messageWithAdmin();
+    authUserConversation();
     super.onInit();
+  }
+
+  authUserConversation() {
+    AuthController authController = Get.find();
+    if (authController.userDataModel.value.id != null) {
+      getConversations();
+      connectToMqtt();
+      messageWithAdmin();
+    }
   }
 
   //-- sent messages --//

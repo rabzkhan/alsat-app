@@ -12,7 +12,8 @@ import '../../app_home/view/app_home_view.dart';
 import '../controller/auth_controller.dart';
 
 class LoginView extends GetView<AuthController> {
-  const LoginView({super.key});
+  final bool isFromHome;
+  const LoginView({super.key, this.isFromHome = false});
 
   @override
   Widget build(BuildContext context) {
@@ -45,16 +46,6 @@ class LoginView extends GetView<AuthController> {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
-            },
-            icon: const Icon(
-              Icons.skip_next_outlined,
-            ),
-          )
-        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -100,8 +91,12 @@ class LoginView extends GetView<AuthController> {
               ),
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
-                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
-                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
+                  final minutes = (controller.countdown.value ~/ 60)
+                      .toString()
+                      .padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60)
+                      .toString()
+                      .padLeft(2, '0');
                   return Column(
                     children: [
                       20.verticalSpace,
@@ -143,16 +138,41 @@ class LoginView extends GetView<AuthController> {
                       onPressed: controller.hasStartedOtpProcess.value
                           ? null // Disable the login button if OTP process has started
                           : () {
-                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
-                                controller.getOtp();
+                              if (controller.loginFormKey.currentState
+                                      ?.saveAndValidate() ??
+                                  false) {
+                                controller.getOtp(isFromHome: isFromHome);
                               }
                             },
                       child: Obx(() {
                         return Text(
-                          controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
+                          controller.isLoading.value
+                              ? "${localLanguage.verifying}.."
+                              : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
                         );
                       }),
+                    ),
+                  )
+                ],
+              ),
+              20.verticalSpace,
+              Row(
+                children: [
+                  Expanded(
+                    child: CupertinoButton(
+                      onPressed: () {
+                        if (isFromHome) {
+                          Get.back();
+                        } else {
+                          Get.offAll(const AppHomeView(),
+                              transition: Transition.fadeIn);
+                        }
+                      },
+                      child: Text(
+                        'Login as Guest',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
                     ),
                   )
                 ],

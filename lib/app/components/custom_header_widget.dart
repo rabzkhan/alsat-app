@@ -4,8 +4,8 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../config/theme/app_text_theme.dart';
 
-class CusomHeaderWidget extends StatelessWidget {
-  const CusomHeaderWidget({
+class CustomHeaderWidget extends StatelessWidget {
+  const CustomHeaderWidget({
     super.key,
   });
 

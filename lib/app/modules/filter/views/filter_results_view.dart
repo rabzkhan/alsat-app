@@ -50,7 +50,8 @@ class FilterResultsView extends GetView<FilterController> {
             CustomPopup(
               backgroundColor: Colors.black12,
               showArrow: true,
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               barrierColor: Colors.transparent,
               arrowColor: Colors.black,
               contentDecoration: BoxDecoration(
@@ -100,21 +101,26 @@ class FilterResultsView extends GetView<FilterController> {
             return SmartRefresher(
               enablePullDown: true,
               enablePullUp: true,
-              header: CusomHeaderWidget(),
+              header: CustomHeaderWidget(),
               footer: CustomFooterWidget(),
               controller: controller.refreshController,
               onRefresh: controller.onRefresh,
               onLoading: controller.onLoading,
-              child: !controller.isFilterLoading.value && controller.itemList.isEmpty
+              child: !controller.isFilterLoading.value &&
+                      controller.itemList.isEmpty
                   ? NoDataWidget()
                   : ListView.builder(
                       physics: const BouncingScrollPhysics(),
                       padding: EdgeInsets.only(top: 10.h),
-                      itemCount: controller.isFilterLoading.value ? 10 : controller.itemList.length,
+                      itemCount: controller.isFilterLoading.value
+                          ? 10
+                          : controller.itemList.length,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
                         ProductModel? productModel =
-                            controller.isFilterLoading.value ? null : controller.itemList[index];
+                            controller.isFilterLoading.value
+                                ? null
+                                : controller.itemList[index];
                         return Skeletonizer(
                           enabled: controller.isFilterLoading.value,
                           // effect: ShimmerEffect(
@@ -164,8 +170,9 @@ class FilterResultsView extends GetView<FilterController> {
             Obx(() {
               return CircleAvatar(
                 radius: 10.r,
-                backgroundColor:
-                    controller.sortValue.value == title ? Colors.transparent : AppColors.liteGray.withOpacity(.4),
+                backgroundColor: controller.sortValue.value == title
+                    ? Colors.transparent
+                    : AppColors.liteGray.withOpacity(.4),
                 child: controller.sortValue.value == title
                     ? Icon(
                         Icons.check_circle,

@@ -4,24 +4,25 @@
 
 import 'dart:convert';
 
-VarifiedModel varifiedModelFromJson(String str) => VarifiedModel.fromJson(json.decode(str));
+VerifiedModel varifiedModelFromJson(String str) =>
+    VerifiedModel.fromJson(json.decode(str));
 
-String varifiedModelToJson(VarifiedModel data) => json.encode(data.toJson());
+String varifiedModelToJson(VerifiedModel data) => json.encode(data.toJson());
 
-class VarifiedModel {
+class VerifiedModel {
   User? user;
   String? token;
   String? refreshToken;
   int? expiry;
 
-  VarifiedModel({
+  VerifiedModel({
     this.user,
     this.token,
     this.refreshToken,
     this.expiry,
   });
 
-  factory VarifiedModel.fromJson(Map<String, dynamic> json) => VarifiedModel(
+  factory VerifiedModel.fromJson(Map<String, dynamic> json) => VerifiedModel(
         user: json["user"] == null ? null : User.fromJson(json["user"]),
         token: json["token"],
         refreshToken: json["refresh_token"],
@@ -70,7 +71,9 @@ class User {
         lastName: json["last_name"],
         phone: json["phone"],
         email: json["email"],
-        capabilities: json["capabilities"] == null ? [] : List<String>.from(json["capabilities"]!.map((x) => x)),
+        capabilities: json["capabilities"] == null
+            ? []
+            : List<String>.from(json["capabilities"]!.map((x) => x)),
         active: json["active"],
       );
 
@@ -83,7 +86,9 @@ class User {
         "last_name": lastName,
         "phone": phone,
         "email": email,
-        "capabilities": capabilities == null ? [] : List<dynamic>.from(capabilities!.map((x) => x)),
+        "capabilities": capabilities == null
+            ? []
+            : List<dynamic>.from(capabilities!.map((x) => x)),
         "active": active,
       };
 }

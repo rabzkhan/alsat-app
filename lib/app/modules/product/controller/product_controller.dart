@@ -318,12 +318,13 @@ class ProductController extends GetxController {
     if (nextPaginateDate != null) {
       url = '$url?next=$nextPaginateDate';
     }
+    log('All Product:-${url}');
     await BaseClient.safeApiCall(
       url,
       DioRequestType.get,
       headers: {
         //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
+        // 'Authorization': Constants.token,
       },
       data: {},
       onLoading: () {
@@ -333,7 +334,6 @@ class ProductController extends GetxController {
         }
       },
       onSuccess: (response) {
-        log('HomePage:-${response.requestOptions.baseUrl} ${response.requestOptions.path}');
         Map<String, dynamic> responseData = response.data;
         productPostListRes = ProductPostListRes.fromJson(responseData);
         if (nextPaginateDate != null) {
@@ -344,7 +344,7 @@ class ProductController extends GetxController {
         isFetchProduct.value = false;
       },
       onError: (p0) {
-        log('${p0.url} ${Constants.token}');
+        log('All Product Error: ${p0.statusCode}: ${p0.url}');
         isFetchProduct.value = false;
         // CustomSnackBar.showCustomErrorToast(message: localLanguage.product_fetching_failed);
       },

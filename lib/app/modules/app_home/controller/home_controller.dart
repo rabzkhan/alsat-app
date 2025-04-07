@@ -66,11 +66,19 @@ class HomeController extends GetxController {
     getCategories();
     getBanner();
     fetchCarBrand();
-    getUserPostCategories();
-    userOwnStory();
-    fetchNotification();
-    fetchPremiumUser();
+    authUserFeatureValue();
+    log('HomeController: onInit');
     super.onInit();
+  }
+
+  authUserFeatureValue() {
+    AuthController authController = Get.find();
+    if (authController.userDataModel.value.id != null) {
+      getUserPostCategories();
+      userOwnStory();
+      fetchNotification();
+      fetchPremiumUser();
+    }
   }
 
 //-- get categories --//
@@ -375,7 +383,7 @@ class HomeController extends GetxController {
             data.map((json) => StoryModel.fromJson(json)).toList();
         authUserStory.value = storyList;
         fetchAppStores();
-        userArchiveStory();
+        await userArchiveStory();
       },
       onError: (error) {
         fetchAppStores();
@@ -391,20 +399,20 @@ class HomeController extends GetxController {
   }
 
   void archiveStoryLoading() async {
-    if (authUserArchiveStory.firstOrNull?.stories != null) {
-      await userArchiveStory(
-        next: authUserArchiveStory.last.stories?.lastOrNull?.createdAt,
-      );
-    }
+    // if (authUserArchiveStory.firstOrNull != null) {
+    //   await userArchiveStory(
+    //     next: authUserArchiveStory.last.createdAt,
+    //   );
+    // }
     archiveStoryRefreshController.loadComplete();
   }
 
-  RxList<StoryModel> authUserArchiveStory = <StoryModel>[].obs;
+  RxList<Story> authUserArchiveStory = <Story>[].obs;
   RxBool isAuthUserArchiveStoryLoading = false.obs;
   userArchiveStory({String? next}) async {
     AuthController authController = Get.find();
     String url =
-        "${Constants.baseUrl}${Constants.storiesArchive}?user_id=${authController.userDataModel.value.id}";
+        "${Constants.baseUrl}${Constants.storiesArchive}?user_id=${authController.userDataModel.value.id}&limit=2000";
     if (next != null) {
       url += "&next=$next";
     }
@@ -422,19 +430,20 @@ class HomeController extends GetxController {
         }
       },
       onSuccess: (response) async {
-        log('response: ${response.data}');
-        List<dynamic> data = response.data;
+        List<dynamic> data = response.data['data'];
         if (next == null) {
           authUserArchiveStory.value =
-              data.map((json) => StoryModel.fromJson(json)).toList();
+              data.map((json) => Story.fromJson(json)).toList();
         } else {
           authUserArchiveStory
-              .addAll(data.map((json) => StoryModel.fromJson(json)).toList());
+              .addAll(data.map((json) => Story.fromJson(json)).toList());
         }
+        log('storiesArchive: ${authUserArchiveStory.length}');
         authUserArchiveStory.refresh();
         isAuthUserArchiveStoryLoading.value = false;
       },
       onError: (error) {
+        log('storiesArchiveError: ${error.message}');
         isAuthUserArchiveStoryLoading.value = false;
       },
     );
@@ -482,6 +491,7 @@ class HomeController extends GetxController {
         log('reportStory: ${response.data}');
         isStoryReporting.value = false;
         Get.back();
+        await userOwnStory();
       },
       onError: (error) {
         isStoryReporting.value = false;

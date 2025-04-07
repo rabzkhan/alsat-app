@@ -5,11 +5,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:alsat/app/components/custom_snackbar.dart';
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
+import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -36,7 +38,7 @@ class AuthController extends GetxController {
   RxBool isLoading = false.obs;
 
   Rx<OtpModel> otpData = OtpModel().obs;
-  Rx<VarifiedModel> varifiedModel = VarifiedModel().obs;
+  Rx<VerifiedModel> verifiedModel = VerifiedModel().obs;
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
@@ -47,17 +49,24 @@ class AuthController extends GetxController {
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
+  RxBool isLoggedIn = false.obs;
+  RxnString token = RxnString();
 
   @override
   void onInit() {
-    log('onInit AuthController ${MySharedPref.isLoggedIn()}');
-    // if (MySharedPref.isLoggedIn()) {
-    getProfile();
-    // }
+    checkLogin();
     super.onInit();
   }
 
-  getOtp() async {
+  checkLogin() async {
+    isLoggedIn.value = MySharedPref.isLoggedIn();
+    token.value = MySharedPref.getAuthToken();
+    if (isLoggedIn.value && (token.value ?? '').isNotEmpty) {
+      await getProfile();
+    }
+  }
+
+  getOtp({bool isFromHome = false}) async {
     isLoading.value = true;
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.getOtp,
@@ -66,7 +75,9 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
         await smsConfirmation(
-            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+            phoneNumber: otpData.value.phone!,
+            message: otpData.value.sms!,
+            isFromHome: isFromHome);
         isLoading.value = false;
       },
       onError: (error) {
@@ -75,7 +86,8 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> sendSms(String phoneNumber, String message) async {
+  Future<void> sendSms(String phoneNumber, String message,
+      {bool isFromHome = false}) async {
     final Uri smsUri = Uri(
       scheme: 'sms',
       //path: "365555109",
@@ -89,21 +101,21 @@ class AuthController extends GetxController {
         smsUri,
         mode: LaunchMode.externalApplication,
       );
-      startVerifyingNumber();
+      startVerifyingNumber(isFromHome: isFromHome);
     } else {
       throw 'Could not send SMS';
     }
   }
 
   // Start the process to verify the number every 5 seconds
-  startVerifyingNumber() {
+  startVerifyingNumber({bool isFromHome = false}) {
     verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      varifyNumber();
+      verifyNumber(isFromHome: isFromHome);
     });
   }
 
   // Call the verify API periodically
-  varifyNumber() async {
+  verifyNumber({bool isFromHome = false}) async {
     await BaseClient.safeApiCall(
       Constants.baseUrl + Constants.varifyOtp,
       DioRequestType.post,
@@ -113,17 +125,25 @@ class AuthController extends GetxController {
       },
       onLoading: () {},
       onSuccess: (response) async {
-        isLoading.value = false;
-        varifiedModel.value = VarifiedModel.fromJson(response.data);
+        verifiedModel.value = VerifiedModel.fromJson(response.data);
         log("message:${response.data}");
-        // If verification is successful, stop further API calls
-        verificationTimer?.cancel(); // Stop periodic verification
-        await MySharedPref.setIsLoggedIn(true); // Set user as logged in
-        await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d(
-            "Verification successful! and the token is ${varifiedModel.value.token!}");
-        getProfile();
-        Get.to(() => const AppHomeView());
+        verificationTimer?.cancel();
+        await MySharedPref.setIsLoggedIn(true);
+        await MySharedPref.setAuthToken(verifiedModel.value.token!);
+        token.value = verifiedModel.value.token;
+        await getProfile();
+        isLoading.value = false;
+        isLoggedIn.value = true;
+        if (isFromHome) {
+          HomeController homeController = Get.find();
+          ConversationController conversationController = Get.find();
+          homeController.authUserFeatureValue();
+          conversationController.authUserConversation();
+          Get.back();
+          Get.back();
+        } else {
+          Get.to(() => const AppHomeView());
+        }
       },
       onError: (error) {
         Logger().d("$error <- error");

@@ -20,18 +20,18 @@ class MyStories extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HomeController homeController = Get.find();
-    return SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: true,
-      header: CusomHeaderWidget(),
-      footer: CustomFooterWidget(),
-      controller: homeController.archiveStoryRefreshController,
-      onRefresh: homeController.archiveStoryRefresh,
-      onLoading: homeController.archiveStoryLoading,
-      child: Obx(() {
-        return homeController.authUserStory.isEmpty &&
+    return Obx(() {
+      return SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: true,
+        header: CustomHeaderWidget(),
+        footer: CustomFooterWidget(),
+        controller: homeController.archiveStoryRefreshController,
+        onRefresh: homeController.archiveStoryRefresh,
+        onLoading: homeController.archiveStoryLoading,
+        child: homeController.authUserStory.isEmpty &&
                 homeController.authUserArchiveStory.isEmpty &&
-                homeController.isStoryLoading.value
+                !homeController.isStoryLoading.value
             ? NoDataWidget()
             : ListView(
                 children: [
@@ -47,7 +47,7 @@ class MyStories extends StatelessWidget {
                               children: [
                                 Icon(Icons.play_arrow_rounded, size: 18.sp),
                                 Text(
-                                  'Available Stories',
+                                  'Live Stories',
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black54,
@@ -82,17 +82,19 @@ class MyStories extends StatelessWidget {
                   }),
                   10.verticalSpace,
                   Obx(() {
-                    return ((homeController.authUserArchiveStory.firstOrNull
-                                    ?.stories ??
-                                [])
-                            .isEmpty)
+                    return ((homeController.authUserArchiveStory).isEmpty)
                         ? Center()
-                        : Text(
-                            'Archive Stories',
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: Colors.black54,
-                            ),
+                        : Row(
+                            children: [
+                              Icon(Icons.play_arrow_rounded, size: 18.sp),
+                              Text(
+                                'Archive Stories',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
                           );
                   }),
                   10.verticalSpace,
@@ -106,22 +108,18 @@ class MyStories extends StatelessWidget {
                         mainAxisSpacing: 10.h,
                         childAspectRatio: .6,
                       ),
-                      itemCount: (homeController
-                                  .authUserArchiveStory.firstOrNull?.stories ??
-                              [])
-                          .length,
+                      itemCount: (homeController.authUserArchiveStory).length,
                       itemBuilder: (context, index) {
-                        var e = homeController
-                            .authUserArchiveStory.firstOrNull?.stories
-                            ?.elementAtOrNull(index);
+                        var e = homeController.authUserArchiveStory
+                            .elementAtOrNull(index);
                         return _storyItem(e, isArchive: true);
                       },
                     );
                   }),
                 ],
-              );
-      }),
-    );
+              ),
+      );
+    });
   }
 
   Widget _storyItem(Story? e, {bool isArchive = false}) {
@@ -147,18 +145,19 @@ class MyStories extends StatelessWidget {
                         : const Text('Re-Post'),
                   );
                 }),
-              Obx(() {
-                return CupertinoActionSheetAction(
-                  onPressed: homeController.isStoryDeleting.value
-                      ? () {}
-                      : () {
-                          homeController.deleteStory(e!);
-                        },
-                  child: homeController.isStoryDeleting.value
-                      ? CupertinoActivityIndicator()
-                      : const Text('Delete'),
-                );
-              }),
+              if (!isArchive)
+                Obx(() {
+                  return CupertinoActionSheetAction(
+                    onPressed: homeController.isStoryDeleting.value
+                        ? () {}
+                        : () {
+                            homeController.deleteStory(e!);
+                          },
+                    child: homeController.isStoryDeleting.value
+                        ? CupertinoActivityIndicator()
+                        : const Text('Delete'),
+                  );
+                }),
             ],
             cancelButton: CupertinoActionSheetAction(
               onPressed: () {
@@ -175,6 +174,13 @@ class MyStories extends StatelessWidget {
 
   Container _items(Story? e, {double? height}) {
     return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: 1.w,
+        ),
+      ),
       child: (e?.media?.type == "video" &&
               e?.media?.name != null &&
               (e?.media?.name ?? '').isNotEmpty)

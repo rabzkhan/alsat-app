@@ -48,7 +48,7 @@ class HomeContent extends StatelessWidget {
                   : SmartRefresher(
                       enablePullDown: true,
                       enablePullUp: true,
-                      header: CusomHeaderWidget(),
+                      header: CustomHeaderWidget(),
                       footer: CustomFooterWidget(),
                       controller: productController.homeRefreshController,
                       onRefresh: productController.onHomeRefresh,
@@ -67,7 +67,8 @@ class HomeContent extends StatelessWidget {
                               enabled: homeController.isBannerLoading.value,
                               effect: ShimmerEffect(
                                 baseColor: AppColors.primary.withOpacity(.2),
-                                highlightColor: AppColors.primary.withOpacity(.5),
+                                highlightColor:
+                                    AppColors.primary.withOpacity(.5),
                               ),
                               child: CarouselSlider(
                                   options: CarouselOptions(
@@ -78,8 +79,10 @@ class HomeContent extends StatelessWidget {
                                     enableInfiniteScroll: false,
                                     reverse: false,
                                     autoPlay: true,
-                                    autoPlayInterval: const Duration(seconds: 3),
-                                    autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                                    autoPlayInterval:
+                                        const Duration(seconds: 3),
+                                    autoPlayAnimationDuration:
+                                        const Duration(milliseconds: 800),
                                     autoPlayCurve: Curves.fastOutSlowIn,
                                     enlargeCenterPage: true,
                                     enlargeFactor: 0.3,
@@ -88,7 +91,9 @@ class HomeContent extends StatelessWidget {
                                     scrollDirection: Axis.horizontal,
                                   ),
                                   items: List.generate(
-                                    homeController.isBannerLoading.value ? 5 : homeController.mainBanner.length,
+                                    homeController.isBannerLoading.value
+                                        ? 5
+                                        : homeController.mainBanner.length,
                                     (index) => InkWell(
                                       onTap: () {
                                         onBannerTab(
@@ -105,9 +110,14 @@ class HomeContent extends StatelessWidget {
                                           children: [
                                             NetworkImagePreview(
                                               radius: 3.r,
-                                              url: homeController.isBannerLoading.value
+                                              url: homeController
+                                                      .isBannerLoading.value
                                                   ? ''
-                                                  : homeController.mainBanner[index].media?.name ?? '',
+                                                  : homeController
+                                                          .mainBanner[index]
+                                                          .media
+                                                          ?.name ??
+                                                      '',
                                               height: 200.h,
                                               width: double.infinity,
                                               fit: BoxFit.cover,
@@ -122,16 +132,23 @@ class HomeContent extends StatelessWidget {
                                                 ),
                                                 alignment: Alignment.center,
                                                 decoration: BoxDecoration(
-                                                  color: context.theme.scaffoldBackgroundColor.withOpacity(.8),
-                                                  borderRadius: BorderRadius.only(
-                                                    topRight: Radius.circular(5.r),
-                                                    bottomRight: Radius.circular(5.r),
+                                                  color: context.theme
+                                                      .scaffoldBackgroundColor
+                                                      .withOpacity(.8),
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topRight:
+                                                        Radius.circular(5.r),
+                                                    bottomRight:
+                                                        Radius.circular(5.r),
                                                   ),
                                                 ),
                                                 child: Text(
-                                                  homeController.isBannerLoading.value
+                                                  homeController
+                                                          .isBannerLoading.value
                                                       ? ""
-                                                      : '${homeController.mainBanner[index].type}'.toUpperCase(),
+                                                      : '${homeController.mainBanner[index].type}'
+                                                          .toUpperCase(),
                                                   style: regular.copyWith(
                                                     fontSize: 10.sp,
                                                   ),
@@ -158,15 +175,20 @@ class HomeContent extends StatelessWidget {
                             //   end: Alignment.centerRight,
                             // ),
                             child: ListView.builder(
-                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 14.w),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 10.h, horizontal: 14.w),
                               physics: const NeverScrollableScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount:
-                                  homeController.isBannerLoading.value ? 2 : homeController.otherBanner.take(2).length,
+                              itemCount: homeController.isBannerLoading.value
+                                  ? 2
+                                  : homeController.otherBanner.take(2).length,
                               itemBuilder: (context, index) {
                                 return GestureDetector(
                                   onTap: () {
-                                    onBannerTab(homeController, productController, filterController,
+                                    onBannerTab(
+                                        homeController,
+                                        productController,
+                                        filterController,
                                         homeController.otherBanner[index]);
                                   },
                                   child: Padding(
@@ -175,7 +197,9 @@ class HomeContent extends StatelessWidget {
                                       radius: 10.r,
                                       url: homeController.isBannerLoading.value
                                           ? ''
-                                          : homeController.otherBanner[index].media?.name ?? '',
+                                          : homeController.otherBanner[index]
+                                                  .media?.name ??
+                                              '',
                                       height: 120.h,
                                       width: double.infinity,
                                       fit: BoxFit.cover,
@@ -187,13 +211,16 @@ class HomeContent extends StatelessWidget {
                           ),
                           //-- home Product ---//
                           ListView.builder(
-                            itemCount:
-                                productController.isFetchProduct.value ? 10 : productController.productList.length,
+                            itemCount: productController.isFetchProduct.value
+                                ? 10
+                                : productController.productList.length,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               ProductModel? productModel =
-                                  productController.isFetchProduct.value ? null : productController.productList[index];
+                                  productController.isFetchProduct.value
+                                      ? null
+                                      : productController.productList[index];
                               return Skeletonizer(
                                 enabled: productController.isFetchProduct.value,
                                 // effect: ShimmerEffect(
@@ -219,16 +246,19 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-onBannerTab(HomeController homeController, ProductController productController, FilterController filterController,
-    BannerModel bannerModel) {
+onBannerTab(HomeController homeController, ProductController productController,
+    FilterController filterController, BannerModel bannerModel) {
   final localLanguage = AppLocalizations.of(Get.context!)!;
   //if product
   if ('${bannerModel.type}'.toUpperCase() == 'POST') {
     showLoading();
-    productController.getSingleProductDetails(bannerModel.entityId ?? "").then((_) {
+    productController
+        .getSingleProductDetails(bannerModel.entityId ?? "")
+        .then((_) {
       Get.back();
       if (productController.selectPostProductModel.value?.id == null) {
-        CustomSnackBar.showCustomToast(message: localLanguage.product_not_found);
+        CustomSnackBar.showCustomToast(
+            message: localLanguage.product_not_found);
       } else {
         Get.to(
             ProductDetailsView(
@@ -243,7 +273,9 @@ onBannerTab(HomeController homeController, ProductController productController, 
     showLoading();
     ProductDetailsController productDetailsController =
         Get.put(ProductDetailsController(), tag: bannerModel.entityId ?? "");
-    productDetailsController.getUserByUId(userId: bannerModel.entityId ?? "").then((_) {
+    productDetailsController
+        .getUserByUId(userId: bannerModel.entityId ?? "")
+        .then((_) {
       Get.back();
       if (productDetailsController.postUserModel.value?.id == null) {
         CustomSnackBar.showCustomToast(message: localLanguage.user_not_found);
@@ -262,12 +294,18 @@ onBannerTab(HomeController homeController, ProductController productController, 
   if ('${bannerModel.type}'.toUpperCase() == 'CATEGORY') {
     filterController.isFilterLoading.value = true;
     filterController.filterMapPassed = {
-      "category":
-          (homeController.categories.firstWhereOrNull((element) => element.sId == bannerModel.entityId)?.name ?? '')
-              .toLowerCase(),
-      "category_id":
-          (homeController.categories.firstWhereOrNull((element) => element.sId == bannerModel.entityId)?.sId ?? '')
-              .toLowerCase(),
+      "category": (homeController.categories
+                  .firstWhereOrNull(
+                      (element) => element.sId == bannerModel.entityId)
+                  ?.name ??
+              '')
+          .toLowerCase(),
+      "category_id": (homeController.categories
+                  .firstWhereOrNull(
+                      (element) => element.sId == bannerModel.entityId)
+                  ?.sId ??
+              '')
+          .toLowerCase(),
     };
     filterController.applyFilter();
     filterController.clearAddress();
