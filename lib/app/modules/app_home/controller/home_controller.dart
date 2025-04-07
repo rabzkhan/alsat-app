@@ -365,6 +365,7 @@ class HomeController extends GetxController {
   RxList<StoryModel> authUserStory = <StoryModel>[].obs;
   userOwnStory() async {
     AuthController authController = Get.find();
+    Logger().d(authController.userDataModel.value.id);
     await BaseClient.safeApiCall(
       "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
@@ -576,6 +577,7 @@ class HomeController extends GetxController {
         isStoryPostLoading.value = true;
       },
       onSuccess: (response) async {
+        Logger().d(response.data.toString());
         isStoryPostLoading.value = false;
         userOwnStory();
         pickStoryImageList.clear();
