@@ -25,15 +25,11 @@ class UserController extends GetxController {
   Future<void> upgradeToPremium() async {
     isUpgradePreimumLoading.value = true;
     try {
-      return await BaseClient.safeApiCall(
+      return await BaseClient().safeApiCall(
         Constants.baseUrl + Constants.upgradeToPremium,
         DioRequestType.put,
         data: {
           'code': upgradeCodeController.text,
-        },
-        headers: {
-          //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-          'Authorization': Constants.token,
         },
         onSuccess: (response) async {
           upgradeCodeController.clear();
@@ -64,13 +60,9 @@ class UserController extends GetxController {
     if (next != null) {
       url += '?next=$next';
     }
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         if (next == null) {
           isFollowerLoading.value = true;
@@ -103,13 +95,9 @@ class UserController extends GetxController {
     if (next != null) {
       url += '?next=$next';
     }
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         if (next == null) {
           isFollowingLoading.value = true;

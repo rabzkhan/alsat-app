@@ -84,15 +84,11 @@ class HomeController extends GetxController {
 //-- get categories --//
   getCategories() async {
     log('CategoryCall: ${Constants.baseUrl + Constants.categories}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       isDataCache: true,
       cacheAgeInMinute: 30 * 24 * 60,
       Constants.baseUrl + Constants.categories,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isCategoryLoading.value = true;
       },
@@ -124,13 +120,9 @@ class HomeController extends GetxController {
   RxBool isUserPostCategoryLoading = false.obs;
   getUserPostCategories() async {
     AuthController authController = Get.find();
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/posts/categories?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isUserPostCategoryLoading.value = true;
       },
@@ -154,13 +146,9 @@ class HomeController extends GetxController {
   RxList<BannerModel> otherBanner = <BannerModel>[].obs;
   RxBool isBannerLoading = false.obs;
   getBanner() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.banners,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isBannerLoading.value = true;
       },
@@ -188,13 +176,9 @@ class HomeController extends GetxController {
   RxList<BrandModel> brandList = <BrandModel>[].obs;
   RxBool isBrandLoading = true.obs;
   fetchCarBrand() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.carBrandEndPoint,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isBrandLoading.value = true;
         brandList.clear();
@@ -253,13 +237,9 @@ class HomeController extends GetxController {
     }
     log('Premium User: Date: $data-- $url');
     data.removeWhere((key, value) => value == null);
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         if (nextPaginateDate == null && !isFilter) {
@@ -335,13 +315,9 @@ class HomeController extends GetxController {
   RxList<StoryModel> storyList = <StoryModel>[].obs;
   RxBool isStoryLoading = true.obs;
   fetchAppStores() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryLoading.value = true;
       },
@@ -366,13 +342,9 @@ class HomeController extends GetxController {
   userOwnStory() async {
     AuthController authController = Get.find();
     Logger().d(authController.userDataModel.value.id);
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         storyList.clear();
         isStoryLoading.value = true;
@@ -417,13 +389,9 @@ class HomeController extends GetxController {
     if (next != null) {
       url += "&next=$next";
     }
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         if (next == null) {
           isAuthUserArchiveStoryLoading.value = true;
@@ -452,13 +420,9 @@ class HomeController extends GetxController {
 
   RxBool isStoryDeleting = false.obs;
   deleteStory(Story story) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}/${story.id}",
       DioRequestType.delete,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryDeleting.value = true;
       },
@@ -478,13 +442,9 @@ class HomeController extends GetxController {
 
   RxBool isStoryReporting = false.obs;
   rePostStory(String sId) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}/$sId",
       DioRequestType.put,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryReporting.value = true;
       },
@@ -565,13 +525,9 @@ class HomeController extends GetxController {
   //-- Post Story --//
   RxBool isStoryPostLoading = false.obs;
   Future<void> postStory(Map<String, dynamic> data) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.stories,
       DioRequestType.post,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         isStoryPostLoading.value = true;
@@ -609,13 +565,9 @@ class HomeController extends GetxController {
         ? {"category_id": myListingSelectCategory.value!.sId ?? ""}
         : {};
     log('PostMy $url  ${data.toString()} ${myListingSelectCategory.value?.name}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         if (nextPaginateDate == null) {
@@ -634,8 +586,6 @@ class HomeController extends GetxController {
         isFetchMyProduct.value = false;
       },
       onError: (p0) {
-        log('${p0.url} ${Constants.token}');
-        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchMyProduct.value = false;
         CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
       },
@@ -674,13 +624,9 @@ class HomeController extends GetxController {
   RxList<NotificationData> notifications = <NotificationData>[].obs;
   RxBool isNotificationLoading = false.obs;
   fetchNotification() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.notification}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isNotificationLoading.value = true;
       },

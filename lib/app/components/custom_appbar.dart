@@ -55,7 +55,14 @@ class CustomAppBar extends StatelessWidget {
               : const BackButton(),
           4.horizontalSpace,
           const Spacer(),
-          if (isShowLogo) title ?? Image.asset(logo),
+          if (isShowLogo)
+            Padding(
+              padding: EdgeInsets.all(6.r),
+              child: title ??
+                  Image.asset(
+                    logo,
+                  ),
+            ),
           const Spacer(),
           if (!isShowFilter && !isShowSearch) const Spacer(),
           action ?? const Center(),

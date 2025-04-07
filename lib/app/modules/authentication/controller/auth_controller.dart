@@ -12,6 +12,7 @@ import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
+import 'package:alsat/app/modules/parent/view/onboarding_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -64,11 +65,31 @@ class AuthController extends GetxController {
     if (isLoggedIn.value && (token.value ?? '').isNotEmpty) {
       await getProfile();
     }
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        // MySharedPref.clear();
+        bool onboardingCompleted = MySharedPref.isOnboardingComplete();
+        Logger().d(onboardingCompleted);
+        bool isLoggedIn = MySharedPref.isLoggedIn();
+        // Navigate based on onboarding and login status
+        if (!onboardingCompleted && !isLoggedIn) {
+          // If onboarding is not complete, navigate to OnboardingPage
+          Get.offAll(() => const OnboardingPage());
+        } else if (!isLoggedIn) {
+          // If user is not logged in, navigate to FilterView (or login view)
+          Get.offAll(() => const LoginView());
+        } else {
+          // If onboarding is completed and user is logged in, navigate to HomePage
+          Get.offAll(() => const AppHomeView());
+        }
+      },
+    );
   }
 
   getOtp({bool isFromHome = false}) async {
     isLoading.value = true;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.getOtp,
       DioRequestType.get,
       onLoading: () {},
@@ -116,7 +137,7 @@ class AuthController extends GetxController {
 
   // Call the verify API periodically
   verifyNumber({bool isFromHome = false}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.varifyOtp,
       DioRequestType.post,
       data: {
@@ -126,19 +147,16 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         verifiedModel.value = VerifiedModel.fromJson(response.data);
-        log("message:${response.data}");
         verificationTimer?.cancel();
         await MySharedPref.setIsLoggedIn(true);
         await MySharedPref.setAuthToken(verifiedModel.value.token!);
+        await MySharedPref.setAuthRefreshToken(
+            verifiedModel.value.refreshToken!);
         token.value = verifiedModel.value.token;
         await getProfile();
         isLoading.value = false;
         isLoggedIn.value = true;
         if (isFromHome) {
-          HomeController homeController = Get.find();
-          ConversationController conversationController = Get.find();
-          homeController.authUserFeatureValue();
-          conversationController.authUserConversation();
           Get.back();
           Get.back();
         } else {
@@ -152,13 +170,9 @@ class AuthController extends GetxController {
   }
 
   getProfile() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.userProfile,
       DioRequestType.get,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) async {
         UserDataModel? user = UserDataModel.fromJson(response.data);
@@ -183,13 +197,9 @@ class AuthController extends GetxController {
   saveFcmToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     log('fcmTokenStore: $fcmToken');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.fcmStore,
       DioRequestType.patch,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {
         "device": fcmToken,
       },
@@ -206,12 +216,10 @@ class AuthController extends GetxController {
   updateProfilePicture(File pickedFile) async {
     // Prepare the URL with query parameter
     List<int> fileBytes = await pickedFile.readAsBytes();
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.updateProfilePicture,
       DioRequestType.put,
       headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
         'Content-Type': 'application/octet-stream',
       },
       data: fileBytes,
@@ -238,13 +246,9 @@ class AuthController extends GetxController {
   updateUserInformation({required Map<String, dynamic> data}) async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
 
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.user,
       DioRequestType.put,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         isUpdateLoading.value = true;
@@ -346,12 +350,9 @@ class AuthController extends GetxController {
                             onPressed: () async {
                               Get.back();
                               isDeletingAccount.value = true;
-                              await BaseClient.safeApiCall(
+                              await BaseClient().safeApiCall(
                                 "${Constants.baseUrl}/users",
                                 DioRequestType.delete,
-                                headers: {
-                                  'Authorization': Constants.token,
-                                },
                                 onSuccess: (response) async {
                                   await userLogOut();
                                   Restart.restartApp(
@@ -388,8 +389,12 @@ class AuthController extends GetxController {
   }
 
   Future<void> userLogOut({bool isShowDialog = false}) async {
-    await MySharedPref.setIsLoggedIn(false);
-    await MySharedPref.clear();
+    userDataModel.value = UserDataModel();
+    MySharedPref.setAuthToken(null);
+    MySharedPref.setIsLoggedIn(false);
+    MySharedPref.setAuthRefreshToken(null);
+    MySharedPref.setIsLoggedIn(false);
+
     await logoutDevices(isShowDialog: isShowDialog);
   }
 
@@ -503,12 +508,9 @@ class AuthController extends GetxController {
 
   Future<void> _performLogoutDevices() async {
     isLoggingOutDevices.value = true;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/logout-devices",
       DioRequestType.post,
-      headers: {
-        'Authorization': Constants.token,
-      },
       onSuccess: (response) {
         log('Logged out from all devices successfully');
         Get.offAll(() => LoginView());

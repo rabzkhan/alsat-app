@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/model/product_post_list_res.dart';
 import 'package:alsat/utils/helper.dart';
@@ -73,14 +74,10 @@ class ConversationController extends GetxController {
       url = "$url/admin";
     }
 
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.post,
       data: messagesMap,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isSendingMessage.value = true;
       },
@@ -105,13 +102,9 @@ class ConversationController extends GetxController {
     if (paginate != null) {
       url = "$url?next=$paginate";
     }
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         if (paginate == null) {
           isConversationLoading.value = true;
@@ -156,21 +149,14 @@ class ConversationController extends GetxController {
   Rxn<ConversationMessagesRes> conversationMessagesRes =
       Rxn<ConversationMessagesRes>();
   RxList<ChatMessage> coverMessage = RxList<ChatMessage>([]);
-  final GlobalKey<AnimatedListState> animatedListKey =
-      GlobalKey<AnimatedListState>();
-
   AuthController authController = Get.find<AuthController>();
   Rxn<Participant> selectUserInfo = Rxn();
   //cover message model
   Future<void> getConversationsMessages({String? next}) async {
     log("selectConversation.value?.id ${selectConversation.value?.id}");
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.conversationMessages,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       queryParameters: next == null
           ? {
               'chat_id': selectConversation.value?.id,
@@ -228,7 +214,7 @@ class ConversationController extends GetxController {
 
     String clientID = 'user|$fcmToken|$userID';
     String username = 'user|$userID';
-    const String password = Constants.token1;
+    String? password = MySharedPref.getAuthToken();
 
     final MqttServerClient client = MqttServerClient(host, clientID);
     client.port = port;
@@ -303,7 +289,6 @@ class ConversationController extends GetxController {
           messageConvert(messageModel, selectUserInfo.value, authController);
       for (var element in newMessage) {
         if (coverMessage.first.id != element.id) {
-          animatedListKey.currentState?.insertItem(0);
           coverMessage.insert(0, element);
         }
       }
@@ -374,7 +359,7 @@ class ConversationController extends GetxController {
                   ? product?.toJson()
                   : audioPath),
     );
-    animatedListKey.currentState?.insertItem(0);
+
     coverMessage.insert(0, message);
     coverMessage.refresh();
 
@@ -464,13 +449,9 @@ class ConversationController extends GetxController {
   //-- delete message From server --//
   deleteMessageFromServer(String messageId) async {
     ///messages/:messageID
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.conversationMessages}/$messageId?userID=${authController.userDataModel.value.id}",
       DioRequestType.delete,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) async {
         log('deleteMessageFromServer: $response');
@@ -491,14 +472,10 @@ class ConversationController extends GetxController {
   Future<bool> blockUser(String id, String uId, {bool isBlock = true}) async {
     log('blockUser: $id ${'${Constants.baseUrl}${Constants.userConversationList}/$id/block'}');
     isBlockUser.value = true;
-    return await BaseClient.safeApiCall(
+    return await BaseClient().safeApiCall(
       '${Constants.baseUrl}${Constants.userConversationList}/$id/block',
       DioRequestType.put,
       data: {"user_id": uId, "block": isBlock},
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isBlockUser.value = true;
         isBlockingSuccess.value = false;
@@ -526,13 +503,9 @@ class ConversationController extends GetxController {
   //-- sendReport --//
   RxBool isReport = false.obs;
   Future<bool> sendReport(Map<String, dynamic> data) async {
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       '${Constants.baseUrl}/reports',
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         isReport.value = true;
@@ -560,13 +533,9 @@ class ConversationController extends GetxController {
   Rxn<ConversationModel> adminConversationModel = Rxn<ConversationModel>();
   RxBool isMessageWithAdmin = false.obs;
   Future<void> messageWithAdmin() async {
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       '${Constants.baseUrl}${Constants.userConversationList}/admin',
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isMessageWithAdmin.value = true;
       },

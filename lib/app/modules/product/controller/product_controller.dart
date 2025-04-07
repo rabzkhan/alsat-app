@@ -279,13 +279,9 @@ class ProductController extends GetxController {
   Future<bool> postProduct(Map<String, dynamic> body) async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find<HomeController>();
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: body,
       onLoading: () {},
       onSuccess: (response) async {
@@ -319,7 +315,7 @@ class ProductController extends GetxController {
       url = '$url?next=$nextPaginateDate';
     }
     log('All Product:-${url}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
       headers: {
@@ -383,13 +379,9 @@ class ProductController extends GetxController {
       url = "$url?liked";
     }
     final localLanguage = AppLocalizations.of(Get.context!)!;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {},
       onLoading: () {
         if (nextPaginateDate == null) {
@@ -409,8 +401,6 @@ class ProductController extends GetxController {
         isFetchLikeProduct.value = false;
       },
       onError: (p0) {
-        log('${p0.url} ${Constants.token}');
-        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchLikeProduct.value = false;
         CustomSnackBar.showCustomErrorToast(
             message: localLanguage.product_fetching_failed);
@@ -442,14 +432,9 @@ class ProductController extends GetxController {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     String url = Constants.baseUrl + Constants.postProduct;
     url = '$url/$productId/likes';
-    log('$url ${Constants.token}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {"like": likeValue},
       onLoading: () {
         productLikeId.value = productId;
@@ -518,13 +503,9 @@ class ProductController extends GetxController {
   Rxn<ProductModel> selectExtraPostProductModel = Rxn<ProductModel>();
   Future<void> getSingleProductDetails(String pId,
       {bool external = false}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductDetailsLoading.value = true;
         if (!external) {
@@ -596,12 +577,9 @@ class ProductController extends GetxController {
         mediaData.add(videoMap);
       }
     }
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$postId/media/add-many",
       DioRequestType.put,
-      headers: {
-        'Authorization': Constants.token,
-      },
       data: mediaData,
       onLoading: () {
         if (isVideoUpload) {
@@ -646,13 +624,10 @@ class ProductController extends GetxController {
   Future<void> deleteMediaInPost(
       {required String pId, required String mediaId}) async {
     final HomeController homeController = Get.find();
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId/media/delete-many",
       DioRequestType.put,
       data: [mediaId],
-      headers: {
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isDeletingMediaInPost.value = true;
       },
@@ -678,13 +653,10 @@ class ProductController extends GetxController {
     Logger().d(data.toString());
     final HomeController homeController = Get.find();
     isUpdatingPost.value = true;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$postId",
       DioRequestType.put,
       data: data,
-      headers: {
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) async {
         await homeController.fetchMyProducts();

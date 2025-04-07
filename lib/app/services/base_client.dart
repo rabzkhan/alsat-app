@@ -3,6 +3,8 @@ import 'dart:developer';
 // import 'dart:developer';
 import 'dart:io';
 import 'package:alsat/app/services/data_cache_servise.dart';
+import 'package:alsat/app/services/dio_interceptor.dart';
+import 'package:alsat/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' as getx;
 import 'package:logger/logger.dart';
@@ -19,23 +21,19 @@ enum DioRequestType {
 }
 
 class BaseClient {
-  static final Dio _dio = Dio(
-    BaseOptions(
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-      },
-    ),
-  );
+  late Dio _dio;
+  BaseClient() {
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: Constants.baseUrl,
+        connectTimeout: const Duration(minutes: 2),
+        receiveTimeout: const Duration(minutes: 2),
+      ),
+    );
+    _dio.interceptors.add(DioInterceptor(_dio));
+  }
 
-  // request timeout (default 10 seconds)
-  static const int _timeoutInSeconds = 10;
-
-  /// dio getter (used for testing)
-  static get dio => _dio;
-
-  /// perform safe api request
-  static safeApiCall(
+  safeApiCall(
     String url,
     DioRequestType requestType, {
     Map<String, dynamic>? headers,
@@ -129,7 +127,7 @@ class BaseClient {
   }
 
   /// download file
-  static download(
+  download(
       {required String url, // file url
       required String savePath, // where to save file
       Function(ApiException)? onError,
@@ -140,8 +138,8 @@ class BaseClient {
         url,
         savePath,
         options: Options(
-            receiveTimeout: const Duration(seconds: _timeoutInSeconds),
-            sendTimeout: const Duration(seconds: _timeoutInSeconds)),
+            receiveTimeout: const Duration(seconds: 10),
+            sendTimeout: const Duration(seconds: 10)),
         onReceiveProgress: onReceiveProgress,
       );
       onSuccess();

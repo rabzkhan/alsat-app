@@ -23,33 +23,33 @@ class AudioMessage extends StatefulWidget {
 }
 
 class _AudioMessageState extends State<AudioMessage> {
-  // AudioPlayerControllerManager audioPlayerControllerManager =
-  //     Get.put(AudioPlayerControllerManager());
-  // late VoiceController voiceController;
+  AudioPlayerControllerManager audioPlayerControllerManager =
+      Get.put(AudioPlayerControllerManager());
+  late VoiceController voiceController;
 
-  // @override
-  // void initState() {
-  //   initController();
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    initController();
+    super.initState();
+  }
 
-  // initController() {
-  //   voiceController = VoiceController(
-  //     maxDuration: const Duration(minutes: 3),
-  //     isFile: widget.message!.data.toString().contains('http') ? false : true,
-  //     audioSrc: widget.message!.data.toString(),
-  //     onComplete: () {},
-  //     onPause: () {},
-  //     onPlaying: () {
-  //       audioPlayerControllerManager.playAudio(voiceController);
-  //     },
-  //     onError: (err) {
-  //       log('message controller error $err');
-  //     },
-  //   );
-  //   log('message controller ${voiceController.audioSrc}');
-  //   audioPlayerControllerManager.addController(voiceController);
-  // }
+  initController() {
+    voiceController = VoiceController(
+      maxDuration: const Duration(minutes: 3),
+      isFile: widget.message!.data.toString().contains('http') ? false : true,
+      audioSrc: widget.message!.data.toString(),
+      onComplete: () {},
+      onPause: () {},
+      onPlaying: () {
+        audioPlayerControllerManager.playAudio(voiceController);
+      },
+      onError: (err) {
+        log('message controller error $err');
+      },
+    );
+    log('message controller ${voiceController.audioSrc}');
+    audioPlayerControllerManager.addController(voiceController);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,21 +117,7 @@ class _AudioMessageState extends State<AudioMessage> {
                 : widget.message!.isSender
                     ? context.theme.primaryColor
                     : Colors.white,
-            controller: VoiceController(
-              maxDuration: const Duration(minutes: 3),
-              isFile: widget.message!.data.toString().contains('http')
-                  ? false
-                  : true,
-              audioSrc: widget.message!.data.toString(),
-              onComplete: () {},
-              onPause: () {},
-              onPlaying: () {
-                // audioPlayerControllerManager.playAudio(voiceController);
-              },
-              onError: (err) {
-                log('message controller error $err');
-              },
-            ),
+            controller: voiceController,
             innerPadding: 12,
             cornerRadius: 20,
           ),

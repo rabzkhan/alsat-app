@@ -24,7 +24,8 @@ class FilterController extends GetxController {
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
-  RxList<Map<String, dynamic>> brandAndSelectedModel = RxList<Map<String, dynamic>>();
+  RxList<Map<String, dynamic>> brandAndSelectedModel =
+      RxList<Map<String, dynamic>>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
@@ -37,7 +38,8 @@ class FilterController extends GetxController {
 
   // Real state variables
 
-  RxList<String> dBodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dBodyType =
+      <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dEngineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dTransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
@@ -159,8 +161,10 @@ class FilterController extends GetxController {
   }
 
 // Toggle city selection with single or multiple selection
-  void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
-    if (!selectedProvinces.contains(provinceName) && selectedProvince.value != provinceName) {
+  void toggleCity(
+      String provinceName, String cityName, bool allowMultipleSelection) {
+    if (!selectedProvinces.contains(provinceName) &&
+        selectedProvince.value != provinceName) {
       return; // Province must be selected first
     }
     if (!allowMultipleSelection) {
@@ -211,7 +215,10 @@ class FilterController extends GetxController {
     }
     return selectedProvinces.map((province) {
       final cities = selectedCities[province];
-      return {"province": province, if (cities != null && cities.isNotEmpty) "city": cities};
+      return {
+        "province": province,
+        if (cities != null && cities.isNotEmpty) "city": cities
+      };
     }).toList();
   }
 
@@ -232,12 +239,15 @@ class FilterController extends GetxController {
         locationTexts.add(province);
       }
     }
-    return locationTexts.isNotEmpty ? locationTexts.join(', ') : 'Choose Location';
+    return locationTexts.isNotEmpty
+        ? locationTexts.join(', ')
+        : 'Choose Location';
   }
 
   // ============== end of location ================== //
 
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
   void onRefresh() async {
     await applyFilter(
       refresh: true,
@@ -275,12 +285,16 @@ class FilterController extends GetxController {
       "price_to": int.parse(priceTo.value.text),
       "year_from": choseFirstYear.value,
       "year_to": choseLastYear.value,
-      "location": getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
+      "location":
+          getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
       "brand": brand.isEmpty ? [] : branFormate(),
       "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
-      "drive_type": driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
-      "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
-      "transmission": transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      "drive_type":
+          driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
+      "engine_type":
+          engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      "transmission":
+          transmission.value != "Not Chosen Yet" ? transmission.value : '',
       "color": color.isNotEmpty ? color : [],
       "credit": credit.value,
       "exchange": exchange.value,
@@ -289,7 +303,8 @@ class FilterController extends GetxController {
     };
 
     final filterData = Map<String, dynamic>.from(map);
-    filterData.removeWhere((key, value) => value == null || value == '' || value == "[]");
+    filterData.removeWhere(
+        (key, value) => value == null || value == '' || value == "[]");
     filterData.addAll(filterMapPassed ?? {});
     filterMapPassed = filterData;
 
@@ -298,12 +313,9 @@ class FilterController extends GetxController {
       url = '$url?next=$nextValue';
     }
     log.log("filterData: $url $filterData");
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        'Authorization': Constants.token,
-      },
       data: filterData,
       onLoading: () {
         if (refresh) {

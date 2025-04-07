@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/services/base_client.dart';
 import 'package:get/get.dart';
@@ -29,7 +30,7 @@ class MessageController extends GetxController {
     String clientID =
         'user|${DateTime.now().millisecondsSinceEpoch}|${authController.userDataModel.value.id}';
     String username = 'user|${authController.userDataModel.value.id}';
-    const String password = Constants.token1;
+    String? password = MySharedPref.getAuthToken();
     client = MqttServerClient(host, clientID);
     client.port = port;
     client.logging(on: true);
@@ -72,13 +73,9 @@ class MessageController extends GetxController {
 
   //read all unseen messages--//
   Future<void> readAllUnSeenMessages(String chatId) async {
-    return BaseClient.safeApiCall(
+    return BaseClient().safeApiCall(
       '${Constants.baseUrl}${Constants.userConversationList}/$chatId/status',
       DioRequestType.put,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {"status": "read"},
       onLoading: () {},
       onSuccess: (response) async {
