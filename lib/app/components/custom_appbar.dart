@@ -57,10 +57,11 @@ class CustomAppBar extends StatelessWidget {
           const Spacer(),
           if (isShowLogo)
             Padding(
-              padding: EdgeInsets.all(6.r),
+              padding: EdgeInsets.all(0.r),
               child: title ??
                   Image.asset(
-                    logo,
+                    textLogo,
+                    width: 160.w,
                   ),
             ),
           const Spacer(),

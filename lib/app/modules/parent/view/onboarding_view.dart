@@ -26,8 +26,9 @@ class OnboardingPage extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
         title: Image.asset(
-          logo,
-          width: 100.w,
+          textLogo,
+          fit: BoxFit.contain,
+          width: 160.w,
         ),
         actions: [
           Obx(() {
