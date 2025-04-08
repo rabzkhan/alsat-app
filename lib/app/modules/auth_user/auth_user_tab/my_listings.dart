@@ -23,12 +23,13 @@ class MyListings extends StatelessWidget {
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
-          header: CusomHeaderWidget(),
+          header: CustomHeaderWidget(),
           footer: CustomFooterWidget(),
           controller: homeController.myListingRefreshController,
           onRefresh: homeController.myListingRefresh,
           onLoading: homeController.myListingLoading,
-          child: !homeController.isFetchMyProduct.value && homeController.myProductList.isEmpty
+          child: !homeController.isFetchMyProduct.value &&
+                  homeController.myProductList.isEmpty
               ? const NoDataWidget()
               : GridView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -45,10 +46,14 @@ class MyListings extends StatelessWidget {
                   itemBuilder: (context, index) {
                     return ProductGridTile(
                       loading: homeController.isFetchMyProduct.value,
-                      productModel: homeController.isFetchMyProduct.value ? null : homeController.myProductList[index],
+                      productModel: homeController.isFetchMyProduct.value
+                          ? null
+                          : homeController.myProductList[index],
                     );
                   },
-                  itemCount: homeController.isFetchMyProduct.value ? 10 : homeController.myProductList.length,
+                  itemCount: homeController.isFetchMyProduct.value
+                      ? 10
+                      : homeController.myProductList.length,
                 ),
         );
       },

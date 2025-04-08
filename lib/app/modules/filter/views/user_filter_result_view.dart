@@ -51,7 +51,7 @@ class UserFilterResultView extends StatelessWidget {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: CusomHeaderWidget(),
+        header: CustomHeaderWidget(),
         footer: CustomFooterWidget(),
         controller: homeController.userFilterRefreshController,
         onRefresh: homeController.onUserFilterRefresh,
@@ -65,14 +65,19 @@ class UserFilterResultView extends StatelessWidget {
             //   begin: Alignment.centerLeft,
             //   end: Alignment.centerRight,
             // ),
-            child: !homeController.isFilterLoading.value && homeController.filterUserList.isEmpty
+            child: !homeController.isFilterLoading.value &&
+                    homeController.filterUserList.isEmpty
                 ? const NoDataWidget()
                 : ListView.builder(
-                    itemCount: homeController.isFilterLoading.value ? 10 : homeController.filterUserList.length,
+                    itemCount: homeController.isFilterLoading.value
+                        ? 10
+                        : homeController.filterUserList.length,
                     physics: const BouncingScrollPhysics(),
                     itemBuilder: (context, index) {
                       UserDataModel premiumUserModel =
-                          homeController.isFilterLoading.value ? UserDataModel() : homeController.filterUserList[index];
+                          homeController.isFilterLoading.value
+                              ? UserDataModel()
+                              : homeController.filterUserList[index];
                       return AllUserTile(premiumUserModel: premiumUserModel);
                     },
                   ),

@@ -66,38 +66,44 @@ class HomeController extends GetxController {
     getCategories();
     getBanner();
     fetchCarBrand();
-    getUserPostCategories();
-    userOwnStory();
-    fetchNotification();
-    fetchPremiumUser();
+    authUserFeatureValue();
+    log('HomeController: onInit');
     super.onInit();
+  }
+
+  authUserFeatureValue() {
+    AuthController authController = Get.find();
+    if (authController.userDataModel.value.id != null) {
+      getUserPostCategories();
+      userOwnStory();
+      fetchNotification();
+      fetchPremiumUser();
+    }
   }
 
 //-- get categories --//
   getCategories() async {
     log('CategoryCall: ${Constants.baseUrl + Constants.categories}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       isDataCache: true,
       cacheAgeInMinute: 30 * 24 * 60,
       Constants.baseUrl + Constants.categories,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isCategoryLoading.value = true;
       },
       onCacheData: (cachedata) {
         List<dynamic> data = cachedata ?? [];
-        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         isCategoryLoading.value = false;
       },
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         isCategoryLoading.value = false;
       },
@@ -114,20 +120,17 @@ class HomeController extends GetxController {
   RxBool isUserPostCategoryLoading = false.obs;
   getUserPostCategories() async {
     AuthController authController = Get.find();
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/posts/categories?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isUserPostCategoryLoading.value = true;
       },
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        userPostCategories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        userPostCategories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         fetchMyProducts();
         isUserPostCategoryLoading.value = false;
@@ -143,13 +146,9 @@ class HomeController extends GetxController {
   RxList<BannerModel> otherBanner = <BannerModel>[].obs;
   RxBool isBannerLoading = false.obs;
   getBanner() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.banners,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isBannerLoading.value = true;
       },
@@ -177,13 +176,9 @@ class HomeController extends GetxController {
   RxList<BrandModel> brandList = <BrandModel>[].obs;
   RxBool isBrandLoading = true.obs;
   fetchCarBrand() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.carBrandEndPoint,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isBrandLoading.value = true;
         brandList.clear();
@@ -214,7 +209,8 @@ class HomeController extends GetxController {
   RxBool isFilterLoading = true.obs;
   RxString searchText = RxString('');
   TextEditingController searchController = TextEditingController();
-  Future<void> fetchPremiumUser({String? nextPaginateDate, bool isFilter = false}) async {
+  Future<void> fetchPremiumUser(
+      {String? nextPaginateDate, bool isFilter = false}) async {
     FilterController filterController = Get.find<FilterController>();
 
     String url = '${Constants.baseUrl}/users?plan=premium&limit=10';
@@ -226,8 +222,9 @@ class HomeController extends GetxController {
             "category": category.value?.name,
             "online": isActiveUser.value,
             "buyer_protection": buyerProtection.value,
-            "location":
-                filterController.getSelectedLocationData().isEmpty ? null : filterController.getSelectedLocationData(),
+            "location": filterController.getSelectedLocationData().isEmpty
+                ? null
+                : filterController.getSelectedLocationData(),
             "sorting": {
               "follower": followersValue.value == 'Max To Min' ? -1 : 1,
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,
@@ -240,13 +237,9 @@ class HomeController extends GetxController {
     }
     log('Premium User: Date: $data-- $url');
     data.removeWhere((key, value) => value == null);
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         if (nextPaginateDate == null && !isFilter) {
@@ -313,7 +306,8 @@ class HomeController extends GetxController {
   }
 
   void onUserFilterLoading() async {
-    await fetchPremiumUser(nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
+    await fetchPremiumUser(
+        nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
     userFilterRefreshController.loadComplete();
   }
 
@@ -321,19 +315,16 @@ class HomeController extends GetxController {
   RxList<StoryModel> storyList = <StoryModel>[].obs;
   RxBool isStoryLoading = true.obs;
   fetchAppStores() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryLoading.value = true;
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        List<StoryModel> story = data.map((json) => StoryModel.fromJson(json)).toList();
+        List<StoryModel> story =
+            data.map((json) => StoryModel.fromJson(json)).toList();
         storyList.addAll(story);
         isStoryLoading.value = false;
         storyList.refresh();
@@ -351,13 +342,9 @@ class HomeController extends GetxController {
   userOwnStory() async {
     AuthController authController = Get.find();
     Logger().d(authController.userDataModel.value.id);
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         storyList.clear();
         isStoryLoading.value = true;
@@ -365,10 +352,11 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        storyList.value = data.map((json) => StoryModel.fromJson(json)).toList();
+        storyList.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
         authUserStory.value = storyList;
         fetchAppStores();
-        userArchiveStory();
+        await userArchiveStory();
       },
       onError: (error) {
         fetchAppStores();
@@ -376,36 +364,34 @@ class HomeController extends GetxController {
     );
   }
 
-  RefreshController archiveStoryRefreshController = RefreshController(initialRefresh: false);
+  RefreshController archiveStoryRefreshController =
+      RefreshController(initialRefresh: false);
   void archiveStoryRefresh() async {
     await userOwnStory();
     archiveStoryRefreshController.refreshCompleted();
   }
 
   void archiveStoryLoading() async {
-    if (authUserArchiveStory.firstOrNull?.stories != null) {
-      await userArchiveStory(
-        next: authUserArchiveStory.last.stories?.lastOrNull?.createdAt,
-      );
-    }
+    // if (authUserArchiveStory.firstOrNull != null) {
+    //   await userArchiveStory(
+    //     next: authUserArchiveStory.last.createdAt,
+    //   );
+    // }
     archiveStoryRefreshController.loadComplete();
   }
 
-  RxList<StoryModel> authUserArchiveStory = <StoryModel>[].obs;
+  RxList<Story> authUserArchiveStory = <Story>[].obs;
   RxBool isAuthUserArchiveStoryLoading = false.obs;
   userArchiveStory({String? next}) async {
     AuthController authController = Get.find();
-    String url = "${Constants.baseUrl}${Constants.storiesArchive}?user_id=${authController.userDataModel.value.id}";
+    String url =
+        "${Constants.baseUrl}${Constants.storiesArchive}?user_id=${authController.userDataModel.value.id}&limit=2000";
     if (next != null) {
       url += "&next=$next";
     }
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         if (next == null) {
           isAuthUserArchiveStoryLoading.value = true;
@@ -413,17 +399,20 @@ class HomeController extends GetxController {
         }
       },
       onSuccess: (response) async {
-        log('response: ${response.data}');
-        List<dynamic> data = response.data;
+        List<dynamic> data = response.data['data'];
         if (next == null) {
-          authUserArchiveStory.value = data.map((json) => StoryModel.fromJson(json)).toList();
+          authUserArchiveStory.value =
+              data.map((json) => Story.fromJson(json)).toList();
         } else {
-          authUserArchiveStory.addAll(data.map((json) => StoryModel.fromJson(json)).toList());
+          authUserArchiveStory
+              .addAll(data.map((json) => Story.fromJson(json)).toList());
         }
+        log('storiesArchive: ${authUserArchiveStory.length}');
         authUserArchiveStory.refresh();
         isAuthUserArchiveStoryLoading.value = false;
       },
       onError: (error) {
+        log('storiesArchiveError: ${error.message}');
         isAuthUserArchiveStoryLoading.value = false;
       },
     );
@@ -431,13 +420,9 @@ class HomeController extends GetxController {
 
   RxBool isStoryDeleting = false.obs;
   deleteStory(Story story) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}/${story.id}",
       DioRequestType.delete,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryDeleting.value = true;
       },
@@ -457,13 +442,9 @@ class HomeController extends GetxController {
 
   RxBool isStoryReporting = false.obs;
   rePostStory(String sId) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}/$sId",
       DioRequestType.put,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isStoryReporting.value = true;
       },
@@ -471,6 +452,7 @@ class HomeController extends GetxController {
         log('reportStory: ${response.data}');
         isStoryReporting.value = false;
         Get.back();
+        await userOwnStory();
       },
       onError: (error) {
         isStoryReporting.value = false;
@@ -543,13 +525,9 @@ class HomeController extends GetxController {
   //-- Post Story --//
   RxBool isStoryPostLoading = false.obs;
   Future<void> postStory(Map<String, dynamic> data) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.stories,
       DioRequestType.post,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         isStoryPostLoading.value = true;
@@ -578,20 +556,18 @@ class HomeController extends GetxController {
     AuthController authController = Get.find();
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url = '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
+      url =
+          '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
     } else {
       url = "$url?user=${authController.userDataModel.value.id}";
     }
-    Map<String, dynamic> data =
-        myListingSelectCategory.value != null ? {"category_id": myListingSelectCategory.value!.sId ?? ""} : {};
+    Map<String, dynamic> data = myListingSelectCategory.value != null
+        ? {"category_id": myListingSelectCategory.value!.sId ?? ""}
+        : {};
     log('PostMy $url  ${data.toString()} ${myListingSelectCategory.value?.name}');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         if (nextPaginateDate == null) {
@@ -610,8 +586,6 @@ class HomeController extends GetxController {
         isFetchMyProduct.value = false;
       },
       onError: (p0) {
-        log('${p0.url} ${Constants.token}');
-        log("Product fetching failed: ${p0.response} ${p0.response?.data}");
         isFetchMyProduct.value = false;
         CustomSnackBar.showCustomErrorToast(message: 'Product fetching failed');
       },
@@ -622,7 +596,8 @@ class HomeController extends GetxController {
   Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
 
   //--- Get All PRODUCT ---//
-  RefreshController myListingRefreshController = RefreshController(initialRefresh: false);
+  RefreshController myListingRefreshController =
+      RefreshController(initialRefresh: false);
   void myListingRefresh() async {
     await fetchMyProducts();
     myListingRefreshController.refreshCompleted();
@@ -649,19 +624,16 @@ class HomeController extends GetxController {
   RxList<NotificationData> notifications = <NotificationData>[].obs;
   RxBool isNotificationLoading = false.obs;
   fetchNotification() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.notification}",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isNotificationLoading.value = true;
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data['data'] as List<dynamic>? ?? [];
-        notifications.value = data.map((json) => NotificationData.fromJson(json)).toList();
+        notifications.value =
+            data.map((json) => NotificationData.fromJson(json)).toList();
         isNotificationLoading.value = false;
         log('fetchNotification: ${notifications.length}');
       },

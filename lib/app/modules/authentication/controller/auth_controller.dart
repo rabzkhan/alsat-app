@@ -5,11 +5,14 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:ui';
 import 'package:alsat/app/components/custom_snackbar.dart';
+import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/app_home/models/category_model.dart';
 import 'package:alsat/app/modules/authentication/model/otp_model.dart';
 import 'package:alsat/app/modules/authentication/model/user_data_model.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
+import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
+import 'package:alsat/app/modules/parent/view/onboarding_view.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -36,7 +39,7 @@ class AuthController extends GetxController {
   RxBool isLoading = false.obs;
 
   Rx<OtpModel> otpData = OtpModel().obs;
-  Rx<VarifiedModel> varifiedModel = VarifiedModel().obs;
+  Rx<VerifiedModel> verifiedModel = VerifiedModel().obs;
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
@@ -47,26 +50,55 @@ class AuthController extends GetxController {
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
+  RxBool isLoggedIn = false.obs;
+  RxnString token = RxnString();
 
   @override
   void onInit() {
-    log('onInit AuthController ${MySharedPref.isLoggedIn()}');
-    // if (MySharedPref.isLoggedIn()) {
-    getProfile();
-    // }
+    checkLogin();
     super.onInit();
   }
 
-  getOtp() async {
+  checkLogin() async {
+    isLoggedIn.value = MySharedPref.isLoggedIn();
+    token.value = MySharedPref.getAuthToken();
+    if (isLoggedIn.value && (token.value ?? '').isNotEmpty) {
+      await getProfile();
+    }
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        // MySharedPref.clear();
+        bool onboardingCompleted = MySharedPref.isOnboardingComplete();
+        Logger().d(onboardingCompleted);
+        bool isLoggedIn = MySharedPref.isLoggedIn();
+        // Navigate based on onboarding and login status
+        if (!onboardingCompleted && !isLoggedIn) {
+          // If onboarding is not complete, navigate to OnboardingPage
+          Get.offAll(() => const OnboardingPage());
+        } else if (!isLoggedIn) {
+          // If user is not logged in, navigate to FilterView (or login view)
+          Get.offAll(() => const LoginView());
+        } else {
+          // If onboarding is completed and user is logged in, navigate to HomePage
+          Get.offAll(() => const AppHomeView());
+        }
+      },
+    );
+  }
+
+  getOtp({bool isFromHome = false}) async {
     isLoading.value = true;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.getOtp,
       DioRequestType.get,
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
         await smsConfirmation(
-            phoneNumber: otpData.value.phone!, message: otpData.value.sms!);
+            phoneNumber: otpData.value.phone!,
+            message: otpData.value.sms!,
+            isFromHome: isFromHome);
         isLoading.value = false;
       },
       onError: (error) {
@@ -75,7 +107,8 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> sendSms(String phoneNumber, String message) async {
+  Future<void> sendSms(String phoneNumber, String message,
+      {bool isFromHome = false}) async {
     final Uri smsUri = Uri(
       scheme: 'sms',
       //path: "365555109",
@@ -89,22 +122,22 @@ class AuthController extends GetxController {
         smsUri,
         mode: LaunchMode.externalApplication,
       );
-      startVerifyingNumber();
+      startVerifyingNumber(isFromHome: isFromHome);
     } else {
       throw 'Could not send SMS';
     }
   }
 
   // Start the process to verify the number every 5 seconds
-  startVerifyingNumber() {
+  startVerifyingNumber({bool isFromHome = false}) {
     verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      varifyNumber();
+      verifyNumber(isFromHome: isFromHome);
     });
   }
 
   // Call the verify API periodically
-  varifyNumber() async {
-    await BaseClient.safeApiCall(
+  verifyNumber({bool isFromHome = false}) async {
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.varifyOtp,
       DioRequestType.post,
       data: {
@@ -113,17 +146,22 @@ class AuthController extends GetxController {
       },
       onLoading: () {},
       onSuccess: (response) async {
+        verifiedModel.value = VerifiedModel.fromJson(response.data);
+        verificationTimer?.cancel();
+        await MySharedPref.setIsLoggedIn(true);
+        await MySharedPref.setAuthToken(verifiedModel.value.token!);
+        await MySharedPref.setAuthRefreshToken(
+            verifiedModel.value.refreshToken!);
+        token.value = verifiedModel.value.token;
+        await getProfile();
         isLoading.value = false;
-        varifiedModel.value = VarifiedModel.fromJson(response.data);
-        log("message:${response.data}");
-        // If verification is successful, stop further API calls
-        verificationTimer?.cancel(); // Stop periodic verification
-        await MySharedPref.setIsLoggedIn(true); // Set user as logged in
-        await MySharedPref.setAuthToken(varifiedModel.value.token!);
-        Logger().d(
-            "Verification successful! and the token is ${varifiedModel.value.token!}");
-        getProfile();
-        Get.to(() => const AppHomeView());
+        isLoggedIn.value = true;
+        if (isFromHome) {
+          Get.back();
+          Get.back();
+        } else {
+          Get.to(() => const AppHomeView());
+        }
       },
       onError: (error) {
         Logger().d("$error <- error");
@@ -132,13 +170,9 @@ class AuthController extends GetxController {
   }
 
   getProfile() async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.userProfile,
       DioRequestType.get,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) async {
         UserDataModel? user = UserDataModel.fromJson(response.data);
@@ -163,13 +197,9 @@ class AuthController extends GetxController {
   saveFcmToken() async {
     final fcmToken = await FirebaseMessaging.instance.getToken();
     log('fcmTokenStore: $fcmToken');
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.fcmStore,
       DioRequestType.patch,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {
         "device": fcmToken,
       },
@@ -186,12 +216,10 @@ class AuthController extends GetxController {
   updateProfilePicture(File pickedFile) async {
     // Prepare the URL with query parameter
     List<int> fileBytes = await pickedFile.readAsBytes();
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.updateProfilePicture,
       DioRequestType.put,
       headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
         'Content-Type': 'application/octet-stream',
       },
       data: fileBytes,
@@ -218,13 +246,9 @@ class AuthController extends GetxController {
   updateUserInformation({required Map<String, dynamic> data}) async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
 
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       Constants.baseUrl + Constants.user,
       DioRequestType.put,
-      headers: {
-        // 'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         isUpdateLoading.value = true;
@@ -326,12 +350,9 @@ class AuthController extends GetxController {
                             onPressed: () async {
                               Get.back();
                               isDeletingAccount.value = true;
-                              await BaseClient.safeApiCall(
+                              await BaseClient().safeApiCall(
                                 "${Constants.baseUrl}/users",
                                 DioRequestType.delete,
-                                headers: {
-                                  'Authorization': Constants.token,
-                                },
                                 onSuccess: (response) async {
                                   await userLogOut();
                                   Restart.restartApp(
@@ -368,8 +389,12 @@ class AuthController extends GetxController {
   }
 
   Future<void> userLogOut({bool isShowDialog = false}) async {
-    await MySharedPref.setIsLoggedIn(false);
-    await MySharedPref.clear();
+    userDataModel.value = UserDataModel();
+    MySharedPref.setAuthToken(null);
+    MySharedPref.setIsLoggedIn(false);
+    MySharedPref.setAuthRefreshToken(null);
+    MySharedPref.setIsLoggedIn(false);
+
     await logoutDevices(isShowDialog: isShowDialog);
   }
 
@@ -483,12 +508,9 @@ class AuthController extends GetxController {
 
   Future<void> _performLogoutDevices() async {
     isLoggingOutDevices.value = true;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/logout-devices",
       DioRequestType.post,
-      headers: {
-        'Authorization': Constants.token,
-      },
       onSuccess: (response) {
         log('Logged out from all devices successfully');
         Get.offAll(() => LoginView());

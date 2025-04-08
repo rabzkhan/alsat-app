@@ -268,9 +268,11 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                                       ),
                                     ),
                                   ),
-                                authController.userDataModel.value.id ==
-                                        widget.productDetailsController
-                                            .postUserModel.value?.id
+                                (authController.userDataModel.value.id ==
+                                            widget.productDetailsController
+                                                .postUserModel.value?.id) ||
+                                        authController.userDataModel.value.id ==
+                                            null
                                     ? const Center()
                                     : Row(
                                         children: [
@@ -508,7 +510,7 @@ class _ClientProfileViewState extends State<ClientProfileView> {
                             return SmartRefresher(
                               enablePullDown: true,
                               enablePullUp: true,
-                              header: CusomHeaderWidget(),
+                              header: CustomHeaderWidget(),
                               footer: CustomFooterWidget(),
                               controller: userProductRefreshController,
                               onRefresh: userProductRefresh,

@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/view/post_product_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -9,6 +10,8 @@ import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import '../../config/theme/app_text_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import '../modules/authentication/view/login_view.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   const AppBottomNavigationBar({super.key});
@@ -64,11 +67,18 @@ class AppBottomNavigationBar extends StatelessWidget {
   Expanded _bottomItem(
       {required String name, required String icon, required int index}) {
     final homeController = Get.put(HomeController());
+    AuthController authController = Get.find();
     return Expanded(
       child: Obx(() {
         return InkWell(
           onTap: () {
-            if (index == 2) {
+            if (authController.userDataModel.value.id == null && index >= 2) {
+              Get.to(
+                  const LoginView(
+                    isFromHome: true,
+                  ),
+                  transition: Transition.fadeIn);
+            } else if (index == 2) {
               Get.to(const PostProductView(), transition: Transition.fadeIn);
             } else {
               homeController.homePageController.animateToPage(

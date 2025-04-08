@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -12,7 +13,8 @@ import '../../app_home/view/app_home_view.dart';
 import '../controller/auth_controller.dart';
 
 class LoginView extends GetView<AuthController> {
-  const LoginView({super.key});
+  final bool isFromHome;
+  const LoginView({super.key, this.isFromHome = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +22,16 @@ class LoginView extends GetView<AuthController> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Get.theme.scaffoldBackgroundColor,
+          statusBarIconBrightness: Brightness.dark,
+        ),
         centerTitle: true,
         backgroundColor: Get.theme.scaffoldBackgroundColor,
         title: Image.asset(
           logo,
           width: 100.w,
+          height: 40.h,
         ),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(150.h),
@@ -45,16 +52,6 @@ class LoginView extends GetView<AuthController> {
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
-            },
-            icon: const Icon(
-              Icons.skip_next_outlined,
-            ),
-          )
-        ],
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -100,8 +97,12 @@ class LoginView extends GetView<AuthController> {
               ),
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
-                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
-                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
+                  final minutes = (controller.countdown.value ~/ 60)
+                      .toString()
+                      .padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60)
+                      .toString()
+                      .padLeft(2, '0');
                   return Column(
                     children: [
                       20.verticalSpace,
@@ -143,16 +144,41 @@ class LoginView extends GetView<AuthController> {
                       onPressed: controller.hasStartedOtpProcess.value
                           ? null // Disable the login button if OTP process has started
                           : () {
-                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
-                                controller.getOtp();
+                              if (controller.loginFormKey.currentState
+                                      ?.saveAndValidate() ??
+                                  false) {
+                                controller.getOtp(isFromHome: isFromHome);
                               }
                             },
                       child: Obx(() {
                         return Text(
-                          controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
+                          controller.isLoading.value
+                              ? "${localLanguage.verifying}.."
+                              : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
                         );
                       }),
+                    ),
+                  )
+                ],
+              ),
+              20.verticalSpace,
+              Row(
+                children: [
+                  Expanded(
+                    child: CupertinoButton(
+                      onPressed: () {
+                        if (isFromHome) {
+                          Get.back();
+                        } else {
+                          Get.offAll(const AppHomeView(),
+                              transition: Transition.fadeIn);
+                        }
+                      },
+                      child: Text(
+                        'Login as Guest',
+                        style: TextStyle(fontSize: 14.sp),
+                      ),
                     ),
                   )
                 ],

@@ -1,5 +1,6 @@
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/product_list_tile.dart';
+import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
@@ -15,7 +16,10 @@ import '../model/product_post_list_res.dart';
 class ProductCommentsView extends StatefulWidget {
   final ProductModel productModel;
   final ProductDetailsController productDetailsController;
-  const ProductCommentsView({super.key, required this.productDetailsController, required this.productModel});
+  const ProductCommentsView(
+      {super.key,
+      required this.productDetailsController,
+      required this.productModel});
 
   @override
   State<ProductCommentsView> createState() => _ProductCommentsViewState();
@@ -24,6 +28,7 @@ class ProductCommentsView extends StatefulWidget {
 class _ProductCommentsViewState extends State<ProductCommentsView> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController commentController = TextEditingController();
+  AuthController authController = Get.find();
   @override
   void initState() {
     initMethod();
@@ -31,7 +36,8 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
   }
 
   initMethod() async {
-    widget.productDetailsController.getProductComments(productId: widget.productModel.id ?? '');
+    widget.productDetailsController
+        .getProductComments(productId: widget.productModel.id ?? '');
   }
 
   @override
@@ -69,15 +75,18 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                 children: [
                   Obx(() {
                     return Skeletonizer(
-                      enabled: widget.productDetailsController.isProductCommentList.value,
+                      enabled: widget
+                          .productDetailsController.isProductCommentList.value,
                       // effect: ShimmerEffect(
                       //   baseColor: Get.theme.disabledColor.withOpacity(.2),
                       //   highlightColor: Colors.white,
                       //   begin: Alignment.centerLeft,
                       //   end: Alignment.centerRight,
                       // ),
-                      child: !widget.productDetailsController.isProductCommentList.value &&
-                              widget.productDetailsController.productCommentList.isEmpty
+                      child: !widget.productDetailsController
+                                  .isProductCommentList.value &&
+                              widget.productDetailsController.productCommentList
+                                  .isEmpty
                           ? SizedBox(
                               height: 300.h,
                               child: Center(
@@ -85,25 +94,32 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                   localLanguage.no_comment_available_right_now,
                                   style: regular.copyWith(
                                     fontSize: 14.sp,
-                                    color: context.theme.textTheme.bodyLarge?.color?.withOpacity(.4),
+                                    color: context
+                                        .theme.textTheme.bodyLarge?.color
+                                        ?.withOpacity(.4),
                                   ),
                                 ),
                               ),
                             )
                           : ListView.builder(
-                              itemCount: widget.productDetailsController.isProductCommentList.value
+                              itemCount: widget.productDetailsController
+                                      .isProductCommentList.value
                                   ? 10
-                                  : widget.productDetailsController.productCommentList.length,
+                                  : widget.productDetailsController
+                                      .productCommentList.length,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                var comment = widget.productDetailsController.isProductCommentList.value
+                                var comment = widget.productDetailsController
+                                        .isProductCommentList.value
                                     ? null
-                                    : widget.productDetailsController.productCommentList[index];
+                                    : widget.productDetailsController
+                                        .productCommentList[index];
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 10.h),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       CircleAvatar(
                                         radius: 20.r,
@@ -121,7 +137,8 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                       Expanded(
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Container(
                                               padding: EdgeInsets.symmetric(
@@ -129,25 +146,35 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                                 vertical: 5.h,
                                               ),
                                               decoration: BoxDecoration(
-                                                color: Get.theme.disabledColor.withOpacity(.08),
-                                                borderRadius: BorderRadius.circular(5.r),
+                                                color: Get.theme.disabledColor
+                                                    .withOpacity(.08),
+                                                borderRadius:
+                                                    BorderRadius.circular(5.r),
                                               ),
                                               child: Column(
                                                 mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    comment?.user?.userName ?? 'User Name',
+                                                    comment?.user?.userName ??
+                                                        'User Name',
                                                     style: bold.copyWith(
                                                       fontSize: 15.sp,
                                                     ),
                                                   ),
                                                   5.verticalSpace,
                                                   Text(
-                                                    comment?.content ?? 'Comment',
+                                                    comment?.content ??
+                                                        'Comment',
                                                     style: regular.copyWith(
                                                       fontSize: 14.sp,
-                                                      color: context.theme.textTheme.bodyLarge?.color?.withOpacity(.7),
+                                                      color: context
+                                                          .theme
+                                                          .textTheme
+                                                          .bodyLarge
+                                                          ?.color
+                                                          ?.withOpacity(.7),
                                                     ),
                                                   )
                                                 ],
@@ -155,7 +182,8 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                                             ),
                                             5.verticalSpace,
                                             Text(
-                                              timeAgo(comment?.createdAt ?? DateTime.now()),
+                                              timeAgo(comment?.createdAt ??
+                                                  DateTime.now()),
                                               style: regular.copyWith(
                                                 fontSize: 12.sp,
                                               ),
@@ -173,7 +201,8 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                 ],
               ),
             ),
-            if (widget.productModel.individualInfo?.canComment ?? true)
+            if ((widget.productModel.individualInfo?.canComment ?? true) &&
+                authController.userDataModel.value.id != null)
               Form(
                 key: _formKey,
                 child: Container(
@@ -188,7 +217,8 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                       5.horizontalSpace,
                       Expanded(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10.w, vertical: 10.h),
                           child: TextFormField(
                             maxLines: 1,
                             controller: commentController,
@@ -202,19 +232,24 @@ class _ProductCommentsViewState extends State<ProductCommentsView> {
                               hintText: localLanguage.write_a_comment,
                               hintStyle: regular.copyWith(
                                 fontSize: 14.sp,
-                                color: context.theme.textTheme.bodyLarge?.color?.withOpacity(.6),
+                                color: context.theme.textTheme.bodyLarge?.color
+                                    ?.withOpacity(.6),
                               ),
                               border: InputBorder.none,
                               suffixIcon: IconButton(
-                                onPressed: widget.productDetailsController.isProductCommentAdd.value
+                                onPressed: widget.productDetailsController
+                                        .isProductCommentAdd.value
                                     ? null
                                     : () {
                                         if (_formKey.currentState!.validate()) {
                                           _formKey.currentState!.save();
                                           widget.productDetailsController
                                               .addProductComment(
-                                            productId: (widget.productModel.id ?? 0).toString(),
-                                            comment: commentController.text.trim(),
+                                            productId:
+                                                (widget.productModel.id ?? 0)
+                                                    .toString(),
+                                            comment:
+                                                commentController.text.trim(),
                                           )
                                               .then((onValue) {
                                             commentController.clear();

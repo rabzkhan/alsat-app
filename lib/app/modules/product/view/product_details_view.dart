@@ -348,25 +348,32 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 end: Alignment.centerRight,
                               ),
                               child: InkWell(
-                                onTap: () {
-                                  productController
-                                      .addProductLike(
-                                    productId: widget.productModel?.id ?? '',
-                                    likeValue: !(productDetailsController
-                                            .selectPostProductModel
-                                            .value
-                                            ?.liked ??
-                                        false),
-                                  )
-                                      .then((_) {
-                                    productDetailsController
-                                        .getSingleProductDetails(
-                                            widget.productModel?.id ?? '');
-                                    productDetailsController.productLikeCount(
-                                        productId:
-                                            widget.productModel?.id ?? '');
-                                  });
-                                },
+                                onTap: authController.userDataModel.value.id ==
+                                        null
+                                    ? null
+                                    : () {
+                                        productController
+                                            .addProductLike(
+                                          productId:
+                                              widget.productModel?.id ?? '',
+                                          likeValue: !(productDetailsController
+                                                  .selectPostProductModel
+                                                  .value
+                                                  ?.liked ??
+                                              false),
+                                        )
+                                            .then((_) {
+                                          productDetailsController
+                                              .getSingleProductDetails(
+                                                  widget.productModel?.id ??
+                                                      '');
+                                          productDetailsController
+                                              .productLikeCount(
+                                                  productId:
+                                                      widget.productModel?.id ??
+                                                          '');
+                                        });
+                                      },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -799,235 +806,242 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
       ),
       bottomNavigationBar: Obx(
         () {
-          return (productDetailsController.postUserModel.value?.id ?? "") ==
-                      authController.userDataModel.value.id ||
-                  productDetailsController.postUserModel.value == null
-              ? (authController.userDataModel.value.id ==
-                      productDetailsController.postUserModel.value?.id)
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 15.w, vertical: 10.h),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Obx(() {
-                              return MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                height: 45,
-                                color: Get.theme.disabledColor,
-                                onPressed: productDetailsController
-                                        .isDeletingPost.value
-                                    ? null
-                                    : () {
-                                        productDetailsController.deleteUserPost(
-                                          postId: widget.productModel?.id ?? '',
-                                        );
-                                      },
-                                child: productDetailsController
-                                        .isDeletingPost.value
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          CupertinoActivityIndicator(),
-                                        ],
-                                      )
-                                    : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.delete,
-                                            size: 22.sp,
-                                            color: Colors.white,
+          return authController.userDataModel.value.id == null
+              ? SizedBox()
+              : (productDetailsController.postUserModel.value?.id ?? "") ==
+                          authController.userDataModel.value.id ||
+                      productDetailsController.postUserModel.value == null
+                  ? (authController.userDataModel.value.id ==
+                          productDetailsController.postUserModel.value?.id)
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 15.w, vertical: 10.h),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Obx(() {
+                                  return MaterialButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                    ),
+                                    height: 45,
+                                    color: Get.theme.disabledColor,
+                                    onPressed: productDetailsController
+                                            .isDeletingPost.value
+                                        ? null
+                                        : () {
+                                            productDetailsController
+                                                .deleteUserPost(
+                                              postId:
+                                                  widget.productModel?.id ?? '',
+                                            );
+                                          },
+                                    child: productDetailsController
+                                            .isDeletingPost.value
+                                        ? Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              CupertinoActivityIndicator(),
+                                            ],
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.delete,
+                                                size: 22.sp,
+                                                color: Colors.white,
+                                              ),
+                                              5.horizontalSpace,
+                                              Text(
+                                                localLanguage.delete,
+                                                style: TextStyle(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          5.horizontalSpace,
-                                          Text(
-                                            localLanguage.delete,
-                                            style: TextStyle(
-                                              fontSize: 14.sp,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                              );
-                            }),
-                          ),
-                          10.horizontalSpace,
-                          Expanded(
-                            child: MaterialButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.r),
+                                  );
+                                }),
                               ),
-                              height: 45,
-                              color: Get.theme.primaryColor,
-                              onPressed: () {
-                                Get.off(() => UpdatePostView(
-                                    productModel: widget.productModel!));
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.edit,
-                                    size: 22.sp,
-                                    color: Colors.white,
-                                  ),
-                                  5.horizontalSpace,
-                                  Text(
-                                    localLanguage.edit,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(
-                      height: 0,
-                    )
-              : Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        localLanguage.contactWithSeller,
-                        style: semiBold.copyWith(
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      10.verticalSpace,
-                      Row(
-                        children: [
-                          if (isCallAvailable(
-                              widget
-                                  .productModel?.individualInfo?.freeToCallFrom,
-                              widget
-                                  .productModel?.individualInfo?.freeToCallTo))
-                            Expanded(
-                              child: MaterialButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                  side: BorderSide(
-                                    color: Get.theme.primaryColor,
-                                  ),
-                                ),
-                                height: 45,
-                                color: Get.theme.scaffoldBackgroundColor,
-                                onPressed: () async {
-                                  final url =
-                                      'tel:${widget.productModel?.individualInfo?.phoneNumber}';
-                                  if (await canLaunchUrl(Uri.parse(url))) {
-                                    await launchUrl(Uri.parse(url));
-                                  } else {
-                                    throw 'Could not launch $url';
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.phone,
-                                      color: Get.theme.primaryColor,
-                                      size: 20.r,
-                                    ),
-                                    5.horizontalSpace,
-                                    Text(
-                                      localLanguage.call,
-                                      style: regular.copyWith(
-                                        color: Get.theme.primaryColor,
-                                        fontSize: 14.sp,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          if (isCallAvailable(
-                              widget
-                                  .productModel?.individualInfo?.freeToCallFrom,
-                              widget
-                                  .productModel?.individualInfo?.freeToCallTo))
-                            if (!widget.isFromMessage) 30.horizontalSpace,
-                          if (!widget.isFromMessage)
-                            Expanded(
-                              child: Obx(() {
-                                return MaterialButton(
+                              10.horizontalSpace,
+                              Expanded(
+                                child: MaterialButton(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.r),
                                   ),
                                   height: 45,
                                   color: Get.theme.primaryColor,
-                                  onPressed: productDetailsController
-                                              .isFetchUserConversationLoading
-                                              .value ||
-                                          widget.isFromMessage
-                                      ? null
-                                      : () {
-                                          productDetailsController
-                                              .getConversationInfoByUserId(
-                                                  productDetailsController
-                                                          .postUserModel
-                                                          .value
-                                                          ?.id ??
-                                                      "")
-                                              .then((value) {
-                                            Get.to(
-                                              MessagesScreen(
-                                                productModel:
-                                                    widget.productModel,
-                                                conversation:
-                                                    productDetailsController
-                                                        .conversationInfo
-                                                        .value!,
-                                              ),
-                                              transition: Transition.fadeIn,
-                                            );
-                                          });
-                                        },
-                                  child: productDetailsController
-                                          .isFetchUserConversationLoading.value
-                                      ? const CupertinoActivityIndicator()
-                                      : Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.messenger_rounded,
-                                              color: Colors.white,
-                                              size: 20.r,
-                                            ),
-                                            5.horizontalSpace,
-                                            Text(
-                                              localLanguage.message,
-                                              style: regular.copyWith(
-                                                color: Colors.white,
-                                                fontSize: 14.sp,
-                                              ),
-                                            ),
-                                          ],
+                                  onPressed: () {
+                                    Get.off(() => UpdatePostView(
+                                        productModel: widget.productModel!));
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        size: 22.sp,
+                                        color: Colors.white,
+                                      ),
+                                      5.horizontalSpace,
+                                      Text(
+                                        localLanguage.edit,
+                                        style: TextStyle(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
                                         ),
-                                );
-                              }),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                        )
+                  : Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.w, vertical: 10.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            localLanguage.contactWithSeller,
+                            style: semiBold.copyWith(
+                              fontSize: 14.sp,
                             ),
+                          ),
+                          10.verticalSpace,
+                          Row(
+                            children: [
+                              if (isCallAvailable(
+                                  widget.productModel?.individualInfo
+                                      ?.freeToCallFrom,
+                                  widget.productModel?.individualInfo
+                                      ?.freeToCallTo))
+                                Expanded(
+                                  child: MaterialButton(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      side: BorderSide(
+                                        color: Get.theme.primaryColor,
+                                      ),
+                                    ),
+                                    height: 45,
+                                    color: Get.theme.scaffoldBackgroundColor,
+                                    onPressed: () async {
+                                      final url =
+                                          'tel:${widget.productModel?.individualInfo?.phoneNumber}';
+                                      if (await canLaunchUrl(Uri.parse(url))) {
+                                        await launchUrl(Uri.parse(url));
+                                      } else {
+                                        throw 'Could not launch $url';
+                                      }
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.phone,
+                                          color: Get.theme.primaryColor,
+                                          size: 20.r,
+                                        ),
+                                        5.horizontalSpace,
+                                        Text(
+                                          localLanguage.call,
+                                          style: regular.copyWith(
+                                            color: Get.theme.primaryColor,
+                                            fontSize: 14.sp,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              if (isCallAvailable(
+                                  widget.productModel?.individualInfo
+                                      ?.freeToCallFrom,
+                                  widget.productModel?.individualInfo
+                                      ?.freeToCallTo))
+                                if (!widget.isFromMessage) 30.horizontalSpace,
+                              if (!widget.isFromMessage)
+                                Expanded(
+                                  child: Obx(() {
+                                    return MaterialButton(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10.r),
+                                      ),
+                                      height: 45,
+                                      color: Get.theme.primaryColor,
+                                      onPressed: productDetailsController
+                                                  .isFetchUserConversationLoading
+                                                  .value ||
+                                              widget.isFromMessage
+                                          ? null
+                                          : () {
+                                              productDetailsController
+                                                  .getConversationInfoByUserId(
+                                                      productDetailsController
+                                                              .postUserModel
+                                                              .value
+                                                              ?.id ??
+                                                          "")
+                                                  .then((value) {
+                                                Get.to(
+                                                  MessagesScreen(
+                                                    productModel:
+                                                        widget.productModel,
+                                                    conversation:
+                                                        productDetailsController
+                                                            .conversationInfo
+                                                            .value!,
+                                                  ),
+                                                  transition: Transition.fadeIn,
+                                                );
+                                              });
+                                            },
+                                      child: productDetailsController
+                                              .isFetchUserConversationLoading
+                                              .value
+                                          ? const CupertinoActivityIndicator()
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.messenger_rounded,
+                                                  color: Colors.white,
+                                                  size: 20.r,
+                                                ),
+                                                5.horizontalSpace,
+                                                Text(
+                                                  localLanguage.message,
+                                                  style: regular.copyWith(
+                                                    color: Colors.white,
+                                                    fontSize: 14.sp,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                    );
+                                  }),
+                                ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
-                );
+                    );
         },
       ),
     );

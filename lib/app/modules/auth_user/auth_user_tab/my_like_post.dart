@@ -24,12 +24,13 @@ class MyLikePost extends StatelessWidget {
         return SmartRefresher(
           enablePullDown: true,
           enablePullUp: true,
-          header: CusomHeaderWidget(),
+          header: CustomHeaderWidget(),
           footer: CustomFooterWidget(),
           controller: productController.myLikePostRefreshController,
           onRefresh: productController.myLikePostRefresh,
           onLoading: productController.myLikePostLoading,
-          child: !productController.isFetchLikeProduct.value && productController.myLikeProductList.isEmpty
+          child: !productController.isFetchLikeProduct.value &&
+                  productController.myLikeProductList.isEmpty
               ? const NoDataWidget()
               : GridView.builder(
                   physics: const BouncingScrollPhysics(),
@@ -52,8 +53,9 @@ class MyLikePost extends StatelessWidget {
                           : productController.myLikeProductList[index],
                     );
                   },
-                  itemCount:
-                      productController.isFetchLikeProduct.value ? 10 : productController.myLikeProductList.length,
+                  itemCount: productController.isFetchLikeProduct.value
+                      ? 10
+                      : productController.myLikeProductList.length,
                 ),
         );
       },

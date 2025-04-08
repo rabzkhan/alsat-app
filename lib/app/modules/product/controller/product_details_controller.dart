@@ -39,13 +39,9 @@ class ProductDetailsController extends GetxController {
   RxnNum likeCount = RxnNum(0);
   RxBool isProductLike = RxBool(true);
   Future<void> productLikeCount({required String productId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/likes/count",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductLike.value = true;
         likeCount.value = 0;
@@ -64,13 +60,9 @@ class ProductDetailsController extends GetxController {
   RxnNum commentCount = RxnNum(0);
   RxBool isProductComment = RxBool(true);
   Future<void> productCommentCount({required String productId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/comment/count",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductComment.value = true;
         commentCount.value = 0;
@@ -91,13 +83,9 @@ class ProductDetailsController extends GetxController {
   Future<void> productViewCount(
       {required String productId, required String productCreateTime}) async {
     log("${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime");
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/views/count?since=$productCreateTime",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductView.value = true;
         viewCount.value = 0;
@@ -113,13 +101,9 @@ class ProductDetailsController extends GetxController {
   }
 
   Future<void> productViewCountAdding({required String productId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/views",
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) {
         log("${response.data}");
@@ -136,13 +120,9 @@ class ProductDetailsController extends GetxController {
   RxList<CommentModel> productCommentList = RxList<CommentModel>();
   RxBool isProductCommentList = RxBool(true);
   Future<void> getProductComments({required String productId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductCommentList.value = true;
         productCommentList.clear();
@@ -166,13 +146,9 @@ class ProductDetailsController extends GetxController {
 
   Future<void> addProductComment(
       {required String productId, required String comment}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$productId/comment",
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {"content": comment},
       onLoading: () {
         FocusScope.of(Get.context!).unfocus();
@@ -195,13 +171,9 @@ class ProductDetailsController extends GetxController {
   Rxn<UserDataModel> postUserModel = Rxn<UserDataModel>();
   RxBool isFetchUserLoading = RxBool(true);
   Future<void> getUserByUId({required String userId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.user}/$userId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {},
       onSuccess: (response) {
         Map<String, dynamic> data = response.data;
@@ -221,13 +193,9 @@ class ProductDetailsController extends GetxController {
   RxBool isFetchProductInsights = RxBool(false);
   RxList productInsightsList = RxList();
   Future<void> getProductInsights({required String pId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId/views/count-by-province",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         productInsightsList.clear();
         isFetchProductInsights.value = true;
@@ -247,13 +215,9 @@ class ProductDetailsController extends GetxController {
 
   RxBool isUserPostCategoryLoading = false.obs;
   getUserPostCategories({required String userId}) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/posts/categories?user_id=$userId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isUserPostCategoryLoading.value = true;
       },
@@ -292,13 +256,9 @@ class ProductDetailsController extends GetxController {
         ? {"category_id": selectCategory.value!.sId ?? ""}
         : {};
 
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: data,
       onLoading: () {
         if (nextPaginateDate == null) {
@@ -330,13 +290,9 @@ class ProductDetailsController extends GetxController {
   RxDouble userRate = RxDouble(3);
   Future<void> rateUser() async {
     final localLanguage = AppLocalizations.of(Get.context!)!;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.user}/$selectUserId/rate",
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {"stars": userRate.value},
       onLoading: () {
         isRateUserLoading.value = true;
@@ -360,13 +316,9 @@ class ProductDetailsController extends GetxController {
   RxBool isProductDetailsLoading = RxBool(true);
   Rxn<ProductModel> selectPostProductModel = Rxn<ProductModel>();
   Future<void> getSingleProductDetails(String pId) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.postProduct}/$pId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isProductDetailsLoading.value = true;
         selectPostProductModel.value = null;
@@ -392,13 +344,9 @@ class ProductDetailsController extends GetxController {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     AuthController authController = Get.find();
     selectUserId = userId;
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.user}/follow",
       DioRequestType.post,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       data: {
         "follower_id": authController.userDataModel.value.id,
         "user_id": userId,
@@ -421,9 +369,7 @@ class ProductDetailsController extends GetxController {
           "user_id": userId,
           "follow": isFollow,
         };
-        log("Follow Failed ${authController.userDataModel.toJson()}");
 
-        log('$data--${p0.message}${p0.url} ${Constants.token}');
         isRateUserLoading.value = false;
         isFetchUserLoading.value = true;
         CustomSnackBar.showCustomToast(message: 'Follow Failed');
@@ -436,13 +382,9 @@ class ProductDetailsController extends GetxController {
   RxBool isFetchUserConversationLoading = RxBool(false);
   Future<void> getConversationInfoByUserId(String userId) async {
     log("${Constants.baseUrl}/chats?user=$userId");
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}/chats?user=$userId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isFetchUserConversationLoading.value = true;
       },
@@ -466,13 +408,9 @@ class ProductDetailsController extends GetxController {
   RxBool isFetchUserStoryLoading = RxBool(false);
   RxList<StoryModel> userStoryList = RxList<StoryModel>();
   Future<void> getUserStory(String userId) async {
-    await BaseClient.safeApiCall(
+    await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}?user_id=$userId",
       DioRequestType.get,
-      headers: {
-        //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-        'Authorization': Constants.token,
-      },
       onLoading: () {
         isFetchUserStoryLoading.value = true;
         userStoryList.clear();
@@ -574,13 +512,9 @@ class ProductDetailsController extends GetxController {
                             onPressed: () async {
                               Get.back(); // Close dialog before API call
                               isDeletingPost.value = true;
-                              await BaseClient.safeApiCall(
+                              await BaseClient().safeApiCall(
                                 "${Constants.baseUrl}${Constants.postProduct}/$postId",
                                 DioRequestType.delete,
-                                headers: {
-                                  //'Authorization': 'Bearer ${MySharedPref.getAuthToken().toString()}',
-                                  'Authorization': Constants.token,
-                                },
                                 onSuccess: (response) {
                                   CustomSnackBar.showCustomToast(
                                       message: localLanguage

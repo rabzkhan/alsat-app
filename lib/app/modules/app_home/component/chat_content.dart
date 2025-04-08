@@ -27,7 +27,7 @@ class ChatContent extends StatelessWidget {
     return SmartRefresher(
       enablePullDown: true,
       enablePullUp: true,
-      header: CusomHeaderWidget(),
+      header: CustomHeaderWidget(),
       footer: CustomFooterWidget(),
       controller: conversationController.conversationRefreshController,
       onRefresh: conversationController.conversationRefresh,
@@ -59,11 +59,13 @@ class ChatContent extends StatelessWidget {
                     ? 10
                     : conversationController.conversationList.length,
                 itemBuilder: (context, index) {
-                  var conversation = conversationController.isConversationLoading.value
-                      ? null
-                      : conversationController.conversationList[index];
+                  var conversation =
+                      conversationController.isConversationLoading.value
+                          ? null
+                          : conversationController.conversationList[index];
                   Participant? participant = conversation?.participants
-                      ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id);
+                      ?.firstWhereOrNull(
+                          (e) => e.id != authController.userDataModel.value.id);
                   return Container(
                       height: 70.h,
                       decoration: BoxDecoration(
@@ -75,7 +77,8 @@ class ChatContent extends StatelessWidget {
                       ),
                       child: ListTile(
                         onTap: () {
-                          conversationController.conversationList[index].notReadedCount = 0;
+                          conversationController
+                              .conversationList[index].notReadedCount = 0;
                           conversationController.conversationList.refresh();
                           Get.to(
                             MessagesScreen(
@@ -104,7 +107,9 @@ class ChatContent extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              (conversation?.isAdminChat ?? false) ? 'Alsat Admin' : '${participant?.userName}',
+                              (conversation?.isAdminChat ?? false)
+                                  ? 'Alsat Admin'
+                                  : '${participant?.userName}',
                               style: regular.copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w500,
@@ -113,7 +118,8 @@ class ChatContent extends StatelessWidget {
                             ),
                             if (conversation?.isAdminChat ?? false)
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 5),
                                 child: Icon(
                                   Icons.verified,
                                   color: Colors.blue,
@@ -126,15 +132,18 @@ class ChatContent extends StatelessWidget {
                             ? null
                             : CircleAvatar(
                                 radius: 14.r,
-                                backgroundColor: Get.theme.primaryColor.withOpacity(.5),
+                                backgroundColor:
+                                    Get.theme.primaryColor.withOpacity(.5),
                                 child: CircleAvatar(
                                   radius: 13.r,
                                   backgroundColor: Colors.white,
                                   child: CircleAvatar(
                                     radius: 13.r,
-                                    backgroundColor: Get.theme.disabledColor.withOpacity(.05),
+                                    backgroundColor: Get.theme.disabledColor
+                                        .withOpacity(.05),
                                     child: Text(
-                                      (conversation?.notReadedCount ?? 0).toString(),
+                                      (conversation?.notReadedCount ?? 0)
+                                          .toString(),
                                       style: regular.copyWith(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,
@@ -144,11 +153,15 @@ class ChatContent extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                        subtitle: conversationController.isConversationLoading.value
+                        subtitle: conversationController
+                                .isConversationLoading.value
                             ? const Text('Last Message Loading')
                             : conversation?.lastMessage == null ||
-                                    ((conversation?.lastMessage?.content ?? "").isEmpty &&
-                                        (conversation?.lastMessage?.attachments?.isEmpty ?? true))
+                                    ((conversation?.lastMessage?.content ?? "")
+                                            .isEmpty &&
+                                        (conversation?.lastMessage?.attachments
+                                                ?.isEmpty ??
+                                            true))
                                 ? Text(
                                     "Join at ${timeAgo(DateTime.tryParse(conversation?.createdAt ?? "") ?? DateTime.now())}",
                                     style: regular.copyWith(
@@ -160,9 +173,13 @@ class ChatContent extends StatelessWidget {
                                     children: [
                                       Flexible(
                                         child: Text(
-                                          (conversation?.lastMessage?.content?.isEmpty ?? true)
+                                          (conversation?.lastMessage?.content
+                                                      ?.isEmpty ??
+                                                  true)
                                               ? "${conversation?.lastMessage?.attachments?.firstOrNull?.type ?? 'No'} Message Sent"
-                                              : conversation?.lastMessage?.content ?? "",
+                                              : conversation
+                                                      ?.lastMessage?.content ??
+                                                  "",
                                           style: regular.copyWith(
                                             fontSize: 11.sp,
                                             color: Get.theme.disabledColor,

@@ -32,14 +32,16 @@ class _MyFollowersState extends State<MyFollowers> {
     super.initState();
   }
 
-  RefreshController followerRefreshController = RefreshController(initialRefresh: false);
+  RefreshController followerRefreshController =
+      RefreshController(initialRefresh: false);
   void followerRefresh() async {
     await userController.getUserFollower();
     followerRefreshController.refreshCompleted();
   }
 
   void followerLoading() async {
-    await userController.getUserFollower(next: userController.followerList.last.followedAt);
+    await userController.getUserFollower(
+        next: userController.followerList.last.followedAt);
     followerRefreshController.loadComplete();
   }
 
@@ -49,21 +51,26 @@ class _MyFollowersState extends State<MyFollowers> {
       return SmartRefresher(
         enablePullDown: true,
         enablePullUp: true,
-        header: CusomHeaderWidget(),
+        header: CustomHeaderWidget(),
         footer: CustomFooterWidget(),
         controller: followerRefreshController,
         onRefresh: followerRefresh,
         onLoading: followerLoading,
-        child: !userController.isFollowerLoading.value && userController.followerList.isEmpty
+        child: !userController.isFollowerLoading.value &&
+                userController.followerList.isEmpty
             ? const NoDataWidget()
             : ListView.builder(
                 physics: const BouncingScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                   horizontal: 8.w,
                 ),
-                itemCount: userController.isFollowerLoading.value ? 10 : (userController.followerList).length,
+                itemCount: userController.isFollowerLoading.value
+                    ? 10
+                    : (userController.followerList).length,
                 itemBuilder: (context, index) {
-                  var user = userController.isFollowerLoading.value ? null : userController.followerList[index];
+                  var user = userController.isFollowerLoading.value
+                      ? null
+                      : userController.followerList[index];
                   return Skeletonizer(
                     enabled: userController.isFollowerLoading.value,
                     // effect: ShimmerEffect(
@@ -75,9 +82,12 @@ class _MyFollowersState extends State<MyFollowers> {
                     child: ListTile(
                       onTap: () {
                         ProductDetailsController productDetailsController =
-                            Get.put(ProductDetailsController(), tag: user?.follower?.id.toString());
-                        productDetailsController.selectUserId = user?.follower?.id ?? '';
-                        productDetailsController.getUserByUId(userId: user?.follower?.id ?? '');
+                            Get.put(ProductDetailsController(),
+                                tag: user?.follower?.id.toString());
+                        productDetailsController.selectUserId =
+                            user?.follower?.id ?? '';
+                        productDetailsController.getUserByUId(
+                            userId: user?.follower?.id ?? '');
                         Get.to(
                           () => ClientProfileView(
                             userId: user?.follower?.id ?? '',
@@ -107,7 +117,9 @@ class _MyFollowersState extends State<MyFollowers> {
                         ),
                       ),
                       subtitle: Text(
-                        DateFormat('MMMM dd yyyy').format(DateTime.tryParse(user?.followedAt ?? '') ?? DateTime.now()),
+                        DateFormat('MMMM dd yyyy').format(
+                            DateTime.tryParse(user?.followedAt ?? '') ??
+                                DateTime.now()),
                         style: regular.copyWith(
                           fontSize: 10.sp,
                         ),

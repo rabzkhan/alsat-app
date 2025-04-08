@@ -6,7 +6,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../config/theme/app_text_theme.dart';
 
-smsConfirmation({required String phoneNumber, required String message}) {
+smsConfirmation(
+    {required String phoneNumber,
+    required String message,
+    bool isFromHome = false}) {
   Get.dialog(
     Center(
       child: BackdropFilter(
@@ -45,7 +48,8 @@ smsConfirmation({required String phoneNumber, required String message}) {
                 Text(
                   "To authenticate, a message will be sent from the number you entered to $phoneNumber.",
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 20.verticalSpace,
                 SizedBox(
@@ -56,7 +60,8 @@ smsConfirmation({required String phoneNumber, required String message}) {
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -91,7 +96,11 @@ smsConfirmation({required String phoneNumber, required String message}) {
                             ),
                           ),
                           onPressed: () {
-                            Get.find<AuthController>().sendSms(phoneNumber, message);
+                            Get.find<AuthController>().sendSms(
+                              phoneNumber,
+                              message,
+                              isFromHome: isFromHome,
+                            );
                           },
                           child: Text(
                             "Send Message",
@@ -108,7 +117,10 @@ smsConfirmation({required String phoneNumber, required String message}) {
                 Text(
                   "By continuing, you consent to send this message. \nStandard rates may apply.",
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: Colors.grey.shade700),
                 )
               ],
             ),

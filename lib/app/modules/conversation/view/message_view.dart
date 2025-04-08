@@ -283,7 +283,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     physics: const BouncingScrollPhysics(),
                     enablePullDown: false,
                     enablePullUp: true,
-                    header: CusomHeaderWidget(),
+                    header: CustomHeaderWidget(),
                     footer: CustomFooterWidget(),
                     controller: conversationController.refreshMessageController,
                     onRefresh: conversationController.onRefreshMessage,
@@ -296,23 +296,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 isShowIcon: false,
                                 title: localLanguage.no_messages,
                               )
-                            : AnimatedList(
-                                key: conversationController.animatedListKey,
+                            : ListView.builder(
                                 reverse: true,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 16.0),
                                 controller:
                                     conversationController.scrollController,
                                 physics: const BouncingScrollPhysics(),
-                                initialItemCount:
+                                itemCount:
                                     conversationController.coverMessage.length,
-                                itemBuilder: (context, index, animation) {
+                                itemBuilder: (context, index) {
                                   final message = conversationController
                                       .coverMessage[index];
-                                  return SizeTransition(
-                                    sizeFactor: animation,
-                                    child: MessageTile(message: message),
-                                  );
+                                  return MessageTile(message: message);
                                 },
                               ),
                   );
