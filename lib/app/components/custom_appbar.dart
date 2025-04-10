@@ -1,3 +1,4 @@
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../common/const/image_path.dart';
@@ -56,12 +57,17 @@ class CustomAppBar extends StatelessWidget {
           4.horizontalSpace,
           const Spacer(),
           if (isShowLogo)
-            Padding(
-              padding: EdgeInsets.all(6.r),
-              child: title ??
-                  Image.asset(
-                    logo,
-                  ),
+            InkWell(
+              onTap: () {
+                // MySharedPref.clear();
+              },
+              child: Padding(
+                padding: EdgeInsets.all(6.r),
+                child: title ??
+                    Image.asset(
+                      logo,
+                    ),
+              ),
             ),
           const Spacer(),
           if (!isShowFilter && !isShowSearch) const Spacer(),

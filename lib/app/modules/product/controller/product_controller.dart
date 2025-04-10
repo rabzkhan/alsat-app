@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';
@@ -116,56 +117,72 @@ class ProductController extends GetxController {
 
   // field calculated
   calculateFilledProductFields() {
+    bool isCar = selectCategory.value?.filter?.toLowerCase() == 'car' ||
+        (selectSubCategory.value?.filter ?? "").toLowerCase() == "car";
+    bool isRealEstate = (selectCategory.value?.filter ?? '')
+            .toLowerCase()
+            .contains('real_estate') ||
+        (selectSubCategory.value?.filter ?? '')
+            .toLowerCase()
+            .contains('real_estate');
+    bool isPhone = selectCategory.value?.filter?.toLowerCase() == 'phone' ||
+        selectSubCategory.value?.filter?.toLowerCase() == 'phone';
+
     //-- Category check to find the total field --//
+    totalProductFiledCount.value = 0;
+    totalProductFiled.value = 0;
     if (selectCategory.value != null) {
-      if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
+      if (isCar) {
+        totalProductFiled.value = 11;
+      } else if (isRealEstate) {
         totalProductFiled.value = 9;
-      }
-      if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
-        totalProductFiled.value = 7;
-      }
-      if (selectCategory.value?.name?.toLowerCase() == 'phone') {
-        totalProductFiled.value = 3;
+      } else if (isPhone) {
+        totalProductFiled.value = 5;
+      } else {
+        totalProductFiled.value = 4;
       }
     }
+    // log('isCar: $isCar isRealEstate: $isRealEstate isPhone: $isPhone: $totalProductFiled');
     int filledCount = 0;
     if (selectCategory.value != null) {
-      if (selectCategory.value?.name?.toLowerCase() == 'automobile') {
+      if (isCar) {
         if (selectCategory.value != null) filledCount++;
+        if (selectSubCategory.value != null) filledCount++;
         if (selectedBrand.value != null) filledCount++;
         if (selectedModel.value != null) filledCount++;
         if (selectedBodyType.value.isNotEmpty) filledCount++;
         if (selectedTransmission.value.isNotEmpty) filledCount++;
         if (selectedEngineType.value.isNotEmpty) filledCount++;
-        //if (selectedPassed.value.isNotEmpty) filledCount++;
         if (selectedYear.value.isNotEmpty) filledCount++;
         if (selectedColor.isNotEmpty) filledCount++;
-        // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        // if (productNameController.text.trim().isNotEmpty) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
         // if (vinCode.text.trim().isNotEmpty) filledCount++;
-      }
-      if (selectCategory.value?.name?.toLowerCase() == 'real estate') {
+      } else if (isRealEstate) {
         if (selectCategory.value != null) filledCount++;
+        if (selectSubCategory.value != null) filledCount++;
         if ((estateDealType.value ?? "").isNotEmpty) filledCount++;
         if (estateAddressController.text.trim().isNotEmpty) filledCount++;
         if ((estateType.value ?? '').isNotEmpty) filledCount++;
-        filledCount++;
-        // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-        // if (productNameController.text.trim().isNotEmpty) filledCount++;
-      }
-      if (selectCategory.value?.name?.toLowerCase() == 'phone') {
+        if (selectFloor.value.isNotEmpty) filledCount++;
+        if (selectRoom.value.isNotEmpty) filledCount++;
+        if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
+        if (productNameController.text.trim().isNotEmpty) filledCount++;
+      } else if (isPhone) {
         if (selectCategory.value != null) filledCount++;
+        if (selectSubCategory.value != null) filledCount++;
         if (productNameController.text.trim().isNotEmpty) filledCount++;
         if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         if (selectedPhoneBrand.isNotEmpty) filledCount++;
       } else {
         if (selectCategory.value != null) filledCount++;
+        if (selectSubCategory.value != null) filledCount++;
         if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
         if (productNameController.text.trim().isNotEmpty) filledCount++;
       }
     } else {
-      // if (productDescriptionController.text.trim().isNotEmpty) filledCount++;
-      if (productNameController.text.trim().isNotEmpty) filledCount++;
+      totalProductFiledCount.value = 0;
+      totalProductFiled.value = 1;
     }
     totalProductFiledCount.value = filledCount;
   }
@@ -283,7 +300,9 @@ class ProductController extends GetxController {
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,
       data: body,
-      onLoading: () {},
+      onLoading: () {
+        isProductPosting.value = true;
+      },
       onSuccess: (response) async {
         isProductPosting.value = false;
         CustomSnackBar.showCustomToast(
@@ -296,8 +315,8 @@ class ProductController extends GetxController {
         return true;
       },
       onError: (p0) {
-        log('Product Post Error ${p0.message}');
         isProductPosting.value = false;
+        log('Product Post Error ${p0.statusCode}');
         CustomSnackBar.showCustomToast(color: Colors.red, message: p0.message);
         return false;
       },

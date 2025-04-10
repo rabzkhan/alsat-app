@@ -133,6 +133,7 @@ class ConversationController extends GetxController {
   RefreshController conversationRefreshController =
       RefreshController(initialRefresh: false);
   void conversationRefresh() async {
+    connectToMqtt();
     await getConversations();
     conversationRefreshController.refreshCompleted();
   }

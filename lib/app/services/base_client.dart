@@ -41,7 +41,7 @@ class BaseClient {
     int cacheAgeInMinute = 60,
     Map<String, dynamic>? queryParameters,
     required Function(Response response) onSuccess,
-    Function(ApiException)? onError,
+    Function(ConnectionException)? onError,
     Function(dynamic data)? onCacheData,
     Function(int value, int progress)? onReceiveProgress,
     Function(int total, int progress)?
@@ -98,182 +98,52 @@ class BaseClient {
           queryParameters: queryParameters,
           options: Options(headers: headers),
         );
-      } else {
+      } else if (requestType == DioRequestType.delete) {
         response = await _dio.delete(
           url,
           data: data,
-          queryParameters: queryParameters ?? {},
-          options: Options(headers: headers ?? {}),
+          queryParameters: queryParameters,
+          options: Options(headers: headers),
         );
+      } else {
+        throw Exception("Invalid request type");
       }
-      // 3) return response (api done successfully)
       await onSuccess(response);
     } on DioException catch (error) {
-      // dio error (api reach the server but not performed successfully
-      _handleDioError(error: error, url: url, onError: onError);
-    } on SocketException {
-      // No internet connection
-      _handleSocketException(url: url, onError: onError);
+      log('error: $error');
+      log('error: ${"${error.response?.data['message'] ?? error.message}"}');
+      onError!(
+        ConnectionException(
+          url: error.requestOptions.path,
+          message: "${error.response?.data['message'] ?? error.message}",
+        ),
+      );
     } on TimeoutException {
-      // Api call went out of time
-      _handleTimeoutException(url: url, onError: onError);
+      onError!(ConnectionException(url: '', message: "Connection Timeout"));
     } catch (error, stackTrace) {
-      // print the line of code that throw unexpected exception
-      // log('error: ${error.toString()}-- $url--$queryParameters - $data');
-      Logger().e(stackTrace);
-      // unexpected error for example (parsing json error)
-      _handleUnexpectedException(url: url, onError: onError, error: error);
+      onError!(ConnectionException(
+          url: stackTrace.toString(), message: error.toString()));
     }
   }
+}
 
-  /// download file
-  download(
-      {required String url, // file url
-      required String savePath, // where to save file
-      Function(ApiException)? onError,
-      Function(int value, int progress)? onReceiveProgress,
-      required Function onSuccess}) async {
-    try {
-      await _dio.download(
-        url,
-        savePath,
-        options: Options(
-            receiveTimeout: const Duration(seconds: 10),
-            sendTimeout: const Duration(seconds: 10)),
-        onReceiveProgress: onReceiveProgress,
-      );
-      onSuccess();
-    } catch (error) {
-      var exception = ApiException(url: url, message: error.toString());
-      onError?.call(exception) ?? _handleError(error.toString());
+class ConnectionException implements Exception {
+  final String url;
+  final String message;
+  final int? statusCode;
+  final Response? response;
+  ConnectionException(
+      {required this.url,
+      required this.message,
+      this.response,
+      this.statusCode});
+  @override
+  toString() {
+    String result = '';
+    result += response?.data?['error'] ?? '';
+    if (result.isEmpty) {
+      result += message;
     }
-  }
-
-  /// handle unexpected error
-  static _handleUnexpectedException(
-      {Function(ApiException)? onError,
-      required String url,
-      required Object error}) {
-    if (onError != null) {
-      onError(ApiException(
-        message: error.toString(),
-        url: url,
-      ));
-    } else {
-      _handleError(error.toString());
-    }
-  }
-
-  /// handle timeout exception
-  static _handleTimeoutException(
-      {Function(ApiException)? onError, required String url}) {
-    if (onError != null) {
-      onError(ApiException(
-        message: AppLocalizations.of(getx.Get.context!)!.server_not_responding,
-        url: url,
-      ));
-    } else {
-      _handleError(
-          AppLocalizations.of(getx.Get.context!)!.server_not_responding);
-    }
-  }
-
-  /// handle timeout exception
-  static _handleSocketException(
-      {Function(ApiException)? onError, required String url}) {
-    if (onError != null) {
-      onError(ApiException(
-        message: AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
-        url: url,
-      ));
-    } else {
-      _handleError(
-          AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
-    }
-  }
-
-  /// handle Dio error
-  static _handleDioError(
-      {required DioException error,
-      Function(ApiException)? onError,
-      required String url}) {
-    if (error.response?.statusCode == 404) {
-      if (onError != null) {
-        return onError(ApiException(
-          message: AppLocalizations.of(getx.Get.context!)!.url_not_found,
-          url: url,
-          statusCode: 404,
-        ));
-      } else {
-        return _handleError(
-            AppLocalizations.of(getx.Get.context!)!.url_not_found);
-      }
-    }
-
-    // no internet connection
-    if (error.message != null &&
-        error.message!.toLowerCase().contains('socket')) {
-      if (onError != null) {
-        return onError(ApiException(
-          message:
-              AppLocalizations.of(getx.Get.context!)!.no_internet_connection,
-          url: url,
-        ));
-      } else {
-        return _handleError(
-            AppLocalizations.of(getx.Get.context!)!.no_internet_connection);
-      }
-    }
-
-    // check if the error is 500 (server problem)
-    if (error.response?.statusCode == 500) {
-      var exception = ApiException(
-        message: AppLocalizations.of(getx.Get.context!)!.server_error,
-        url: url,
-        statusCode: 500,
-      );
-
-      if (onError != null) {
-        return onError(exception);
-      } else {
-        return handleApiError(exception);
-      }
-    }
-    var responseData = error.response?.data;
-
-    String message;
-    if (responseData is Map && responseData.containsKey('result')) {
-      message = responseData['result'].toString();
-    } else if (responseData is List && responseData.isNotEmpty) {
-      message = responseData[0].toString();
-    } else {
-      message = error.message ?? 'Unexpected API Error!';
-    }
-
-    var exception = ApiException(
-      url: url,
-      message: message,
-      response: (error.response.toString().isEmpty) ? null : responseData,
-      statusCode: error.response?.statusCode,
-    );
-
-    if (onError != null) {
-      return onError(exception);
-    } else {
-      return handleApiError(exception);
-    }
-  }
-
-  /// handle error automaticly (if user didnt pass onError) method
-  /// it will try to show the message from api if there is no message
-  /// from api it will show the reason (the dio message)
-  static handleApiError(ApiException apiException) {
-    String msg = apiException.toString();
-    CustomSnackBar.showCustomErrorToast(message: msg);
-  }
-
-  /// handle errors without response (500, out of time, no internet,..etc)
-  static _handleError(String msg) {
-    CustomSnackBar.showCustomErrorToast(message: msg);
+    return result;
   }
 }

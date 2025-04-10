@@ -28,8 +28,8 @@ class _SplashViewState extends State<SplashView> {
       body: Center(
         child: Image.asset(
           'assets/icons/appicon.png',
-          height: 200,
-          width: 200,
+          height: 150,
+          width: 150,
         )
             .animate(
               onPlay: (controller) => controller.repeat(reverse: true),
