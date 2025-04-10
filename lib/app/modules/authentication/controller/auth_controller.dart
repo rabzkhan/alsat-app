@@ -156,6 +156,10 @@ class AuthController extends GetxController {
         await getProfile();
         isLoading.value = false;
         isLoggedIn.value = true;
+
+        Get.find<ConversationController>().authUserConversation();
+        Get.find<HomeController>().authUserFeatureValue();
+
         if (isFromHome) {
           Get.back();
           Get.back();

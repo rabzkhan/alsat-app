@@ -38,10 +38,13 @@ class OnboardingPage extends StatelessWidget {
                     padding: EdgeInsets.only(right: 8.sp),
                     child: TextButton.icon(
                       onPressed: () async {
-                        await MySharedPref.setOnboardingComplete(true); // Set onboarding as completed
+                        await MySharedPref.setOnboardingComplete(
+                            true); // Set onboarding as completed
                         splashController.currentIndexOnBoarding.value = 2;
-                        splashController.onBoardingPageController
-                            .animateToPage(2, duration: 400.ms, curve: Curves.linearToEaseOut);
+                        splashController.onBoardingPageController.animateToPage(
+                            2,
+                            duration: 400.ms,
+                            curve: Curves.linearToEaseOut);
                       },
                       icon: Text(
                         localLanguage.skip,
@@ -81,8 +84,11 @@ class OnboardingPage extends StatelessWidget {
                                 ),
                                 height: Get.height * .16,
                                 child: Image.asset(
-                                  onBoardingData[splashController.currentIndexOnBoarding.value].imageUrl,
-                                  key: ValueKey<int>(splashController.currentIndexOnBoarding.value),
+                                  onBoardingData[splashController
+                                          .currentIndexOnBoarding.value]
+                                      .imageUrl,
+                                  key: ValueKey<int>(splashController
+                                      .currentIndexOnBoarding.value),
 
                                   height: Get.height * .16,
                                   fit: BoxFit.fill,
@@ -97,10 +103,13 @@ class OnboardingPage extends StatelessWidget {
                             child: Column(
                               children: [
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 18.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 18.w),
                                   child: TextAnimator(
-                                    incomingEffect: WidgetTransitionEffects.incomingScaleUp(
-                                      duration: const Duration(milliseconds: 1000),
+                                    incomingEffect:
+                                        WidgetTransitionEffects.incomingScaleUp(
+                                      duration:
+                                          const Duration(milliseconds: 1000),
                                     ),
                                     e.title,
                                     textAlign: TextAlign.center,
@@ -112,19 +121,27 @@ class OnboardingPage extends StatelessWidget {
                                 ),
                                 8.verticalSpace,
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 40.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 40.w),
                                   child: TextAnimator(
                                     incomingEffect:
-                                        WidgetTransitionEffects.incomingScaleUp(delay: const Duration(milliseconds: 0)),
+                                        WidgetTransitionEffects.incomingScaleUp(
+                                            delay: const Duration(
+                                                milliseconds: 0)),
                                     // overflow: TextOverflow.ellipsis,
                                     maxLines: 3,
                                     textAlign: TextAlign.center,
                                     e.detail,
-                                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleSmall!
+                                        .copyWith(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w400,
-                                          color:
-                                              Get.theme.brightness == Brightness.dark ? Colors.white54 : Colors.black54,
+                                          color: Get.theme.brightness ==
+                                                  Brightness.dark
+                                              ? Colors.white54
+                                              : Colors.black54,
                                         ),
                                   ),
                                 ).animate().fadeIn(
@@ -132,12 +149,16 @@ class OnboardingPage extends StatelessWidget {
                                     ),
                                 const Spacer(),
                                 Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 40.w),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 40.w),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Obx(() {
-                                        return splashController.currentIndexOnBoarding.value < 2
+                                        return splashController
+                                                    .currentIndexOnBoarding
+                                                    .value <
+                                                2
                                             ? Expanded(
                                                 child: CupertinoButton.filled(
                                                   child: Text(
@@ -147,31 +168,45 @@ class OnboardingPage extends StatelessWidget {
                                                     ),
                                                   ),
                                                   onPressed: () {
-                                                    int value = splashController.currentIndexOnBoarding.value;
+                                                    int value = splashController
+                                                        .currentIndexOnBoarding
+                                                        .value;
 
                                                     value++;
-                                                    splashController.currentIndexOnBoarding.value = value;
-                                                    splashController.onBoardingPageController.animateToPage(
+                                                    splashController
+                                                        .currentIndexOnBoarding
+                                                        .value = value;
+                                                    splashController
+                                                        .onBoardingPageController
+                                                        .animateToPage(
                                                       value,
                                                       duration: 400.ms,
-                                                      curve: Curves.linearToEaseOut,
+                                                      curve: Curves
+                                                          .linearToEaseOut,
                                                     );
                                                   },
                                                 ),
                                               )
                                             : Expanded(
                                                 child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   TextButton(
                                                     onPressed: () async {
                                                       // AppHomeView
-                                                      await MySharedPref.setOnboardingComplete(true);
-                                                      Get.to(const LoginView(), transition: Transition.fadeIn);
+                                                      await MySharedPref
+                                                          .setOnboardingComplete(
+                                                              true);
+                                                      Get.to(const LoginView(),
+                                                          transition: Transition
+                                                              .fadeIn);
                                                     },
                                                     child: Text(
                                                       localLanguage.login,
-                                                      style: Get.theme.textTheme.titleSmall!.copyWith(
+                                                      style: Get.theme.textTheme
+                                                          .titleSmall!
+                                                          .copyWith(
                                                         fontSize: 14.sp,
                                                       ),
                                                     ),
@@ -196,7 +231,9 @@ class OnboardingPage extends StatelessWidget {
                                                   //   ),
                                                   // ),
                                                 ],
-                                              ).animate().fadeIn(delay: 600.ms));
+                                              )
+                                                    .animate()
+                                                    .fadeIn(delay: 600.ms));
                                       }),
                                     ],
                                   ),

@@ -3,6 +3,7 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/view/post_product_view.dart';
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -73,11 +74,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         return InkWell(
           onTap: () {
             if (authController.userDataModel.value.id == null && index >= 2) {
-              Get.to(
-                  const LoginView(
-                    isFromHome: true,
-                  ),
-                  transition: Transition.fadeIn);
+              showLoginRequiredDialog();
             } else if (index == 2) {
               Get.to(const PostProductView(), transition: Transition.fadeIn);
             } else {

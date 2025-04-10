@@ -126,6 +126,7 @@ class ConversationController extends GetxController {
   //--- Coversation List Pagenation ---//
   RefreshController conversationRefreshController = RefreshController(initialRefresh: false);
   void conversationRefresh() async {
+    connectToMqtt();
     await getConversations();
     conversationRefreshController.refreshCompleted();
   }

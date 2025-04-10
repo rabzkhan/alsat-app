@@ -1,7 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
+import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart' as path;
 
@@ -10,6 +15,7 @@ import 'package:crypto/crypto.dart';
 import '../app/modules/authentication/controller/auth_controller.dart';
 import '../app/modules/conversation/model/conversation_messages_res.dart';
 import '../app/modules/conversation/model/message_model.dart';
+import '../config/theme/app_text_theme.dart';
 
 String timeAgo(DateTime date) {
   final clock = DateTime.now();
@@ -542,4 +548,103 @@ ChatMessage convertMessageHelper(MessageModel element,
               element.replyTo!, selectUserInfo, authController),
     );
   }
+}
+
+Future<bool> showLoginRequiredDialog() async {
+  return await Get.dialog(
+    Center(
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+          margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+          width: Get.width,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20).r,
+            color: Colors.white,
+          ),
+          child: Material(
+            color: Colors.white,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                10.verticalSpace,
+                Text(
+                  "Login Required",
+                  style: Get.theme.textTheme.titleMedium!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                8.verticalSpace,
+                Text(
+                  "You need to log in to access this feature.",
+                  textAlign: TextAlign.center,
+                  style: Get.theme.textTheme.bodyMedium,
+                ),
+                20.verticalSpace,
+                SizedBox(
+                  height: 40.h,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 2,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
+                            side: BorderSide(
+                              color: Get.theme.primaryColor,
+                              width: 1,
+                            ),
+                            fixedSize: const Size.fromHeight(48),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                          ),
+                          child: Text(
+                            "Cancel",
+                            style: regular.copyWith(
+                              color: Get.theme.primaryColor,
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(Get.context!).pop(false);
+                          },
+                        ),
+                      ),
+                      10.horizontalSpace,
+                      Expanded(
+                        flex: 3,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            fixedSize: const Size.fromHeight(48),
+                            backgroundColor: Get.theme.primaryColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.r),
+                            ),
+                          ),
+                          onPressed: () {
+                            Get.back();
+                            Get.to(const LoginView(isFromHome: true),
+                                transition: Transition.fadeIn);
+                          },
+                          child: Text(
+                            "Log In",
+                            style: regular.copyWith(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }

@@ -1,6 +1,7 @@
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/authentication/view/login_view.dart';
+import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -76,12 +77,7 @@ class HomeSegmented extends StatelessWidget {
                   //   homeController.showPremium.value = true;
                   // }
                   if (authController.userDataModel.value.id == null) {
-                    Get.to(
-                      () => const LoginView(
-                        isFromHome: true,
-                      ),
-                      transition: Transition.rightToLeft,
-                    );
+                    showLoginRequiredDialog();
                   } else {
                     homeController.showPremium.value = true;
                   }
