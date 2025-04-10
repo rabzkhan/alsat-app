@@ -44,8 +44,7 @@ class BaseClient {
     Function(ConnectionException)? onError,
     Function(dynamic data)? onCacheData,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)?
-        onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
     Function? onLoading,
     dynamic data,
   }) async {
@@ -67,8 +66,7 @@ class BaseClient {
           ),
         );
         if (isDataCache) {
-          DataCacheService(apiEndPoint: url)
-              .setData(response.data, expiryTimeMinute: cacheAgeInMinute);
+          DataCacheService(apiEndPoint: url).setData(response.data, expiryTimeMinute: cacheAgeInMinute);
         }
       } else if (requestType == DioRequestType.post) {
         Logger().d(data.toString());
@@ -121,8 +119,7 @@ class BaseClient {
     } on TimeoutException {
       onError!(ConnectionException(url: '', message: "Connection Timeout"));
     } catch (error, stackTrace) {
-      onError!(ConnectionException(
-          url: stackTrace.toString(), message: error.toString()));
+      onError!(ConnectionException(url: stackTrace.toString(), message: error.toString()));
     }
   }
 }
@@ -132,15 +129,15 @@ class ConnectionException implements Exception {
   final String message;
   final int? statusCode;
   final Response? response;
-  ConnectionException(
-      {required this.url,
-      required this.message,
-      this.response,
-      this.statusCode});
+  ConnectionException({required this.url, required this.message, this.response, this.statusCode});
   @override
   toString() {
     String result = '';
-    result += response?.data?['error'] ?? '';
+    result += response?.data?['error'] ??
+        response?.data?['message'] ??
+        response?.data?['result'] ??
+        response?.data?['msg'] ??
+        '';
     if (result.isEmpty) {
       result += message;
     }
