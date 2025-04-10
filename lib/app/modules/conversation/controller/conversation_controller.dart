@@ -44,15 +44,11 @@ class ConversationController extends GetxController {
 
   //-- sent messages --//
   RxBool isSendingMessage = false.obs;
-  Future<void> sendMessageToServer(String messages,
-      {Map<String, dynamic>? map}) async {
-    MessageController messageController =
-        Get.put(MessageController(), tag: '${selectConversation.value?.id}');
+  Future<void> sendMessageToServer(String messages, {Map<String, dynamic>? map}) async {
+    MessageController messageController = Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     AuthController authController = Get.find();
     String uId = authController.userDataModel.value.id ?? "";
-    String? receiverId = (selectConversation.value?.participants ?? [])
-        .firstWhereOrNull((e) => e.id != uId)
-        ?.id;
+    String? receiverId = (selectConversation.value?.participants ?? []).firstWhereOrNull((e) => e.id != uId)?.id;
     Map<String, dynamic> messagesMap = receiverId == null
         ? {
             "sender_id": uId,
@@ -114,11 +110,9 @@ class ConversationController extends GetxController {
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         if (paginate == null) {
-          conversationList.value =
-              ConversationListRes.fromJson(data).data ?? [];
+          conversationList.value = ConversationListRes.fromJson(data).data ?? [];
         } else {
-          conversationList
-              .addAll(ConversationListRes.fromJson(data).data ?? []);
+          conversationList.addAll(ConversationListRes.fromJson(data).data ?? []);
         }
         conversationList.refresh();
         isConversationLoading.value = false;
@@ -130,8 +124,7 @@ class ConversationController extends GetxController {
   }
 
   //--- Coversation List Pagenation ---//
-  RefreshController conversationRefreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController conversationRefreshController = RefreshController(initialRefresh: false);
   void conversationRefresh() async {
     connectToMqtt();
     await getConversations();
@@ -147,8 +140,7 @@ class ConversationController extends GetxController {
   RxList<MessageModel> selectConversationMessageList = RxList<MessageModel>();
   RxBool isConversationMessageLoading = true.obs;
   Rxn<ConversationModel> selectConversation = Rxn<ConversationModel>();
-  Rxn<ConversationMessagesRes> conversationMessagesRes =
-      Rxn<ConversationMessagesRes>();
+  Rxn<ConversationMessagesRes> conversationMessagesRes = Rxn<ConversationMessagesRes>();
   RxList<ChatMessage> coverMessage = RxList<ChatMessage>([]);
   AuthController authController = Get.find<AuthController>();
   Rxn<Participant> selectUserInfo = Rxn();
@@ -177,11 +169,9 @@ class ConversationController extends GetxController {
         Map<String, dynamic> data = response.data;
 
         conversationMessagesRes.value = ConversationMessagesRes.fromJson(data);
-        selectConversationMessageList.value =
-            conversationMessagesRes.value?.data?.messages ?? [];
+        selectConversationMessageList.value = conversationMessagesRes.value?.data?.messages ?? [];
 
-        Map<String, Participant>? map =
-            conversationMessagesRes.value?.data?.participants;
+        Map<String, Participant>? map = conversationMessagesRes.value?.data?.participants;
         map?.remove(authController.userDataModel.value.id.toString());
         selectUserInfo.value = map?.values.toList().firstOrNull;
         selectUserInfo.value ??= Participant(
@@ -190,8 +180,7 @@ class ConversationController extends GetxController {
         );
 
         for (var element in selectConversationMessageList) {
-          ChatMessage convertMessages = convertMessageHelper(
-              element, selectUserInfo.value, authController);
+          ChatMessage convertMessages = convertMessageHelper(element, selectUserInfo.value, authController);
           coverMessage.add(convertMessages);
         }
         coverMessage.refresh();
@@ -222,10 +211,8 @@ class ConversationController extends GetxController {
     client.logging(on: true);
     client.setProtocolV311();
 
-    final MqttConnectMessage connMessage = MqttConnectMessage()
-        .withClientIdentifier(clientID)
-        .authenticateAs(username, password)
-        .startClean();
+    final MqttConnectMessage connMessage =
+        MqttConnectMessage().withClientIdentifier(clientID).authenticateAs(username, password).startClean();
 
     client.connectionMessage = connMessage;
 
@@ -239,15 +226,12 @@ class ConversationController extends GetxController {
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
         //-- After Subscribe ---//
-        final MqttPublishMessage recMessage =
-            messages[0].payload as MqttPublishMessage;
-        final String messageJson = MqttPublishPayload.bytesToStringAsString(
-            recMessage.payload.message);
+        final MqttPublishMessage recMessage = messages[0].payload as MqttPublishMessage;
+        final String messageJson = MqttPublishPayload.bytesToStringAsString(recMessage.payload.message);
         // log("Received message JSON: $messageJson");
         try {
           final messageData = jsonDecode(messageJson);
-          MqttMessageModel messageModel =
-              MqttMessageModel.fromJson(messageData);
+          MqttMessageModel messageModel = MqttMessageModel.fromJson(messageData);
           log("MqttMessageModel  ${messageModel.chatId}");
           checkMessagesToPush(messageModel);
         } catch (e) {
@@ -278,16 +262,15 @@ class ConversationController extends GetxController {
       attachments: mqttMessageModel.attachments ?? [],
       status: mqttMessageModel.status ?? '',
     );
-    ConversationModel? conversation = conversationList
-        .firstWhereOrNull((element) => element.id == mqttMessageModel.chatId);
+    ConversationModel? conversation =
+        conversationList.firstWhereOrNull((element) => element.id == mqttMessageModel.chatId);
     //-- Check if conversation exist --//
     if (conversation == null) {
       getConversations();
     }
     //-- Check if conversation is selected --//
     if (selectConversation.value?.id == mqttMessageModel.chatId) {
-      List<ChatMessage> newMessage =
-          messageConvert(messageModel, selectUserInfo.value, authController);
+      List<ChatMessage> newMessage = messageConvert(messageModel, selectUserInfo.value, authController);
       for (var element in newMessage) {
         if (coverMessage.first.id != element.id) {
           coverMessage.insert(0, element);
@@ -327,8 +310,7 @@ class ConversationController extends GetxController {
     ProductModel? product,
   }) async {
     scrollToBottom();
-    MessageController controller =
-        Get.put(MessageController(), tag: '${selectConversation.value?.id}');
+    MessageController controller = Get.put(MessageController(), tag: '${selectConversation.value?.id}');
     ChatMessage message = ChatMessage(
       replyMessage: controller.selectReplyMessage.value,
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -424,8 +406,7 @@ class ConversationController extends GetxController {
   }
 
   //-- refresh controller for conversation --//
-  RefreshController refreshMessageController =
-      RefreshController(initialRefresh: false);
+  RefreshController refreshMessageController = RefreshController(initialRefresh: false);
 
   void onRefreshMessage() async {
     refreshMessageController.refreshCompleted();
@@ -433,9 +414,7 @@ class ConversationController extends GetxController {
 
   void onLoadingMessage() async {
     if (conversationMessagesRes.value?.hasMore ?? false) {
-      await getConversationsMessages(
-          next:
-              selectConversationMessageList.last.createdAt?.toIso8601String());
+      await getConversationsMessages(next: selectConversationMessageList.last.createdAt?.toIso8601String());
     }
     refreshMessageController.loadComplete();
   }
@@ -483,7 +462,7 @@ class ConversationController extends GetxController {
       },
       onSuccess: (response) async {
         isBlockUser.value = false;
-        CustomSnackBar.showCustomToast(message: 'User Blocked Successfully');
+        //CustomSnackBar.showCustomToast(message: 'User Blocked Successfully');
         isBlockingSuccess.value = true;
         getConversations();
         if (isBlock) Get.back(result: true);
@@ -491,8 +470,7 @@ class ConversationController extends GetxController {
         return true;
       },
       onError: (error) {
-        CustomSnackBar.showCustomToast(
-            message: 'Something went wrong', color: Colors.red);
+        CustomSnackBar.showCustomToast(message: 'Something went wrong', color: Colors.red);
         isBlockUser.value = false;
         isBlockingSuccess.value = false;
         log('blockUser Error: $error');
@@ -515,16 +493,14 @@ class ConversationController extends GetxController {
         log('sendReport: $response');
         isReport.value = false;
         Get.back();
-        CustomSnackBar.showCustomToast(
-            title: 'Reported', message: 'User Reported Successfully');
+        CustomSnackBar.showCustomToast(title: 'Reported', message: 'User Reported Successfully');
         return true;
       },
       onError: (error) {
         log('sendReport Error: $error');
         isReport.value = false;
         Get.back();
-        CustomSnackBar.showCustomErrorToast(
-            title: 'Error', message: 'Something went wrong');
+        CustomSnackBar.showCustomErrorToast(title: 'Error', message: 'Something went wrong');
         return false;
       },
     );

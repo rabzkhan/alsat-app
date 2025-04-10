@@ -29,14 +29,13 @@ class LoginView extends GetView<AuthController> {
         centerTitle: true,
         backgroundColor: Get.theme.scaffoldBackgroundColor,
         title: Image.asset(
-          logo,
-          width: 100.w,
-          height: 40.h,
+          textLogo,
+          width: 160.w,
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(150.h),
+          preferredSize: Size.fromHeight(180.h),
           child: Padding(
-            padding: EdgeInsets.only(bottom: 15.h),
+            padding: EdgeInsets.only(bottom: 35.h),
             child: CircleAvatar(
               radius: 60.r,
               backgroundColor: Get.theme.disabledColor.withValues(alpha: .05),
@@ -45,7 +44,7 @@ class LoginView extends GetView<AuthController> {
                   await MySharedPref.clear();
                 },
                 child: Image.asset(
-                  signUpLogo,
+                  loginLogo,
                   height: 100.h,
                 ),
               ),
@@ -55,11 +54,12 @@ class LoginView extends GetView<AuthController> {
       ),
       body: Container(
         decoration: BoxDecoration(
-            color: Get.theme.appBarTheme.backgroundColor!.withValues(alpha: .7),
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(60.r),
-              topRight: Radius.circular(60.r),
-            )),
+          color: Get.theme.appBarTheme.backgroundColor!.withValues(alpha: .7),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(60.r),
+            topRight: Radius.circular(60.r),
+          ),
+        ),
         child: FormBuilder(
           key: controller.loginFormKey,
           child: ListView(
@@ -68,7 +68,7 @@ class LoginView extends GetView<AuthController> {
               vertical: 30.h,
             ),
             children: [
-              30.verticalSpace,
+              40.verticalSpace,
               FormBuilderTextField(
                 name: 'phone',
                 controller: controller.phoneNumberController.value,
@@ -97,12 +97,8 @@ class LoginView extends GetView<AuthController> {
               ),
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
-                  final minutes = (controller.countdown.value ~/ 60)
-                      .toString()
-                      .padLeft(2, '0');
-                  final seconds = (controller.countdown.value % 60)
-                      .toString()
-                      .padLeft(2, '0');
+                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
                   return Column(
                     children: [
                       20.verticalSpace,
@@ -144,17 +140,13 @@ class LoginView extends GetView<AuthController> {
                       onPressed: controller.hasStartedOtpProcess.value
                           ? null // Disable the login button if OTP process has started
                           : () {
-                              if (controller.loginFormKey.currentState
-                                      ?.saveAndValidate() ??
-                                  false) {
+                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
                                 controller.getOtp(isFromHome: isFromHome);
                               }
                             },
                       child: Obx(() {
                         return Text(
-                          controller.isLoading.value
-                              ? "${localLanguage.verifying}.."
-                              : localLanguage.verify_and_login,
+                          controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
                         );
                       }),
@@ -171,8 +163,7 @@ class LoginView extends GetView<AuthController> {
                         if (isFromHome) {
                           Get.back();
                         } else {
-                          Get.offAll(const AppHomeView(),
-                              transition: Transition.fadeIn);
+                          Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
                         }
                       },
                       child: Text(

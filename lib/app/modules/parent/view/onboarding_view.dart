@@ -25,12 +25,10 @@ class OnboardingPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         centerTitle: true,
-        title: Padding(
-          padding: EdgeInsets.all(6.r),
-          child: Image.asset(
-            logo,
-            height: 45,
-          ),
+        title: Image.asset(
+          textLogo,
+          fit: BoxFit.contain,
+          width: 160.w,
         ),
         actions: [
           Obx(() {

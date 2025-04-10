@@ -1,10 +1,8 @@
 class Constants {
   static const baseUrl = 'https://alsat-api.flutterrwave.pro/app/v1';
   static const filter = '/posts';
-
   static const getOtp = '/otp';
   static const varifyOtp = '/join';
-
   static const userProfile = '/users/profile';
   static const userConversationList = '/chats';
   static const conversationMessages = '/messages';
@@ -21,6 +19,5 @@ class Constants {
   static const following = '/users/following';
   static const carBrandEndPoint = '/carBrands?limit=200000';
   static const upgradeToPremium = '/users/upgrade';
-  static const updateProfilePicture =
-      '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
+  static const updateProfilePicture = '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
 }
