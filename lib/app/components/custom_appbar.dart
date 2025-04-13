@@ -61,13 +61,10 @@ class CustomAppBar extends StatelessWidget {
               onTap: () {
                 // MySharedPref.clear();
               },
-              child: Padding(
-                padding: EdgeInsets.all(6.r),
-                child: title ??
-                    Image.asset(
-                      logo,
-                    ),
-              ),
+              child: title ??
+                  Image.asset(
+                    textLogo,
+                  ),
             ),
           const Spacer(),
           if (!isShowFilter && !isShowSearch) const Spacer(),

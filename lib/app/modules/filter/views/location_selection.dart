@@ -1,9 +1,12 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_colors.dart';
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../../config/translations/localization_service.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/models/location_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,14 +21,28 @@ class LocationSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FilterController filterController = Get.find();
-    final localLanguage = AppLocalizations.of(Get.context!)!;
+    LocalizationService localizationService = Get.put(LocalizationService());
+
+    // Get the current language code
+    final String localLang = localizationService.locale.value.languageCode;
+
+    // Choose the right list of provinces based on the selected language
+    List<Province> provincesList = [];
+    if (localLang == 'en') {
+      provincesList = provinces;
+    } else if (localLang == 'tr') {
+      provincesList = provinces_tr;
+    } else if (localLang == 'ru') {
+      provincesList = provinces_ru;
+    }
+
     return Material(
       child: CupertinoPageScaffold(
         navigationBar: CupertinoNavigationBar(
-          middle: Text(
-            localLanguage.select_location,
-            style: bold.copyWith(fontSize: 16.sp),
-          ),
+          // middle: Text(
+          //   localLanguage.select_location,
+          //   style: bold.copyWith(fontSize: 16.sp),
+          // ),
           trailing: IconButton(
             icon: Icon(
               Icons.check,
@@ -44,12 +61,15 @@ class LocationSelection extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 16.w),
               child: Obx(() {
+                LocalizationService localizationService = Get.put(LocalizationService());
+                String localLang = localizationService.locale.value.languageCode;
+
                 return Column(
                   children: [
                     ...List.generate(
-                      provinces.length,
+                      provincesList.length, // Use the filtered provinces list
                       (provinceIndex) {
-                        final province = provinces[provinceIndex];
+                        final province = provincesList[provinceIndex];
                         return Padding(
                           padding: EdgeInsets.only(bottom: 6.h),
                           child: ExpansionTile(
