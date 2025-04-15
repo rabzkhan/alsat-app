@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
+
 import 'package:path/path.dart' as path;
 
 import 'package:crypto/crypto.dart';
@@ -16,6 +16,7 @@ import '../app/modules/authentication/controller/auth_controller.dart';
 import '../app/modules/conversation/model/conversation_messages_res.dart';
 import '../app/modules/conversation/model/message_model.dart';
 import '../config/theme/app_text_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 String timeAgo(DateTime date) {
   final clock = DateTime.now();
@@ -189,8 +190,7 @@ String formatFollowers(int followers) {
   }
 }
 
-List<ChatMessage> messageConvert(MessageModel element,
-    Participant? selectUserInfo, AuthController authController) {
+List<ChatMessage> messageConvert(MessageModel element, Participant? selectUserInfo, AuthController authController) {
   List<ChatMessage> coverMessage = [];
   if (element.attachments != null && (element.attachments ?? []).isNotEmpty) {
     for (Attachment e in element.attachments ?? []) {
@@ -216,8 +216,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -251,8 +250,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -286,8 +284,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -321,8 +318,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -356,8 +352,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -391,8 +386,7 @@ List<ChatMessage> messageConvert(MessageModel element,
                     text: element.replyTo?.content ?? '',
                     messageType: ChatMessageType.text,
                     messageStatus: MessageStatus.viewed,
-                    isSender: authController.userDataModel.value.id ==
-                        element.replyTo?.senderId,
+                    isSender: authController.userDataModel.value.id == element.replyTo?.senderId,
                     time: element.replyTo?.createdAt ?? DateTime.now(),
                     otherUser: ChatUser(
                       id: selectUserInfo?.id ?? "",
@@ -426,8 +420,7 @@ List<ChatMessage> messageConvert(MessageModel element,
   return coverMessage;
 }
 
-ChatMessage convertMessageHelper(MessageModel element,
-    Participant? selectUserInfo, AuthController authController) {
+ChatMessage convertMessageHelper(MessageModel element, Participant? selectUserInfo, AuthController authController) {
   log('convertMessageHelper: ${authController.userDataModel.value.id}-- #${element.senderId}');
   if (element.attachments?.firstOrNull?.type == 'image') {
     return ChatMessage(
@@ -443,10 +436,8 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: element.attachments?.firstOrNull?.data,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   }
   if (element.attachments?.firstOrNull?.type == 'video') {
@@ -463,10 +454,8 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: element.attachments?.firstOrNull?.data,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   }
   if (element.attachments?.firstOrNull?.type == 'location') {
@@ -483,10 +472,8 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: element.attachments?.firstOrNull?.data,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   }
   if (element.attachments?.firstOrNull?.type == 'audio') {
@@ -503,10 +490,8 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: element.attachments?.firstOrNull?.data,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   }
   if (element.attachments?.firstOrNull?.type == 'post') {
@@ -523,10 +508,8 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: element.attachments?.firstOrNull?.data,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   } else {
     return ChatMessage(
@@ -542,15 +525,14 @@ ChatMessage convertMessageHelper(MessageModel element,
         imageUrl: selectUserInfo?.picture ?? '',
       ),
       data: null,
-      replyMessage: element.replyTo == null
-          ? null
-          : convertMessageHelper(
-              element.replyTo!, selectUserInfo, authController),
+      replyMessage:
+          element.replyTo == null ? null : convertMessageHelper(element.replyTo!, selectUserInfo, authController),
     );
   }
 }
 
 Future<bool> showLoginRequiredDialog() async {
+  final localLanguage = AppLocalizations.of(Get.context!)!;
   return await Get.dialog(
     Center(
       child: BackdropFilter(
@@ -570,14 +552,14 @@ Future<bool> showLoginRequiredDialog() async {
               children: [
                 10.verticalSpace,
                 Text(
-                  "Login Required",
+                  localLanguage.login_required,
                   style: Get.theme.textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 8.verticalSpace,
                 Text(
-                  "You need to log in to access this feature.",
+                  localLanguage.login_required_long,
                   textAlign: TextAlign.center,
                   style: Get.theme.textTheme.bodyMedium,
                 ),
@@ -590,8 +572,7 @@ Future<bool> showLoginRequiredDialog() async {
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor:
-                                Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -602,7 +583,7 @@ Future<bool> showLoginRequiredDialog() async {
                             ),
                           ),
                           child: Text(
-                            "Cancel",
+                            localLanguage.cancel,
                             style: regular.copyWith(
                               color: Get.theme.primaryColor,
                             ),
@@ -626,11 +607,10 @@ Future<bool> showLoginRequiredDialog() async {
                           ),
                           onPressed: () {
                             Get.back();
-                            Get.to(const LoginView(isFromHome: true),
-                                transition: Transition.fadeIn);
+                            Get.to(const LoginView(isFromHome: true), transition: Transition.fadeIn);
                           },
                           child: Text(
-                            "Log In",
+                            localLanguage.login,
                             style: regular.copyWith(
                               color: Colors.white,
                             ),
