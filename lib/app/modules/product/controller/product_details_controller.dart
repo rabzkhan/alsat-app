@@ -12,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
@@ -315,6 +316,7 @@ class ProductDetailsController extends GetxController {
         selectPostProductModel.value = null;
       },
       onSuccess: (response) {
+        Logger().d(response.data.toString());
         Map<String, dynamic> data = response.data;
         selectPostProductModel.value = ProductModel.fromJson(data);
         isProductDetailsLoading.value = false;

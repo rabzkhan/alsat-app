@@ -33,7 +33,8 @@ class AuthController extends GetxController {
   final signUpFormKey = GlobalKey<FormBuilderState>();
   final loginFormKey = GlobalKey<FormBuilderState>();
 
-  RxString countryCode = "+88".obs;
+  //RxString countryCode = "+88".obs;
+  RxString countryCode = "+993".obs;
   final phoneNumberController = TextEditingController().obs;
 
   RxBool isLoading = false.obs;
@@ -106,8 +107,8 @@ class AuthController extends GetxController {
     final Uri smsUri = Uri(
       scheme: 'sms',
 
-      //path: "+99365555109",
-      path: "01701034287",
+      path: "65555109",
+      //path: "01701034287",
       queryParameters: <String, String>{
         'body': message,
       },
@@ -387,7 +388,6 @@ class AuthController extends GetxController {
     MySharedPref.setIsLoggedIn(false);
     MySharedPref.setAuthRefreshToken(null);
     MySharedPref.setIsLoggedIn(false);
-
     await logoutDevices(isShowDialog: isShowDialog);
   }
 

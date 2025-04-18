@@ -152,10 +152,17 @@ class AllUserTile extends StatelessWidget {
                           3.horizontalSpace,
                           Text(
                             localLanguage.buyer_protection,
-                            style: regular.copyWith(
-                              fontSize: 12.sp,
-                            ),
-                          )
+                            style: (premiumUserModel.protectionLabel ?? false)
+                                ? regular.copyWith(
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.w600,
+                                    fontStyle: FontStyle.italic,
+                                  )
+                                : regular.copyWith(
+                                    fontSize: 12.sp,
+                                    color: Get.theme.disabledColor.withOpacity(0.2),
+                                  ),
+                          ),
                         ],
                       ),
                       20.horizontalSpace,

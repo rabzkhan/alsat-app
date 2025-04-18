@@ -69,32 +69,25 @@ class PremiumContent extends StatelessWidget {
           SizedBox(
             height: 68.h,
             child: Obx(() {
+              List<CategoriesModel> filteredCategories = homeController.isCategoryLoading.value
+                  ? List.generate(10, (_) => CategoriesModel())
+                  : homeController.categories.where((category) {
+                      final name = category.name?.toLowerCase() ?? '';
+                      return !name.startsWith('free') && !name.startsWith('lost');
+                    }).toList();
               return Skeletonizer(
                 enabled: homeController.isCategoryLoading.value,
-                // effect: ShimmerEffect(
-                //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                //   highlightColor: Colors.white,
-                //   begin: Alignment.centerLeft,
-                //   end: Alignment.centerRight,
-                // ),
                 child: ListView.separated(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
                   separatorBuilder: (context, index) => 10.horizontalSpace,
                   physics: const BouncingScrollPhysics(),
                   scrollDirection: Axis.horizontal,
-                  itemCount: homeController.isCategoryLoading.value
-                      ? 10
-                      : homeController.categories.length,
+                  itemCount: filteredCategories.length,
                   itemBuilder: (context, index) {
-                    CategoriesModel categoriesModel =
-                        homeController.isCategoryLoading.value
-                            ? CategoriesModel()
-                            : homeController.categories[index];
+                    CategoriesModel categoriesModel = filteredCategories[index];
                     return GestureDetector(
                       onTap: () {
-                        homeController.category.value =
-                            homeController.categories[index];
+                        homeController.category.value = categoriesModel;
                         homeController.fetchPremiumUser(isFilter: false);
                         filterController.clearAddress();
                         Get.to(
@@ -105,9 +98,7 @@ class PremiumContent extends StatelessWidget {
                       child: Container(
                         height: 70.h,
                         width: 100.h,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 10.w,
-                        ),
+                        padding: EdgeInsets.symmetric(horizontal: 10.w),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(10.r),
@@ -116,8 +107,7 @@ class PremiumContent extends StatelessWidget {
                               color: Colors.grey.withOpacity(0.1),
                               spreadRadius: 1,
                               blurRadius: 1,
-                              offset: const Offset(
-                                  0, 1), // changes position of shadow
+                              offset: const Offset(0, 1),
                             ),
                           ],
                         ),
@@ -129,15 +119,13 @@ class PremiumContent extends StatelessWidget {
                               categoriesModel.icon.toString(),
                               width: 35.w,
                               height: 22.w,
-                              placeholderBuilder: (context) =>
-                                  const CupertinoActivityIndicator
-                                      .partiallyRevealed(),
+                              placeholderBuilder: (context) => const CupertinoActivityIndicator.partiallyRevealed(),
                             ),
                             5.verticalSpace,
                             Text(
+                              categoriesModel.name ?? "",
                               maxLines: 1,
                               textAlign: TextAlign.center,
-                              categoriesModel.name ?? "",
                               style: TextStyle(
                                 fontSize: 13.sp,
                                 fontWeight: FontWeight.w400,
@@ -156,8 +144,7 @@ class PremiumContent extends StatelessWidget {
           //--- Premium Content ---//
 
           Padding(
-            padding: EdgeInsets.only(
-                top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
+            padding: EdgeInsets.only(top: 15.h, left: 15.w, right: 15.w, bottom: 15.h),
             child: TextFormField(
               controller: homeController.searchController,
               onFieldSubmitted: (value) {
@@ -221,8 +208,7 @@ class PremiumContent extends StatelessWidget {
                                 homeController.category.value = null;
                                 homeController.fetchPremiumUser(isFilter: true);
                                 Get.to(
-                                  const UserFilterResultView(
-                                      isBackFilter: false),
+                                  const UserFilterResultView(isBackFilter: false),
                                   transition: Transition.rightToLeft,
                                 );
                               },
@@ -277,16 +263,12 @@ class PremiumContent extends StatelessWidget {
               //   end: Alignment.centerRight,
               // ),
               child: ListView.builder(
-                itemCount: homeController.isPremiumLoading.value
-                    ? 10
-                    : homeController.premiumUserList.length,
+                itemCount: homeController.isPremiumLoading.value ? 10 : homeController.premiumUserList.length,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (context, index) {
                   UserDataModel premiumUserModel =
-                      homeController.isPremiumLoading.value
-                          ? UserDataModel()
-                          : homeController.premiumUserList[index];
+                      homeController.isPremiumLoading.value ? UserDataModel() : homeController.premiumUserList[index];
                   return AllUserTile(premiumUserModel: premiumUserModel);
                 },
               ),

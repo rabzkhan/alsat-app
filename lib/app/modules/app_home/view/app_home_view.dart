@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:alsat/app/components/app_drawer.dart';
 import 'package:alsat/app/components/bottom_navigation_bar.dart';
 import 'package:alsat/app/components/custom_appbar.dart';
+import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/component/category_content.dart';
 import 'package:alsat/app/modules/app_home/component/chat_content.dart';
 import 'package:alsat/app/modules/app_home/component/home_content.dart';
@@ -35,7 +36,118 @@ class _AppHomeViewState extends State<AppHomeView> {
   final UserController userController = Get.find();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // Future<bool> _onWillPop(AppLocalizations localLanguage) async {
+  //   return await Get.dialog(
+  //     Center(
+  //       child: BackdropFilter(
+  //         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+  //         child: Container(
+  //           padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.h),
+  //           margin: EdgeInsets.symmetric(horizontal: Get.width * 0.06),
+  //           width: Get.width,
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(20).r,
+  //             color: Colors.white,
+  //           ),
+  //           child: Material(
+  //             color: Colors.white,
+  //             child: Column(
+  //               mainAxisSize: MainAxisSize.min,
+  //               children: [
+  //                 10.verticalSpace,
+  //                 Text(
+  //                   localLanguage.confirmExit,
+  //                   style: Get.theme.textTheme.titleMedium!.copyWith(
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //                 8.verticalSpace,
+  //                 Text(
+  //                   localLanguage.doYouWantToGoBack,
+  //                   textAlign: TextAlign.center,
+  //                   style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+  //                 ),
+  //                 20.verticalSpace,
+  //                 SizedBox(
+  //                   height: 40.h,
+  //                   child: Row(
+  //                     children: [
+  //                       Expanded(
+  //                         flex: 2,
+  //                         child: OutlinedButton(
+  //                           style: OutlinedButton.styleFrom(
+  //                             backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+  //                             side: BorderSide(
+  //                               color: Get.theme.primaryColor,
+  //                               width: 1,
+  //                             ),
+  //                             fixedSize: const Size.fromHeight(48),
+  //                             shape: RoundedRectangleBorder(
+  //                               borderRadius: BorderRadius.circular(10.r),
+  //                             ),
+  //                           ),
+  //                           child: Text(
+  //                             localLanguage.no,
+  //                             style: regular.copyWith(
+  //                               color: Get.theme.primaryColor,
+  //                             ),
+  //                           ),
+  //                           onPressed: () {
+  //                             Navigator.of(context).pop(false);
+  //                           },
+  //                         ),
+  //                       ),
+  //                       10.horizontalSpace,
+  //                       Expanded(
+  //                         flex: 3,
+  //                         child: ElevatedButton(
+  //                           style: ElevatedButton.styleFrom(
+  //                             elevation: 0,
+  //                             fixedSize: const Size.fromHeight(48),
+  //                             backgroundColor: Get.theme.primaryColor,
+  //                             shape: RoundedRectangleBorder(
+  //                               borderRadius: BorderRadius.circular(10.r),
+  //                             ),
+  //                           ),
+  //                           onPressed: () async {
+  //                             Navigator.of(context).pop(true);
+  //                           },
+  //                           child: Text(
+  //                             localLanguage.yes,
+  //                             style: regular.copyWith(
+  //                               color: Colors.white,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+  DateTime? _lastPressedAt; // Declare this at the class level
+
   Future<bool> _onWillPop(AppLocalizations localLanguage) async {
+    final now = DateTime.now();
+
+    // Check if this is the first press or if too much time has passed
+    if (_lastPressedAt == null || now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+      _lastPressedAt = now;
+
+      CustomSnackBar.showCustomToast(
+        message: localLanguage.pressBackAgainToExit,
+      );
+
+      return false;
+    }
+
+    // Second press within 2 seconds → show confirmation dialog
     return await Get.dialog(
       Center(
         child: BackdropFilter(
@@ -64,8 +176,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                   Text(
                     localLanguage.doYouWantToGoBack,
                     textAlign: TextAlign.center,
-                    style:
-                        Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                   ),
                   20.verticalSpace,
                   SizedBox(
@@ -76,8 +187,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                           flex: 2,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor:
-                                  Get.theme.primaryColor.withOpacity(.1),
+                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
                               side: BorderSide(
                                 color: Get.theme.primaryColor,
                                 width: 1,
@@ -167,8 +277,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                         )
                       : null,
-                  isShowLogo: homeController.homeBottomIndex.value == 0 ||
-                      homeController.homeBottomIndex.value == 3,
+                  isShowLogo: homeController.homeBottomIndex.value == 0 || homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
                   action: homeController.homeBottomIndex.value == 0 ||
                           homeController.homeBottomIndex.value == 3 ||
@@ -198,16 +307,12 @@ class _AppHomeViewState extends State<AppHomeView> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(8.r),
                                       child: TextFormField(
-                                        controller:
-                                            filterController.searchController,
+                                        controller: filterController.searchController,
                                         onFieldSubmitted: (value) {
-                                          filterController.category.value =
-                                              null;
-                                          filterController
-                                              .isFilterLoading.value = true;
+                                          filterController.category.value = null;
+                                          filterController.isFilterLoading.value = true;
                                           filterController.filterMapPassed = {
-                                            "title": filterController
-                                                .searchText.value,
+                                            "title": filterController.searchText.value,
                                           };
                                           filterController.clearAddress();
                                           filterController.applyFilter();
@@ -217,27 +322,20 @@ class _AppHomeViewState extends State<AppHomeView> {
                                           );
                                         },
                                         onChanged: (value) {
-                                          filterController.searchText.value =
-                                              value;
+                                          filterController.searchText.value = value;
                                         },
                                         decoration: InputDecoration(
                                           suffixIcon: Obx(() {
-                                            return filterController
-                                                    .searchText.value.isEmpty
+                                            return filterController.searchText.value.isEmpty
                                                 ? const Text('')
                                                 : InkWell(
                                                     onTap: () {
-                                                      filterController
-                                                          .searchText
-                                                          .value = '';
-                                                      filterController
-                                                          .searchController
-                                                          .clear();
+                                                      filterController.searchText.value = '';
+                                                      filterController.searchController.clear();
                                                     },
                                                     child: Icon(
                                                       CupertinoIcons.xmark,
-                                                      color: Get
-                                                          .theme.disabledColor,
+                                                      color: Get.theme.disabledColor,
                                                     ),
                                                   );
                                           }),
@@ -248,8 +346,7 @@ class _AppHomeViewState extends State<AppHomeView> {
                                           hintStyle: TextStyle(
                                             fontSize: 14.sp,
                                             fontWeight: FontWeight.w400,
-                                            color: Get.theme.disabledColor
-                                                .withOpacity(.5),
+                                            color: Get.theme.disabledColor.withOpacity(.5),
                                           ),
                                           hintText: localLanguage.search_here,
                                           filled: true,
@@ -257,12 +354,10 @@ class _AppHomeViewState extends State<AppHomeView> {
                                           border: InputBorder.none,
                                           enabledBorder: InputBorder.none,
                                           focusedBorder: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(8.r),
+                                            borderRadius: BorderRadius.circular(8.r),
                                             borderSide: BorderSide(
                                               width: .6,
-                                              color: Get.theme.primaryColor
-                                                  .withOpacity(.4),
+                                              color: Get.theme.primaryColor.withOpacity(.4),
                                             ),
                                           ),
                                         ),
@@ -270,31 +365,24 @@ class _AppHomeViewState extends State<AppHomeView> {
                                     ),
                                   ),
                                   Obx(() {
-                                    return filterController
-                                            .searchText.value.isEmpty
+                                    return filterController.searchText.value.isEmpty
                                         ? const Center()
                                         : InkWell(
                                             onTap: () {
-                                              filterController.category.value =
-                                                  null;
-                                              filterController
-                                                  .isFilterLoading.value = true;
-                                              filterController.filterMapPassed =
-                                                  {
-                                                "title": filterController
-                                                    .searchText.value,
+                                              filterController.category.value = null;
+                                              filterController.isFilterLoading.value = true;
+                                              filterController.filterMapPassed = {
+                                                "title": filterController.searchText.value,
                                               };
                                               filterController.applyFilter();
                                               filterController.clearAddress();
                                               Get.to(
                                                 const FilterResultsView(),
-                                                transition:
-                                                    Transition.rightToLeft,
+                                                transition: Transition.rightToLeft,
                                               );
                                             },
                                             child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(left: 15.w),
+                                              padding: EdgeInsets.only(left: 15.w),
                                               child: const Icon(Icons.search),
                                             ),
                                           );

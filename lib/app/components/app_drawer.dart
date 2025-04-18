@@ -63,8 +63,7 @@ class AppDrawer extends StatelessWidget {
                       : ListTile(
                           onTap: () {
                             Get.back();
-                            Get.to(() => const MySettings(),
-                                transition: Transition.fadeIn);
+                            Get.to(() => const MySettings(), transition: Transition.fadeIn);
                           },
                           leading: CircleAvatar(
                             radius: 22.r,
@@ -72,8 +71,7 @@ class AppDrawer extends StatelessWidget {
                               radius: 22.r,
                               height: 45.h,
                               width: 45.w,
-                              url: authController.userDataModel.value.picture ??
-                                  "",
+                              url: authController.userDataModel.value.picture ?? "",
                               fit: BoxFit.cover,
                               error: Image.asset(userDefaultIcon),
                             ),
@@ -83,9 +81,7 @@ class AppDrawer extends StatelessWidget {
                             style: bold.copyWith(fontSize: 16.sp),
                           ),
                           subtitle: Text(
-                            authController.userDataModel.value.phone ??
-                                authController.userDataModel.value.email ??
-                                "",
+                            authController.userDataModel.value.phone ?? authController.userDataModel.value.email ?? "",
                           ),
                         );
             }),
@@ -123,16 +119,13 @@ class AppDrawer extends StatelessWidget {
                     // ),
                     // 20.verticalSpace,
                     Obx(() {
-                      return conversationController
-                                  .adminConversationModel.value ==
-                              null
+                      return conversationController.adminConversationModel.value == null
                           ? const Center()
                           : InkWell(
                               onTap: () {
                                 Get.to(
                                     () => MessagesScreen(
-                                        conversation: conversationController
-                                            .adminConversationModel.value!),
+                                        conversation: conversationController.adminConversationModel.value!),
                                     transition: Transition.fadeIn);
                               },
                               child: Row(
@@ -153,8 +146,7 @@ class AppDrawer extends StatelessWidget {
                     }),
                     10.verticalSpace,
                     ExpansionTile(
-                      shape:
-                          const RoundedRectangleBorder(side: BorderSide.none),
+                      shape: const RoundedRectangleBorder(side: BorderSide.none),
                       tilePadding: EdgeInsets.zero,
                       title: Row(
                         children: [
@@ -176,22 +168,17 @@ class AppDrawer extends StatelessWidget {
                       children: [
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('en'));
+                            localizationService.changeLocale(const Locale('en'));
                             Get.back();
                           },
                           label: Text(
-                            'English',
+                            '🇺🇸 English',
                             style: regular.copyWith(
                               fontSize: 14.sp,
-                              color: localizationService
-                                          .locale.value.languageCode ==
-                                      'en'
+                              color: localizationService.locale.value.languageCode == 'en'
                                   ? AppColors.primary
                                   : Colors.white,
-                              fontWeight: localizationService
-                                          .locale.value.languageCode ==
-                                      'en'
+                              fontWeight: localizationService.locale.value.languageCode == 'en'
                                   ? FontWeight.w600
                                   : FontWeight.normal,
                             ),
@@ -199,23 +186,18 @@ class AppDrawer extends StatelessWidget {
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('tr'));
+                            localizationService.changeLocale(const Locale('tr'));
                             Get.back();
                           },
                           label: Obx(
                             () => Text(
-                              'Turkmen',
+                              '🇹🇲 Turkmen',
                               style: regular.copyWith(
                                 fontSize: 14.sp,
-                                color: localizationService
-                                            .locale.value.languageCode ==
-                                        'tr'
+                                color: localizationService.locale.value.languageCode == 'tr'
                                     ? AppColors.primary
                                     : Colors.black54,
-                                fontWeight: localizationService
-                                            .locale.value.languageCode ==
-                                        'tr'
+                                fontWeight: localizationService.locale.value.languageCode == 'tr'
                                     ? FontWeight.w600
                                     : FontWeight.normal,
                               ),
@@ -224,22 +206,17 @@ class AppDrawer extends StatelessWidget {
                         ),
                         TextButton.icon(
                           onPressed: () {
-                            localizationService
-                                .changeLocale(const Locale('ru'));
+                            localizationService.changeLocale(const Locale('ru'));
                             Get.back();
                           },
                           label: Text(
-                            'Russian',
+                            '🇷🇺 Russian',
                             style: regular.copyWith(
                               fontSize: 14.sp,
-                              color: localizationService
-                                          .locale.value.languageCode ==
-                                      'ru'
+                              color: localizationService.locale.value.languageCode == 'ru'
                                   ? AppColors.primary
                                   : Colors.black54,
-                              fontWeight: localizationService
-                                          .locale.value.languageCode ==
-                                      'ru'
+                              fontWeight: localizationService.locale.value.languageCode == 'ru'
                                   ? FontWeight.w600
                                   : FontWeight.normal,
                             ),
@@ -248,27 +225,28 @@ class AppDrawer extends StatelessWidget {
                       ],
                     ),
                     10.verticalSpace,
-                    // InkWell(
-                    //   onTap: () {
-                    //     Get.back();
-                    //     authController.userLogOut(
-                    //       isShowDialog: true,
-                    //     );
-                    //   },
-                    //   child: Row(
-                    //     children: [
-                    //       Icon(
-                    //         Icons.logout,
-                    //         // color: Colors.white,
-                    //       ),
-                    //       10.horizontalSpace,
-                    //       Text(
-                    //         localLanguage.logout,
-                    //         style: semiBold,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
+                    if (authController.userDataModel.value.id != null)
+                      InkWell(
+                        onTap: () {
+                          Get.back();
+                          authController.userLogOut(
+                            isShowDialog: true,
+                          );
+                        },
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.logout,
+                              // color: Colors.white,
+                            ),
+                            10.horizontalSpace,
+                            Text(
+                              localLanguage.logout,
+                              style: semiBold,
+                            ),
+                          ],
+                        ),
+                      ),
 
                     120.verticalSpace,
                   ],

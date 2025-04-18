@@ -225,5 +225,6 @@
   "no_more_data": "Başga maglumat ýok",
   "my_stories": "Мои истории",
   "login_required": "Login Required",
-  "login_required_long": "Вам нужно войти в систему, чтобы получить доступ к этой функции."
+  "login_required_long": "Вам нужно войти в систему, чтобы получить доступ к этой функции.",
+   "pressBackAgainToExit": "Нажмите «Назад» ещё раз, чтобы выйти."
 }

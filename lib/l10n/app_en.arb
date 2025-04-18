@@ -225,5 +225,6 @@
   "no_more_data": "No more data available",
   "my_stories": "My Stories",
   "login_required": "Login Required",
-  "login_required_long": "You need to log in to access this feature."
+  "login_required_long": "You need to log in to access this feature.",
+  "pressBackAgainToExit": "Press back again to exit."
 }

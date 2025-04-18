@@ -1,6 +1,3 @@
-import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
-import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
-import 'package:alsat/utils/helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,6 +5,7 @@ import 'package:get/get.dart';
 import '../../config/theme/app_text_theme.dart';
 import '../common/const/image_path.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../modules/app_home/controller/home_controller.dart';
 
 class HomeSegmented extends StatelessWidget {
   const HomeSegmented({super.key});
@@ -15,7 +13,6 @@ class HomeSegmented extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final HomeController homeController = Get.find();
-    final AuthController authController = Get.find();
     final localLanguage = AppLocalizations.of(Get.context!)!;
     return Container(
       margin: EdgeInsets.symmetric(
@@ -73,11 +70,12 @@ class HomeSegmented extends StatelessWidget {
                   // } else {
                   //   homeController.showPremium.value = true;
                   // }
-                  if (authController.userDataModel.value.id == null) {
-                    showLoginRequiredDialog();
-                  } else {
-                    homeController.showPremium.value = true;
-                  }
+                  // if (authController.userDataModel.value.id == null) {
+                  //   showLoginRequiredDialog();
+                  // } else {
+                  //   homeController.showPremium.value = true;
+                  // }
+                  homeController.showPremium.value = true;
                 },
                 child: SizedBox(
                   height: 45.h,

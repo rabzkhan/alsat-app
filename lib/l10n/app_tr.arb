@@ -225,5 +225,6 @@
   "no_more_data": "Başga maglumat ýok",
   "my_stories": "Pursatlarym",
   "login_required": "Login Required",
-  "login_required_long": "Bu aýratynlyga girmek üçin siz hasaba girmegiňiz gerek."
+  "login_required_long": "Bu aýratynlyga girmek üçin siz hasaba girmegiňiz gerek.",
+   "pressBackAgainToExit": "Çykmak üçin yzyna ýene bir gezek basyň."
 }

@@ -48,6 +48,7 @@ class BaseClient {
     Function? onLoading,
     dynamic data,
   }) async {
+    Logger().d("url is: $url");
     try {
       if (isDataCache) {
         dynamic cacheData = await DataCacheService(apiEndPoint: url).getData();
