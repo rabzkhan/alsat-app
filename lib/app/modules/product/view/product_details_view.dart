@@ -8,6 +8,7 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -962,23 +963,54 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 }
 
 Padding infoTile({required String name, required String value}) {
+  bool isVin = name.toLowerCase().contains('vin');
+
   return Padding(
     padding: EdgeInsets.symmetric(vertical: 6.h),
     child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Text(
-          name,
-          style: regular.copyWith(fontSize: 15.sp, fontFamily: 'Exo'),
-        ),
-        const Spacer(),
-        Text(
-          value,
-          style: regular.copyWith(
-            fontSize: 15.sp,
-            fontFamily: 'Exo',
-            fontWeight: FontWeight.w600,
+        Expanded(
+          child: Text(
+            name,
+            style: regular.copyWith(fontSize: 15.sp, fontFamily: 'Exo'),
           ),
         ),
+        const SizedBox(width: 8),
+        if (isVin)
+          GestureDetector(
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: value));
+            },
+            child: Row(
+              children: [
+                Text(
+                  value,
+                  style: regular.copyWith(
+                    fontSize: 15.sp,
+                    fontFamily: 'Exo',
+                    fontWeight: FontWeight.w600,
+                    color: Colors.blue,
+                  ),
+                ),
+                const SizedBox(width: 4),
+                Icon(
+                  Icons.copy,
+                  size: 16.sp,
+                  color: Colors.blue,
+                ),
+              ],
+            ),
+          )
+        else
+          Text(
+            value,
+            style: regular.copyWith(
+              fontSize: 15.sp,
+              fontFamily: 'Exo',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
       ],
     ),
   );

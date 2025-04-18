@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,8 +14,11 @@ import '../models/category_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PremiumCategoriesView extends StatelessWidget {
-  const PremiumCategoriesView({super.key});
-
+  const PremiumCategoriesView({
+    super.key,
+    this.isFromPremium = false,
+  });
+  final bool isFromPremium;
   @override
   Widget build(BuildContext context) {
     final localLanguage = AppLocalizations.of(Get.context!)!;
@@ -32,14 +37,16 @@ class PremiumCategoriesView extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h),
         child: Obx(
           () {
+            final allCategories = homeController.categories;
+            final filteredCategories = isFromPremium
+                ? allCategories.where((cat) {
+                    final name = cat.name?.toLowerCase() ?? '';
+                    return !name.startsWith('free of') && !name.startsWith('lost and found');
+                  }).toList()
+                : allCategories;
+
             return Skeletonizer(
               enabled: homeController.isCategoryLoading.value,
-              // effect: ShimmerEffect(
-              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-              //   highlightColor: Colors.white,
-              //   begin: Alignment.centerLeft,
-              //   end: Alignment.centerRight,
-              // ),
               child: GridView.builder(
                 physics: const BouncingScrollPhysics(),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -48,13 +55,14 @@ class PremiumCategoriesView extends StatelessWidget {
                   crossAxisSpacing: 10.w,
                   mainAxisSpacing: 10.h,
                 ),
-                itemCount: homeController.isCategoryLoading.value ? 10 : homeController.categories.length,
+                itemCount: homeController.isCategoryLoading.value ? 10 : filteredCategories.length,
                 itemBuilder: (context, index) {
-                  CategoriesModel categoriesModel =
-                      homeController.isCategoryLoading.value ? CategoriesModel() : homeController.categories[index];
+                  final categoriesModel =
+                      homeController.isCategoryLoading.value ? CategoriesModel() : filteredCategories[index];
+
                   return GestureDetector(
                     onTap: () {
-                      homeController.category.value = homeController.categories[index];
+                      homeController.category.value = categoriesModel;
                       homeController.fetchPremiumUser(isFilter: false);
                       filterController.clearAddress();
                       Get.to(
@@ -63,9 +71,7 @@ class PremiumCategoriesView extends StatelessWidget {
                       );
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 10.w,
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10.r),
@@ -74,7 +80,7 @@ class PremiumCategoriesView extends StatelessWidget {
                             color: Colors.grey.withOpacity(0.1),
                             spreadRadius: 1,
                             blurRadius: 1,
-                            offset: const Offset(0, 1), // changes position of shadow
+                            offset: const Offset(0, 1),
                           ),
                         ],
                       ),

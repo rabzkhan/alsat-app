@@ -56,7 +56,7 @@ class PremiumContent extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
-                  Get.to(() => const PremiumCategoriesView());
+                  Get.to(() => const PremiumCategoriesView(isFromPremium: true));
                 },
                 child: Text(
                   localLanguage.see_all,
@@ -256,12 +256,6 @@ class PremiumContent extends StatelessWidget {
           Obx(() {
             return Skeletonizer(
               enabled: homeController.isPremiumLoading.value,
-              // effect: ShimmerEffect(
-              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-              //   highlightColor: Colors.white,
-              //   begin: Alignment.centerLeft,
-              //   end: Alignment.centerRight,
-              // ),
               child: ListView.builder(
                 itemCount: homeController.isPremiumLoading.value ? 10 : homeController.premiumUserList.length,
                 shrinkWrap: true,

@@ -78,7 +78,7 @@ class HomeController extends GetxController {
       getUserPostCategories();
       userOwnStory();
       fetchNotification();
-      //fetchPremiumUser();
+      fetchPremiumUser();
     }
   }
 
@@ -207,6 +207,8 @@ class HomeController extends GetxController {
   RxBool isFilterLoading = true.obs;
   RxString searchText = RxString('');
   TextEditingController searchController = TextEditingController();
+
+  //fetching premium user
   Future<void> fetchPremiumUser({String? nextPaginateDate, bool isFilter = false}) async {
     FilterController filterController = Get.find<FilterController>();
 
@@ -214,6 +216,7 @@ class HomeController extends GetxController {
     if (nextPaginateDate != null) {
       url = "$url&next=$nextPaginateDate";
     }
+
     Map<String, dynamic> data = isFilter
         ? {
             "category": category.value?.name,
@@ -226,63 +229,69 @@ class HomeController extends GetxController {
               "registration": registrationValue.value == 'Old To New' ? 1 : -1,
             }
           }
-        : {"category": category.value?.name};
+        : {
+            "category": category.value?.name,
+          };
+
     if (searchText.value.isNotEmpty) {
       data.clear();
       data['search'] = searchText.value;
     }
-    log('Premium User: Date: $data-- $url');
+
+    log('Premium User Fetch: $data -- $url');
     data.removeWhere((key, value) => value == null);
+
     await BaseClient().safeApiCall(
       url,
       DioRequestType.get,
       data: data,
       onLoading: () {
-        if (nextPaginateDate == null && !isFilter) {
-          isPremiumLoading.value = true;
-          isFilterLoading.value = true;
-          premiumUserList.clear();
-        }
-        if (isFilter && nextPaginateDate == null) {
-          isFilterLoading.value = true;
-          filterUserList.clear();
+        if (nextPaginateDate == null) {
+          if (isFilter) {
+            isFilterLoading.value = true;
+            filterUserList.clear();
+          } else {
+            isPremiumLoading.value = true;
+            premiumUserList.clear();
+          }
         }
       },
       onSuccess: (response) async {
-        Map<String, dynamic> data = response.data;
-        allUserInformationRes = AllUserInformationRes.fromJson(data);
-        if (nextPaginateDate != null) {
-          if (isFilter) {
-            filterUserList.addAll(allUserInformationRes.data?.users ?? []);
+        Map<String, dynamic> responseData = response.data;
+        allUserInformationRes = AllUserInformationRes.fromJson(responseData);
+        final fetchedUsers = allUserInformationRes.data?.users ?? [];
+
+        if (isFilter) {
+          // ✅ DO NOT TOUCH premiumUserList
+          if (nextPaginateDate != null) {
+            filterUserList.addAll(fetchedUsers);
           } else {
-            filterUserList.addAll(allUserInformationRes.data?.users ?? []);
-            premiumUserList.addAll(allUserInformationRes.data?.users ?? []);
+            filterUserList.value = fetchedUsers;
           }
         } else {
-          if (isFilter) {
-            filterUserList.value = allUserInformationRes.data?.users ?? [];
+          // ✅ Only update premiumUserList here
+          if (nextPaginateDate != null) {
+            premiumUserList.addAll(fetchedUsers);
           } else {
-            filterUserList.value = allUserInformationRes.data?.users ?? [];
-            premiumUserList.value = allUserInformationRes.data?.users ?? [];
+            premiumUserList.value = fetchedUsers;
           }
         }
+
         isPremiumLoading.value = false;
         isFilterLoading.value = false;
-        log("fetchPremiumUser List: ${premiumUserList.value.length} ${filterUserList.length} ${response.requestOptions.data}");
-        return;
       },
       onError: (error) {
-        log('premiumRefreshController:${Constants.baseUrl}${Constants.user}?limit=20 ${error.message}  ${error.response?.requestOptions.data}');
         isPremiumLoading.value = false;
         isFilterLoading.value = false;
-        Logger().d("$error <- error");
-        return;
+        Logger().e("Fetch Premium User Error: $error");
       },
     );
   }
 
   RefreshController premiumRefreshController = RefreshController();
   void onPremiumRefresh() async {
+    searchController.clear();
+    searchText.value = "";
     premiumUserList.clear();
     fetchPremiumUser();
     premiumRefreshController.refreshCompleted();
