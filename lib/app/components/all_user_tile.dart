@@ -146,7 +146,7 @@ class AllUserTile extends StatelessWidget {
                             Icons.check_circle,
                             size: 14.r,
                             color: (premiumUserModel.protectionLabel ?? false)
-                                ? Get.theme.primaryColor
+                                ? Colors.green
                                 : Get.theme.disabledColor.withOpacity(.1),
                           ),
                           3.horizontalSpace,

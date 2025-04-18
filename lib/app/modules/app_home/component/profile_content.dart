@@ -26,8 +26,7 @@ class ProfileContent extends StatefulWidget {
   State<ProfileContent> createState() => _ProfileContentState();
 }
 
-class _ProfileContentState extends State<ProfileContent>
-    with TickerProviderStateMixin {
+class _ProfileContentState extends State<ProfileContent> with TickerProviderStateMixin {
   final UserController userController = Get.find();
   final AuthController authController = Get.find();
   HomeController homeController = Get.find();
@@ -36,15 +35,13 @@ class _ProfileContentState extends State<ProfileContent>
   @override
   void initState() {
     mainTabController = TabController(
-      length:
-          userController.profileTab(AppLocalizations.of(Get.context!)!).length,
+      length: userController.profileTab(AppLocalizations.of(Get.context!)!).length,
       vsync: this,
       initialIndex: homeController.profileTabCurrentPage.value,
     );
 
     mainTabController.addListener(() {
-      if (homeController.profileTabCurrentPage.value !=
-          mainTabController.index) {
+      if (homeController.profileTabCurrentPage.value != mainTabController.index) {
         homeController.profileTabCurrentPage.value = mainTabController.index;
       }
     });
@@ -83,12 +80,22 @@ class _ProfileContentState extends State<ProfileContent>
                           error: Image.asset(userDefaultIcon),
                         ),
                       ),
-                      title: Obx(() => Text(
-                            authController.userDataModel.value.userName ??
-                                'Guest User',
-                            style: bold.copyWith(
-                              fontSize: 18.sp,
-                            ),
+                      title: Obx(() => Row(
+                            children: [
+                              Text(
+                                authController.userDataModel.value.userName ?? 'Guest User',
+                                style: bold.copyWith(
+                                  fontSize: 18.sp,
+                                ),
+                              ),
+                              6.horizontalSpace,
+                              if (authController.userDataModel.value.premium ?? false)
+                                Icon(
+                                  Icons.verified,
+                                  size: 18.r,
+                                  color: Get.theme.primaryColor,
+                                ),
+                            ],
                           )),
                       subtitle: Padding(
                         padding: EdgeInsets.symmetric(vertical: 2.h),
@@ -97,8 +104,7 @@ class _ProfileContentState extends State<ProfileContent>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Obx(() => Text(
-                                  authController.userDataModel.value.phone ??
-                                      ' --- ',
+                                  "${authController.countryCode.value} ${authController.userDataModel.value.phone ?? ' --- '}",
                                   style: regular.copyWith(
                                     fontSize: 10.sp,
                                   ),
@@ -108,10 +114,7 @@ class _ProfileContentState extends State<ProfileContent>
                                 () => RatingBar.builder(
                                   itemSize: 15.h,
                                   initialRating: MySharedPref.isLoggedIn()
-                                      ? double.parse((authController
-                                                  .userDataModel.value.rating ??
-                                              "0")
-                                          .toString())
+                                      ? double.parse((authController.userDataModel.value.rating ?? "0").toString())
                                       : 0,
                                   minRating: 0,
                                   direction: Axis.horizontal,
@@ -135,8 +138,7 @@ class _ProfileContentState extends State<ProfileContent>
                                 ? CupertinoActivityIndicator()
                                 : IconButton(
                                     onPressed: () {
-                                      Get.to(() => const MySettings(),
-                                          transition: Transition.fadeIn);
+                                      Get.to(() => const MySettings(), transition: Transition.fadeIn);
                                     },
                                     icon: Container(
                                       width: 30.w,
@@ -145,10 +147,8 @@ class _ProfileContentState extends State<ProfileContent>
                                         vertical: 4.h,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: Get.theme.primaryColor
-                                            .withOpacity(.15),
-                                        borderRadius:
-                                            BorderRadius.circular(5.r),
+                                        color: Get.theme.primaryColor.withOpacity(.15),
+                                        borderRadius: BorderRadius.circular(5.r),
                                       ),
                                       child: Image.asset(
                                         settingIcon,
@@ -212,13 +212,11 @@ class _ProfileContentState extends State<ProfileContent>
                           child: TabBar(
                             onTap: (value) {
                               if (value == 0) {
-                                homeController.myListingSelectCategory.value =
-                                    null;
+                                homeController.myListingSelectCategory.value = null;
                                 homeController.myListingRefresh();
                               } else {
                                 homeController.myListingSelectCategory.value =
-                                    homeController
-                                        .userPostCategories[value - 1];
+                                    homeController.userPostCategories[value - 1];
                                 homeController.myListingRefresh();
                               }
                             },

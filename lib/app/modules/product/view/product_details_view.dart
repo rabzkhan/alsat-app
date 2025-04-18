@@ -660,12 +660,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   Obx(() {
                     return Skeletonizer(
                       enabled: productDetailsController.isFetchUserLoading.value,
-                      // effect: ShimmerEffect(
-                      //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-                      //   highlightColor: Colors.white,
-                      //   begin: Alignment.centerLeft,
-                      //   end: Alignment.centerRight,
-                      // ),
                       child: ListTile(
                         onTap: () {
                           Get.to(
@@ -689,32 +683,75 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                             error: Image.asset(userDefaultIcon),
                           ),
                         ),
-                        title: Text(
-                          productDetailsController.postUserModel.value?.userName ?? 'John Coltrane',
-                          style: bold.copyWith(
-                            fontSize: 16.sp,
-                          ),
-                        ),
-                        subtitle: Row(
-                          mainAxisSize: MainAxisSize.min,
+                        title: Row(
                           children: [
-                            RatingBarIndicator(
-                              rating: (productDetailsController.postUserModel.value?.rating ?? 0).toDouble(),
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star_border_outlined,
-                                color: Colors.amber,
-                              ),
-                              itemCount: 5,
-                              itemSize: 13.r,
-                              direction: Axis.horizontal,
-                            ),
-                            3.horizontalSpace,
                             Text(
-                              '(${(productDetailsController.postUserModel.value?.rating ?? 0).toStringAsFixed(1)})',
-                              style: regular.copyWith(
-                                fontSize: 8.sp,
+                              productDetailsController.postUserModel.value?.userName ?? 'John Coltrane',
+                              style: bold.copyWith(
+                                fontSize: 16.sp,
                               ),
-                            )
+                            ),
+                            6.horizontalSpace,
+                            if (productDetailsController.postUserModel.value?.premium ?? false)
+                              Icon(
+                                Icons.verified,
+                                size: 18.r,
+                                color: Get.theme.primaryColor,
+                              ),
+                          ],
+                        ),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                RatingBarIndicator(
+                                  rating: (productDetailsController.postUserModel.value?.rating ?? 0).toDouble(),
+                                  itemBuilder: (context, index) => const Icon(
+                                    Icons.star_border_outlined,
+                                    color: Colors.amber,
+                                  ),
+                                  itemCount: 5,
+                                  itemSize: 13.r,
+                                  direction: Axis.horizontal,
+                                ),
+                                3.horizontalSpace,
+                                Text(
+                                  '(${(productDetailsController.postUserModel.value?.rating ?? 0).toStringAsFixed(1)})',
+                                  style: regular.copyWith(
+                                    fontSize: 8.sp,
+                                  ),
+                                )
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.check_circle,
+                                  size: 14.r,
+                                  color: (productDetailsController.postUserModel.value?.protectionLabel ?? false)
+                                      ? Colors.green
+                                      : Get.theme.disabledColor.withOpacity(.1),
+                                ),
+                                3.horizontalSpace,
+                                Text(
+                                  localLanguage.buyer_protection,
+                                  style: (productDetailsController.postUserModel.value?.protectionLabel ?? false)
+                                      ? regular.copyWith(
+                                          fontSize: 12.sp,
+                                          fontWeight: FontWeight.w600,
+                                          fontStyle: FontStyle.italic,
+                                        )
+                                      : regular.copyWith(
+                                          fontSize: 12.sp,
+                                          color: Get.theme.disabledColor.withOpacity(0.2),
+                                        ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
