@@ -904,68 +904,62 @@ class _PostProductViewState extends State<PostProductView> {
                                 ),
                               ),
                             ),
-                            Obx(
-                              () {
-                                bool isExceptionCategory = productController.exceptionCategoryForCreditExchange.any(
-                                  (exception) =>
-                                      productController.selectCategory.value?.name?.toLowerCase().contains(exception) ??
-                                      false,
-                                );
-
-                                return isExceptionCategory
-                                    ? Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  localLanguage.possible_exchange,
-                                                  style: regular,
-                                                ),
-                                                Transform.scale(
-                                                  scale: 0.7,
-                                                  child: Obx(() {
-                                                    return CupertinoSwitch(
-                                                      value: productController.isExchange.value,
-                                                      onChanged: (value) {
-                                                        productController.isExchange.value = value;
-                                                      },
-                                                    );
-                                                  }),
-                                                ),
-                                              ],
-                                            ),
+                            Obx(() {
+                              final selectedFilter = productController.selectSubCategory.value?.filter?.toLowerCase();
+                              final isExceptionCategory = selectedFilter == 'car' || selectedFilter == 'phone';
+                              return isExceptionCategory
+                                  ? Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                localLanguage.possible_exchange,
+                                                style: regular,
+                                              ),
+                                              Transform.scale(
+                                                scale: 0.7,
+                                                child: Obx(() {
+                                                  return CupertinoSwitch(
+                                                    value: productController.isExchange.value,
+                                                    onChanged: (value) {
+                                                      productController.isExchange.value = value;
+                                                    },
+                                                  );
+                                                }),
+                                              ),
+                                            ],
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: 20.w),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  localLanguage.credit,
-                                                  style: regular,
-                                                ),
-                                                Transform.scale(
-                                                  scale: 0.7,
-                                                  child: Obx(() {
-                                                    return CupertinoSwitch(
-                                                      value: productController.isCredit.value,
-                                                      onChanged: (value) {
-                                                        productController.isCredit.value = value;
-                                                      },
-                                                    );
-                                                  }),
-                                                ),
-                                              ],
-                                            ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                localLanguage.credit,
+                                                style: regular,
+                                              ),
+                                              Transform.scale(
+                                                scale: 0.7,
+                                                child: Obx(() {
+                                                  return CupertinoSwitch(
+                                                    value: productController.isCredit.value,
+                                                    onChanged: (value) {
+                                                      productController.isCredit.value = value;
+                                                    },
+                                                  );
+                                                }),
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      )
-                                    : SizedBox();
-                              },
-                            ),
+                                        ),
+                                      ],
+                                    )
+                                  : SizedBox();
+                            }),
                             10.verticalSpace,
                           ],
                         ),

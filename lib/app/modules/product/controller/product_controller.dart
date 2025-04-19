@@ -28,16 +28,6 @@ import '../../app_home/controller/home_controller.dart';
 import '../model/product_post_list_res.dart';
 
 class ProductController extends GetxController {
-  List<String> exceptionCategoryForCreditExchange = [
-    "car",
-    "real",
-    "rent",
-    "house",
-    "room",
-    "apartment",
-    "phone",
-  ];
-
   List<String> estateTypeList = [
     'Apartment',
     'Elite',
@@ -118,12 +108,8 @@ class ProductController extends GetxController {
   calculateFilledProductFields() {
     bool isCar = selectCategory.value?.filter?.toLowerCase() == 'car' ||
         (selectSubCategory.value?.filter ?? "").toLowerCase() == "car";
-    bool isRealEstate = (selectCategory.value?.filter ?? '')
-            .toLowerCase()
-            .contains('real_estate') ||
-        (selectSubCategory.value?.filter ?? '')
-            .toLowerCase()
-            .contains('real_estate');
+    bool isRealEstate = (selectCategory.value?.filter ?? '').toLowerCase().contains('real_estate') ||
+        (selectSubCategory.value?.filter ?? '').toLowerCase().contains('real_estate');
     bool isPhone = selectCategory.value?.filter?.toLowerCase() == 'phone' ||
         selectSubCategory.value?.filter?.toLowerCase() == 'phone';
 
