@@ -877,11 +877,9 @@ class _FilterViewState extends State<FilterView> {
               child: Column(
                 children: [
                   Obx(() {
-                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
-                            controller.category.value?.name?.toLowerCase() == 'services' ||
-                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
-                        ? SizedBox()
-                        : Row(
+                    return controller.category.value?.filter?.toLowerCase() == 'car' ||
+                            controller.category.value?.filter?.toLowerCase() == 'phone'
+                        ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
@@ -904,15 +902,14 @@ class _FilterViewState extends State<FilterView> {
                                 disabledOpacity: 0.5,
                               ),
                             ],
-                          );
+                          )
+                        : SizedBox();
                   }),
                   10.verticalSpace,
                   Obx(() {
-                    return controller.category.value?.name?.toLowerCase() == 'jobs' ||
-                            controller.category.value?.name?.toLowerCase() == 'services' ||
-                            (controller.category.value?.name?.toLowerCase().contains("lost") ?? false)
-                        ? SizedBox()
-                        : Row(
+                    return controller.category.value?.filter?.toLowerCase() == 'car' ||
+                            controller.category.value?.filter?.toLowerCase() == 'phone'
+                        ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Padding(
@@ -935,11 +932,12 @@ class _FilterViewState extends State<FilterView> {
                                 disabledOpacity: 0.5,
                               ),
                             ],
-                          );
+                          )
+                        : SizedBox();
                   }),
                   10.verticalSpace,
                   Obx(() {
-                    return controller.category.value?.name?.toLowerCase() == 'automobile'
+                    return controller.category.value?.filter?.toLowerCase() == 'car'
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [

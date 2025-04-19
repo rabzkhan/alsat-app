@@ -157,7 +157,7 @@ class AppDrawer extends StatelessWidget {
                           ),
                           10.horizontalSpace,
                           Text(
-                            'Language',
+                            localLanguage.change_language,
                             style: semiBold,
                           ),
                         ],
