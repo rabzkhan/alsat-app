@@ -226,5 +226,6 @@
   "my_stories": "Мои истории",
   "login_required": "Login Required",
   "login_required_long": "Вам нужно войти в систему, чтобы получить доступ к этой функции.",
-   "pressBackAgainToExit": "Нажмите «Назад» ещё раз, чтобы выйти."
+  "pressBackAgainToExit": "Нажмите «Назад» ещё раз, чтобы выйти.",
+  "car_class": "класс"
 }

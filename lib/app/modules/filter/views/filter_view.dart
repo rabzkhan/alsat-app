@@ -751,6 +751,7 @@ class _FilterViewState extends State<FilterView> {
                               ],
                             ),
                           ),
+
                           // transmission
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),

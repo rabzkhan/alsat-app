@@ -122,7 +122,7 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                                   itemCount: 5,
                                   itemBuilder: (context, _) => Icon(
                                     Icons.star,
-                                    color: Get.theme.primaryColor,
+                                    color: Colors.amber[900],
                                   ),
                                   onRatingUpdate: (rating) {},
                                 ),

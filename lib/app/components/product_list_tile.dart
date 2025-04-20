@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../config/theme/app_text_theme.dart';
 import '../common/const/image_path.dart';
 import '../modules/product/model/product_post_list_res.dart';
@@ -19,6 +19,7 @@ class ProductListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ProductController productController = Get.find();
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return GestureDetector(
       onTap: () {
         Get.to(ProductDetailsView(productModel: productModel), transition: Transition.fadeIn);
@@ -139,7 +140,7 @@ class ProductListTile extends StatelessWidget {
                                   ),
                                   3.horizontalSpace,
                                   Text(
-                                    'Credit',
+                                    localLanguage.credit,
                                     style: regular.copyWith(
                                       fontSize: 12.sp,
                                     ),
@@ -161,7 +162,7 @@ class ProductListTile extends StatelessWidget {
                                   ),
                                   3.horizontalSpace,
                                   Text(
-                                    'exchange',
+                                    localLanguage.exchange,
                                     style: regular.copyWith(
                                       fontSize: 12.sp,
                                     ),

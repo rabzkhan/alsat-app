@@ -77,20 +77,20 @@ class AllUserTile extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
-                        Icons.verified,
-                        size: 18.r,
-                        color: (premiumUserModel.premium ?? false)
-                            ? Get.theme.primaryColor
-                            : Get.theme.disabledColor.withOpacity(.1),
-                      ),
-                      4.horizontalSpace,
                       Flexible(
                         child: Text(
                           maxLines: 1,
                           premiumUserModel.userName ?? '',
                           style: bold.copyWith(fontSize: 15.sp),
                         ),
+                      ),
+                      4.horizontalSpace,
+                      Icon(
+                        Icons.verified,
+                        size: 18.r,
+                        color: (premiumUserModel.premium ?? false)
+                            ? Get.theme.primaryColor
+                            : Get.theme.disabledColor.withOpacity(.1),
                       ),
                     ],
                   ),

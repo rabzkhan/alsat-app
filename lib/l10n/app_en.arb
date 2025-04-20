@@ -102,7 +102,7 @@
   "engine_type": "Engine Type",
   "passed_km": "Passed, km",
   "estate_type": "Estate type",
-  "deal_type": "Deal type",
+  "deal_type": "Renovation type",
   "select_number_of_floor": "Select Number of Floor",
   "select_number_of_room": "Select Number of Room",
   "lift_available": "Lift Available",
@@ -226,5 +226,6 @@
   "my_stories": "My Stories",
   "login_required": "Login Required",
   "login_required_long": "You need to log in to access this feature.",
-  "pressBackAgainToExit": "Press back again to exit."
+  "pressBackAgainToExit": "Press back again to exit.",
+  "car_class": "Class"
 }

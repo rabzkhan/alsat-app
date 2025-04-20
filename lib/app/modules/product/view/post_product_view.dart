@@ -1586,20 +1586,49 @@ class _PostProductViewState extends State<PostProductView> {
                                   ).then((_) {
                                     productController.selectModelCarClass.value =
                                         productController.selectedModel.value?.modelClass ?? [];
-
                                     productController.calculateFilledProductFields();
                                   });
                                 },
                         )),
                     Obx(() => _tile(
-                          localLanguage.body_type,
-                          productController.selectedBodyType.value,
+                          localLanguage.car_class,
+                          productController.selectedModelClass.value,
                           onTap: () {
                             Get.bottomSheet(
                               FilterBottomSheet(
                                 title: localLanguage.body_type,
                                 data: productController.selectModelCarClass,
+                                selectedData: productController.selectedModelClass,
+                              ),
+                            ).then((_) {
+                              productController.calculateFilledProductFields();
+                            });
+                          },
+                        )),
+                    Obx(() => _tile(
+                          localLanguage.bodyType,
+                          productController.selectedBodyType.value,
+                          onTap: () {
+                            Get.bottomSheet(
+                              FilterBottomSheet(
+                                title: localLanguage.drive_type,
+                                data: productController.dBodyType,
                                 selectedData: productController.selectedBodyType,
+                              ),
+                            ).then((_) {
+                              productController.calculateFilledProductFields();
+                            });
+                          },
+                        )),
+                    Obx(() => _tile(
+                          localLanguage.drive_type,
+                          productController.driveType.value,
+                          onTap: () {
+                            Get.bottomSheet(
+                              FilterBottomSheet(
+                                title: localLanguage.drive_type,
+                                data: productController.dDriveType,
+                                selectedData: productController.driveType,
                               ),
                             ).then((_) {
                               productController.calculateFilledProductFields();

@@ -28,6 +28,9 @@ import '../../app_home/controller/home_controller.dart';
 import '../model/product_post_list_res.dart';
 
 class ProductController extends GetxController {
+  RxList<String> dBodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
+  RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
+  RxString driveType = "".obs;
   List<String> estateTypeList = [
     'Apartment',
     'Elite',
@@ -42,7 +45,6 @@ class ProductController extends GetxController {
     'Euro',
     'Designer',
     'Regular',
-    'Renovation',
   ];
   RxBool isShowPostProductVideo = RxBool(false);
   RxBool isProductPosting = RxBool(false);
@@ -58,6 +60,7 @@ class ProductController extends GetxController {
   Rxn<BrandModel> selectedBrand = Rxn<BrandModel>();
   Rxn<CarModel> selectedModel = Rxn<CarModel>();
   RxList<String> selectModelCarClass = RxList([]);
+  RxString selectedModelClass = RxString("");
   RxString selectedBodyType = RxString("");
   RxString selectedTransmission = RxString("");
   RxString selectedEngineType = RxString("");
