@@ -61,3 +61,36 @@ const Map<String, Map<String, String>> cityTranslations = {
   'Etrek': {'en': 'Etrek', 'tr': 'Etrek', 'ru': 'Этрек'},
   'Magtymguly': {'en': 'Magtymguly', 'tr': 'Magtymguly', 'ru': 'Махтумкули'},
 };
+
+final Map<String, Map<String, String>> bodyTypeTranslations = {
+  'Coupe': {
+    'en': 'Coupe',
+    'tk': 'Kupe',
+    'ru': 'Купе',
+  },
+  'Sedan': {
+    'en': 'Sedan',
+    'tk': 'Sedan',
+    'ru': 'Седан',
+  },
+  'Suv': {
+    'en': 'SUV',
+    'tk': 'Ýokary geçirijilikli',
+    'ru': 'Внедорожник',
+  },
+  'Hatchback': {
+    'en': 'Hatchback',
+    'tk': 'Heçbek',
+    'ru': 'Хэтчбек',
+  },
+  'Crossover': {
+    'en': 'Crossover',
+    'tk': 'Krossover',
+    'ru': 'Кроссовер',
+  },
+  'Van': {
+    'en': 'Van',
+    'tk': 'Minibus',
+    'ru': 'Фургон',
+  },
+};

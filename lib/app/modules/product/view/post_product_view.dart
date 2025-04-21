@@ -1596,7 +1596,7 @@ class _PostProductViewState extends State<PostProductView> {
                           onTap: () {
                             Get.bottomSheet(
                               FilterBottomSheet(
-                                title: localLanguage.body_type,
+                                title: localLanguage.car_class,
                                 data: productController.selectModelCarClass,
                                 selectedData: productController.selectedModelClass,
                               ),
@@ -1611,7 +1611,7 @@ class _PostProductViewState extends State<PostProductView> {
                           onTap: () {
                             Get.bottomSheet(
                               FilterBottomSheet(
-                                title: localLanguage.drive_type,
+                                title: localLanguage.body_type,
                                 data: productController.dBodyType,
                                 selectedData: productController.selectedBodyType,
                               ),
