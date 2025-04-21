@@ -1,10 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, deprecated_member_use
 import 'dart:developer';
 import 'package:alsat/app/components/custom_snackbar.dart';
-import 'package:alsat/app/components/multi_image_preview.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/product/view/update_post_view.dart';
 import 'package:alsat/config/theme/app_colors.dart';
+import 'package:alsat/config/translations/localization_controller.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +20,7 @@ import 'package:alsat/app/modules/product/view/client_profile_view.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../utils/translations.dart';
 import '../../../components/formate_datetime.dart';
 import '../../../components/network_image_preview.dart';
 import '../../conversation/view/message_view.dart';
@@ -537,10 +538,31 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     ),
                   ),
                   4.verticalSpace,
+                  // Row(
+                  //   children: [
+                  //     Text(
+                  //       widget.productModel?.individualInfo?.locationProvince ?? '',
+                  //       style: bold.copyWith(
+                  //         fontSize: 12.sp,
+                  //         fontFamily: 'Poppins',
+                  //         color: AppColors.primary,
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       ",${widget.productModel?.individualInfo?.locationCity ?? ''}",
+                  //       style: bold.copyWith(
+                  //         fontSize: 12.sp,
+                  //         fontFamily: 'Poppins',
+                  //         color: AppColors.primary,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                   Row(
                     children: [
                       Text(
-                        widget.productModel?.individualInfo?.locationProvince ?? '',
+                        Get.find<LocalizationController>().translateName(
+                            widget.productModel?.individualInfo?.locationProvince ?? '', provinceTranslations),
                         style: bold.copyWith(
                           fontSize: 12.sp,
                           fontFamily: 'Poppins',
@@ -548,7 +570,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                         ),
                       ),
                       Text(
-                        ",${widget.productModel?.individualInfo?.locationCity ?? ''}",
+                        ', ${Get.find<LocalizationController>().translateName(widget.productModel?.individualInfo?.locationCity ?? '', cityTranslations)}',
                         style: bold.copyWith(
                           fontSize: 12.sp,
                           fontFamily: 'Poppins',

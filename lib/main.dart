@@ -13,7 +13,7 @@ import 'config/theme/app_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'config/translations/localization_service.dart';
+import 'config/translations/localization_controller.dart';
 import 'firebase_options.dart';
 
 @pragma('vm:entry-point')
@@ -42,7 +42,7 @@ Future<void> main() async {
       useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
-        LocalizationService localizationService = Get.put(LocalizationService());
+        LocalizationController localizationService = Get.put(LocalizationController());
 
         return ToastificationWrapper(
           child: Obx(() {

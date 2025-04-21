@@ -1,15 +1,11 @@
-import 'dart:ffi';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../config/theme/app_colors.dart';
-import '../../../../config/theme/app_text_theme.dart';
-import '../../../../config/translations/localization_service.dart';
+import '../../../../config/translations/localization_controller.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/models/location_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LocationSelection extends StatelessWidget {
   final bool canSelectMultiple;
@@ -21,7 +17,7 @@ class LocationSelection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FilterController filterController = Get.find();
-    LocalizationService localizationService = Get.put(LocalizationService());
+    LocalizationController localizationService = Get.put(LocalizationController());
 
     // Get the current language code
     final String localLang = localizationService.locale.value.languageCode;
@@ -61,7 +57,7 @@ class LocationSelection extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.symmetric(horizontal: 16.w),
               child: Obx(() {
-                LocalizationService localizationService = Get.put(LocalizationService());
+                LocalizationController localizationService = Get.put(LocalizationController());
                 String localLang = localizationService.locale.value.languageCode;
 
                 return Column(

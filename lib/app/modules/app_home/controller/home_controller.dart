@@ -14,7 +14,7 @@ import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
-import '../../../../config/translations/localization_service.dart';
+import '../../../../config/translations/localization_controller.dart';
 import '../../../../utils/constants.dart';
 import '../../../common/const/image_path.dart';
 import '../../../services/base_client.dart';
@@ -92,7 +92,7 @@ class HomeController extends GetxController {
       Constants.baseUrl + Constants.categories,
       DioRequestType.get,
       headers: {
-        "lang": Get.find<LocalizationService>().locale.value.languageCode,
+        "lang": Get.find<LocalizationController>().locale.value.languageCode,
       },
       onLoading: () {
         isCategoryLoading.value = true;

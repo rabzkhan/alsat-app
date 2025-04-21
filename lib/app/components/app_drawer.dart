@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 
 import '../../config/theme/app_text_theme.dart';
-import '../../config/translations/localization_service.dart';
+import '../../config/translations/localization_controller.dart';
 import '../modules/auth_user/auth_user_tab/my_settings.dart';
 import '../modules/authentication/controller/auth_controller.dart';
 import '../modules/conversation/controller/conversation_controller.dart';
@@ -28,7 +28,7 @@ class AppDrawer extends StatelessWidget {
 
     AuthController authController = Get.find();
     ConversationController conversationController = Get.find();
-    LocalizationService localizationService = Get.put(LocalizationService());
+    LocalizationController localizationService = Get.put(LocalizationController());
     HomeController homeController = Get.find();
     return GlassmorphicContainer(
       width: Get.width * .6,

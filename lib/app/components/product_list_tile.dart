@@ -7,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../config/theme/app_text_theme.dart';
+import '../../config/translations/localization_controller.dart';
+import '../../utils/translations.dart';
 import '../common/const/image_path.dart';
 import '../modules/product/model/product_post_list_res.dart';
 
@@ -115,7 +117,9 @@ class ProductListTile extends StatelessWidget {
                           ),
                           TextSpan(
                             text:
-                                '${productModel?.individualInfo?.locationCity} ${(productModel?.individualInfo?.locationCity ?? '').isEmpty ? "" : ' /'} ${productModel?.individualInfo?.locationProvince}',
+                                '${Get.find<LocalizationController>().translateName(productModel?.individualInfo?.locationCity ?? '', cityTranslations)}'
+                                '${(productModel?.individualInfo?.locationCity ?? '').isEmpty ? "" : ' / '}'
+                                '${Get.find<LocalizationController>().translateName(productModel?.individualInfo?.locationProvince ?? '', provinceTranslations)}',
                             style: regular.copyWith(
                               fontSize: 12.sp,
                             ),
