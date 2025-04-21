@@ -227,5 +227,6 @@
   "login_required": "Login Required",
   "login_required_long": "You need to log in to access this feature.",
   "pressBackAgainToExit": "Press back again to exit.",
-  "car_class": "Class"
+  "car_class": "Class",
+  "choose_location" : "Choose Location"
 }

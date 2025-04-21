@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/modules/product/controller/product_controller.dart';
 import 'package:alsat/app/modules/product/view/product_details_view.dart';
@@ -135,12 +137,10 @@ class ProductListTile extends StatelessWidget {
                                 children: [
                                   Icon(
                                     (productModel?.priceInfo?.credit ?? false)
-                                        ? CupertinoIcons.checkmark_alt
-                                        : CupertinoIcons.xmark,
+                                        ? Icons.check_circle_outline
+                                        : Icons.cancel_outlined,
                                     size: 15.r,
-                                    color: (productModel?.priceInfo?.credit ?? false)
-                                        ? Get.theme.primaryColor
-                                        : Colors.red,
+                                    color: (productModel?.priceInfo?.credit ?? false) ? Colors.green : Colors.red,
                                   ),
                                   3.horizontalSpace,
                                   Text(
@@ -157,11 +157,11 @@ class ProductListTile extends StatelessWidget {
                                 children: [
                                   Icon(
                                     (productModel?.priceInfo?.possibleExchange ?? false)
-                                        ? CupertinoIcons.checkmark_alt
-                                        : CupertinoIcons.xmark,
+                                        ? Icons.check_circle_outline
+                                        : Icons.cancel_outlined,
                                     size: 15.r,
                                     color: (productModel?.priceInfo?.possibleExchange ?? false)
-                                        ? Get.theme.primaryColor
+                                        ? Colors.green
                                         : Colors.red,
                                   ),
                                   3.horizontalSpace,

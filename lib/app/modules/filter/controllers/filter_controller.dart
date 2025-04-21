@@ -2,7 +2,7 @@ import 'dart:developer' as log;
 import 'package:alsat/app/modules/filter/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
@@ -232,7 +232,7 @@ class FilterController extends GetxController {
         locationTexts.add(province);
       }
     }
-    return locationTexts.isNotEmpty ? locationTexts.join(',') : 'Choose Location';
+    return locationTexts.isNotEmpty ? locationTexts.join(',') : AppLocalizations.of(Get.context!)!.choose_location;
   }
 
   // ============== end of location ================== //
