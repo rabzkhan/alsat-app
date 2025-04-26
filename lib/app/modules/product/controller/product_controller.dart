@@ -99,7 +99,7 @@ class ProductController extends GetxController {
 
   RxBool isExchange = RxBool(false);
   RxBool isCredit = RxBool(false);
-  RxBool isLeftAvalable = RxBool(true);
+  RxBool isLeftAvalable = RxBool(false);
   //-- On Init Method --//
   @override
   void onInit() {
@@ -123,7 +123,11 @@ class ProductController extends GetxController {
       if (isCar) {
         totalProductFiled.value = 11;
       } else if (isRealEstate) {
-        totalProductFiled.value = 9;
+        if (selectSubCategory.value?.filter == "real_estate_2") {
+          totalProductFiled.value = 7;
+        } else {
+          totalProductFiled.value = 9;
+        }
       } else if (isPhone) {
         totalProductFiled.value = 5;
       } else {

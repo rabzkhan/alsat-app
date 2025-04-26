@@ -1228,58 +1228,74 @@ class _PostProductViewState extends State<PostProductView> {
 
   Widget _realEstate(BuildContext context) {
     final localLanguage = AppLocalizations.of(Get.context!)!;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: FormBuilderDropdown<String>(
-            name: 'estateType',
-            validator: FormBuilderValidators.compose([
-              FormBuilderValidators.required(),
-            ]),
-            onChanged: (newValue) {
-              productController.estateType.value = newValue!;
-              productController.calculateFilledProductFields();
-            },
-            style: regular.copyWith(
-              color: context.theme.primaryColor,
-            ),
-            decoration: InputDecoration(
-              prefixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    localLanguage.estate_type,
-                    style: bold.copyWith(
-                      fontWeight: FontWeight.w500,
+        if (productController.selectSubCategory.value?.filter != "real_estate_2")
+          //Estate Type
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+            child: FormBuilderDropdown<String>(
+              name: 'estateType',
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+              ]),
+              onChanged: (newValue) {
+                productController.estateType.value = newValue!;
+                productController.calculateFilledProductFields();
+              },
+              style: regular.copyWith(
+                color: context.theme.primaryColor,
+              ),
+              decoration: InputDecoration(
+                prefixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      localLanguage.estate_type,
+                      style: bold.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                    10.horizontalSpace,
+                  ],
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
                   ),
-                  10.horizontalSpace,
-                ],
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
+                  ),
                 ),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-            ),
-            selectedItemBuilder: (context) {
-              return productController.estateTypeList
+              selectedItemBuilder: (context) {
+                return productController.estateTypeList
+                    .map(
+                      (estate) => DropdownMenuItem<String>(
+                        alignment: Alignment.centerRight,
+                        value: estate,
+                        child: Text(
+                          estate,
+                          style: regular.copyWith(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList();
+              },
+              items: productController.estateTypeList
                   .map(
                     (estate) => DropdownMenuItem<String>(
-                      alignment: Alignment.centerRight,
                       value: estate,
                       child: Text(
                         estate,
@@ -1290,24 +1306,11 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                     ),
                   )
-                  .toList();
-            },
-            items: productController.estateTypeList
-                .map(
-                  (estate) => DropdownMenuItem<String>(
-                    value: estate,
-                    child: Text(
-                      estate,
-                      style: regular.copyWith(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
+                  .toList(),
+            ),
           ),
-        ),
+
+        //Address
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
           child: FormBuilderTextField(
@@ -1357,54 +1360,71 @@ class _PostProductViewState extends State<PostProductView> {
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
-          child: FormBuilderDropdown<String>(
-            name: 'estateDealType',
-            validator: FormBuilderValidators.compose([
-              FormBuilderValidators.required(),
-            ]),
-            onChanged: (newValue) {
-              productController.estateDealType.value = newValue!;
-              productController.calculateFilledProductFields();
-            },
-            style: regular.copyWith(
-              color: context.theme.primaryColor,
-            ),
-            decoration: InputDecoration(
-              prefixIcon: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    localLanguage.deal_type,
-                    style: bold.copyWith(
-                      fontWeight: FontWeight.w500,
+        if (productController.selectSubCategory.value?.filter != "real_estate_2")
+          //Renovation Type
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+            child: FormBuilderDropdown<String>(
+              name: 'estateDealType',
+              validator: FormBuilderValidators.compose([
+                FormBuilderValidators.required(),
+              ]),
+              onChanged: (newValue) {
+                productController.estateDealType.value = newValue!;
+                productController.calculateFilledProductFields();
+              },
+              style: regular.copyWith(
+                color: context.theme.primaryColor,
+              ),
+              decoration: InputDecoration(
+                prefixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      localLanguage.deal_type,
+                      style: bold.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
+                    10.horizontalSpace,
+                  ],
+                ),
+                border: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
                   ),
-                  10.horizontalSpace,
-                ],
-              ),
-              border: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
+                ),
+                focusedBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
+                  ),
+                ),
+                enabledBorder: UnderlineInputBorder(
+                  borderSide: BorderSide(
+                    color: context.theme.shadowColor.withOpacity(.3),
+                  ),
                 ),
               ),
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: context.theme.shadowColor.withOpacity(.3),
-                ),
-              ),
-            ),
-            selectedItemBuilder: (context) {
-              return productController.estateDealTypeList
+              selectedItemBuilder: (context) {
+                return productController.estateDealTypeList
+                    .map(
+                      (estate) => DropdownMenuItem<String>(
+                        alignment: Alignment.centerRight,
+                        value: estate,
+                        child: Text(
+                          estate,
+                          style: regular.copyWith(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList();
+              },
+              items: productController.estateDealTypeList
                   .map(
                     (estate) => DropdownMenuItem<String>(
-                      alignment: Alignment.centerRight,
                       value: estate,
                       child: Text(
                         estate,
@@ -1415,26 +1435,12 @@ class _PostProductViewState extends State<PostProductView> {
                       ),
                     ),
                   )
-                  .toList();
-            },
-            items: productController.estateDealTypeList
-                .map(
-                  (estate) => DropdownMenuItem<String>(
-                    value: estate,
-                    child: Text(
-                      estate,
-                      style: regular.copyWith(
-                        fontSize: 14.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
+                  .toList(),
+            ),
           ),
-        ),
         Row(
           children: [
+            //Floor
             Expanded(
               child: Obx(
                 () => _tile(
@@ -1456,60 +1462,63 @@ class _PostProductViewState extends State<PostProductView> {
                 ),
               ),
             ),
-            Expanded(
-              child: Obx(
-                () => _tile(
-                  localLanguage.room,
-                  productController.selectRoom.value,
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) => SingleDialogPicker(
-                        title: localLanguage.select_number_of_room,
-                        items: List.generate(
-                          10,
-                          (index) => (index + 1).toString(),
+            //Room
+            if (productController.selectSubCategory.value?.filter != "real_estate_2")
+              Expanded(
+                child: Obx(
+                  () => _tile(
+                    localLanguage.room,
+                    productController.selectRoom.value,
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => SingleDialogPicker(
+                          title: localLanguage.select_number_of_room,
+                          items: List.generate(
+                            10,
+                            (index) => (index + 1).toString(),
+                          ),
+                          selectYear: productController.selectRoom,
                         ),
-                        selectYear: productController.selectRoom,
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
           ],
         ),
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h).copyWith(bottom: 0, right: 5.w),
-          child: Row(
-            children: [
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      localLanguage.lift_available,
-                      style: bold.copyWith(
-                        fontWeight: FontWeight.w500,
+        if (productController.selectSubCategory.value?.filter != "real_estate_2")
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h).copyWith(bottom: 0, right: 5.w),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        localLanguage.lift_available,
+                        style: bold.copyWith(
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    Transform.scale(
-                      scale: 0.7,
-                      child: Obx(() {
-                        return CupertinoSwitch(
-                          value: productController.isLeftAvalable.value,
-                          onChanged: (value) {
-                            productController.isLeftAvalable.value = value;
-                          },
-                        );
-                      }),
-                    ),
-                  ],
+                      Transform.scale(
+                        scale: 0.7,
+                        child: Obx(() {
+                          return CupertinoSwitch(
+                            value: productController.isLeftAvalable.value,
+                            onChanged: (value) {
+                              productController.isLeftAvalable.value = value;
+                            },
+                          );
+                        }),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        )
+              ],
+            ),
+          )
       ],
     );
   }
