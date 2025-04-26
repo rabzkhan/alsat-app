@@ -1,3 +1,5 @@
+// ignore_for_file: unrelated_type_equality_checks
+
 import 'dart:developer' as log;
 import 'package:alsat/app/modules/filter/models/item_model.dart';
 import 'package:flutter/material.dart';
@@ -41,11 +43,32 @@ class FilterController extends GetxController {
   RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dEngineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dTransmission = <String>["Manual", "Auto", "Tiptronic"].obs;
-  RxList<String> estateTypeList = <String>["house"].obs;
+
+  List<String> dEstateTypeList = [
+    'Apartment',
+    'Elite',
+    'Half-Elite',
+    'Cottage',
+    'Villa',
+  ];
+  RxnString dEstateType = RxnString();
+  RxString selectedRoom = RxString('0');
+  RxString selectedFloor = RxString('0');
+  List<String> dEstateRenovTypeList = [
+    'Cosmetic',
+    'Government',
+    'Euro',
+    'Designer',
+    'Regular',
+  ];
+  RxnString dEstateRenovType = RxnString();
+
+  RxBool isLiftAvaiable = RxBool(false);
+
   RxList<Map<String, Color>> dColor = RxList<Map<String, Color>>([
     {"Red": Colors.red},
     {"Black": Colors.black},
-    {"Silver": Colors.grey}, // Usually, Silver is a shade of grey
+    {"Silver": Colors.grey},
     {"Blue": Colors.blue},
     {"White": Colors.white},
     {"Yellow": Colors.yellow},
@@ -73,28 +96,6 @@ class FilterController extends GetxController {
     'Google Pixel',
     'Motorola',
     'Sony',
-    'LG',
-    'Nokia',
-    'Asus',
-    'Lenovo',
-    'HTC',
-    'Honor',
-    'ZTE',
-    'Alcatel',
-    'Micromax',
-    'Infinix',
-    'Tecno',
-    'Panasonic',
-    'Lava',
-    'Karbonn',
-    'Meizu',
-    'Sharp',
-    'TCL',
-    'BlackBerry',
-    'Fairphone',
-    'Essential Phone',
-    'Razer Phone',
-    'Coolpad'
   ].obs;
 
   Rx<TextEditingController> priceFrom = TextEditingController(text: "0").obs;
@@ -262,30 +263,40 @@ class FilterController extends GetxController {
   Map<String, dynamic>? filterMapPassed;
   RxString searchText = RxString('');
   TextEditingController searchController = TextEditingController();
+
   Future<void> applyFilter({
     bool refresh = false,
     bool paginate = false,
     String? nextValue,
   }) async {
+    bool isRealState = category.value?.filter?.toLowerCase().contains("real_estate") ?? false;
+    bool isCar = category.value?.filter?.toLowerCase().contains("car") ?? false;
+    bool isPhone = category.value?.filter?.toLowerCase().contains("phone") ?? false;
     var map = {
       "category": (category.value?.name ?? '').toLowerCase(),
       "category_id": category.value?.sId,
       "condition": accountType.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
-      "year_from": choseFirstYear.value,
-      "year_to": choseLastYear.value,
       "location": getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
-      "brand": brand.isEmpty ? [] : branFormate(),
-      "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
-      "drive_type": driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
-      "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
-      "transmission": transmission.value != "Not Chosen Yet" ? transmission.value : '',
-      "color": color.isNotEmpty ? color : [],
+      "sort_price": sortDownToUp.value ? 1 : -1,
+      if (isCar) "year_from": choseFirstYear.value,
+      if (isCar) "year_to": choseLastYear.value,
+      if (isPhone) "brand": brand.isEmpty ? [] : branFormate(),
+      if (isCar) "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
+      if (isCar) "drive_type": driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
+      if (isCar) "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      if (isCar) "transmission": transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      if (isCar) "color": color.isNotEmpty ? color : [],
       "credit": credit.value,
       "exchange": exchange.value,
-      "has_vin_code": hasVinCode.value,
-      'sort_price': sortDownToUp.value ? 1 : -1,
+      if (isCar) "has_vin_code": hasVinCode.value,
+      if (isRealState && (dEstateType.value?.isNotEmpty ?? false)) "real_estate_type": [dEstateType.value ?? ''],
+      if (isRealState && selectedFloor != "0") "real_estate_floor": [selectedFloor.value],
+      if (isRealState && selectedRoom != "0") "real_estate_room": [selectedRoom.value],
+      if (isRealState && (dEstateRenovType.value?.isNotEmpty ?? false))
+        "real_estate_renov": [dEstateRenovType.value ?? ''],
+      if (isRealState) "real_estate_lift": isLiftAvaiable.value,
     };
 
     final filterData = Map<String, dynamic>.from(map);

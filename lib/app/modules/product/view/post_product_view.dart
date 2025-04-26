@@ -1438,6 +1438,7 @@ class _PostProductViewState extends State<PostProductView> {
                   .toList(),
             ),
           ),
+
         Row(
           children: [
             //Floor
@@ -1488,6 +1489,7 @@ class _PostProductViewState extends State<PostProductView> {
           ],
         ),
         if (productController.selectSubCategory.value?.filter != "real_estate_2")
+          //Lift
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.h).copyWith(bottom: 0, right: 5.w),
             child: Row(
@@ -1801,9 +1803,8 @@ class _PostProductViewState extends State<PostProductView> {
             "address": map['estateAddress'],
             "deal_type": map['estateDealType'],
             "floor": num.parse(productController.selectFloor.value).toInt(),
-            "floor_type": 2,
             "room": num.parse(productController.selectRoom.value).toInt(),
-            "renov": "cosmetique",
+            "renov": productController.estateDealType.value,
             "lift": productController.isLeftAvalable.value,
           }
         : null;

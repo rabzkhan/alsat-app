@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:developer';
 
 import 'package:alsat/app/components/scrolling_text.dart';
@@ -9,9 +11,12 @@ import 'package:alsat/app/modules/filter/views/location_selection.dart';
 import 'package:alsat/app/modules/filter/widgets/year_range_sheet.dart';
 import 'package:alsat/config/theme/app_colors.dart';
 import 'package:alsat/config/theme/app_text_theme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_chips_input/simple_chips_input.dart';
@@ -228,7 +233,7 @@ class _FilterViewState extends State<FilterView> {
           ),
           SliverToBoxAdapter(
             child: Obx(() {
-              return controller.category.value?.name?.toLowerCase() == 'phones'
+              return controller.category.value?.filter?.toLowerCase() == 'phone'
                   ? GestureDetector(
                       onTap: () {
                         Get.bottomSheet(
@@ -297,73 +302,7 @@ class _FilterViewState extends State<FilterView> {
                         ),
                       ),
                     )
-                  : controller.category.value?.name?.toLowerCase() == 'real estate'
-                      ? GestureDetector(
-                          onTap: () {
-                            Get.bottomSheet(
-                              MultiFilterBottomSheet(
-                                title: localLanguage.estate_type,
-                                data: controller.estateTypeList,
-                                selectedData: controller.estateType,
-                              ),
-                            ).then((_) {
-                              controller.estateType.refresh();
-                            });
-                          },
-                          child: Container(
-                            decoration: borderedContainer,
-                            margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10.h,
-                              horizontal: 12.w,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        localLanguage.estate_type,
-                                        style: bold.copyWith(
-                                          fontSize: 14.sp,
-                                        ),
-                                      ),
-                                      2.verticalSpace,
-                                      Obx(() {
-                                        return Row(
-                                          children: [
-                                            Expanded(
-                                              child: ScrollingTextWidget(
-                                                child: Text(
-                                                  controller.estateType.isEmpty
-                                                      ? localLanguage.not_chosen_yet
-                                                      : controller.estateType.expand((e) => [e.toString()]).join(', '),
-                                                  style: regular.copyWith(
-                                                    fontSize: 10.sp,
-                                                    color: context.theme.primaryColor,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      }),
-                                    ],
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.keyboard_arrow_right,
-                                  size: 30.h,
-                                  color: AppColors.primary,
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      : const Center();
+                  : SizedBox();
             }),
           ),
 
@@ -814,56 +753,250 @@ class _FilterViewState extends State<FilterView> {
                           ),
                         ],
                       )
-                    : (controller.category.value?.name?.toLowerCase().contains("real") ?? false) ||
-                            (controller.category.value?.name?.toLowerCase().contains("house") ?? false) ||
-                            (controller.category.value?.name?.toLowerCase().contains("room") ?? false) ||
-                            (controller.category.value?.name?.toLowerCase().contains("rent") ?? false)
+                    : (controller.category.value?.filter?.toLowerCase().contains("real_estate") ?? false)
                         ? Container(
                             margin: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h, bottom: 10.h),
-                            child: Row(
+                            child: Column(
                               children: [
-                                Expanded(
-                                  child: Obx(
-                                    () => _tile(
-                                      localLanguage.floor,
-                                      productController.selectFloor.value,
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => SingleDialogPicker(
-                                            title: localLanguage.select_number_of_floor,
-                                            items: List.generate(
-                                              15,
-                                              (index) => (index + 1).toString(),
-                                            ),
-                                            selectYear: productController.selectFloor,
-                                          ),
-                                        );
+                                if (controller.category.value?.filter != "real_estate_2")
+                                  //Estate Type
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                                    child: FormBuilderDropdown<String>(
+                                      name: 'estateType',
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(),
+                                      ]),
+                                      onChanged: (newValue) {
+                                        controller.dEstateType.value = newValue!;
                                       },
+                                      style: regular.copyWith(
+                                        color: context.theme.primaryColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              localLanguage.estate_type,
+                                              style: bold.copyWith(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            10.horizontalSpace,
+                                          ],
+                                        ),
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                      ),
+                                      selectedItemBuilder: (context) {
+                                        return controller.dEstateTypeList
+                                            .map(
+                                              (estate) => DropdownMenuItem<String>(
+                                                alignment: Alignment.centerRight,
+                                                value: estate,
+                                                child: Text(
+                                                  estate,
+                                                  style: regular.copyWith(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList();
+                                      },
+                                      items: controller.dEstateTypeList
+                                          .map(
+                                            (estate) => DropdownMenuItem<String>(
+                                              value: estate,
+                                              child: Text(
+                                                estate,
+                                                style: regular.copyWith(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                     ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Obx(
-                                    () => _tile(
-                                      localLanguage.room,
-                                      productController.selectRoom.value,
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) => SingleDialogPicker(
-                                            title: localLanguage.select_number_of_room,
-                                            items: List.generate(
-                                              10,
-                                              (index) => (index + 1).toString(),
-                                            ),
-                                            selectYear: productController.selectRoom,
-                                          ),
-                                        );
+                                if (controller.category.value?.filter != "real_estate_2")
+                                  //Renovation Type
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 4.h),
+                                    child: FormBuilderDropdown<String>(
+                                      name: 'estateDealType',
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(),
+                                      ]),
+                                      onChanged: (newValue) {
+                                        controller.dEstateRenovType.value = newValue!;
                                       },
+                                      style: regular.copyWith(
+                                        color: context.theme.primaryColor,
+                                      ),
+                                      decoration: InputDecoration(
+                                        prefixIcon: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              localLanguage.deal_type,
+                                              style: bold.copyWith(
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            10.horizontalSpace,
+                                          ],
+                                        ),
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                            color: context.theme.shadowColor.withOpacity(.3),
+                                          ),
+                                        ),
+                                      ),
+                                      selectedItemBuilder: (context) {
+                                        return controller.dEstateRenovTypeList
+                                            .map(
+                                              (estate) => DropdownMenuItem<String>(
+                                                alignment: Alignment.centerRight,
+                                                value: estate,
+                                                child: Text(
+                                                  estate,
+                                                  style: regular.copyWith(
+                                                    fontSize: 14.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList();
+                                      },
+                                      items: controller.dEstateRenovTypeList
+                                          .map(
+                                            (estate) => DropdownMenuItem<String>(
+                                              value: estate,
+                                              child: Text(
+                                                estate,
+                                                style: regular.copyWith(
+                                                  fontSize: 14.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
                                     ),
                                   ),
+                                //Floor and Room
+                                Row(
+                                  children: [
+                                    //Floor
+                                    Expanded(
+                                      child: Obx(
+                                        () => _tile(
+                                          localLanguage.floor,
+                                          controller.selectedFloor.value,
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => SingleDialogPicker(
+                                                title: localLanguage.select_number_of_floor,
+                                                items: List.generate(
+                                                  15,
+                                                  (index) => (index + 1).toString(),
+                                                ),
+                                                selectYear: controller.selectedFloor,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    //Room
+                                    if ((controller.category.value?.filter?.toLowerCase() != "real_estate_2"))
+                                      Expanded(
+                                        child: Obx(
+                                          () => _tile(
+                                            localLanguage.room,
+                                            controller.selectedFloor.value,
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (context) => SingleDialogPicker(
+                                                  title: localLanguage.select_number_of_room,
+                                                  items: List.generate(
+                                                    10,
+                                                    (index) => (index + 1).toString(),
+                                                  ),
+                                                  selectYear: controller.selectedFloor,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                  ],
                                 ),
+                                if (controller.category.value?.filter != "real_estate_2")
+                                  //Lift
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15.w,
+                                    ).copyWith(bottom: 0, right: 5.w, top: 10.h),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                localLanguage.lift_available,
+                                                style: bold.copyWith(
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              Transform.scale(
+                                                scale: 0.7,
+                                                child: Obx(() {
+                                                  return CupertinoSwitch(
+                                                    value: controller.isLiftAvaiable.value,
+                                                    onChanged: (value) {
+                                                      controller.isLiftAvaiable.value = value;
+                                                    },
+                                                  );
+                                                }),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
                               ],
                             ),
                           )
@@ -967,12 +1100,6 @@ class _FilterViewState extends State<FilterView> {
                   }),
                 ],
               ),
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 30.h,
             ),
           ),
           SliverToBoxAdapter(
