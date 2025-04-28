@@ -228,5 +228,8 @@
   "login_required_long": "Вам нужно войти в систему, чтобы получить доступ к этой функции.",
   "pressBackAgainToExit": "Нажмите «Назад» ещё раз, чтобы выйти.",
   "car_class": "класс",
-  "choose_location": "Выберите место"
+  "choose_location": "Выберите место",
+  "live_stories": "Прямые истории",
+  "archive_stories": "Архивные истории",
+  "re_post": "Репост"
 }

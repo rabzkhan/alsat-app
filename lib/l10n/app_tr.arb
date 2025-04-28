@@ -228,5 +228,8 @@
   "login_required_long": "Bu aýratynlyga girmek üçin siz hasaba girmegiňiz gerek.",
   "pressBackAgainToExit": "Çykmak üçin yzyna ýene bir gezek basyň.",
   "car_class": "klas",
-  "choose_location": "Ýer saýlaň"
+  "choose_location": "Ýer saýlaň",
+  "live_stories": "Göni ýaýlym hekaýalary",
+  "archive_stories": "Arhiw hekaýalary",
+  "re_post": "Gaýtadan paýlaş"
 }

@@ -1,4 +1,3 @@
-import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/custom_footer_widget.dart';
 import 'package:alsat/app/components/custom_header_widget.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
@@ -11,7 +10,7 @@ import 'package:get/get.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app_home/controller/home_controller.dart';
 
 class MyStories extends StatelessWidget {
@@ -19,6 +18,7 @@ class MyStories extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
     return Obx(() {
       return SmartRefresher(
@@ -36,10 +36,7 @@ class MyStories extends StatelessWidget {
             : ListView(
                 children: [
                   Obx(() {
-                    return ((homeController
-                                    .authUserStory.firstOrNull?.stories ??
-                                [])
-                            .isEmpty)
+                    return ((homeController.authUserStory.firstOrNull?.stories ?? []).isEmpty)
                         ? Center()
                         : Padding(
                             padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -47,7 +44,7 @@ class MyStories extends StatelessWidget {
                               children: [
                                 Icon(Icons.play_arrow_rounded, size: 18.sp),
                                 Text(
-                                  'Live Stories',
+                                  localLanguage.live_stories,
                                   style: TextStyle(
                                     fontSize: 14.sp,
                                     color: Colors.black54,
@@ -68,14 +65,9 @@ class MyStories extends StatelessWidget {
                         mainAxisSpacing: 10.h,
                         childAspectRatio: .6,
                       ),
-                      itemCount:
-                          (homeController.authUserStory.firstOrNull?.stories ??
-                                  [])
-                              .length,
+                      itemCount: (homeController.authUserStory.firstOrNull?.stories ?? []).length,
                       itemBuilder: (context, index) {
-                        var e = homeController
-                            .authUserStory.firstOrNull?.stories
-                            ?.elementAtOrNull(index);
+                        var e = homeController.authUserStory.firstOrNull?.stories?.elementAtOrNull(index);
                         return _storyItem(e);
                       },
                     );
@@ -88,7 +80,7 @@ class MyStories extends StatelessWidget {
                             children: [
                               Icon(Icons.play_arrow_rounded, size: 18.sp),
                               Text(
-                                'Archive Stories',
+                                localLanguage.archive_stories,
                                 style: TextStyle(
                                   fontSize: 14.sp,
                                   color: Colors.black54,
@@ -110,8 +102,7 @@ class MyStories extends StatelessWidget {
                       ),
                       itemCount: (homeController.authUserArchiveStory).length,
                       itemBuilder: (context, index) {
-                        var e = homeController.authUserArchiveStory
-                            .elementAtOrNull(index);
+                        var e = homeController.authUserArchiveStory.elementAtOrNull(index);
                         return _storyItem(e, isArchive: true);
                       },
                     );
@@ -123,6 +114,7 @@ class MyStories extends StatelessWidget {
   }
 
   Widget _storyItem(Story? e, {bool isArchive = false}) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
     return InkWell(
       onTap: () {
@@ -142,7 +134,7 @@ class MyStories extends StatelessWidget {
                           },
                     child: homeController.isStoryReporting.value
                         ? CupertinoActivityIndicator()
-                        : const Text('Re-Post'),
+                        : Text(localLanguage.re_post),
                   );
                 }),
               if (!isArchive)
@@ -155,7 +147,7 @@ class MyStories extends StatelessWidget {
                           },
                     child: homeController.isStoryDeleting.value
                         ? CupertinoActivityIndicator()
-                        : const Text('Delete'),
+                        : Text(localLanguage.delete),
                   );
                 }),
             ],
@@ -163,7 +155,7 @@ class MyStories extends StatelessWidget {
               onPressed: () {
                 Get.back();
               },
-              child: const Text('Close'),
+              child: Text(localLanguage.cancel),
             ),
           ),
         );
@@ -181,23 +173,19 @@ class MyStories extends StatelessWidget {
           width: 1.w,
         ),
       ),
-      child: (e?.media?.type == "video" &&
-              e?.media?.name != null &&
-              (e?.media?.name ?? '').isNotEmpty)
+      child: (e?.media?.type == "video" && e?.media?.name != null && (e?.media?.name ?? '').isNotEmpty)
           ? Stack(
               clipBehavior: Clip.none,
               children: [
                 ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(height == null ? 10.r : 0),
+                  borderRadius: BorderRadius.circular(height == null ? 10.r : 0),
                   child: FutureBuilder(
                       future: VideoThumbnail.thumbnailData(
                         video: e?.media?.name ?? '',
                         imageFormat: ImageFormat.JPEG,
                       ),
                       builder: (context, snapshot) {
-                        return snapshot.connectionState ==
-                                ConnectionState.waiting
+                        return snapshot.connectionState == ConnectionState.waiting
                             ? Container(
                                 alignment: Alignment.center,
                                 child: CupertinoActivityIndicator(),

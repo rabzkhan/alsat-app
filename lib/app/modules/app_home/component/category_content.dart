@@ -44,9 +44,9 @@ class CategoryContent extends StatelessWidget {
                           ? () {
                               filterController.category.value = homeController.categories.elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
-                              filterController.filterMapPassed = {
-                                "category": (homeController.categories[index].name ?? '').toLowerCase(),
-                              };
+                              // filterController.filterMapPassed = {
+                              //   "category": (homeController.categories[index].name ?? '').toLowerCase(),
+                              // };
                               filterController.applyFilter();
                               filterController.clearAddress();
                               Get.to(
@@ -87,9 +87,9 @@ class CategoryContent extends StatelessWidget {
                           onTap: () {
                             filterController.category.value = homeController.categories.elementAtOrNull(index);
                             filterController.isFilterLoading.value = true;
-                            filterController.filterMapPassed = {
-                              "category": (homeController.categories[index].name ?? '').toLowerCase(),
-                            };
+                            // filterController.filterMapPassed = {
+                            //   "category": (homeController.categories[index].name ?? '').toLowerCase(),
+                            // };
 
                             filterController.applyFilter();
                             filterController.clearAddress();
@@ -137,9 +137,9 @@ class CategoryContent extends StatelessWidget {
                               );
 
                               filterController.isFilterLoading.value = true;
-                              filterController.filterMapPassed = {
-                                "category": (subCategory.name ?? '').toLowerCase(),
-                              };
+                              // filterController.filterMapPassed = {
+                              //   "category": (subCategory.name ?? '').toLowerCase(),
+                              // };
                             }
                             filterController.applyFilter();
                             filterController.clearAddress();

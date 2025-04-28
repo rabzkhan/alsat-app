@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
-import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/utils/helper.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:alsat/app/modules/app_home/models/car_brand_res.dart';

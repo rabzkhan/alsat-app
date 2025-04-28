@@ -273,7 +273,6 @@ class FilterController extends GetxController {
     bool isCar = category.value?.filter?.toLowerCase().contains("car") ?? false;
     bool isPhone = category.value?.filter?.toLowerCase().contains("phone") ?? false;
     var map = {
-      "category": (category.value?.name ?? '').toLowerCase(),
       "category_id": category.value?.sId,
       "condition": accountType.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
