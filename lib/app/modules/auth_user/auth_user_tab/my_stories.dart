@@ -1,10 +1,14 @@
+import 'dart:isolate';
+
 import 'package:alsat/app/components/custom_footer_widget.dart';
 import 'package:alsat/app/components/custom_header_widget.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:alsat/app/modules/story/model/story_res.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_thumbnail_video/index.dart';
@@ -12,6 +16,8 @@ import 'package:get_thumbnail_video/video_thumbnail.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../app_home/controller/home_controller.dart';
+import '../controller/thumbnail.dart';
+import 'widgets/story_isolate.dart';
 
 class MyStories extends StatelessWidget {
   const MyStories({super.key});
@@ -116,6 +122,7 @@ class MyStories extends StatelessWidget {
   Widget _storyItem(Story? e, {bool isArchive = false}) {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
+    ThumbnailService thumbnailService = Get.put(ThumbnailService());
     return InkWell(
       onTap: () {
         showCupertinoModalPopup(
@@ -164,57 +171,55 @@ class MyStories extends StatelessWidget {
     );
   }
 
-  Container _items(Story? e, {double? height}) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(
-          color: Colors.grey.shade300,
-          width: 1.w,
-        ),
-      ),
-      child: (e?.media?.type == "video" && e?.media?.name != null && (e?.media?.name ?? '').isNotEmpty)
-          ? Stack(
-              clipBehavior: Clip.none,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(height == null ? 10.r : 0),
-                  child: FutureBuilder(
-                      future: VideoThumbnail.thumbnailData(
-                        video: e?.media?.name ?? '',
-                        imageFormat: ImageFormat.JPEG,
-                      ),
-                      builder: (context, snapshot) {
-                        return snapshot.connectionState == ConnectionState.waiting
-                            ? Container(
-                                alignment: Alignment.center,
-                                child: CupertinoActivityIndicator(),
-                              )
-                            : Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  Image.memory(
-                                    snapshot.data!,
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    height: height,
-                                  ),
-                                  Icon(
-                                    Icons.play_circle,
-                                    size: 30.sp,
-                                    color: Colors.red,
-                                  ),
-                                ],
-                              );
-                      }),
+  Widget _items(Story? e, {double? height}) {
+    final thumbnailService = Get.find<ThumbnailService>();
+
+    if (e?.media?.type == "video" && (e?.media?.name ?? '').isNotEmpty) {
+      thumbnailService.loadThumbnail(e!.media!.name!); // Load if not loaded
+
+      return Obx(() {
+        final thumbnail = thumbnailService.thumbnails[e.media!.name!];
+
+        if (thumbnail == null) {
+          return Center(child: CupertinoActivityIndicator());
+        } else {
+          return Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(height == null ? 10.r : 0),
+                child: Image.memory(thumbnail, fit: BoxFit.cover),
+              ),
+              Center(
+                child: Icon(
+                  Icons.video_file_rounded,
+                  color: Colors.white,
                 ),
-              ],
-            )
-          : NetworkImagePreview(
-              radius: height == null ? 10.r : 0,
-              url: e?.media?.name ?? '',
-              height: height,
-            ),
+              )
+            ],
+          );
+        }
+      });
+    } else {
+      return NetworkImagePreview(
+        radius: height == null ? 10.r : 0,
+        url: e?.media?.name ?? '',
+        height: height,
+      );
+    }
+  }
+
+  Future<Uint8List?> generateThumbnailInFlutterIsolate(String videoPath) async {
+    final ReceivePort receivePort = ReceivePort();
+
+    await FlutterIsolate.spawn(
+      isolateEntry,
+      {
+        'videoPath': videoPath,
+        'sendPort': receivePort.sendPort,
+      },
     );
+
+    final Uint8List? thumbnail = await receivePort.first as Uint8List?;
+    return thumbnail;
   }
 }
