@@ -64,24 +64,29 @@ class FilterController extends GetxController {
 
   RxBool isLiftAvaiable = RxBool(false);
 
-  RxList<Map<String, Color>> dColor = RxList<Map<String, Color>>([
-    {"Red": Colors.red},
-    {"Black": Colors.black},
-    {"Silver": Colors.grey},
-    {"Blue": Colors.blue},
-    {"White": Colors.white},
-    {"Yellow": Colors.yellow},
-    {"Magenta": const Color(0xFFFF00FF)},
-    {"Pink": Colors.pink},
-    {"Brown": Colors.brown},
-    {"Green": Colors.green},
-    {"Cyan": Colors.cyan},
-    {"Wheat": const Color(0xFFF5DEB3)},
-    {"Orange": Colors.orange},
-    {"Purple": Colors.purple},
-    {"Teal": Colors.teal},
-    {"Indigo": Colors.indigo},
-  ]);
+  RxList<Map<String, Color>> dColor = RxList<Map<String, Color>>(
+    [
+      {"White": Colors.white},
+      {"Silver": const Color(0xFFC0C0C0)},
+      {"Gold": const Color(0xFFFFD700)},
+      {"Black": Colors.black},
+      {"Vinous": const Color(0xFF8B0000)}, // Dark red
+      {"Beige": const Color(0xFFF5F5DC)},
+      {"Bronze": const Color(0xFFCD7F32)},
+      {"Blue": Colors.blue},
+      {"Light Blue": const Color(0xFFADD8E6)},
+      {"Dark Blue": const Color(0xFF00008B)},
+      {"Yellow": Colors.yellow},
+      {"Green": Colors.green},
+      {"Brown": Colors.brown},
+      {"Red": Colors.red},
+      {"Metallic": const Color(0xFFB0C4DE)}, // Light Steel Blue as a metallic example
+      {"Wet Asphalt": const Color(0xFF2F4F4F)}, // Dark Slate Gray
+      {"Orange": Colors.orange},
+      {"Cherry": const Color(0xFFD2042D)},
+      {"Grey": Colors.grey},
+    ],
+  );
 
   RxList<String> mobileBrand = <String>[
     'Apple',
