@@ -2,7 +2,7 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 
 class FilterBottomSheet extends StatefulWidget {
@@ -23,6 +23,7 @@ class FilterBottomSheet extends StatefulWidget {
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     return Container(
       margin: EdgeInsets.only(top: 50.h),
       decoration: BoxDecoration(
@@ -63,7 +64,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 return InkWell(
                   onTap: () {
                     if (widget.selectedData.value == widget.data[index]) {
-                      widget.selectedData.value = "Not Chsen Yet";
+                      widget.selectedData.value = localLanguage.not_chosen_yet;
                     } else {
                       widget.selectedData.value = widget.data[index];
                     }

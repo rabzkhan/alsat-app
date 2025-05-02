@@ -39,7 +39,6 @@ class FilterController extends GetxController {
 
   // Real state variables
 
-  RxList<String> dBodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxList<String> dEngineType = <String>["1.0", "1.3", "1.5", "1.7", "2.0"].obs;
   RxList<String> dTransmission = <String>["Manual", "Auto", "Tiptronic"].obs;

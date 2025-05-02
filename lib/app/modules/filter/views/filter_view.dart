@@ -1,7 +1,4 @@
-// ignore_for_file: deprecated_member_use
-
 import 'dart:developer';
-
 import 'package:alsat/app/components/scrolling_text.dart';
 import 'package:alsat/app/global/app_decoration.dart';
 import 'package:alsat/app/modules/app_home/controller/home_controller.dart';
@@ -18,9 +15,9 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:logger/logger.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:simple_chips_input/simple_chips_input.dart';
+import '../../../../config/translations/localization_controller.dart';
 import '../../../components/custom_appbar.dart';
 import '../../app_home/models/car_brand_res.dart';
 import '../../product/controller/product_controller.dart';
@@ -474,14 +471,12 @@ class _FilterViewState extends State<FilterView> {
               ),
             ),
           ),
-
           // //Brand Section
           // //Location Section
           SliverToBoxAdapter(
             child: Obx(
               () {
-                return controller.category.value?.name?.toLowerCase() == 'cars' ||
-                        controller.category.value?.name?.toLowerCase() == "foreign cars"
+                return controller.category.value?.filter?.toLowerCase() == 'car'
                     ? Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -631,19 +626,26 @@ class _FilterViewState extends State<FilterView> {
                             child: Row(
                               children: [
                                 Expanded(
-                                  child: Obx(() => FilterOptionWidget(
+                                  child: Obx(
+                                    () {
+                                      RxList<String> translatedList = Get.find<LocalizationController>()
+                                          .getTranslatedBodyTypes(productController.dBodyType)
+                                          .obs;
+                                      return FilterOptionWidget(
                                         title: localLanguage.body_type,
                                         subTitle: controller.bodyType.value,
                                         onTap: () {
                                           Get.bottomSheet(
                                             FilterBottomSheet(
                                               title: localLanguage.body_type,
-                                              data: controller.dBodyType,
+                                              data: translatedList,
                                               selectedData: controller.bodyType,
                                             ),
                                           );
                                         },
-                                      )),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             ),
@@ -702,10 +704,14 @@ class _FilterViewState extends State<FilterView> {
                                         title: localLanguage.transmission,
                                         subTitle: controller.transmission.value,
                                         onTap: () {
+                                          RxList<String> translatedTransmissionTypeList =
+                                              Get.find<LocalizationController>()
+                                                  .getTranslatedTransmissionTypes(controller.dTransmission)
+                                                  .obs;
                                           Get.bottomSheet(
                                             FilterBottomSheet(
                                               title: localLanguage.transmission,
-                                              data: controller.dTransmission,
+                                              data: translatedTransmissionTypeList,
                                               selectedData: controller.transmission,
                                             ),
                                           );

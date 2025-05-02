@@ -15,6 +15,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
+import '../../../../config/translations/localization_controller.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/location_selection.dart';
@@ -1620,10 +1621,14 @@ class _PostProductViewState extends State<PostProductView> {
                           localLanguage.bodyType,
                           productController.selectedBodyType.value,
                           onTap: () {
+                            RxList<String> translatedBodyTypeList = Get.find<LocalizationController>()
+                                .getTranslatedBodyTypes(productController.dBodyType)
+                                .obs;
                             Get.bottomSheet(
                               FilterBottomSheet(
                                 title: localLanguage.body_type,
-                                data: productController.dBodyType,
+                                //data: productController.dBodyType,
+                                data: translatedBodyTypeList,
                                 selectedData: productController.selectedBodyType,
                               ),
                             ).then((_) {
@@ -1650,10 +1655,13 @@ class _PostProductViewState extends State<PostProductView> {
                           localLanguage.transmission,
                           productController.selectedTransmission.value,
                           onTap: () {
+                            RxList<String> translatedTransmissionTypeList = Get.find<LocalizationController>()
+                                .getTranslatedTransmissionTypes(filterController.dTransmission)
+                                .obs;
                             Get.bottomSheet(
                               FilterBottomSheet(
                                 title: localLanguage.transmission,
-                                data: filterController.dTransmission,
+                                data: translatedTransmissionTypeList,
                                 selectedData: productController.selectedTransmission,
                               ),
                             ).then((_) {

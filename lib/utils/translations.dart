@@ -1,3 +1,53 @@
+const Map<String, Map<String, String>> bodyTypeTranslations = {
+  "Coupe": {
+    "en": "Coupe",
+    "tr": "Kupe",
+    "ru": "Купе",
+  },
+  "Sedan": {
+    "en": "Sedan",
+    "tr": "Sedan",
+    "ru": "Седан",
+  },
+  "Suv": {
+    "en": "SUV",
+    "tr": "Uly awtoulag",
+    "ru": "Внедорожник",
+  },
+  "Hatchback": {
+    "en": "Hatchback",
+    "tr": "Hetçbek",
+    "ru": "Хэтчбек",
+  },
+  "Crossover": {
+    "en": "Crossover",
+    "tr": "Krossover",
+    "ru": "Кроссовер",
+  },
+  "Van": {
+    "en": "Van",
+    "tr": "Wen",
+    "ru": "Фургон",
+  },
+};
+final Map<String, Map<String, String>> transmissionTranslations = {
+  "Manual": {
+    "en": "Manual",
+    "tr": "El bilen dolandyrylýan",
+    "ru": "Механика",
+  },
+  "Auto": {
+    "en": "Automatic",
+    "tr": "Awtomatiki",
+    "ru": "Автомат",
+  },
+  "Tiptronic": {
+    "en": "Tiptronic",
+    "tr": "Tiptronic",
+    "ru": "Типтроник",
+  },
+};
+
 const Map<String, Map<String, String>> provinceTranslations = {
   'Ashgabat': {'en': 'Ashgabat', 'tr': 'Aşgabat', 'ru': 'Ашхабад'},
   'Arkadag': {'en': 'Arkadag', 'tr': 'Arkadag', 'ru': 'Аркадаг'},
@@ -60,37 +110,4 @@ const Map<String, Map<String, String>> cityTranslations = {
   'Bereket': {'en': 'Bereket', 'tr': 'Bereket', 'ru': 'Берекет'},
   'Etrek': {'en': 'Etrek', 'tr': 'Etrek', 'ru': 'Этрек'},
   'Magtymguly': {'en': 'Magtymguly', 'tr': 'Magtymguly', 'ru': 'Махтумкули'},
-};
-
-final Map<String, Map<String, String>> bodyTypeTranslations = {
-  'Coupe': {
-    'en': 'Coupe',
-    'tk': 'Kupe',
-    'ru': 'Купе',
-  },
-  'Sedan': {
-    'en': 'Sedan',
-    'tk': 'Sedan',
-    'ru': 'Седан',
-  },
-  'Suv': {
-    'en': 'SUV',
-    'tk': 'Ýokary geçirijilikli',
-    'ru': 'Внедорожник',
-  },
-  'Hatchback': {
-    'en': 'Hatchback',
-    'tk': 'Heçbek',
-    'ru': 'Хэтчбек',
-  },
-  'Crossover': {
-    'en': 'Crossover',
-    'tk': 'Krossover',
-    'ru': 'Кроссовер',
-  },
-  'Van': {
-    'en': 'Van',
-    'tk': 'Minibus',
-    'ru': 'Фургон',
-  },
 };

@@ -22,4 +22,18 @@ class LocalizationController extends GetxController {
     update();
     return translations[name]?[locale.value.languageCode] ?? name;
   }
+
+  List<String> getTranslatedBodyTypes(List<String> originalList) {
+    final langCode = locale.value.languageCode;
+    return originalList.map((type) {
+      return bodyTypeTranslations[type]?[langCode] ?? type;
+    }).toList();
+  }
+
+  List<String> getTranslatedTransmissionTypes(List<String> originalList) {
+    final langCode = locale.value.languageCode;
+    return originalList.map((type) {
+      return transmissionTranslations[type]?[langCode] ?? type;
+    }).toList();
+  }
 }
