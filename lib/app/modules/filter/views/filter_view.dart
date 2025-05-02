@@ -1105,7 +1105,7 @@ class _FilterViewState extends State<FilterView> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
               child: SizedBox(
                 height: 60.h,
                 child: Obx(() {
