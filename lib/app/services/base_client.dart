@@ -1,16 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
-// import 'dart:developer';
-import 'dart:io';
 import 'package:alsat/app/services/data_cache_servise.dart';
 import 'package:alsat/app/services/dio_interceptor.dart';
 import 'package:alsat/utils/constants.dart';
 import 'package:dio/dio.dart';
-import 'package:get/get.dart' as getx;
 import 'package:logger/logger.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../components/custom_snackbar.dart';
-import 'api_exceptions.dart';
 
 enum DioRequestType {
   get,
@@ -49,6 +43,8 @@ class BaseClient {
     dynamic data,
   }) async {
     Logger().d("url is: $url");
+    Logger().d("token is: ${headers.toString()}");
+
     try {
       if (isDataCache) {
         dynamic cacheData = await DataCacheService(apiEndPoint: url).getData();

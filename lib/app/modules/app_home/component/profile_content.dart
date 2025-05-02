@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:alsat/app/common/const/image_path.dart';
 import 'package:alsat/app/components/network_image_preview.dart';
 import 'package:alsat/app/data/local/my_shared_pref.dart';

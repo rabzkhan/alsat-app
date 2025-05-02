@@ -11,24 +11,19 @@ class ConversationListRes {
     this.hasMore,
   });
 
-  factory ConversationListRes.fromRawJson(String str) =>
-      ConversationListRes.fromJson(json.decode(str));
+  factory ConversationListRes.fromRawJson(String str) => ConversationListRes.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory ConversationListRes.fromJson(Map<String, dynamic> json) =>
-      ConversationListRes(
+  factory ConversationListRes.fromJson(Map<String, dynamic> json) => ConversationListRes(
         data: json["data"] == null
             ? []
-            : List<ConversationModel>.from(
-                json["data"]!.map((x) => ConversationModel.fromJson(x))),
+            : List<ConversationModel>.from(json["data"]!.map((x) => ConversationModel.fromJson(x))),
         hasMore: json["has_more"],
       );
 
   Map<String, dynamic> toJson() => {
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
         "has_more": hasMore,
       };
 }
@@ -36,7 +31,7 @@ class ConversationListRes {
 class ConversationModel {
   String? id;
   String? createdAt;
-  DateTime? updatedAt;
+  String? updatedAt;
   DateTime? accessedAt;
   List<Participant>? participants;
   MessageModel? lastMessage;
@@ -58,28 +53,19 @@ class ConversationModel {
     this.isAdminChat,
   });
 
-  factory ConversationModel.fromRawJson(String str) =>
-      ConversationModel.fromJson(json.decode(str));
+  factory ConversationModel.fromRawJson(String str) => ConversationModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory ConversationModel.fromJson(Map<String, dynamic> json) =>
-      ConversationModel(
+  factory ConversationModel.fromJson(Map<String, dynamic> json) => ConversationModel(
         id: json["_id"],
         createdAt: json["created_at"],
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        accessedAt: json["accessed_at"] == null
-            ? null
-            : DateTime.parse(json["accessed_at"]),
+        updatedAt: json["updated_at"],
+        accessedAt: json["accessed_at"] == null ? null : DateTime.parse(json["accessed_at"]),
         participants: json["participants"] == null
             ? []
-            : List<Participant>.from(
-                json["participants"]!.map((x) => Participant.fromJson(x))),
-        lastMessage: json["last_message"] == null
-            ? null
-            : MessageModel.fromJson(json["last_message"]),
+            : List<Participant>.from(json["participants"]!.map((x) => Participant.fromJson(x))),
+        lastMessage: json["last_message"] == null ? null : MessageModel.fromJson(json["last_message"]),
         notReadedCount: json["not_readed_count"],
         haveBlocked: json["have_blocked"],
         isBlocked: json["is_blocked"],
@@ -89,11 +75,9 @@ class ConversationModel {
   Map<String, dynamic> toJson() => {
         "_id": id,
         "created_at": createdAt,
-        "updated_at": updatedAt?.toIso8601String(),
+        "updated_at": updatedAt,
         "accessed_at": accessedAt?.toIso8601String(),
-        "participants": participants == null
-            ? []
-            : List<dynamic>.from(participants!.map((x) => x.toJson())),
+        "participants": participants == null ? [] : List<dynamic>.from(participants!.map((x) => x.toJson())),
         "last_message": lastMessage?.toJson(),
         "not_readed_count": notReadedCount,
         "have_blocked": haveBlocked,

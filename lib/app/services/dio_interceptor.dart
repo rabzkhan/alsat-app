@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:alsat/app/data/local/my_shared_pref.dart';
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/authentication/model/varified_model.dart';
@@ -17,9 +19,7 @@ class DioInterceptor extends Interceptor {
         String? accessToken = await _refreshToken();
         if (accessToken != null) {
           err.requestOptions.headers["Authorization"] = "Bearer $accessToken";
-          final options = Options(
-              method: err.requestOptions.method,
-              headers: err.requestOptions.headers);
+          final options = Options(method: err.requestOptions.method, headers: err.requestOptions.headers);
           final retryResponse = await dio.request(
             err.requestOptions.path,
             options: options,
@@ -56,14 +56,10 @@ class DioInterceptor extends Interceptor {
       );
       if (response.statusCode == 200) {
         AuthController authController = Get.find();
-        authController.verifiedModel.value =
-            VerifiedModel.fromJson(response.data);
-        await MySharedPref.setAuthToken(
-            authController.verifiedModel.value.token!);
-        await MySharedPref.setAuthRefreshToken(
-            authController.verifiedModel.value.refreshToken!);
+        authController.verifiedModel.value = VerifiedModel.fromJson(response.data);
+        await MySharedPref.setAuthToken(authController.verifiedModel.value.token!);
+        await MySharedPref.setAuthRefreshToken(authController.verifiedModel.value.refreshToken!);
         authController.token.value = authController.verifiedModel.value.token;
-        ;
         return authController.verifiedModel.value.token;
       } else {
         return null;
@@ -74,9 +70,9 @@ class DioInterceptor extends Interceptor {
   }
 
   @override
-  Future<void> onRequest(
-      RequestOptions options, RequestInterceptorHandler handler) async {
+  Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     final token = MySharedPref.getAuthToken();
+    //log("auth token is-> $token");
     if (token != null && token.isNotEmpty) {
       options.headers["Authorization"] = "Bearer $token";
     }

@@ -36,13 +36,22 @@ class ChatContent extends StatelessWidget {
       // conversationController.getConversations();
       // },
       child: ListView(
-        // physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.symmetric(
           horizontal: 20.w,
           vertical: 10.h,
         ).copyWith(top: 0),
         children: [
           Obx(() {
+            // Sorting the conversationList by latest updated time
+            // if (!conversationController.isConversationLoading.value) {
+            //   conversationController.conversationList.sort((a, b) {
+            //     final aTime = DateTime.tryParse(a.updatedAt ?? '');
+            //     final bTime = DateTime.tryParse(b.updatedAt ?? '');
+
+            //     if (aTime == null || bTime == null) return 0;
+            //     return bTime.compareTo(aTime); // Descending: latest first
+            //   });
+            // }
             return Skeletonizer(
               enabled: conversationController.isConversationLoading.value,
               // effect: ShimmerEffect(
