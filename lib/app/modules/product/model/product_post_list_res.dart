@@ -4,11 +4,9 @@
 
 import 'dart:convert';
 
-ProductPostListRes productPostListResFromJson(String str) =>
-    ProductPostListRes.fromJson(json.decode(str));
+ProductPostListRes productPostListResFromJson(String str) => ProductPostListRes.fromJson(json.decode(str));
 
-String productPostListResToJson(ProductPostListRes data) =>
-    json.encode(data.toJson());
+String productPostListResToJson(ProductPostListRes data) => json.encode(data.toJson());
 
 class ProductPostListRes {
   final List<ProductModel>? data;
@@ -28,19 +26,13 @@ class ProductPostListRes {
         hasMore: hasMore ?? this.hasMore,
       );
 
-  factory ProductPostListRes.fromJson(Map<String, dynamic> json) =>
-      ProductPostListRes(
-        data: json["data"] == null
-            ? []
-            : List<ProductModel>.from(
-                json["data"]!.map((x) => ProductModel.fromJson(x))),
+  factory ProductPostListRes.fromJson(Map<String, dynamic> json) => ProductPostListRes(
+        data: json["data"] == null ? [] : List<ProductModel>.from(json["data"]!.map((x) => ProductModel.fromJson(x))),
         hasMore: json["has_more"],
       );
 
   Map<String, dynamic> toJson() => {
-        "data": data == null
-            ? []
-            : List<dynamic>.from(data!.map((x) => x.toJson())),
+        "data": data == null ? [] : List<dynamic>.from(data!.map((x) => x.toJson())),
         "has_more": hasMore,
       };
 }
@@ -123,35 +115,19 @@ class ProductModel {
         id: json["_id"],
         liked: json["liked"] ?? false,
         createdAt: json["created_at"],
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        accessedAt: json["accessed_at"] == null
-            ? null
-            : DateTime.parse(json["accessed_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        accessedAt: json["accessed_at"] == null ? null : DateTime.parse(json["accessed_at"]),
         title: json["title"],
         type: json["type"],
         categoryId: json["category_id"],
         description: json["description"],
-        media: json["media"] == null
-            ? []
-            : List<Media>.from(json["media"]!.map((x) => Media.fromJson(x))),
-        individualInfo: json["individual_info"] == null
-            ? null
-            : IndividualInfo.fromJson(json["individual_info"]),
-        priceInfo: json["price_info"] == null
-            ? null
-            : PriceInfo.fromJson(json["price_info"]),
+        media: json["media"] == null ? [] : List<Media>.from(json["media"]!.map((x) => Media.fromJson(x))),
+        individualInfo: json["individual_info"] == null ? null : IndividualInfo.fromJson(json["individual_info"]),
+        priceInfo: json["price_info"] == null ? null : PriceInfo.fromJson(json["price_info"]),
         userId: json["user_id"],
-        carInfo: json["car_info"] == null
-            ? null
-            : CarInfo.fromJson(json["car_info"]),
-        phoneInfo: json["phone_info"] == null
-            ? null
-            : PhoneInfo.fromJson(json["phone_info"]),
-        estateInfo: json["estate_info"] == null
-            ? null
-            : EstateInfo.fromJson(json["estate_info"]),
+        carInfo: json["car_info"] == null ? null : CarInfo.fromJson(json["car_info"]),
+        phoneInfo: json["phone_info"] == null ? null : PhoneInfo.fromJson(json["phone_info"]),
+        estateInfo: json["estate_info"] == null ? null : EstateInfo.fromJson(json["estate_info"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -164,9 +140,7 @@ class ProductModel {
         "type": type,
         "category_id": categoryId,
         "description": description,
-        "media": media == null
-            ? []
-            : List<dynamic>.from(media!.map((x) => x.toJson())),
+        "media": media == null ? [] : List<dynamic>.from(media!.map((x) => x.toJson())),
         "individual_info": individualInfo?.toJson(),
         "price_info": priceInfo?.toJson(),
         "user_id": userId,
@@ -373,9 +347,7 @@ class IndividualInfo {
   factory IndividualInfo.fromJson(Map<String, dynamic> json) => IndividualInfo(
         locationProvince: json["location_province"],
         locationCity: json["location_city"],
-        locationGeo: json["location_geo"] == null
-            ? null
-            : LocationGeo.fromJson(json["location_geo"]),
+        locationGeo: json["location_geo"] == null ? null : LocationGeo.fromJson(json["location_geo"]),
         phoneNumber: json["phone_number"],
         freeToCallFrom: json["free_to_call_from"],
         freeToCallTo: json["free_to_call_to"],
@@ -417,16 +389,13 @@ class LocationGeo {
 
   factory LocationGeo.fromJson(Map<String, dynamic> json) => LocationGeo(
         type: json["Type"],
-        coordinates: json["Coordinates"] == null
-            ? []
-            : List<double>.from(json["Coordinates"]!.map((x) => x?.toDouble())),
+        coordinates:
+            json["Coordinates"] == null ? [] : List<double>.from(json["Coordinates"]!.map((x) => x?.toDouble())),
       );
 
   Map<String, dynamic> toJson() => {
         "Type": type,
-        "Coordinates": coordinates == null
-            ? []
-            : List<dynamic>.from(coordinates!.map((x) => x)),
+        "Coordinates": coordinates == null ? [] : List<dynamic>.from(coordinates!.map((x) => x)),
       };
 }
 
@@ -478,15 +447,9 @@ class Media {
 
   factory Media.fromJson(Map<String, dynamic> json) => Media(
         id: json["_id"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        accessedAt: json["accessed_at"] == null
-            ? null
-            : DateTime.parse(json["accessed_at"]),
+        createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        accessedAt: json["accessed_at"] == null ? null : DateTime.parse(json["accessed_at"]),
         name: json["name"],
         type: json["type"],
         size: json["size"],

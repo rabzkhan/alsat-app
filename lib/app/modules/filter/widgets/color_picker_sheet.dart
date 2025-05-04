@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../../../../config/theme/app_text_theme.dart';
+import '../../../../config/translations/localization_controller.dart';
 
 class ColorPickerSheet extends StatelessWidget {
   const ColorPickerSheet({
@@ -114,8 +115,14 @@ class ColorPickerSheet extends StatelessWidget {
                             ),
                           ),
                           5.verticalSpace,
+                          // Text(
+                          //   data[index].keys.first,
+                          //   style: regular.copyWith(
+                          //     fontSize: 12.sp,
+                          //   ),
+                          // )
                           Text(
-                            data[index].keys.first,
+                            Get.find<LocalizationController>().getColorNameTranslated(data[index].keys.first),
                             style: regular.copyWith(
                               fontSize: 12.sp,
                             ),

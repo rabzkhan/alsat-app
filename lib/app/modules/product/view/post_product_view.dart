@@ -1714,6 +1714,7 @@ class _PostProductViewState extends State<PostProductView> {
                         },
                       ),
                     ),
+                    //Selected Color
                     Obx(() => _tile(
                           localLanguage.color,
                           productController.selectedColor.firstOrNull ?? '',

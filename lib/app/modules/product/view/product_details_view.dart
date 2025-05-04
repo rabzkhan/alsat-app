@@ -609,12 +609,22 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                 infoTile(
                                     name: localLanguage.modelType, value: widget.productModel?.carInfo?.model ?? ''),
                                 infoTile(
+                                    name: localLanguage.car_class,
+                                    value: widget.productModel?.carInfo?.carInfoClass ?? ''),
+                                infoTile(
                                     name: localLanguage.bodyType, value: widget.productModel?.carInfo?.bodyType ?? ''),
                                 infoTile(
                                     name: localLanguage.year, value: "${widget.productModel?.carInfo?.year ?? ''}"),
                                 infoTile(
                                     name: localLanguage.engine, value: widget.productModel?.carInfo?.engineType ?? ''),
-                                infoTile(name: localLanguage.color, value: widget.productModel?.carInfo?.color ?? ''),
+                                infoTile(
+                                    name: localLanguage.transmission,
+                                    value: Get.find<LocalizationController>()
+                                        .getTranslatedTransmission(widget.productModel?.carInfo?.transmission ?? '')),
+                                infoTile(
+                                    name: localLanguage.color,
+                                    value: Get.find<LocalizationController>()
+                                        .getColorNameTranslated(widget.productModel?.carInfo?.color ?? '')),
                                 infoTile(
                                     name: localLanguage.vin_code, value: widget.productModel?.carInfo?.vinCode ?? ''),
                               ],

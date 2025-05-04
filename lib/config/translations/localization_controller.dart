@@ -36,4 +36,27 @@ class LocalizationController extends GetxController {
       return transmissionTranslations[type]?[langCode] ?? type;
     }).toList();
   }
+
+  String getTranslatedTransmission(String inputValue) {
+    final langCode = locale.value.languageCode;
+    for (final entry in transmissionTranslations.entries) {
+      final translations = entry.value;
+      // If the input matches any of the translations
+      if (translations.containsValue(inputValue)) {
+        // Return the translation in the desired language
+        return translations[langCode] ?? entry.key;
+      }
+    }
+
+    // If not found, return the input as is
+    return inputValue;
+  }
+
+  String getColorNameTranslated(String colorName) {
+    final langCode = locale.value.languageCode;
+    if (colorTranslations.containsKey(colorName)) {
+      return colorTranslations[colorName]?[langCode] ?? colorName;
+    }
+    return colorName; // fallback to English if translation not found
+  }
 }

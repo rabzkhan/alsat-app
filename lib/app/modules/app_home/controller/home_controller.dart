@@ -180,7 +180,7 @@ class HomeController extends GetxController {
   RxBool isBrandLoading = true.obs;
   fetchCarBrand() async {
     await BaseClient().safeApiCall(
-      Constants.baseUrl + Constants.phoneBrandEndPoint,
+      Constants.baseUrl + Constants.carBrandEndPoint,
       DioRequestType.get,
       onLoading: () {
         isBrandLoading.value = true;
