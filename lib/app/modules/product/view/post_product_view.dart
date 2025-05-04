@@ -1541,7 +1541,7 @@ class _PostProductViewState extends State<PostProductView> {
                 isScrollControlled: true,
                 FilterBottomSheet(
                   title: localLanguage.brand,
-                  data: filterController.mobileBrand,
+                  data: homeController.mobileBrand,
                   selectedData: productController.selectedPhoneBrand,
                 ),
               ).then((_) {

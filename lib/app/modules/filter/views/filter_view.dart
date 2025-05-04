@@ -238,7 +238,7 @@ class _FilterViewState extends State<FilterView> {
                           isScrollControlled: true,
                           MultiFilterBottomSheet(
                             title: localLanguage.mobile_brand,
-                            data: controller.mobileBrand,
+                            data: homeController.mobileBrand,
                             selectedData: controller.selectMobileBrand,
                           ),
                         ).then((_) {

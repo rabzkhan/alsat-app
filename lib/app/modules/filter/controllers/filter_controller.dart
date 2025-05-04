@@ -88,19 +88,7 @@ class FilterController extends GetxController {
     ],
   );
 
-  RxList<String> mobileBrand = <String>[
-    'Apple',
-    'Samsung',
-    'Huawei',
-    'Xiaomi',
-    'Oppo',
-    'Vivo',
-    'OnePlus',
-    'Realme',
-    'Google Pixel',
-    'Motorola',
-    'Sony',
-  ].obs;
+  //RxList<String> mobileBrand = <String>[].obs;
 
   Rx<TextEditingController> priceFrom = TextEditingController(text: "0").obs;
   Rx<TextEditingController> priceTo = TextEditingController(text: "300000").obs;

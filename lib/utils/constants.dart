@@ -18,6 +18,7 @@ class Constants {
   static const follower = '/users/followers';
   static const following = '/users/following';
   static const carBrandEndPoint = '/carBrands?limit=200000';
+  static const phoneBrandEndPoint = '/phoneBrands?limit=200000';
   static const upgradeToPremium = '/users/upgrade';
   static const updateProfilePicture = '/users/picture?file_name=télécharger.jpg&content_type=image/jpg';
 }

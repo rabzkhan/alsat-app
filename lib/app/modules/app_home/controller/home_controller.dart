@@ -26,6 +26,7 @@ import '../../story/model/story_res.dart';
 import '../models/banner_res.dart';
 import '../models/car_brand_res.dart';
 import '../models/notification_res.dart';
+import '../models/phone_brand_res.dart';
 
 class HomeController extends GetxController {
   RxBool isShowSearch = false.obs;
@@ -67,6 +68,7 @@ class HomeController extends GetxController {
     getCategories();
     getBanner();
     fetchCarBrand();
+    fetchPhoneBrand();
     authUserFeatureValue();
     fetchPremiumUser();
     log('HomeController: onInit');
@@ -173,12 +175,12 @@ class HomeController extends GetxController {
     );
   }
 
-  //-- Get Brand --//
+  //-- Get Car Brand --//
   RxList<BrandModel> brandList = <BrandModel>[].obs;
   RxBool isBrandLoading = true.obs;
   fetchCarBrand() async {
     await BaseClient().safeApiCall(
-      Constants.baseUrl + Constants.carBrandEndPoint,
+      Constants.baseUrl + Constants.phoneBrandEndPoint,
       DioRequestType.get,
       onLoading: () {
         isBrandLoading.value = true;
@@ -193,6 +195,34 @@ class HomeController extends GetxController {
       },
       onError: (error) {
         isBrandLoading.value = false;
+      },
+    );
+  }
+
+  //-- Get Phone Brand --//
+  RxList<PhoneBrand> phoneBrandList = <PhoneBrand>[].obs;
+  RxList<String> mobileBrand = <String>[].obs;
+  RxBool isPhoneBrandLoading = true.obs;
+  fetchPhoneBrand() async {
+    await BaseClient().safeApiCall(
+      Constants.baseUrl + Constants.phoneBrandEndPoint,
+      DioRequestType.get,
+      onLoading: () {
+        isPhoneBrandLoading.value = true;
+        phoneBrandList.clear();
+        mobileBrand.clear();
+      },
+      onSuccess: (response) async {
+        Map<String, dynamic> data = response.data;
+        PhoneBrandRes phoneBrandRes = PhoneBrandRes.fromJson(data);
+        phoneBrandList.value = phoneBrandRes.data ?? [];
+        // Extract names from phoneBrandList
+        mobileBrand.value = phoneBrandList.map((e) => e.brand ?? "").toList();
+        log("Phone Brand List: ${phoneBrandList.length}");
+        isPhoneBrandLoading.value = false;
+      },
+      onError: (error) {
+        isPhoneBrandLoading.value = false;
       },
     );
   }
