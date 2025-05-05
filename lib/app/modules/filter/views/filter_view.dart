@@ -610,16 +610,31 @@ class _FilterViewState extends State<FilterView> {
                                                     data: (brand['brand'].model ?? <CarModel>[]).toList(),
                                                     selectedData: controller.brandAndSelectedModel[index]['model'],
                                                     onSelect: (p0) {
+                                                      // Update the selected model
                                                       controller.brandAndSelectedModel[index]['model'] = p0;
+                                                      // Refresh the selected car classes based on the new model
+                                                      final models = p0 as List<CarModel>;
+                                                      final List<String> allAvailableClasses = models
+                                                          .expand((model) => model.modelClass ?? <String>[])
+                                                          .whereType<String>()
+                                                          .toSet()
+                                                          .toList();
+                                                      // Set the updated selected classes
+                                                      controller.brandAndSelectedModel[index]['class'] =
+                                                          allAvailableClasses;
+
+                                                      // Refresh the state to update the UI
                                                       controller.brandAndSelectedModel.refresh();
                                                     },
                                                   ),
                                                 );
                                               },
                                             ),
-
                                             if (controller.brand.length == 1 &&
-                                                controller.brandAndSelectedModel[index]['model'].length == 1)
+                                                controller.brandAndSelectedModel[index]['model'].length == 1 &&
+                                                (controller.brandAndSelectedModel[index]['model'] as List<CarModel>)
+                                                    .expand((model) => model.modelClass ?? [])
+                                                    .isNotEmpty)
                                               FilterOptionWidget(
                                                 title: localLanguage.car_class,
                                                 titleSub: '*(${brand['brand'].brand ?? ''})',
@@ -640,7 +655,6 @@ class _FilterViewState extends State<FilterView> {
                                                       .whereType<String>() // ensures only Strings
                                                       .toSet()
                                                       .toList();
-
                                                   Get.bottomSheet(
                                                     CarMultiSelectClassBottomSheet(
                                                         title: localLanguage.car_class,
@@ -656,8 +670,6 @@ class _FilterViewState extends State<FilterView> {
                                                   );
                                                 },
                                               ),
-
-                                            // i need to show car class here
                                           ],
                                         ),
                                       );
