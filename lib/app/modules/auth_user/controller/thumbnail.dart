@@ -1,6 +1,5 @@
 import 'dart:isolate';
 import 'dart:typed_data';
-
 import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:get/get.dart';
 
@@ -10,11 +9,11 @@ class ThumbnailService extends GetxController {
   final thumbnails = <String, Uint8List?>{}.obs;
 
   Future<void> loadThumbnail(String videoPath) async {
-    if (thumbnails.containsKey(videoPath)) return; // already loaded
+    if (thumbnails.containsKey(videoPath)) return;
 
     final receivePort = ReceivePort();
 
-    await FlutterIsolate.spawn(
+    FlutterIsolate.spawn(
       isolateEntry,
       {
         'videoPath': videoPath,
@@ -22,7 +21,10 @@ class ThumbnailService extends GetxController {
       },
     );
 
-    final thumbnail = await receivePort.first as Uint8List?;
-    thumbnails[videoPath] = thumbnail;
+    receivePort.listen((message) {
+      if (message is Uint8List) {
+        thumbnails[videoPath] = message;
+      }
+    });
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:alsat/app/common/binding/app_binding.dart';
+import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,6 +20,7 @@ import 'firebase_options.dart';
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
+
   log("Handling a background message: ${message.notification!.toMap()}");
   log("Handling a background message: ${message.data}");
 }
