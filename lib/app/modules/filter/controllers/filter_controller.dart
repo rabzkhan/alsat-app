@@ -98,7 +98,7 @@ class FilterController extends GetxController {
 
   RxInt mileageFrom = 5000.obs;
   RxInt mileageTo = 100000.obs;
-
+  RxList<String> selectedClassesList = <String>[].obs;
   RxBool credit = false.obs;
   RxBool exchange = false.obs;
   RxBool hasVinCode = false.obs;

@@ -23,6 +23,7 @@ import '../../app_home/models/car_brand_res.dart';
 import '../../product/controller/product_controller.dart';
 import '../../product/widget/category_selection.dart';
 import '../../product/widget/single_year_picker.dart';
+import '../widgets/car_class_bottom_sheet.dart';
 import '../widgets/car_multi_brand_sheet.dart';
 import '../widgets/car_multi_model_sheet.dart';
 import '../widgets/color_picker_sheet.dart';
@@ -592,27 +593,72 @@ class _FilterViewState extends State<FilterView> {
                                       var brand = controller.brandAndSelectedModel[index];
                                       return SizedBox(
                                         width: (Get.width / (controller.brand.length > 1 ? 2 : 1)) - 26.w,
-                                        child: FilterOptionWidget(
-                                          title: localLanguage.model,
-                                          titleSub: '*(${brand['brand'].brand ?? ''})',
-                                          subTitle: controller.brandAndSelectedModel[index]['model'].isEmpty
-                                              ? localLanguage.not_chosen_yet
-                                              : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
-                                                    e.name.toString()
-                                                  ]).join(', ')}',
-                                          onTap: () {
-                                            Get.bottomSheet(
-                                              CarMultiModelBottomSheet(
-                                                title: localLanguage.model,
-                                                data: (brand['brand'].model ?? <CarModel>[]).toList(),
-                                                selectedData: controller.brandAndSelectedModel[index]['model'],
-                                                onSelect: (p0) {
-                                                  controller.brandAndSelectedModel[index]['model'] = p0;
-                                                  controller.brandAndSelectedModel.refresh();
+                                        child: Column(
+                                          children: [
+                                            FilterOptionWidget(
+                                              title: localLanguage.model,
+                                              titleSub: '*(${brand['brand'].brand ?? ''})',
+                                              subTitle: controller.brandAndSelectedModel[index]['model'].isEmpty
+                                                  ? localLanguage.not_chosen_yet
+                                                  : '${controller.brandAndSelectedModel[index]['model'].toList().expand((e) => [
+                                                        e.name.toString()
+                                                      ]).join(', ')}',
+                                              onTap: () {
+                                                Get.bottomSheet(
+                                                  CarMultiModelBottomSheet(
+                                                    title: localLanguage.model,
+                                                    data: (brand['brand'].model ?? <CarModel>[]).toList(),
+                                                    selectedData: controller.brandAndSelectedModel[index]['model'],
+                                                    onSelect: (p0) {
+                                                      controller.brandAndSelectedModel[index]['model'] = p0;
+                                                      controller.brandAndSelectedModel.refresh();
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            ),
+
+                                            if (controller.brand.length == 1 &&
+                                                controller.brandAndSelectedModel[index]['model'].length == 1)
+                                              FilterOptionWidget(
+                                                title: localLanguage.car_class,
+                                                titleSub: '*(${brand['brand'].brand ?? ''})',
+                                                subTitle: () {
+                                                  final classList = controller.brandAndSelectedModel[index]['class'];
+                                                  if (classList is List && classList.isNotEmpty) {
+                                                    return classList.cast<String>().join(', ');
+                                                  } else {
+                                                    return localLanguage.not_chosen_yet;
+                                                  }
+                                                }(),
+                                                onTap: () {
+                                                  // Collect all available car classes from selected models
+                                                  final models = controller.brandAndSelectedModel[index]['model']
+                                                      as List<CarModel>;
+                                                  final List<String> allAvailableClasses = models
+                                                      .expand((model) => model.modelClass ?? <String>[])
+                                                      .whereType<String>() // ensures only Strings
+                                                      .toSet()
+                                                      .toList();
+
+                                                  Get.bottomSheet(
+                                                    CarMultiSelectClassBottomSheet(
+                                                        title: localLanguage.car_class,
+                                                        data: allAvailableClasses,
+                                                        selectedData: (controller.brandAndSelectedModel[index]['class']
+                                                                as List<String>?) ??
+                                                            [],
+                                                        onSelect: (selectedList) {
+                                                          controller.brandAndSelectedModel[index]['class'] =
+                                                              selectedList;
+                                                          controller.brandAndSelectedModel.refresh();
+                                                        }),
+                                                  );
                                                 },
                                               ),
-                                            );
-                                          },
+
+                                            // i need to show car class here
+                                          ],
                                         ),
                                       );
                                     },
@@ -621,6 +667,8 @@ class _FilterViewState extends State<FilterView> {
                               );
                             }),
                           ),
+
+                          //body type
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
                             child: Row(
@@ -693,7 +741,6 @@ class _FilterViewState extends State<FilterView> {
                               ],
                             ),
                           ),
-
                           // transmission
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16.w),
