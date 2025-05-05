@@ -4,6 +4,7 @@ import 'package:alsat/app/modules/conversation/controller/conversation_controlle
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/message_dot.dart';
 import 'package:alsat/config/theme/app_colors.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,7 @@ import 'map_message_tile.dart';
 import 'post_message_tile.dart';
 import 'text_message_tile.dart';
 import 'video_message_tile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MessageTile extends StatelessWidget {
   const MessageTile({
@@ -27,9 +29,9 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MessageController messageController = Get.put(MessageController(),
-        tag:
-            '${Get.find<ConversationController>().selectConversation.value?.id}');
+    final localLanguage = AppLocalizations.of(Get.context!)!;
+    MessageController messageController =
+        Get.put(MessageController(), tag: '${Get.find<ConversationController>().selectConversation.value?.id}');
     Widget messageConvertByType(ChatMessage message, {bool isReply = false}) {
       switch (message.messageType) {
         case ChatMessageType.text:
@@ -50,21 +52,23 @@ class MessageTile extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: EdgeInsets.only(top: 16.0.h),
       child: Slidable(
+        closeOnScroll: true,
         key: const ValueKey(0),
         startActionPane: ActionPane(
           motion: const ScrollMotion(),
           children: [
             SlidableAction(
-              flex: 2,
+              autoClose: true,
               onPressed: (context) {
                 messageController.selectReplyMessage.value = message;
               },
+              borderRadius: BorderRadius.circular(100.r),
               backgroundColor: Colors.transparent,
               foregroundColor: AppColors.primary,
               icon: Icons.reply,
-              label: 'Reply',
+              label: localLanguage.reply,
             ),
           ],
         ),
@@ -77,9 +81,7 @@ class MessageTile extends StatelessWidget {
             messageController.selectMessage.value = null;
           },
           child: Row(
-            mainAxisAlignment: message.isSender
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+            mainAxisAlignment: message.isSender ? MainAxisAlignment.end : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               if (!message.isSender) ...[
@@ -98,15 +100,11 @@ class MessageTile extends StatelessWidget {
               Flexible(
                   child: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: !message.isSender
-                    ? CrossAxisAlignment.start
-                    : CrossAxisAlignment.end,
+                crossAxisAlignment: !message.isSender ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                 children: [
                   if (message.replyMessage != null)
                     Column(
-                      crossAxisAlignment: !message.isSender
-                          ? CrossAxisAlignment.start
-                          : CrossAxisAlignment.end,
+                      crossAxisAlignment: !message.isSender ? CrossAxisAlignment.start : CrossAxisAlignment.end,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
@@ -135,16 +133,14 @@ class MessageTile extends StatelessWidget {
                               bottomLeft: Radius.circular(20.r),
                             ),
                           ),
-                          child: messageConvertByType(message.replyMessage!,
-                              isReply: true),
+                          child: messageConvertByType(message.replyMessage!, isReply: true),
                         ),
                       ],
                     ),
                   messageConvertByType(message),
                 ],
               )),
-              if (message.isSender)
-                MessageStatusDot(status: message.messageStatus)
+              if (message.isSender) MessageStatusDot(status: message.messageStatus)
             ],
           ),
         ),

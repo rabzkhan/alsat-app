@@ -31,8 +31,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class MessagesScreen extends StatefulWidget {
   final ProductModel? productModel;
   final ConversationModel conversation;
-  const MessagesScreen(
-      {super.key, required this.conversation, this.productModel});
+  const MessagesScreen({super.key, required this.conversation, this.productModel});
 
   @override
   State<MessagesScreen> createState() => _MessagesScreenState();
@@ -45,11 +44,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
   final GlobalKey<ScaffoldState> _key = GlobalKey();
   @override
   void initState() {
-    messageController =
-        Get.put(MessageController(), tag: '${widget.conversation.id}');
+    messageController = Get.put(MessageController(), tag: '${widget.conversation.id}');
     messageController.selectProductModel.value = widget.productModel;
-    Participant? participant =
-        (widget.conversation.participants ?? []).firstWhereOrNull((e) {
+    Participant? participant = (widget.conversation.participants ?? []).firstWhereOrNull((e) {
       return e.id != authController.userDataModel.value.id;
     });
     log('participant: ${participant?.id}');
@@ -84,8 +81,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             CustomPopup(
               backgroundColor: AppColors.primary,
               showArrow: true,
-              contentPadding:
-                  EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
+              contentPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
               barrierColor: Colors.transparent,
               arrowColor: Colors.black,
               contentDecoration: BoxDecoration(
@@ -109,11 +105,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       onTap: () {
                         // Get.back();
                         showUserBlockBottomSheet(
-                          participant: (conversationController
-                              .selectConversation.value?.participants
-                              ?.firstWhereOrNull((e) =>
-                                  e.id !=
-                                  authController.userDataModel.value.id))!,
+                          participant: (conversationController.selectConversation.value?.participants
+                              ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id))!,
                           conversationController: conversationController,
                         ).then((onValue) {
                           if (conversationController.isBlockingSuccess.value) {
@@ -142,11 +135,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       onTap: () {
                         // Get.back();
                         showUserReportBottomSheet(
-                          participant: (conversationController
-                              .selectConversation.value?.participants
-                              ?.firstWhereOrNull((e) =>
-                                  e.id !=
-                                  authController.userDataModel.value.id))!,
+                          participant: (conversationController.selectConversation.value?.participants
+                              ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id))!,
                           conversationController: conversationController,
                         );
                       },
@@ -175,23 +165,17 @@ class _MessagesScreenState extends State<MessagesScreen> {
           title: Obx(() {
             return InkWell(
               onTap: () {
-                ProductDetailsController productDetailsController = Get.put(
-                    ProductDetailsController(),
-                    tag: conversationController
-                        .selectConversation.value?.participants
-                        ?.firstWhereOrNull((e) =>
-                            e.id != authController.userDataModel.value.id)
+                ProductDetailsController productDetailsController = Get.put(ProductDetailsController(),
+                    tag: conversationController.selectConversation.value?.participants
+                        ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)
                         ?.id);
 
                 productDetailsController.isFetchUserLoading.value = false;
                 Get.to(
                   () => ClientProfileView(
                     isFromMessage: true,
-                    userId: (conversationController
-                                .selectConversation.value?.participants
-                                ?.firstWhereOrNull((e) =>
-                                    e.id !=
-                                    authController.userDataModel.value.id)
+                    userId: (conversationController.selectConversation.value?.participants
+                                ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)
                                 ?.id ??
                             '')
                         .toString(),
@@ -208,11 +192,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       backgroundColor: Colors.grey.shade300,
                       child: NetworkImagePreview(
                         radius: 30.r,
-                        url: conversationController
-                                .selectConversation.value?.participants
-                                ?.firstWhereOrNull((e) =>
-                                    e.id !=
-                                    authController.userDataModel.value.id)
+                        url: conversationController.selectConversation.value?.participants
+                                ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)
                                 ?.picture ??
                             "",
                         height: 44.h,
@@ -232,7 +213,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                             children: [
                               Text(
                                 (widget.conversation.isAdminChat ?? false)
-                                    ? 'Alsat Admin'
+                                    ? 'Teklip Admin'
                                     : '${conversationController.selectConversation.value?.participants?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id)?.userName}',
                                 style: bold.copyWith(
                                   fontSize: 15.sp,
@@ -240,8 +221,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               ),
                               if (widget.conversation.isAdminChat ?? false)
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
                                   child: Icon(
                                     Icons.verified,
                                     color: Colors.blue,
@@ -288,8 +268,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     controller: conversationController.refreshMessageController,
                     onRefresh: conversationController.onRefreshMessage,
                     onLoading: conversationController.onLoadingMessage,
-                    child: conversationController
-                            .isConversationMessageLoading.value
+                    child: conversationController.isConversationMessageLoading.value
                         ? const Center(child: CupertinoActivityIndicator())
                         : conversationController.coverMessage.isEmpty
                             ? NoDataWidget(
@@ -298,24 +277,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               )
                             : ListView.builder(
                                 reverse: true,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                controller:
-                                    conversationController.scrollController,
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                controller: conversationController.scrollController,
                                 physics: const BouncingScrollPhysics(),
-                                itemCount:
-                                    conversationController.coverMessage.length,
+                                itemCount: conversationController.coverMessage.length,
                                 itemBuilder: (context, index) {
-                                  final message = conversationController
-                                      .coverMessage[index];
+                                  final message = conversationController.coverMessage[index];
                                   return MessageTile(message: message);
                                 },
                               ),
                   );
                 }),
               ),
-              ((widget.conversation.haveBlocked ?? false) ||
-                      (widget.conversation.isBlocked ?? false))
+              ((widget.conversation.haveBlocked ?? false) || (widget.conversation.isBlocked ?? false))
                   ? Container(
                       margin: EdgeInsets.only(top: 10.h),
                       padding: EdgeInsets.symmetric(
@@ -359,16 +333,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                     onPressed: () {
                                       showUserBlockBottomSheet(
                                         isBlocked: false,
-                                        participant: (conversationController
-                                            .selectConversation
-                                            .value
-                                            ?.participants
-                                            ?.firstWhereOrNull((e) =>
-                                                e.id !=
-                                                authController
-                                                    .userDataModel.value.id))!,
-                                        conversationController:
-                                            conversationController,
+                                        participant: (conversationController.selectConversation.value?.participants
+                                            ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id))!,
+                                        conversationController: conversationController,
                                       ).then((value) {
                                         widget.conversation.haveBlocked = false;
                                         setState(() {});
@@ -394,16 +361,9 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   ),
                                   onPressed: () {
                                     showUserReportBottomSheet(
-                                      participant: (conversationController
-                                          .selectConversation
-                                          .value
-                                          ?.participants
-                                          ?.firstWhereOrNull((e) =>
-                                              e.id !=
-                                              authController
-                                                  .userDataModel.value.id))!,
-                                      conversationController:
-                                          conversationController,
+                                      participant: (conversationController.selectConversation.value?.participants
+                                          ?.firstWhereOrNull((e) => e.id != authController.userDataModel.value.id))!,
+                                      conversationController: conversationController,
                                     );
                                   },
                                 ),
@@ -421,9 +381,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Obx(() {
-                                    return messageController
-                                                .selectProductModel.value ==
-                                            null
+                                    return messageController.selectProductModel.value == null
                                         ? Center()
                                         : Container(
                                             padding: EdgeInsets.symmetric(
@@ -435,29 +393,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                             ),
                                             decoration: BoxDecoration(
                                               color: Colors.grey.shade200,
-                                              borderRadius:
-                                                  BorderRadius.circular(
+                                              borderRadius: BorderRadius.circular(
                                                 10.r,
                                               ),
                                             ),
                                             child: Row(
                                               children: [
-                                                messageController
-                                                            .selectProductModel
-                                                            .value
-                                                            ?.media
-                                                            ?.firstOrNull
-                                                            ?.name !=
+                                                messageController.selectProductModel.value?.media?.firstOrNull?.name !=
                                                         null
                                                     ? NetworkImagePreview(
                                                         previewImage: true,
                                                         radius: 10.r,
                                                         url: messageController
-                                                                .selectProductModel
-                                                                .value
-                                                                ?.media
-                                                                ?.firstOrNull
-                                                                ?.name ??
+                                                                .selectProductModel.value?.media?.firstOrNull?.name ??
                                                             '',
                                                         height: 50.h,
                                                         width: 60.w,
@@ -467,18 +415,15 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                 10.horizontalSpace,
                                                 Expanded(
                                                     child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Text(
                                                       maxLines: 1,
                                                       '${messageController.selectProductModel.value?.title}',
                                                       style: TextStyle(
                                                         fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                       ),
                                                     ),
                                                     Text(
@@ -486,20 +431,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                                       '${messageController.selectProductModel.value?.priceInfo?.price}',
                                                       style: TextStyle(
                                                         fontSize: 14.sp,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                       ),
                                                     )
                                                   ],
                                                 )),
                                                 InkWell(
                                                   onTap: () {
-                                                    messageController
-                                                        .selectProductModel
-                                                        .value = null;
+                                                    messageController.selectProductModel.value = null;
                                                   },
-                                                  child: Icon(
-                                                      CupertinoIcons.xmark),
+                                                  child: Icon(CupertinoIcons.xmark),
                                                 )
                                               ],
                                             ),
@@ -507,8 +448,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   }),
                                   ChatInputField(
                                     messageController: messageController,
-                                    conversationController:
-                                        conversationController,
+                                    conversationController: conversationController,
                                   ),
                                 ],
                               )
@@ -519,45 +459,20 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                   vertical: 16.0 / 2,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.r),
+                                    topRight: Radius.circular(15.r),
+                                  ),
+                                  color: Colors.red,
                                 ),
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          messageController
-                                                  .selectReplyMessage.value =
-                                              messageController
-                                                  .selectMessage.value;
-                                        },
-                                        child: Column(
-                                          children: [
-                                            Icon(
-                                              Icons.reply_outlined,
-                                              color: Colors.white,
-                                              size: 25.r,
-                                            ),
-                                            4.verticalSpace,
-                                            Text(
-                                              localLanguage.reply,
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 12.sp,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
                                       child: InkWell(
                                         onTap: () {
-                                          conversationController.deleteMessage(
-                                              messageController
-                                                  .selectMessage.value!.id);
-                                          messageController
-                                              .selectMessage.value = null;
+                                          conversationController
+                                              .deleteMessage(messageController.selectMessage.value!.id);
+                                          messageController.selectMessage.value = null;
                                         },
                                         child: Column(
                                           children: [
