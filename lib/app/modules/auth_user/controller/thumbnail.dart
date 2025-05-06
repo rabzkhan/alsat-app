@@ -1,30 +1,30 @@
-import 'dart:isolate';
 import 'dart:typed_data';
-import 'package:flutter_isolate/flutter_isolate.dart';
 import 'package:get/get.dart';
-
-import '../auth_user_tab/widgets/story_isolate.dart';
+import 'package:get_thumbnail_video/index.dart';
+import 'package:get_thumbnail_video/video_thumbnail.dart';
 
 class ThumbnailService extends GetxController {
   final thumbnails = <String, Uint8List?>{}.obs;
+  final loading = <String, bool>{}.obs;
 
   Future<void> loadThumbnail(String videoPath) async {
-    if (thumbnails.containsKey(videoPath)) return;
+    if (thumbnails.containsKey(videoPath) || loading[videoPath] == true) return;
 
-    final receivePort = ReceivePort();
+    loading[videoPath] = true;
 
-    FlutterIsolate.spawn(
-      isolateEntry,
-      {
-        'videoPath': videoPath,
-        'sendPort': receivePort.sendPort,
-      },
-    );
+    try {
+      final Uint8List? thumbnail = await VideoThumbnail.thumbnailData(
+        video: videoPath,
+        imageFormat: ImageFormat.JPEG,
+        quality: 75,
+      );
 
-    receivePort.listen((message) {
-      if (message is Uint8List) {
-        thumbnails[videoPath] = message;
-      }
-    });
+      thumbnails[videoPath] = thumbnail;
+    } catch (e) {
+      print("Thumbnail generation failed for $videoPath: $e");
+      thumbnails[videoPath] = null;
+    } finally {
+      loading[videoPath] = false;
+    }
   }
 }
