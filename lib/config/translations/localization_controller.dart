@@ -59,4 +59,20 @@ class LocalizationController extends GetxController {
     }
     return colorName; // fallback to English if translation not found
   }
+
+  String getEstateTypeTranslated(String type) {
+    final langCode = locale.value.languageCode;
+    if (estateTypeTranslations.containsKey(type)) {
+      return estateTypeTranslations[type]?[langCode] ?? type;
+    }
+    return type; // fallback if not found
+  }
+
+  String getEstateDealTypeTranslated(String type) {
+    final langCode = locale.value.languageCode;
+    if (estateDealTypeTranslations.containsKey(type)) {
+      return estateDealTypeTranslations[type]?[langCode] ?? type;
+    }
+    return type; // fallback if not found
+  }
 }

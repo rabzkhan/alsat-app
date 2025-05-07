@@ -30,6 +30,7 @@ class ProductController extends GetxController {
   RxList<String> dBodyType = <String>["Coupe", "Sedan", "Suv", "Hatchback", "Crossover", "Van"].obs;
   RxList<String> dDriveType = <String>['RWD', 'FWD', 'AWD', '4WD'].obs;
   RxString driveType = "".obs;
+
   List<String> estateTypeList = [
     'Apartment',
     'Elite',
@@ -45,6 +46,7 @@ class ProductController extends GetxController {
     'Designer',
     'Regular',
   ];
+
   RxBool isShowPostProductVideo = RxBool(false);
   RxBool isProductPosting = RxBool(false);
   RxList<File> pickImageList = RxList([]);

@@ -1,3 +1,59 @@
+const Map<String, Map<String, String>> estateTypeTranslations = {
+  "Apartment": {
+    "en": "Apartment",
+    "tr": "Jaý",
+    "ru": "Квартира",
+  },
+  "Elite": {
+    "en": "Elite",
+    "tr": "Elit",
+    "ru": "Элитная",
+  },
+  "Half-Elite": {
+    "en": "Half-Elite",
+    "tr": "Ýarym elit",
+    "ru": "Полуэлитная",
+  },
+  "Cottage": {
+    "en": "Cottage",
+    "tr": "Kottej",
+    "ru": "Коттедж",
+  },
+  "Villa": {
+    "en": "Villa",
+    "tr": "Willa",
+    "ru": "Вилла",
+  },
+};
+
+const Map<String, Map<String, String>> estateDealTypeTranslations = {
+  "Cosmetic": {
+    "en": "Cosmetic",
+    "tr": "Kosmetiki",
+    "ru": "Косметический",
+  },
+  "Government": {
+    "en": "Government",
+    "tr": "Döwlet",
+    "ru": "Государственный",
+  },
+  "Euro": {
+    "en": "Euro",
+    "tr": "Ýewro",
+    "ru": "Евроремонт",
+  },
+  "Designer": {
+    "en": "Designer",
+    "tr": "Dizaýn",
+    "ru": "Дизайнерский",
+  },
+  "Regular": {
+    "en": "Regular",
+    "tr": "Adaty",
+    "ru": "Обычный",
+  },
+};
+
 const Map<String, Map<String, String>> bodyTypeTranslations = {
   "Coupe": {
     "en": "Coupe",

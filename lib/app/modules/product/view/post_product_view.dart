@@ -1284,7 +1284,7 @@ class _PostProductViewState extends State<PostProductView> {
                         alignment: Alignment.centerRight,
                         value: estate,
                         child: Text(
-                          estate,
+                          Get.find<LocalizationController>().getEstateTypeTranslated(estate),
                           style: regular.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
@@ -1299,7 +1299,7 @@ class _PostProductViewState extends State<PostProductView> {
                     (estate) => DropdownMenuItem<String>(
                       value: estate,
                       child: Text(
-                        estate,
+                        Get.find<LocalizationController>().getEstateTypeTranslated(estate),
                         style: regular.copyWith(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,
@@ -1413,7 +1413,7 @@ class _PostProductViewState extends State<PostProductView> {
                         alignment: Alignment.centerRight,
                         value: estate,
                         child: Text(
-                          estate,
+                          Get.find<LocalizationController>().getEstateDealTypeTranslated(estate),
                           style: regular.copyWith(
                             fontSize: 14.sp,
                             fontWeight: FontWeight.bold,
@@ -1428,7 +1428,7 @@ class _PostProductViewState extends State<PostProductView> {
                     (estate) => DropdownMenuItem<String>(
                       value: estate,
                       child: Text(
-                        estate,
+                        Get.find<LocalizationController>().getEstateDealTypeTranslated(estate),
                         style: regular.copyWith(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.bold,

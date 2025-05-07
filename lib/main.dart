@@ -1,7 +1,5 @@
 import 'dart:developer';
-
 import 'package:alsat/app/common/binding/app_binding.dart';
-import 'package:alsat/app/modules/conversation/controller/conversation_controller.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,7 +47,7 @@ Future<void> main() async {
         return ToastificationWrapper(
           child: Obx(() {
             return GetMaterialApp(
-              title: "ALSAT",
+              title: "Teklip",
               useInheritedMediaQuery: true,
               debugShowCheckedModeBanner: false,
               builder: (context, widget) {

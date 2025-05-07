@@ -875,7 +875,8 @@ class _FilterViewState extends State<FilterView> {
                                                 alignment: Alignment.centerRight,
                                                 value: estate,
                                                 child: Text(
-                                                  estate,
+                                                  // estate,
+                                                  Get.find<LocalizationController>().getEstateTypeTranslated(estate),
                                                   style: regular.copyWith(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.bold,
@@ -890,7 +891,7 @@ class _FilterViewState extends State<FilterView> {
                                             (estate) => DropdownMenuItem<String>(
                                               value: estate,
                                               child: Text(
-                                                estate,
+                                                Get.find<LocalizationController>().getEstateTypeTranslated(estate),
                                                 style: regular.copyWith(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.bold,
@@ -952,7 +953,8 @@ class _FilterViewState extends State<FilterView> {
                                                 alignment: Alignment.centerRight,
                                                 value: estate,
                                                 child: Text(
-                                                  estate,
+                                                  Get.find<LocalizationController>()
+                                                      .getEstateDealTypeTranslated(estate),
                                                   style: regular.copyWith(
                                                     fontSize: 14.sp,
                                                     fontWeight: FontWeight.bold,
@@ -967,7 +969,7 @@ class _FilterViewState extends State<FilterView> {
                                             (estate) => DropdownMenuItem<String>(
                                               value: estate,
                                               child: Text(
-                                                estate,
+                                                Get.find<LocalizationController>().getEstateDealTypeTranslated(estate),
                                                 style: regular.copyWith(
                                                   fontSize: 14.sp,
                                                   fontWeight: FontWeight.bold,

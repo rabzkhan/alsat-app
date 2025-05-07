@@ -637,7 +637,15 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         name: localLanguage.address,
                                         value: widget.productModel?.estateInfo?.address ?? ''),
                                     infoTile(
-                                        name: localLanguage.type, value: widget.productModel?.estateInfo?.type ?? ''),
+                                      name: localLanguage.estate_type,
+                                      value: Get.find<LocalizationController>()
+                                          .getEstateTypeTranslated(widget.productModel?.estateInfo?.type ?? ''),
+                                    ),
+                                    infoTile(
+                                      name: localLanguage.deal_type,
+                                      value: Get.find<LocalizationController>()
+                                          .getEstateDealTypeTranslated(widget.productModel?.estateInfo?.dealType ?? ''),
+                                    ),
                                     infoTile(
                                         name: localLanguage.floor,
                                         value: "${widget.productModel?.estateInfo?.floor ?? ''}"),

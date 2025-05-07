@@ -4,7 +4,6 @@ import 'package:alsat/config/theme/app_text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../../../components/formate_datetime.dart';
