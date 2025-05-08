@@ -351,7 +351,7 @@ class HomeController extends GetxController {
   //========================================Story========================================================///
   RxList<StoryModel> storyList = <StoryModel>[].obs;
   RxBool isStoryLoading = true.obs;
-  fetchAppStores() async {
+  fetchAllStories() async {
     await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}",
       DioRequestType.get,
@@ -364,7 +364,7 @@ class HomeController extends GetxController {
         storyList.addAll(story);
         isStoryLoading.value = false;
         storyList.refresh();
-        log('fetchUserStory: ${storyList.length}');
+        log('fetch all UserStory: ${storyList.length}');
       },
       onError: (error) {
         log('fetchUserStoryError: ${error.message}');
@@ -378,24 +378,22 @@ class HomeController extends GetxController {
   userOwnStory() async {
     AuthController authController = Get.find();
     Logger().d("UserId-> ${authController.userDataModel.value.id}");
-
     await BaseClient().safeApiCall(
       "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
       onLoading: () {
-        storyList.clear();
         isStoryLoading.value = true;
         authUserStory.clear();
       },
       onSuccess: (response) async {
+        Logger().d("stories ${response.data.toString()}");
         List<dynamic> data = response.data;
-        storyList.value = data.map((json) => StoryModel.fromJson(json)).toList();
-        authUserStory.value = storyList;
-        fetchAppStores();
+        authUserStory.value = data.map((json) => StoryModel.fromJson(json)).toList();
+        fetchAllStories();
         await userArchiveStory();
       },
       onError: (error) {
-        fetchAppStores();
+        fetchAllStories();
       },
     );
   }
