@@ -120,10 +120,18 @@ class MyStories extends StatelessWidget {
           return const Center(child: CupertinoActivityIndicator());
         } else if (thumbnail != null) {
           return Stack(
+            fit: StackFit.expand,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(height == null ? 10.r : 0),
-                child: Image.memory(thumbnail, fit: BoxFit.cover),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: double.infinity,
+                  child: Image.memory(
+                    thumbnail,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
               const Center(child: Icon(Icons.video_file_rounded, color: Colors.white)),
             ],

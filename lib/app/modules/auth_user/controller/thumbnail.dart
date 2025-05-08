@@ -15,8 +15,10 @@ class ThumbnailService extends GetxController {
     try {
       final Uint8List? thumbnail = await VideoThumbnail.thumbnailData(
         video: videoPath,
-        imageFormat: ImageFormat.JPEG,
-        quality: 75,
+        imageFormat: ImageFormat.PNG,
+        quality: 100, // Lower quality (0-100)
+        // maxHeight: 200, // Adjust this to suit your UI needs
+        // maxWidth: 120, // Optional: keeps aspect ratio in check
       );
 
       thumbnails[videoPath] = thumbnail;

@@ -5,6 +5,9 @@ import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:math' as Math;
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../modules/conversation/controller/conversation_controller.dart';
 
 class NotificationService {
   NotificationService() {
@@ -31,13 +34,10 @@ class NotificationService {
         ],
         // Channel groups are only visual and are not required
         channelGroups: [
-          NotificationChannelGroup(
-              channelGroupKey: 'basic_channel_group',
-              channelGroupName: 'Basic group')
+          NotificationChannelGroup(channelGroupKey: 'basic_channel_group', channelGroupName: 'Basic group')
         ],
         debug: true);
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -45,13 +45,11 @@ class NotificationService {
   }
 
   listenActionStream() {
-    AwesomeNotifications()
-        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
+    AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
   @pragma('vm:entry-point')
-  static Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction) async {
+  static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
     log("AwesomeNotifications Press:");
     if (receivedAction.actionType == ActionType.SilentAction) {
       if (receivedAction.payload != null) {}
@@ -60,15 +58,15 @@ class NotificationService {
         log("AwesomeNotifications Press: ${receivedAction.payload}");
         FirebaseMessagingService.redirectUserBasePayload({
           "type": receivedAction.payload!['type'],
-          "id": receivedAction.payload!['id'] ??
-              receivedAction.payload!['fixtureId'],
+          "id": receivedAction.payload!['id'] ?? receivedAction.payload!['fixtureId'],
         });
       }
     }
   }
 
   Future<void> showFlutterNotification(RemoteMessage m) async {
-    log("${m.data}");
+    log("Message data ${m.data}");
+    Get.find<ConversationController>().sortList(m.data["chat_id"]);
     int uniqueId = Math.Random().nextInt(20);
     String? bigPicture = m.notification!.toMap()['android']['imageUrl'];
     String? smallIcon = m.notification!.toMap()['android']['smallIcon'];
@@ -80,11 +78,8 @@ class NotificationService {
               id: uniqueId,
               channelKey: 'basic_channel',
               summary: "Message from ${m.notification!.title}",
-              title: m.notification!.title ??
-                  m.data['title'] ??
-                  'Notification Title',
-              body:
-                  m.notification!.body ?? m.data['body'] ?? 'Notification Body',
+              title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
+              body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
               actionType: ActionType.Default,
               payload: {
                 "type": m.data['type'],
@@ -106,12 +101,8 @@ class NotificationService {
                 largeIcon: smallIcon,
                 channelKey: 'basic_channel',
                 summary: "Message from ${m.notification!.title}",
-                title: m.notification!.title ??
-                    m.data['title'] ??
-                    'Notification Title',
-                body: m.notification!.body ??
-                    m.data['body'] ??
-                    'Notification Body',
+                title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
+                body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
                 actionType: ActionType.Default,
                 payload: {
                   "type": m.data['type'],
@@ -135,8 +126,7 @@ class NotificationService {
           largeIcon: smallIcon ?? bigPicture,
           color: Colors.amber,
           backgroundColor: AppColors.primary,
-          title:
-              m.notification!.title ?? m.data['title'] ?? 'Notification Title',
+          title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
           body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
           notificationLayout: NotificationLayout.BigPicture,
           bigPicture: m.data['type'] == 'news' ? smallIcon : bigPicture,

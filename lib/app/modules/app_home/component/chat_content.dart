@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:developer';
+
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
 import 'package:alsat/app/modules/conversation/model/conversation_messages_res.dart';
 import 'package:alsat/utils/helper.dart';
@@ -42,24 +44,9 @@ class ChatContent extends StatelessWidget {
         ).copyWith(top: 0),
         children: [
           Obx(() {
-            // Sorting the conversationList by latest updated time
-            // if (!conversationController.isConversationLoading.value) {
-            //   conversationController.conversationList.sort((a, b) {
-            //     final aTime = DateTime.tryParse(a.updatedAt ?? '');
-            //     final bTime = DateTime.tryParse(b.updatedAt ?? '');
-
-            //     if (aTime == null || bTime == null) return 0;
-            //     return bTime.compareTo(aTime); // Descending: latest first
-            //   });
-            // }
+            // {message_id: b1333db6-6c92-4c67-809a-c14d8d057f85, type: chat/inbox, sender_id: eac7a365-52cc-4b79-a2f8-caea1a348175, chat_id: e5da1fd9-14ec-4a24-a4fe-368b8ab30b10}
             return Skeletonizer(
               enabled: conversationController.isConversationLoading.value,
-              // effect: ShimmerEffect(
-              //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-              //   highlightColor: Colors.white,
-              //   begin: Alignment.centerLeft,
-              //   end: Alignment.centerRight,
-              // ),
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
@@ -84,6 +71,7 @@ class ChatContent extends StatelessWidget {
                       ),
                       child: ListTile(
                         onTap: () {
+                          log(conversation?.id.toString() ?? '');
                           conversationController.conversationList[index].notReadedCount = 0;
                           conversationController.conversationList.refresh();
                           Get.to(

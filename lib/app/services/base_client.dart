@@ -43,7 +43,6 @@ class BaseClient {
     dynamic data,
   }) async {
     Logger().d("url is: $url");
-    Logger().d("token is: ${headers.toString()}");
 
     try {
       if (isDataCache) {

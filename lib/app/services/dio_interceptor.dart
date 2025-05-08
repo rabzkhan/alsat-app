@@ -72,7 +72,7 @@ class DioInterceptor extends Interceptor {
   @override
   Future<void> onRequest(RequestOptions options, RequestInterceptorHandler handler) async {
     final token = MySharedPref.getAuthToken();
-    //log("auth token is-> $token");
+    log("auth token is-> $token");
     if (token != null && token.isNotEmpty) {
       options.headers["Authorization"] = "Bearer $token";
     }

@@ -80,6 +80,7 @@ class ConversationController extends GetxController {
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         isSendingMessage.value = false;
+        await getConversations(showLoader: false);
         return;
       },
       onError: (error) {
@@ -90,10 +91,20 @@ class ConversationController extends GetxController {
     );
   }
 
+  void sortList(String chatId) {
+    final index = conversationList.indexWhere((chat) => chat.id == chatId);
+    if (index != -1) {
+      final chat = conversationList.removeAt(index);
+      conversationList.insert(0, chat);
+      conversationList.refresh(); // Notify listeners
+    }
+  }
+
   // get user conversation List
   RxBool isConversationLoading = true.obs;
+  RxString latestChatId = ''.obs;
   RxList<ConversationModel> conversationList = RxList<ConversationModel>();
-  Future<void> getConversations({String? paginate}) async {
+  Future<void> getConversations({String? paginate, bool showLoader = true}) async {
     String url = Constants.baseUrl + Constants.userConversationList;
     if (paginate != null) {
       url = "$url?next=$paginate";
@@ -103,7 +114,7 @@ class ConversationController extends GetxController {
       DioRequestType.get,
       onLoading: () {
         if (paginate == null) {
-          isConversationLoading.value = true;
+          if (showLoader) isConversationLoading.value = true;
           conversationList.value = [];
         }
       },
@@ -115,10 +126,10 @@ class ConversationController extends GetxController {
           conversationList.addAll(ConversationListRes.fromJson(data).data ?? []);
         }
         conversationList.refresh();
-        isConversationLoading.value = false;
+        if (showLoader) isConversationLoading.value = false;
       },
       onError: (error) {
-        isConversationLoading.value = false;
+        if (showLoader) isConversationLoading.value = false;
       },
     );
   }
@@ -183,6 +194,7 @@ class ConversationController extends GetxController {
           ChatMessage convertMessages = convertMessageHelper(element, selectUserInfo.value, authController);
           coverMessage.add(convertMessages);
         }
+        sortList(selectConversation.value?.id.toString() ?? '');
         coverMessage.refresh();
 
         isConversationMessageLoading.value = false;
