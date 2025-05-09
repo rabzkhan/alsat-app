@@ -121,7 +121,7 @@ List<Province> provinces = [
     "Baherden",
   ]),
   Province(name: "Dashoguz", cities: [
-    "Dashoguz city",
+    "Dashoguz",
     "Gurbansoltan eje",
     "Boldumsaz",
     "Gubadag",

@@ -21,6 +21,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 // import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
+import '../../../../config/translations/localization_controller.dart';
 import '../../../../utils/constants.dart';
 import '../../../components/custom_snackbar.dart';
 import '../../app_home/controller/home_controller.dart';
@@ -292,6 +293,9 @@ class ProductController extends GetxController {
     return BaseClient().safeApiCall(
       Constants.baseUrl + Constants.postProduct,
       DioRequestType.post,
+      headers: {
+        "lang": Get.find<LocalizationController>().locale.value.languageCode,
+      },
       data: body,
       onLoading: () {
         isProductPosting.value = true;
@@ -309,8 +313,9 @@ class ProductController extends GetxController {
       },
       onError: (p0) {
         isProductPosting.value = false;
-        log('Product Post Error ${p0.statusCode}');
-        CustomSnackBar.showCustomToast(color: Colors.red, message: p0.message);
+        // log('Product Post Error ${p0.response?.data["result"]}');
+        CustomSnackBar.showCustomToast(
+            color: Colors.red, message: p0.response?.data["result"], duration: Duration(seconds: 3));
         return false;
       },
     );

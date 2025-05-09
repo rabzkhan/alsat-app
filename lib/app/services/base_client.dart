@@ -16,6 +16,7 @@ enum DioRequestType {
 
 class BaseClient {
   late Dio _dio;
+
   BaseClient() {
     _dio = Dio(
       BaseOptions(
@@ -38,7 +39,7 @@ class BaseClient {
     Function(ConnectionException)? onError,
     Function(dynamic data)? onCacheData,
     Function(int value, int progress)? onReceiveProgress,
-    Function(int total, int progress)? onSendProgress, // while sending (uploading) progress
+    Function(int total, int progress)? onSendProgress,
     Function? onLoading,
     dynamic data,
   }) async {
@@ -49,73 +50,104 @@ class BaseClient {
         dynamic cacheData = await DataCacheService(apiEndPoint: url).getData();
         onCacheData?.call(cacheData);
       }
+
       await onLoading?.call();
       late Response response;
-      if (requestType == DioRequestType.get) {
-        response = await _dio.get(
-          url,
-          onReceiveProgress: onReceiveProgress,
-          queryParameters: queryParameters,
-          data: data,
-          options: Options(
-            headers: headers,
-          ),
-        );
-        if (isDataCache) {
-          DataCacheService(apiEndPoint: url).setData(response.data, expiryTimeMinute: cacheAgeInMinute);
-        }
-      } else if (requestType == DioRequestType.post) {
-        Logger().d(data.toString());
-        response = await _dio.post(
-          url,
-          data: data,
-          onReceiveProgress: onReceiveProgress,
-          onSendProgress: onSendProgress,
-          queryParameters: queryParameters,
-          options: Options(headers: headers),
-        );
-      } else if (requestType == DioRequestType.put) {
-        response = await _dio.put(
-          url,
-          data: data,
-          onReceiveProgress: onReceiveProgress,
-          onSendProgress: onSendProgress,
-          queryParameters: queryParameters,
-          options: Options(headers: headers),
-        );
-      } else if (requestType == DioRequestType.patch) {
-        response = await _dio.patch(
-          url,
-          data: data,
-          onReceiveProgress: onReceiveProgress,
-          onSendProgress: onSendProgress,
-          queryParameters: queryParameters,
-          options: Options(headers: headers),
-        );
-      } else if (requestType == DioRequestType.delete) {
-        response = await _dio.delete(
-          url,
-          data: data,
-          queryParameters: queryParameters,
-          options: Options(headers: headers),
-        );
-      } else {
-        throw Exception("Invalid request type");
+
+      switch (requestType) {
+        case DioRequestType.get:
+          response = await _dio.get(
+            url,
+            data: data,
+            queryParameters: queryParameters,
+            onReceiveProgress: onReceiveProgress,
+            options: Options(headers: headers),
+          );
+          if (isDataCache) {
+            DataCacheService(apiEndPoint: url).setData(response.data, expiryTimeMinute: cacheAgeInMinute);
+          }
+          break;
+
+        case DioRequestType.post:
+          Logger().d(data.toString());
+          response = await _dio.post(
+            url,
+            data: data,
+            queryParameters: queryParameters,
+            onReceiveProgress: onReceiveProgress,
+            onSendProgress: onSendProgress,
+            options: Options(headers: headers),
+          );
+          break;
+
+        case DioRequestType.put:
+          response = await _dio.put(
+            url,
+            data: data,
+            queryParameters: queryParameters,
+            onReceiveProgress: onReceiveProgress,
+            onSendProgress: onSendProgress,
+            options: Options(headers: headers),
+          );
+          break;
+
+        case DioRequestType.patch:
+          response = await _dio.patch(
+            url,
+            data: data,
+            queryParameters: queryParameters,
+            onReceiveProgress: onReceiveProgress,
+            onSendProgress: onSendProgress,
+            options: Options(headers: headers),
+          );
+          break;
+
+        case DioRequestType.delete:
+          response = await _dio.delete(
+            url,
+            data: data,
+            queryParameters: queryParameters,
+            options: Options(headers: headers),
+          );
+          break;
+
+        default:
+          throw Exception("Invalid request type");
       }
-      await onSuccess(response);
+
+      onSuccess(response);
     } on DioException catch (error) {
-      log('error: $error');
-      log('error: ${"${error.response?.data['message'] ?? error.message}"}');
-      onError!(
+      final res = error.response;
+
+      log('🔴 DioException occurred');
+      log('🔗 URL: ${error.requestOptions.uri}');
+      log('📡 Status Code: ${res?.statusCode}');
+      log('📨 Response Data: ${res?.data}');
+      log('📄 Headers: ${res?.headers}');
+      log('📛 Error Type: ${error.type}');
+      log('📝 Error Message: ${error.message}');
+
+      String errorMessage = '';
+      if (res?.data is Map) {
+        errorMessage = res?.data['message'] ?? res?.data['error'] ?? res?.data['msg'] ?? 'Unknown error occurred';
+      } else if (res?.data is String) {
+        errorMessage = res?.data;
+      } else {
+        errorMessage = error.message ?? 'Unexpected error';
+      }
+
+      onError?.call(
         ConnectionException(
           url: error.requestOptions.path,
-          message: "${error.response?.data['message'] ?? error.message}",
+          message: errorMessage,
+          response: res,
+          statusCode: res?.statusCode,
         ),
       );
     } on TimeoutException {
-      onError!(ConnectionException(url: '', message: "Connection Timeout"));
+      onError?.call(ConnectionException(url: url, message: "Connection Timeout"));
     } catch (error, stackTrace) {
-      onError!(ConnectionException(url: stackTrace.toString(), message: error.toString()));
+      onError?.call(ConnectionException(url: stackTrace.toString(), message: error.toString()));
     }
   }
 }
@@ -125,18 +157,31 @@ class ConnectionException implements Exception {
   final String message;
   final int? statusCode;
   final Response? response;
-  ConnectionException({required this.url, required this.message, this.response, this.statusCode});
+
+  ConnectionException({
+    required this.url,
+    required this.message,
+    this.response,
+    this.statusCode,
+  });
+
   @override
-  toString() {
-    String result = '';
-    result += response?.data?['error'] ??
-        response?.data?['message'] ??
-        response?.data?['result'] ??
-        response?.data?['msg'] ??
-        '';
-    if (result.isEmpty) {
-      result += message;
+  String toString() {
+    try {
+      if (response?.data != null) {
+        if (response!.data is Map) {
+          return response!.data['error'] ??
+              response!.data['message'] ??
+              response!.data['msg'] ??
+              response!.data['result'] ?? // 👈 Add this line
+              message;
+        } else if (response!.data is String) {
+          return response!.data;
+        }
+      }
+    } catch (_) {
+      // Fall back to message
     }
-    return result;
+    return message;
   }
 }

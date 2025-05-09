@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:stories_for_flutter/stories_for_flutter.dart';
-import '../../../components/network_image_preview.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../../product/view/client_profile_view.dart';
 
@@ -40,79 +39,77 @@ class HomeStorySection extends StatelessWidget {
                 Get.to(
                   () => ClientProfileView(
                     userId: userId,
-                    productDetailsController:
-                        Get.find<ProductDetailsController>(),
+                    productDetailsController: Get.find<ProductDetailsController>(),
                   ),
                   transition: Transition.fadeIn,
                 );
               },
               addOption: Obx(() {
-                return InkWell(
-                  onTap: homeController.isStoryPostLoading.value
-                      ? null
-                      : () {
-                          homeController.storyAssetPicker(context).then((_) {
-                            if (homeController.pickStoryImageList.isNotEmpty) {
-                              homeController.openEditor(Get.context!);
-                            } else if (homeController
-                                .pickStoryVideoList.isNotEmpty) {
-                              Get.to(
-                                () => StoryVideoEditor(
-                                  homeController.pickStoryVideoList.first,
-                                ),
-                              );
-                            }
-                          });
-                        },
-                  child: Padding(
-                    padding:
-                        EdgeInsets.only(left: 15.w, right: 5.w, bottom: 3.h),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          //backgroundColor: AppColors.primary,
-                          child: CircleAvatar(
-                            backgroundColor: AppColors.secondary,
-                            radius: 27,
-                            child: CircleAvatar(
-                              radius: 27,
-                              backgroundColor: Colors.transparent,
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  CircleAvatar(
+                return (authController.userDataModel.value.premium ?? false)
+                    ? InkWell(
+                        onTap: homeController.isStoryPostLoading.value
+                            ? null
+                            : () {
+                                homeController.storyAssetPicker(context).then((_) {
+                                  if (homeController.pickStoryImageList.isNotEmpty) {
+                                    homeController.openEditor(Get.context!);
+                                  } else if (homeController.pickStoryVideoList.isNotEmpty) {
+                                    Get.to(
+                                      () => StoryVideoEditor(
+                                        homeController.pickStoryVideoList.first,
+                                      ),
+                                    );
+                                  }
+                                });
+                              },
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 15.w, right: 5.w, bottom: 3.h),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CircleAvatar(
+                                radius: 30,
+                                //backgroundColor: AppColors.primary,
+                                child: CircleAvatar(
+                                  backgroundColor: AppColors.secondary,
+                                  radius: 27,
+                                  child: CircleAvatar(
                                     radius: 27,
-                                    backgroundColor:
-                                        AppColors.primary.withOpacity(.5),
-                                    child:
-                                        homeController.isStoryPostLoading.value
-                                            ? const CupertinoActivityIndicator(
-                                                color: Colors.white,
-                                              )
-                                            : Icon(
-                                                Icons.add,
-                                                size: 23.r,
-                                                color: AppColors
-                                                    .scaffoldBackgroundColor,
-                                              ),
+                                    backgroundColor: Colors.transparent,
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 27,
+                                          backgroundColor: AppColors.primary.withOpacity(.5),
+                                          child: homeController.isStoryPostLoading.value
+                                              ? const CupertinoActivityIndicator(
+                                                  color: Colors.white,
+                                                )
+                                              : Icon(
+                                                  Icons.add,
+                                                  size: 23.r,
+                                                  color: AppColors.scaffoldBackgroundColor,
+                                                ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                              5.verticalSpace,
+                              Text(
+                                localLanguage.add_story,
+                                style: TextStyle(fontSize: 13.sp),
+                              ),
+                              5.verticalSpace,
+                            ],
                           ),
                         ),
-                        5.verticalSpace,
-                        Text(
-                          localLanguage.add_story,
-                          style: TextStyle(fontSize: 13.sp),
-                        ),
-                        5.verticalSpace,
-                      ],
-                    ),
-                  ),
-                );
+                      )
+                    : SizedBox(
+                        width: 10.w,
+                      );
               }),
               storyItemList: [
                 ...homeController.storyList.map(
@@ -125,9 +122,7 @@ class HomeStorySection extends StatelessWidget {
                     stories: [
                       ...(e.stories ?? []).map(
                         (e) => StoryMainModel(
-                          isVideo: (e.media?.type == "video" &&
-                              e.media?.name != null &&
-                              e.media!.name!.isNotEmpty),
+                          isVideo: (e.media?.type == "video" && e.media?.name != null && e.media!.name!.isNotEmpty),
                           url: e.media?.name ?? '',
                         ),
                       ),
