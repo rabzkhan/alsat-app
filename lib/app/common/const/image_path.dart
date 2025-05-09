@@ -27,7 +27,7 @@ const String categoryIcon = 'assets/icons/category.png';
 const String chatIcon = 'assets/icons/chat.png';
 const String adminChat = 'assets/icons/admin-chat.png';
 const String profileIcon = 'assets/icons/profile.png';
-const String addPost = 'assets/icons/addpost.png';
+const String addPost = 'assets/icons/add_post.png';
 //drawer
 const String drawerSetting = 'assets/icons/settingdrawer.png';
 const String translate = 'assets/icons/translate.png';

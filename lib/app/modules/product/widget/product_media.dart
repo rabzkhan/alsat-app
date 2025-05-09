@@ -89,9 +89,7 @@ class _ProductMediaWidgetState extends State<ProductMediaWidget> {
             onTap: () {
               Get.to(() => MultiImagePreview(
                     galleryItems: widget.galleryItems
-                        .where((e) => (e.contentType ?? '')
-                            .toLowerCase()
-                            .contains('image'))
+                        .where((e) => (e.contentType ?? '').toLowerCase().contains('image'))
                         .toList(),
                     initialIndex: 0,
                   ));

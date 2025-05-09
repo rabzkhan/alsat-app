@@ -382,6 +382,7 @@ class HomeController extends GetxController {
       "${Constants.baseUrl}${Constants.stories}?user_id=${authController.userDataModel.value.id}",
       DioRequestType.get,
       onLoading: () {
+        storyList.clear();
         isStoryLoading.value = true;
         authUserStory.clear();
       },
@@ -389,6 +390,7 @@ class HomeController extends GetxController {
         Logger().d("stories ${response.data.toString()}");
         List<dynamic> data = response.data;
         authUserStory.value = data.map((json) => StoryModel.fromJson(json)).toList();
+        // authUserStory.value = storyList;
         fetchAllStories();
         await userArchiveStory();
       },

@@ -71,7 +71,7 @@ class ChatContent extends StatelessWidget {
                       ),
                       child: ListTile(
                         onTap: () {
-                          log(conversation?.id.toString() ?? '');
+                          //log(conversation!.toJson().toString());
                           conversationController.conversationList[index].notReadedCount = 0;
                           conversationController.conversationList.refresh();
                           Get.to(
@@ -119,7 +119,7 @@ class ChatContent extends StatelessWidget {
                               )
                           ],
                         ),
-                        trailing: (conversation?.notReadedCount ?? 0) <= 0
+                        trailing: (conversation?.notReadedCount ?? 0) <= 1
                             ? null
                             : CircleAvatar(
                                 radius: 14.r,
@@ -131,7 +131,7 @@ class ChatContent extends StatelessWidget {
                                     radius: 13.r,
                                     backgroundColor: Get.theme.disabledColor.withOpacity(.05),
                                     child: Text(
-                                      (conversation?.notReadedCount ?? 0).toString(),
+                                      ((conversation?.notReadedCount ?? 0) - 1).toString(),
                                       style: regular.copyWith(
                                         fontSize: 10.sp,
                                         fontWeight: FontWeight.w500,

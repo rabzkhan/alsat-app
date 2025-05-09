@@ -12,6 +12,7 @@ import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:logger/logger.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -80,7 +81,9 @@ class ConversationController extends GetxController {
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
         isSendingMessage.value = false;
-        await getConversations(showLoader: false);
+        Logger().d("the message is ${response.data.toString()}");
+        sortList(selectConversation.value?.id.toString() ?? '');
+
         return;
       },
       onError: (error) {
@@ -92,9 +95,11 @@ class ConversationController extends GetxController {
   }
 
   void sortList(String chatId) {
+    log("sortList got called");
     final index = conversationList.indexWhere((chat) => chat.id == chatId);
     if (index != -1) {
       final chat = conversationList.removeAt(index);
+
       conversationList.insert(0, chat);
       conversationList.refresh(); // Notify listeners
     }
@@ -178,7 +183,6 @@ class ConversationController extends GetxController {
       },
       onSuccess: (response) async {
         Map<String, dynamic> data = response.data;
-
         conversationMessagesRes.value = ConversationMessagesRes.fromJson(data);
         selectConversationMessageList.value = conversationMessagesRes.value?.data?.messages ?? [];
 
@@ -189,12 +193,10 @@ class ConversationController extends GetxController {
           userName: 'Admin',
           picture: 'Admin',
         );
-
         for (var element in selectConversationMessageList) {
           ChatMessage convertMessages = convertMessageHelper(element, selectUserInfo.value, authController);
           coverMessage.add(convertMessages);
         }
-        sortList(selectConversation.value?.id.toString() ?? '');
         coverMessage.refresh();
 
         isConversationMessageLoading.value = false;
@@ -208,6 +210,7 @@ class ConversationController extends GetxController {
   ///
   /// confire with MQTT server
   Future<void> connectToMqtt() async {
+    log("connectToMqtt got called");
     AuthController authController = Get.find();
     final fcmToken = await FirebaseMessaging.instance.getToken();
     String userID = authController.userDataModel.value.id ?? "";

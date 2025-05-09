@@ -27,8 +27,7 @@ class MessageController extends GetxController {
     final AuthController authController = Get.find<AuthController>();
     const String host = 'alsat-api.flutterrwave.pro';
     const int port = 1883;
-    String clientID =
-        'user|${DateTime.now().millisecondsSinceEpoch}|${authController.userDataModel.value.id}';
+    String clientID = 'user|${DateTime.now().millisecondsSinceEpoch}|${authController.userDataModel.value.id}';
     String username = 'user|${authController.userDataModel.value.id}';
     String? password = MySharedPref.getAuthToken();
     client = MqttServerClient(host, clientID);
@@ -36,10 +35,8 @@ class MessageController extends GetxController {
     client.logging(on: true);
     client.setProtocolV311();
 
-    final MqttConnectMessage connMessage = MqttConnectMessage()
-        .withClientIdentifier(clientID)
-        .authenticateAs(username, password)
-        .startClean();
+    final MqttConnectMessage connMessage =
+        MqttConnectMessage().withClientIdentifier(clientID).authenticateAs(username, password).startClean();
 
     client.connectionMessage = connMessage;
 
@@ -49,10 +46,8 @@ class MessageController extends GetxController {
       client.subscribe(topic, MqttQos.exactlyOnce);
       client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
         //-- After Subscribe ---//
-        final MqttPublishMessage recMessage =
-            messages[0].payload as MqttPublishMessage;
-        final String messageJson = MqttPublishPayload.bytesToStringAsString(
-            recMessage.payload.message);
+        final MqttPublishMessage recMessage = messages[0].payload as MqttPublishMessage;
+        final String messageJson = MqttPublishPayload.bytesToStringAsString(recMessage.payload.message);
 
         try {
           final Map<String, dynamic> decodedJson = jsonDecode(messageJson);

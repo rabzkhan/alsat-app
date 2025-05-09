@@ -32,8 +32,7 @@ class MultiImagePreview extends StatelessWidget {
               return PhotoViewGalleryPageOptions(
                 imageProvider: NetworkImage(galleryItems[index].name ?? ''),
                 initialScale: PhotoViewComputedScale.contained * 0.8,
-                heroAttributes: PhotoViewHeroAttributes(
-                    tag: galleryItems[index].name ?? ''),
+                heroAttributes: PhotoViewHeroAttributes(tag: galleryItems[index].name ?? ''),
               );
             },
             itemCount: galleryItems.length,
@@ -42,10 +41,7 @@ class MultiImagePreview extends StatelessWidget {
                 width: 20.0,
                 height: 20.0,
                 child: CircularProgressIndicator(
-                  value: event == null
-                      ? 0
-                      : event.cumulativeBytesLoaded /
-                          (event.expectedTotalBytes ?? 1),
+                  value: event == null ? 0 : event.cumulativeBytesLoaded / (event.expectedTotalBytes ?? 1),
                 ),
               ),
             ),
