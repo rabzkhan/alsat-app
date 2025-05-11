@@ -231,5 +231,7 @@
   "choose_location" : "Choose Location",
   "live_stories" : "Live Stories",
   "archive_stories" : "Archive Stories",
-  "re_post" : "Re-post"
+  "re_post" : "Re-post",
+  "privacy_policy" : "Privacy Policy",
+  "terms_condition" : "Terms and Conditions"
 }

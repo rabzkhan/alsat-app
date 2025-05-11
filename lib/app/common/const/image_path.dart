@@ -31,6 +31,8 @@ const String addPost = 'assets/icons/add_post.png';
 //drawer
 const String drawerSetting = 'assets/icons/settingdrawer.png';
 const String translate = 'assets/icons/translate.png';
+const String termsCondition = 'assets/icons/terms-and-conditions.png';
+const String privacyPolicy = 'assets/icons/privacy.png';
 const String sportIcon = 'assets/icons/sport.png';
 const String newsIcon = 'assets/icons/news.png';
 const String youtubeIcon = 'assets/icons/youtube.png';

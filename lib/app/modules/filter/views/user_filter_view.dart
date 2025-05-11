@@ -360,23 +360,23 @@ class UserFilterView extends StatelessWidget {
             ),
           ),
           15.verticalSpace,
-          Obx(() {
-            return SwitchListTile(
-              title: Text(
-                localLanguage.active_account,
-                style: bold.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              value: homeController.isActiveUser.value,
-              dense: true,
-              onChanged: (value) {
-                homeController.isActiveUser.value = value;
-              },
-              controlAffinity: ListTileControlAffinity.trailing,
-            );
-          }),
+          // Obx(() {
+          //   return SwitchListTile(
+          //     title: Text(
+          //       localLanguage.active_account,
+          //       style: bold.copyWith(
+          //         fontSize: 14.sp,
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //     ),
+          //     value: homeController.isActiveUser.value,
+          //     dense: true,
+          //     onChanged: (value) {
+          //       homeController.isActiveUser.value = value;
+          //     },
+          //     controlAffinity: ListTileControlAffinity.trailing,
+          //   );
+          // }),
           Obx(() {
             return SwitchListTile(
                 title: Text(

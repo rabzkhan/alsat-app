@@ -137,7 +137,7 @@
   "liked": "Halanlarym",
   "followers": "Agzalar",
   "following": "Agzalyk edyanim",
-  "upgrade_to_premium": "Premium derejä çyk",
+  "upgrade_to_premium": "Premium aktiwasiýa",
   "upgrade": "Aktiwasiýa",
   "account": "Hasap",
   "user_name": "Ulanyjy ady",
@@ -214,8 +214,8 @@
   "login": "Giriş",
   "sign_up": "Hasap döret",
   "unlock_premium": "Premiumy Aç",
-  "upgrade_code": "8 belgili koduňyzy girizip premium derejä geçiň.",
-  "dont_have_code": "Kodyňyz ýokmy? Premium aýratynlyklary barada has giňişleýin bilmek üçin goldaw bilen habarlaşyň.",
+  "upgrade_code": "Premiuma öwürmek üçin aktiwasiýa koduňyzy giriziň",
+  "dont_have_code": "Koduňyz ýok bolsa, admin bilen habarlaşyň",
   "apply": "ulanyň",
   "logout_confirmation": "Ähli enjamdan çykmak isleýärsiňizmi?",
   "refresh_completed": "Täzelenme tamamlandy",
@@ -231,5 +231,7 @@
   "choose_location": "Ýer saýlaň",
   "live_stories": "Göni ýaýlym hekaýalary",
   "archive_stories": "Arhiw hekaýalary",
-  "re_post": "Gaýtadan paýlaş"
+  "re_post": "Gaýtadan paýlaş",
+  "privacy_policy" : "Gizlinlik Syýasaty",
+  "terms_condition" : "Şertler we Düzgünler"
 }

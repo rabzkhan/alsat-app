@@ -112,6 +112,7 @@ dependencies:
   glassmorphism: ^3.0.0
   ffmpeg_kit_flutter: ^6.0.3
   flutter_isolate: ^2.1.0
+  webview_flutter: ^4.11.0
 
 
 

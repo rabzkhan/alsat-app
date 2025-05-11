@@ -19,6 +19,8 @@ import '../modules/authentication/controller/auth_controller.dart';
 import '../modules/conversation/controller/conversation_controller.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'app_web_view.dart';
+
 class AppDrawer extends StatelessWidget {
   const AppDrawer({super.key});
 
@@ -224,7 +226,31 @@ class AppDrawer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    10.verticalSpace,
+
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                        Get.to(() => AppWebView(
+                              url: "https://flutter.dev/",
+                            ));
+                      },
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            termsCondition,
+                            width: 25.w,
+                            // color: Colors.white,
+                          ),
+                          10.horizontalSpace,
+                          Text(
+                            localLanguage.terms_condition,
+                            style: semiBold,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    14.verticalSpace,
                     if (authController.userDataModel.value.id != null)
                       InkWell(
                         onTap: () {

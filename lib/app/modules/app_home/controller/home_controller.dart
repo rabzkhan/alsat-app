@@ -253,7 +253,6 @@ class HomeController extends GetxController {
     Map<String, dynamic> data = isFilter
         ? {
             "category": category.value?.name,
-            "online": isActiveUser.value,
             "buyer_protection": buyerProtection.value,
             "location":
                 filterController.getSelectedLocationData().isEmpty ? null : filterController.getSelectedLocationData(),
