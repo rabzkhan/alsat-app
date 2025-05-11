@@ -665,7 +665,7 @@ class _PostProductViewState extends State<PostProductView> {
                                   productController.calculateFilledProductFields();
                                 },
                                 controller: productController.productNameController,
-                                textAlign: TextAlign.right,
+                                textAlign: TextAlign.left,
                                 textAlignVertical: TextAlignVertical.center,
                                 style: regular.copyWith(
                                     // fontSize: 12.sp,
@@ -878,7 +878,6 @@ class _PostProductViewState extends State<PostProductView> {
                                     width: 70.w,
                                     alignment: Alignment.center,
                                     child: Text(
-                                      textAlign: TextAlign.center,
                                       '${localLanguage.price} : ',
                                       style: regular,
                                     ),

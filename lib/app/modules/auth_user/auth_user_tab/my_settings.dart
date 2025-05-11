@@ -187,7 +187,7 @@ class _MySettingsState extends State<MySettings> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Obx(() {
-                  return (authController.userDataModel.value.premium ?? false)
+                  return !(authController.userDataModel.value.premium ?? false)
                       ? const Center()
                       : Row(
                           children: [
@@ -202,10 +202,17 @@ class _MySettingsState extends State<MySettings> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Get.theme.primaryColor.withOpacity(0.1),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.greenAccent.withOpacity(0.2),
+                                      Get.theme.primaryColor.withOpacity(0.3),
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
                                   borderRadius: BorderRadius.circular(6.r),
                                 ),
-                                padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
+                                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 14.w),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   mainAxisAlignment: MainAxisAlignment.end,

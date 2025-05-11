@@ -463,10 +463,36 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                     topLeft: Radius.circular(15.r),
                                     topRight: Radius.circular(15.r),
                                   ),
-                                  color: Colors.red,
+                                  color: AppColors.primary,
                                 ),
                                 child: Row(
                                   children: [
+                                    Expanded(
+                                      child: InkWell(
+                                        onTap: () {
+                                          messageController.selectReplyMessage.value =
+                                              messageController.selectMessage.value;
+                                          messageController.selectMessage.value = null;
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.reply,
+                                              color: Colors.greenAccent,
+                                              size: 25.r,
+                                            ),
+                                            4.verticalSpace,
+                                            Text(
+                                              localLanguage.reply,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                     Expanded(
                                       child: InkWell(
                                         onTap: () {
@@ -478,7 +504,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                                           children: [
                                             Icon(
                                               Icons.delete_sharp,
-                                              color: Colors.white,
+                                              color: Colors.red,
                                               size: 25.r,
                                             ),
                                             4.verticalSpace,

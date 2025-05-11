@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../filter/views/filter_results_view.dart';
 import '../models/category_model.dart';
 
@@ -14,6 +14,7 @@ class CategoryContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localLanguage = AppLocalizations.of(Get.context!)!;
     HomeController homeController = Get.find();
     FilterController filterController = Get.find();
     return RefreshIndicator(
@@ -44,9 +45,6 @@ class CategoryContent extends StatelessWidget {
                           ? () {
                               filterController.category.value = homeController.categories.elementAtOrNull(index);
                               filterController.isFilterLoading.value = true;
-                              // filterController.filterMapPassed = {
-                              //   "category": (homeController.categories[index].name ?? '').toLowerCase(),
-                              // };
                               filterController.applyFilter();
                               filterController.clearAddress();
                               Get.to(
@@ -79,44 +77,41 @@ class CategoryContent extends StatelessWidget {
                     expandedCrossAxisAlignment: CrossAxisAlignment.start,
                     childrenPadding: EdgeInsets.symmetric(horizontal: Get.width * .12),
                     children: [
-                      if ((homeController.categories[index].subCategories ?? [])
-                                  .firstWhereOrNull((e) => e.name?.toLowerCase().contains('all') ?? false) ==
-                              null &&
-                          (homeController.categories[index].subCategories ?? []).isNotEmpty)
-                        InkWell(
-                          onTap: () {
-                            filterController.category.value = homeController.categories.elementAtOrNull(index);
-                            filterController.isFilterLoading.value = true;
-                            // filterController.filterMapPassed = {
-                            //   "category": (homeController.categories[index].name ?? '').toLowerCase(),
-                            // };
+                      // if ((homeController.categories[index].subCategories ?? [])
+                      //             .firstWhereOrNull((e) => e.name?.toLowerCase().contains('all') ?? false) ==
+                      //         null &&
+                      //     (homeController.categories[index].subCategories ?? []).isNotEmpty)
+                      //   InkWell(
+                      //     onTap: () {
+                      //       filterController.category.value = homeController.categories.elementAtOrNull(index);
+                      //       filterController.isFilterLoading.value = true;
+                      //       filterController.applyFilter();
+                      //       filterController.clearAddress();
+                      //       Get.to(
+                      //         const FilterResultsView(),
+                      //         transition: Transition.rightToLeft,
+                      //       );
+                      //     },
+                      //     child: Padding(
+                      //       padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                      //       child: Row(
+                      //         children: [
+                      //           Expanded(
+                      //             child: Text(
+                      //               maxLines: 1,
+                      //               overflow: TextOverflow.ellipsis,
+                      //               localLanguage.all,
+                      //               style: TextStyle(
+                      //                 fontSize: 15.sp,
+                      //                 fontWeight: FontWeight.w400,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
 
-                            filterController.applyFilter();
-                            filterController.clearAddress();
-                            Get.to(
-                              const FilterResultsView(),
-                              transition: Transition.rightToLeft,
-                            );
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    'All',
-                                    style: TextStyle(
-                                      fontSize: 15.sp,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ...(homeController.categories[index].subCategories ?? []).map((subCategory) {
                         return InkWell(
                           onTap: () {
@@ -135,11 +130,7 @@ class CategoryContent extends StatelessWidget {
                                 icon: subCategory.icon,
                                 filter: subCategory.filter,
                               );
-
                               filterController.isFilterLoading.value = true;
-                              // filterController.filterMapPassed = {
-                              //   "category": (subCategory.name ?? '').toLowerCase(),
-                              // };
                             }
                             filterController.applyFilter();
                             filterController.clearAddress();

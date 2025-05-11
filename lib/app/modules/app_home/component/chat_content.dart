@@ -34,9 +34,6 @@ class ChatContent extends StatelessWidget {
       controller: conversationController.conversationRefreshController,
       onRefresh: conversationController.conversationRefresh,
       onLoading: conversationController.conversationLoading,
-      // onRefresh: () async {
-      // conversationController.getConversations();
-      // },
       child: ListView(
         padding: EdgeInsets.symmetric(
           horizontal: 20.w,
@@ -44,7 +41,6 @@ class ChatContent extends StatelessWidget {
         ).copyWith(top: 0),
         children: [
           Obx(() {
-            // {message_id: b1333db6-6c92-4c67-809a-c14d8d057f85, type: chat/inbox, sender_id: eac7a365-52cc-4b79-a2f8-caea1a348175, chat_id: e5da1fd9-14ec-4a24-a4fe-368b8ab30b10}
             return Skeletonizer(
               enabled: conversationController.isConversationLoading.value,
               child: ListView.builder(

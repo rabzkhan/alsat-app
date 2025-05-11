@@ -1,27 +1,27 @@
 const Map<String, Map<String, String>> estateTypeTranslations = {
   "Apartment": {
     "en": "Apartment",
-    "tr": "Jaý",
+    "tr": "Kwartira",
     "ru": "Квартира",
   },
   "Elite": {
     "en": "Elite",
-    "tr": "Elit",
+    "tr": "Elitka",
     "ru": "Элитная",
   },
   "Half-Elite": {
     "en": "Half-Elite",
-    "tr": "Ýarym elit",
+    "tr": "Ýarym elitka",
     "ru": "Полуэлитная",
   },
   "Cottage": {
     "en": "Cottage",
-    "tr": "Kottej",
+    "tr": "Plan jaý/ Kottej",
     "ru": "Коттедж",
   },
   "Villa": {
     "en": "Villa",
-    "tr": "Willa",
+    "tr": "Daça",
     "ru": "Вилла",
   },
 };
@@ -29,31 +29,30 @@ const Map<String, Map<String, String>> estateTypeTranslations = {
 const Map<String, Map<String, String>> estateDealTypeTranslations = {
   "Cosmetic": {
     "en": "Cosmetic",
-    "tr": "Kosmetiki",
+    "tr": "Kosmetiçeski",
     "ru": "Косметический",
   },
   "Government": {
     "en": "Government",
-    "tr": "Döwlet",
+    "tr": "Döwlet remont",
     "ru": "Государственный",
   },
   "Euro": {
     "en": "Euro",
-    "tr": "Ýewro",
+    "tr": "Ýewro remont",
     "ru": "Евроремонт",
   },
   "Designer": {
     "en": "Designer",
-    "tr": "Dizaýn",
+    "tr": "Dizaýnerski",
     "ru": "Дизайнерский",
   },
   "Regular": {
     "en": "Regular",
-    "tr": "Adaty",
+    "tr": "Ýönekeý remont",
     "ru": "Обычный",
   },
 };
-
 const Map<String, Map<String, String>> bodyTypeTranslations = {
   "Coupe": {
     "en": "Coupe",
@@ -67,29 +66,34 @@ const Map<String, Map<String, String>> bodyTypeTranslations = {
   },
   "Suv": {
     "en": "SUV",
-    "tr": "Uly awtoulag",
+    "tr": "Wnedorožnik",
     "ru": "Внедорожник",
   },
   "Hatchback": {
     "en": "Hatchback",
-    "tr": "Hetçbek",
+    "tr": "Heçbek",
     "ru": "Хэтчбек",
   },
   "Crossover": {
     "en": "Crossover",
-    "tr": "Krossover",
+    "tr": "Krossower",
     "ru": "Кроссовер",
   },
   "Van": {
     "en": "Van",
-    "tr": "Wen",
+    "tr": "Furgon",
     "ru": "Фургон",
+  },
+  "Pickup": {
+    "en": "Pickup",
+    "tr": "Pikap",
+    "ru": "подобрать",
   },
 };
 final Map<String, Map<String, String>> transmissionTranslations = {
   "Manual": {
     "en": "Manual",
-    "tr": "El bilen dolandyrylýan",
+    "tr": "Mehaniki",
     "ru": "Механика",
   },
   "Auto": {
@@ -99,11 +103,10 @@ final Map<String, Map<String, String>> transmissionTranslations = {
   },
   "Tiptronic": {
     "en": "Tiptronic",
-    "tr": "Tiptronic",
+    "tr": "Tiptronik",
     "ru": "Типтроник",
   },
 };
-
 final Map<String, Map<String, String>> colorTranslations = {
   "White": {"tr": "Ak", "ru": "Белый"},
   "Silver": {"tr": "Kümüş", "ru": "Серебристый"},

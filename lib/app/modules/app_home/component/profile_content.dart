@@ -238,7 +238,7 @@ class _ProfileContentState extends State<ProfileContent> with TickerProviderStat
                               Padding(
                                 padding: EdgeInsets.symmetric(vertical: 6.h),
                                 child: Text(
-                                  'All',
+                                  localLanguage.all,
                                 ),
                               ),
                               ...homeController.userPostCategories.map(
