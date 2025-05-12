@@ -4,8 +4,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 class AppWebView extends StatefulWidget {
   final String url;
+  final String title;
 
-  const AppWebView({super.key, required this.url});
+  const AppWebView({super.key, required this.url, required this.title});
 
   @override
   State<AppWebView> createState() => _PaymentWebViewState();

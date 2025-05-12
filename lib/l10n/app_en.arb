@@ -233,5 +233,10 @@
   "archive_stories" : "Archive Stories",
   "re_post" : "Re-post",
   "privacy_policy" : "Privacy Policy",
-  "terms_condition" : "Terms and Conditions"
+  "user_agrement" : "User Agreement",
+  "variy_your_number" : "Verify Your Phone Number",
+  "to_authenticate" : "To authenticate, a message will be sent from the number you entered to",
+  "send_message" : "Send Message",
+  "by_continuing" : "By continuing, you consent to send this message. Standard rates may apply.",
+  "login_as_guest" : "Login as Guest"
 }

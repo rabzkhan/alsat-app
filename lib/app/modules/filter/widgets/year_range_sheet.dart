@@ -84,9 +84,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                     if (index < 0 || index > items.length - 1) {
                                       return null;
                                     }
-
                                     var value = items[index];
-
                                     return Center(
                                       child: Obx(() {
                                         return Text(
@@ -142,9 +140,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                     if (index < 0 || index > items.length - 1) {
                                       return null;
                                     }
-
                                     var value = items[index];
-
                                     return Center(
                                       child: Obx(() {
                                         return Text(

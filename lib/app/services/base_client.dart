@@ -119,13 +119,12 @@ class BaseClient {
     } on DioException catch (error) {
       final res = error.response;
 
-      log('🔴 DioException occurred');
       log('🔗 URL: ${error.requestOptions.uri}');
       log('📡 Status Code: ${res?.statusCode}');
       log('📨 Response Data: ${res?.data}');
-      log('📄 Headers: ${res?.headers}');
-      log('📛 Error Type: ${error.type}');
-      log('📝 Error Message: ${error.message}');
+      // log('📄 Headers: ${res?.headers}');
+      // log('📛 Error Type: ${error.type}');
+      // log('📝 Error Message: ${error.message}');
 
       String errorMessage = '';
       if (res?.data is Map) {

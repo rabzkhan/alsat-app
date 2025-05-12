@@ -1121,7 +1121,8 @@ class _PostProductViewState extends State<PostProductView> {
                                             return Text(
                                               productController.fromTime.value == null
                                                   ? localLanguage.from_na
-                                                  : '${localLanguage.from} ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
+                                                  //: '${localLanguage.from} ${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
+                                                  : '${productController.fromTime.value?.hour ?? '00'}:${productController.fromTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),
@@ -1141,7 +1142,7 @@ class _PostProductViewState extends State<PostProductView> {
                                             return Text(
                                               productController.toTime.value == null
                                                   ? localLanguage.to_na
-                                                  : '${localLanguage.to} ${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
+                                                  : '${productController.toTime.value?.hour ?? '00'}:${productController.toTime.value?.minute ?? '00'}',
                                               style: regular,
                                             );
                                           }),

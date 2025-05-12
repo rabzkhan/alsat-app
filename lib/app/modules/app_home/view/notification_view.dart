@@ -25,12 +25,6 @@ class NotificationView extends GetView<HomeController> {
       ),
       body: Obx(
         () => Skeletonizer(
-          // effect: ShimmerEffect(
-          //   baseColor: Get.theme.disabledColor.withOpacity(.2),
-          //   highlightColor: Colors.white,
-          //   begin: Alignment.centerLeft,
-          //   end: Alignment.centerRight,
-          // ),
           enabled: controller.isNotificationLoading.value,
           child: ListView.builder(
             padding: EdgeInsets.symmetric(vertical: 8.h).copyWith(bottom: 50.h),

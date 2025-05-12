@@ -1,3 +1,4 @@
+import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class LoginView extends GetView<AuthController> {
   @override
   Widget build(BuildContext context) {
     final localLanguage = AppLocalizations.of(Get.context!)!;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -38,7 +40,7 @@ class LoginView extends GetView<AuthController> {
             padding: EdgeInsets.only(bottom: 35.h),
             child: CircleAvatar(
               radius: 60.r,
-              backgroundColor: Get.theme.disabledColor.withValues(alpha: .05),
+              backgroundColor: Get.theme.disabledColor.withOpacity(0.05),
               child: InkWell(
                 onTap: () async {
                   await MySharedPref.clear();
@@ -54,7 +56,7 @@ class LoginView extends GetView<AuthController> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Get.theme.appBarTheme.backgroundColor!.withValues(alpha: .7),
+          color: Get.theme.appBarTheme.backgroundColor!.withOpacity(0.7),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(60.r),
             topRight: Radius.circular(60.r),
@@ -63,12 +65,11 @@ class LoginView extends GetView<AuthController> {
         child: FormBuilder(
           key: controller.loginFormKey,
           child: ListView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 30.w,
-              vertical: 30.h,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h),
             children: [
               40.verticalSpace,
+
+              // Phone number input
               FormBuilderTextField(
                 name: 'phone',
                 controller: controller.phoneNumberController.value,
@@ -95,6 +96,8 @@ class LoginView extends GetView<AuthController> {
                   FormBuilderValidators.required(),
                 ]),
               ),
+
+              // OTP Countdown and Resend Button
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
                   final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
@@ -102,78 +105,77 @@ class LoginView extends GetView<AuthController> {
                   return Column(
                     children: [
                       20.verticalSpace,
-                      Center(
-                        child: Text(
-                          controller.canResendOtp.value
-                              ? ""
-                              : "${localLanguage.resend_otp_in} $minutes:$seconds ${localLanguage.min}",
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Get.theme.primaryColor,
-                          ),
-                        ),
-                      ),
-                      20.verticalSpace,
-                      // Resend OTP Button
-                      TextButton(
-                        onPressed: controller.canResendOtp.value
-                            ? () {
-                                controller.getOtp();
-                              }
-                            : null, // Disable button until countdown is over
-                        child: Text(
-                          localLanguage.resend_otp,
-                          style: TextStyle(fontSize: 14.sp),
+                      Text(
+                        controller.canResendOtp.value
+                            ? ""
+                            : "${localLanguage.resend_otp_in} $minutes:$seconds ${localLanguage.min}",
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Get.theme.primaryColor,
                         ),
                       ),
                     ],
                   );
                 } else {
-                  return Container(); // Hide elements if OTP process hasn't started
+                  return SizedBox.shrink();
                 }
               }),
-              50.verticalSpace,
+              40.verticalSpace,
+              // Submit button
               Row(
                 children: [
                   Expanded(
-                    child: CupertinoButton.filled(
-                      onPressed: controller.hasStartedOtpProcess.value
-                          ? null // Disable the login button if OTP process has started
-                          : () {
-                              if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
-                                controller.getOtp(isFromHome: isFromHome);
-                              }
-                            },
-                      child: Obx(() {
-                        return Text(
+                    child: Obx(() {
+                      final isDisabled = controller.hasStartedOtpProcess.value && !controller.canResendOtp.value;
+
+                      return CupertinoButton.filled(
+                        onPressed: isDisabled
+                            ? null
+                            : () {
+                                if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
+                                  controller.getOtp(isFromHome: isFromHome);
+                                }
+                              },
+                        child: Text(
                           controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
-                        );
-                      }),
-                    ),
-                  )
+                        ),
+                      );
+                    }),
+                  ),
                 ],
               ),
+
               20.verticalSpace,
-              Row(
-                children: [
-                  Expanded(
-                    child: CupertinoButton(
-                      onPressed: () {
-                        if (isFromHome) {
-                          Get.back();
-                        } else {
-                          Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
-                        }
-                      },
-                      child: Text(
-                        'Login as Guest',
-                        style: TextStyle(fontSize: 14.sp),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+
+              // Guest login
+              Obx(() {
+                final isDisabled = controller.hasStartedOtpProcess.value && !controller.canResendOtp.value;
+                return isDisabled
+                    ? SizedBox.shrink()
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: CupertinoButton(
+                              onPressed: () {
+                                if (isFromHome) {
+                                  Get.back();
+                                } else {
+                                  Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
+                                }
+                              },
+                              child: Text(
+                                localLanguage.login_as_guest,
+                                style: bold.copyWith(
+                                  fontSize: 16.sp,
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+              }),
             ],
           ),
         ),

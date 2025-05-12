@@ -9,6 +9,7 @@ import 'package:alsat/app/components/custom_snackbar.dart';
 import 'package:alsat/app/modules/app_home/component/category_content.dart';
 import 'package:alsat/app/modules/app_home/component/chat_content.dart';
 import 'package:alsat/app/modules/app_home/component/home_content.dart';
+import 'package:alsat/app/modules/authentication/view/login_view.dart';
 import 'package:alsat/app/modules/filter/controllers/filter_controller.dart';
 import 'package:alsat/app/modules/filter/views/filter_results_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -290,7 +291,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                           child: IconButton(
                             onPressed: () {
-                              Get.to(() => NotificationView());
+                              //Get.to(() => NotificationView());
+                              Get.to(() => LoginView());
                             },
                             icon: Image.asset(
                               "assets/icons/notification.png",

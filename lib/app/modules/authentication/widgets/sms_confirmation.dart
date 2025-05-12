@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../config/theme/app_text_theme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-smsConfirmation(
-    {required String phoneNumber,
-    required String message,
-    bool isFromHome = false}) {
+smsConfirmation({required String phoneNumber, required String message, bool isFromHome = false}) {
+  final localLanguage = AppLocalizations.of(Get.context!)!;
   Get.dialog(
     Center(
       child: BackdropFilter(
@@ -39,17 +38,21 @@ smsConfirmation(
                   ),
                 ),
                 Text(
-                  "Verify Your Phone Number",
+                  localLanguage.variy_your_number,
                   style: Get.theme.textTheme.titleMedium!.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 20.verticalSpace,
                 Text(
-                  "To authenticate, a message will be sent from the number you entered to $phoneNumber.",
+                  localLanguage.to_authenticate,
                   textAlign: TextAlign.center,
-                  style:
-                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                ),
+                Text(
+                  phoneNumber,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 20.verticalSpace,
                 SizedBox(
@@ -60,8 +63,7 @@ smsConfirmation(
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor:
-                                Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -72,7 +74,7 @@ smsConfirmation(
                             ),
                           ),
                           child: Text(
-                            'Cancel',
+                            localLanguage.cancel,
                             style: regular.copyWith(
                               color: Get.theme.primaryColor,
                             ),
@@ -96,6 +98,7 @@ smsConfirmation(
                             ),
                           ),
                           onPressed: () {
+                            Get.back();
                             Get.find<AuthController>().sendSms(
                               phoneNumber,
                               message,
@@ -103,7 +106,7 @@ smsConfirmation(
                             );
                           },
                           child: Text(
-                            "Send Message",
+                            localLanguage.send_message,
                             style: regular.copyWith(
                               color: Colors.white,
                             ),
@@ -115,12 +118,9 @@ smsConfirmation(
                 ),
                 30.verticalSpace,
                 Text(
-                  "By continuing, you consent to send this message. \nStandard rates may apply.",
+                  localLanguage.by_continuing,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!)
-                      .textTheme
-                      .labelMedium!
-                      .copyWith(color: Colors.grey.shade700),
+                  style: Theme.of(Get.context!).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
                 )
               ],
             ),

@@ -135,7 +135,7 @@
   "report_reason": "Arzyñ sebäbi",
   "my_listings": "Bildirişlerim",
   "liked": "Halanlarym",
-  "followers": "Agzalar",
+  "followers": "Agza sany",
   "following": "Agzalyk edyanim",
   "upgrade_to_premium": "Premium aktiwasiýa",
   "upgrade": "Aktiwasiýa",
@@ -157,7 +157,7 @@
   "select_category": "Kategoriýany saýla",
   "min_to_max": "Pesden ýokary",
   "max_to_min": "Ýokardan pes",
-  "registration": "Hasaba alyş",
+  "registration": "Registrasiya wagty",
   "new_to_old": "Täzeden köne",
   "old_to_new": "Köneden täze",
   "active_account": "Işjeň hasap",
@@ -233,5 +233,10 @@
   "archive_stories": "Arhiw hekaýalary",
   "re_post": "Gaýtadan paýlaş",
   "privacy_policy" : "Gizlinlik Syýasaty",
-  "terms_condition" : "Şertler we Düzgünler"
+  "user_agrement" : "Ulanyjy şertnamasy",
+  "variy_your_number" : "Telefon belgiňizi tassyklaň",
+  "to_authenticate" : "Görkezen telefon belgiňizden ugratmaly nomeriňiz",
+  "send_message" : "Hat ugrat",
+  "by_continuing" : "Dowam etmek bilen haty ugratmaga razyçylyk berýärsiňiz.",
+  "login_as_guest" : "Myhman hökmünde giriň"
 }

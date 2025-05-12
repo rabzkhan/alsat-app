@@ -1172,14 +1172,14 @@ class _FilterViewState extends State<FilterView> {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 10.h),
+              padding: EdgeInsets.symmetric(horizontal: 16.w).copyWith(top: 16.h),
               child: SizedBox(
-                height: 60.h,
+                height: 50.h,
                 child: Obx(() {
                   return ElevatedButton(
                     style: OutlinedButton.styleFrom(
                       backgroundColor: controller.category.value == null ? AppColors.liteGray : AppColors.primary,
-                      padding: EdgeInsets.symmetric(vertical: 18.h),
+                      padding: EdgeInsets.symmetric(vertical: 10.h),
                       elevation: 0,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.r),
@@ -1212,7 +1212,8 @@ class _FilterViewState extends State<FilterView> {
                       }
                       return Text(
                         localLanguage.filter,
-                        style: TextStyle(
+                        style: bold.copyWith(
+                          fontSize: 15.sp,
                           color: Colors.white,
                         ),
                       );

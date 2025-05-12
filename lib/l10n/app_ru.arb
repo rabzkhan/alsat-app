@@ -44,7 +44,7 @@
   "information": "Информация",
   "brand": "Бренд",
   "modelType": "Тип",
-  "bodyType": "Тип кузова",
+  "bodyType": "Kuzow",
   "year": "Год",
   "engine": "Двигатель",
   "color": "Цвет",
@@ -97,7 +97,7 @@
   "allow_me_to_call": "Разрешить звонить мне",
   "contact_only_in_chat": "Контакт только в чате",
   "model": "Модель",
-  "body_type": "Тип кузова",
+  "body_type": "Kuzow",
   "transmission": "Трансмиссия",
   "engine_type": "Тип двигателя",
   "passed_km": "Пробег, км",
@@ -137,7 +137,7 @@
   "liked": "Понравилось",
   "followers": "Подписчики",
   "following": "Подписки",
-  "upgrade_to_premium": "Разблокировать Премиум",
+  "upgrade_to_premium": "Премиум-активация",
   "upgrade": "Активировать",
   "account": "Аккаунт",
   "user_name": "Имя пользователя",
@@ -233,5 +233,10 @@
   "archive_stories": "Архивные истории",
   "re_post": "Репост",
   "privacy_policy" : "Политика конфиденциальности",
-  "terms_condition" : "Условия и положения"
+  "user_agrement" : "пользовательское соглашение",
+  "variy_your_number": "Подтвердите свой номер телефона",
+  "to_authenticate": "Для аутентификации будет отправлено сообщение с введённого вами номера на",
+  "send_message": "Отправить",
+  "by_continuing": "Продолжая, вы соглашаетесь на отправку этого сообщения.",
+  "login_as_guest" : "Войти как гость"
 }

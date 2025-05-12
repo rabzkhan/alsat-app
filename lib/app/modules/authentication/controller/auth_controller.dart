@@ -42,7 +42,7 @@ class AuthController extends GetxController {
   Rx<OtpModel> otpData = OtpModel().obs;
   Rx<VerifiedModel> verifiedModel = VerifiedModel().obs;
   Timer? verificationTimer; // Timer for periodic verification API calls
-  Timer? resendOtpTimer; // Timer for 4-minute countdown for resending OTP
+  Timer? stopTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
   RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
   RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
@@ -106,7 +106,6 @@ class AuthController extends GetxController {
   Future<void> sendSms(String phoneNumber, String message, {bool isFromHome = false}) async {
     final Uri smsUri = Uri(
       scheme: 'sms',
-
       path: "65555109",
       //path: "01701034287",
       queryParameters: <String, String>{
@@ -124,11 +123,42 @@ class AuthController extends GetxController {
     }
   }
 
-  // Start the process to verify the number every 5 seconds
-  startVerifyingNumber({bool isFromHome = false}) {
+  void startVerifyingNumber({bool isFromHome = false}) {
+    // Reset any previous timers
+    verificationTimer?.cancel();
+    stopTimer?.cancel();
+
+    // Reset countdown to 2 minutes
+    countdown.value = 120;
+    canResendOtp.value = false;
+    hasStartedOtpProcess.value = true;
+
+    // Start periodic API call every 5 seconds
     verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       verifyNumber(isFromHome: isFromHome);
     });
+
+    // Start countdown timer that ticks every second
+    stopTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (countdown.value > 0) {
+        countdown.value--;
+      } else {
+        // Stop everything once countdown hits 0
+        canResendOtp.value = true;
+        stopTimers();
+      }
+    });
+  }
+
+  void stopTimers() {
+    verificationTimer?.cancel();
+    stopTimer?.cancel();
+  }
+
+  @override
+  void onClose() {
+    stopTimers();
+    super.onClose();
   }
 
   // Call the verify API periodically

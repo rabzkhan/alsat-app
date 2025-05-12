@@ -16,7 +16,7 @@ import '../../product/model/product_post_list_res.dart';
 
 class FilterController extends GetxController {
   RxInt mileage = 100.obs;
-  RxInt choseFirstYear = 1980.obs;
+  RxInt choseFirstYear = DateTime.now().year.obs;
   RxInt choseLastYear = DateTime.now().year.obs;
 
   RxBool isFilterLoading = false.obs;

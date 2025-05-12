@@ -230,9 +230,12 @@ class AppDrawer extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Get.back();
-                        Get.to(() => AppWebView(
-                              url: "https://flutter.dev/",
-                            ));
+                        Get.to(
+                          () => AppWebView(
+                            url: "https://flutter.dev/",
+                            title: localLanguage.user_agrement,
+                          ),
+                        );
                       },
                       child: Row(
                         children: [
@@ -243,7 +246,31 @@ class AppDrawer extends StatelessWidget {
                           ),
                           10.horizontalSpace,
                           Text(
-                            localLanguage.terms_condition,
+                            localLanguage.user_agrement,
+                            style: semiBold,
+                          ),
+                        ],
+                      ),
+                    ),
+                    14.verticalSpace,
+                    InkWell(
+                      onTap: () {
+                        Get.back();
+                        Get.to(() => AppWebView(
+                              url: "https://flutter.dev/",
+                              title: localLanguage.privacy_policy,
+                            ));
+                      },
+                      child: Row(
+                        children: [
+                          Image.asset(
+                            privacyPolicy,
+                            width: 25.w,
+                            // color: Colors.white,
+                          ),
+                          10.horizontalSpace,
+                          Text(
+                            localLanguage.privacy_policy,
                             style: semiBold,
                           ),
                         ],
