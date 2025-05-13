@@ -106,7 +106,7 @@ class AuthController extends GetxController {
   Future<void> sendSms(String phoneNumber, String message, {bool isFromHome = false}) async {
     final Uri smsUri = Uri(
       scheme: 'sms',
-      // path: "65555109",
+      //path: "65555109",
       path: "01701034287",
       queryParameters: <String, String>{
         'body': message,

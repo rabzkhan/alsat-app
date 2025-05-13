@@ -88,7 +88,7 @@ class PremiumContent extends StatelessWidget {
                     return GestureDetector(
                       onTap: () {
                         homeController.category.value = categoriesModel;
-                        homeController.fetchPremiumUser(isFilter: false);
+                        homeController.fetchPremiumUser(isFilter: true);
                         filterController.clearAddress();
                         Get.to(
                           const UserFilterResultView(isBackFilter: false),

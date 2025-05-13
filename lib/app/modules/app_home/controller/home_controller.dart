@@ -325,7 +325,10 @@ class HomeController extends GetxController {
     searchController.clear();
     searchText.value = "";
     premiumUserList.clear();
+    //Todo
+    category.value?.sId = '';
     fetchPremiumUser();
+
     premiumRefreshController.refreshCompleted();
   }
 
