@@ -8,8 +8,6 @@ import 'package:alsat/app/modules/conversation/controller/message_controller.dar
 import 'package:alsat/app/modules/conversation/widget/music_ui.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:alsat/config/theme/app_colors.dart';
@@ -28,7 +26,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class ChatInputField extends StatefulWidget {
   final ConversationController conversationController;
   final MessageController messageController;
-  const ChatInputField({super.key, required this.conversationController, required this.messageController});
+  const ChatInputField(
+      {super.key,
+      required this.conversationController,
+      required this.messageController});
 
   @override
   State<ChatInputField> createState() => _ChatInputFieldState();
@@ -52,7 +53,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
       }
 
       Directory appDirectory = await getApplicationDocumentsDirectory();
-      String filePath = '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
+      String filePath =
+          '${appDirectory.path}/${DateTime.now().millisecondsSinceEpoch}.m4a';
 
       if (!await appDirectory.exists()) {
         await appDirectory.create(recursive: true);
@@ -162,7 +164,13 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        (widget.messageController.selectReplyMessage.value?.text ?? '').isEmpty
+                                        (widget
+                                                        .messageController
+                                                        .selectReplyMessage
+                                                        .value
+                                                        ?.text ??
+                                                    '')
+                                                .isEmpty
                                             ? '${widget.messageController.selectReplyMessage.value?.messageType.name.toUpperCase()}'
                                             : '${widget.messageController.selectReplyMessage.value?.text}',
                                         maxLines: 2,
@@ -180,7 +188,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                             right: 0,
                             child: GestureDetector(
                               onTap: () {
-                                widget.messageController.selectReplyMessage.value = null;
+                                widget.messageController.selectReplyMessage
+                                    .value = null;
                               },
                               child: Icon(
                                 CupertinoIcons.xmark_circle_fill,
@@ -218,7 +227,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                   7.horizontalSpace,
                                   Expanded(
                                     child: Padding(
-                                      padding: const EdgeInsets.only(top: 12, bottom: 12),
+                                      padding: const EdgeInsets.only(
+                                          top: 12, bottom: 12),
                                       child: MusicVisualizer(
                                         barCount: 30,
                                         colors: [
@@ -237,7 +247,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                     onTap: () {
                                       stopRecording();
 
-                                      widget.conversationController.recordTime.value = Duration.zero;
+                                      widget.conversationController.recordTime
+                                          .value = Duration.zero;
                                     },
                                     child: CircleAvatar(
                                       radius: 11.r,
@@ -266,20 +277,28 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                     borderRadius: BorderRadius.circular(20.r),
                                   ),
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 12.w),
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 12.w),
                                     child: Row(
                                       children: [
                                         Obx(() {
-                                          return widget.messageController.selectProductModel.value == null
+                                          return widget
+                                                      .messageController
+                                                      .selectProductModel
+                                                      .value ==
+                                                  null
                                               ? GestureDetector(
                                                   onTap: () async {
-                                                    FocusScope.of(context).unfocus();
+                                                    FocusScope.of(context)
+                                                        .unfocus();
                                                     setState(() {
-                                                      _emojiShowing = !_emojiShowing;
+                                                      _emojiShowing =
+                                                          !_emojiShowing;
                                                     });
                                                   },
                                                   child: Opacity(
-                                                    opacity: _emojiShowing ? .2 : 1,
+                                                    opacity:
+                                                        _emojiShowing ? .2 : 1,
                                                     child: Image.asset(
                                                       'assets/icons/emoji.png',
                                                       height: 25.h,
@@ -296,36 +315,56 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                 _emojiShowing = false;
                                               });
                                             },
-                                            controller: widget.conversationController.messageController,
+                                            controller: widget
+                                                .conversationController
+                                                .messageController,
                                             onChanged: (value) {
-                                              widget.conversationController.typeMessageText.value = value;
+                                              widget
+                                                  .conversationController
+                                                  .typeMessageText
+                                                  .value = value;
                                             },
-                                            style: context.theme.textTheme.bodyLarge?.copyWith(
+                                            style: context
+                                                .theme.textTheme.bodyLarge
+                                                ?.copyWith(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14.sp,
                                             ),
                                             decoration: InputDecoration(
-                                              hintText: localLanguage.type_message,
-                                              hintStyle: context.theme.textTheme.bodyLarge,
+                                              hintText:
+                                                  localLanguage.type_message,
+                                              hintStyle: context
+                                                  .theme.textTheme.bodyLarge,
                                               filled: true,
                                               fillColor: Colors.white,
                                               border: OutlineInputBorder(
                                                 borderSide: BorderSide.none,
-                                                borderRadius: BorderRadius.circular(20.r),
+                                                borderRadius:
+                                                    BorderRadius.circular(20.r),
                                               ),
                                             ),
                                           ),
                                         ),
                                         Obx(
-                                          () => widget.conversationController.typeMessageText.isNotEmpty ||
-                                                  widget.messageController.selectProductModel.value != null
+                                          () => widget
+                                                      .conversationController
+                                                      .typeMessageText
+                                                      .isNotEmpty ||
+                                                  widget
+                                                          .messageController
+                                                          .selectProductModel
+                                                          .value !=
+                                                      null
                                               ? const Center()
                                               : Row(
-                                                  mainAxisSize: MainAxisSize.min,
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
                                                     GestureDetector(
                                                       onTap: () {
-                                                        ProductController productController = Get.find();
+                                                        ProductController
+                                                            productController =
+                                                            Get.find();
                                                         productController
                                                             .pickImage(
                                                           context,
@@ -335,13 +374,20 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                             .then(
                                                           (value) async {
                                                             if (value != null) {
-                                                              if (isImage(value.first)) {
-                                                                widget.conversationController.sendMessage(
-                                                                  image: value.first,
+                                                              if (isImage(value
+                                                                  .first)) {
+                                                                widget
+                                                                    .conversationController
+                                                                    .sendMessage(
+                                                                  image: value
+                                                                      .first,
                                                                 );
                                                               } else {
-                                                                widget.conversationController.sendMessage(
-                                                                  video: value.first,
+                                                                widget
+                                                                    .conversationController
+                                                                    .sendMessage(
+                                                                  video: value
+                                                                      .first,
                                                                 );
                                                               }
                                                             }
@@ -357,8 +403,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
                                                     6.horizontalSpace,
                                                     GestureDetector(
                                                       onTap: () {
-                                                        Get.to(() => const LocationFromMapView(),
-                                                            transition: Transition.cupertinoDialog);
+                                                        Get.to(
+                                                            () =>
+                                                                const LocationFromMapView(),
+                                                            transition: Transition
+                                                                .cupertinoDialog);
                                                       },
                                                       child: Image.asset(
                                                         'assets/icons/location.png',
@@ -382,15 +431,23 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     return GestureDetector(
                       onTap: () async {
                         _emojiShowing = false;
-                        if (widget.conversationController.typeMessageText.isNotEmpty ||
-                            widget.messageController.selectProductModel.value != null) {
-                          if (widget.messageController.selectProductModel.value == null) {
+                        if (widget.conversationController.typeMessageText
+                                .isNotEmpty ||
+                            widget.messageController.selectProductModel.value !=
+                                null) {
+                          if (widget
+                                  .messageController.selectProductModel.value ==
+                              null) {
                             widget.conversationController.sendMessage();
                           } else {
                             widget.conversationController.sendMessage(
-                                product: widget.messageController.selectProductModel.value,
-                                postId: widget.messageController.selectProductModel.value?.id.toString());
-                            widget.messageController.selectProductModel.value = null;
+                                product: widget
+                                    .messageController.selectProductModel.value,
+                                postId: widget.messageController
+                                    .selectProductModel.value?.id
+                                    .toString());
+                            widget.messageController.selectProductModel.value =
+                                null;
                           }
                         } else {
                           if (isRecording) {
@@ -405,9 +462,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
                           }
                         }
                       },
-                      child: widget.conversationController.typeMessageText.isEmpty &&
+                      child: widget.conversationController.typeMessageText
+                                  .isEmpty &&
                               !isRecording &&
-                              widget.messageController.selectProductModel.value == null
+                              widget.messageController.selectProductModel
+                                      .value ==
+                                  null
                           ? CircleAvatar(
                               radius: 27,
                               backgroundColor: Theme.of(context).primaryColor,
@@ -435,10 +495,12 @@ class _ChatInputFieldState extends State<ChatInputField> {
                 offstage: !_emojiShowing,
                 child: EmojiPicker(
                   onEmojiSelected: (category, emoji) {
-                    widget.conversationController.typeMessageText.value =
-                        widget.conversationController.messageController.text.toString();
+                    widget.conversationController.typeMessageText.value = widget
+                        .conversationController.messageController.text
+                        .toString();
                   },
-                  textEditingController: widget.conversationController.messageController,
+                  textEditingController:
+                      widget.conversationController.messageController,
                   scrollController: _scrollController,
                   config: Config(
                     height: 256,
@@ -446,7 +508,11 @@ class _ChatInputFieldState extends State<ChatInputField> {
                     viewOrderConfig: const ViewOrderConfig(),
                     emojiViewConfig: EmojiViewConfig(
                       backgroundColor: context.theme.scaffoldBackgroundColor,
-                      emojiSizeMax: 28 * (foundation.defaultTargetPlatform == TargetPlatform.iOS ? 1.2 : 1.0),
+                      emojiSizeMax: 28 *
+                          (foundation.defaultTargetPlatform ==
+                                  TargetPlatform.iOS
+                              ? 1.2
+                              : 1.0),
                     ),
                     skinToneConfig: const SkinToneConfig(),
                     categoryViewConfig: CategoryViewConfig(

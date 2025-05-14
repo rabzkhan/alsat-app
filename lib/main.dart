@@ -27,13 +27,13 @@ Future<void> main() async {
   // wait for bindings
   WidgetsFlutterBinding.ensureInitialized();
   //-- firebase init --//
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-    name: "alsat",
-  );
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  //   name: "alsat",
+  // );
   // init shared preference
   await MySharedPref.init();
-  FirebaseMessagingService();
+  // FirebaseMessagingService();
   runApp(
     ScreenUtilInit(
       designSize: const Size(392, 835),
@@ -42,7 +42,8 @@ Future<void> main() async {
       useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
-        LocalizationController localizationService = Get.put(LocalizationController());
+        LocalizationController localizationService =
+            Get.put(LocalizationController());
 
         return ToastificationWrapper(
           child: Obx(() {
