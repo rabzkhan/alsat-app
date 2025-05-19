@@ -42,7 +42,6 @@ Future<void> main() async {
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
         LocalizationController localizationService = Get.put(LocalizationController());
-
         return ToastificationWrapper(
           child: Obx(() {
             return GetMaterialApp(

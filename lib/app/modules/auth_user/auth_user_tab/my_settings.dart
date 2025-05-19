@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 
 import 'package:alsat/app/components/custom_appbar.dart';
@@ -253,36 +255,36 @@ class _MySettingsState extends State<MySettings> {
                     name: 'user_name',
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
-                      suffix: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Get.theme.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(6.r),
-                          ),
-                          padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Image.asset(
-                                crownIcon,
-                                width: 14.w,
-                                height: 14.h,
-                                color: Get.theme.primaryColor,
-                              ),
-                              5.horizontalSpace,
-                              Text(
-                                localLanguage.premium,
-                                style: regular.copyWith(
-                                  fontSize: 12.sp,
-                                  color: Get.theme.primaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      // suffix: GestureDetector(
+                      //   onTap: () {},
+                      //   child: Container(
+                      //     decoration: BoxDecoration(
+                      //       color: Get.theme.primaryColor.withOpacity(0.1),
+                      //       borderRadius: BorderRadius.circular(6.r),
+                      //     ),
+                      //     padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 6.w),
+                      //     child: Row(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       mainAxisAlignment: MainAxisAlignment.end,
+                      //       children: [
+                      //         Image.asset(
+                      //           crownIcon,
+                      //           width: 14.w,
+                      //           height: 14.h,
+                      //           color: Get.theme.primaryColor,
+                      //         ),
+                      //         5.horizontalSpace,
+                      //         Text(
+                      //           localLanguage.premium,
+                      //           style: regular.copyWith(
+                      //             fontSize: 12.sp,
+                      //             color: Get.theme.primaryColor,
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       isDense: true,
                       alignLabelWithHint: true,
                       floatingLabelBehavior: FloatingLabelBehavior.always,

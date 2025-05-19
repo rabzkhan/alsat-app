@@ -281,16 +281,9 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          localLanguage.views,
-                                          style: regular.copyWith(
-                                            fontSize: 13.sp,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                        Text(
                                           '${productDetailsController.viewCount.value}',
                                           style: regular.copyWith(
-                                            fontSize: 10.sp,
+                                            fontSize: 13.sp,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
@@ -362,18 +355,18 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            localLanguage.like,
-                                            style: regular.copyWith(
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                          // Text(
+                                          //   localLanguage.like,
+                                          //   style: regular.copyWith(
+                                          //     fontSize: 13.sp,
+                                          //     fontWeight: FontWeight.w500,
+                                          //   ),
+                                          // ),
                                           Obx(() {
                                             return Text(
                                               '${productDetailsController.likeCount}',
                                               style: regular.copyWith(
-                                                fontSize: 10.sp,
+                                                fontSize: 13.sp,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             );
@@ -428,17 +421,17 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                                         mainAxisSize: MainAxisSize.min,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            localLanguage.comment,
-                                            style: regular.copyWith(
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          ),
+                                          // Text(
+                                          //   localLanguage.comment,
+                                          //   style: regular.copyWith(
+                                          //     fontSize: 13.sp,
+                                          //     fontWeight: FontWeight.w500,
+                                          //   ),
+                                          // ),
                                           Text(
                                             '${productDetailsController.commentCount}',
                                             style: regular.copyWith(
-                                              fontSize: 10.sp,
+                                              fontSize: 13.sp,
                                               fontWeight: FontWeight.w500,
                                             ),
                                           ),

@@ -80,8 +80,8 @@ class FilterController extends GetxController {
       {"Green": Colors.green},
       {"Brown": Colors.brown},
       {"Red": Colors.red},
-      {"Metallic": const Color(0xFFB0C4DE)}, // Light Steel Blue as a metallic example
-      {"Wet Asphalt": const Color(0xFF2F4F4F)}, // Dark Slate Gray
+      {"Metallic": const Color(0xFFB0C4DE)},
+      {"Wet Asphalt": const Color(0xFF424445)},
       {"Orange": Colors.orange},
       {"Cherry": const Color(0xFFD2042D)},
       {"Grey": Colors.grey},
