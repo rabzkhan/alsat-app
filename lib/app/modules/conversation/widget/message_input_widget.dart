@@ -1,15 +1,9 @@
 import 'dart:async';
-import 'dart:developer' as log;
 import 'dart:io';
-import 'dart:math';
-import 'dart:convert';
-
 import 'package:alsat/app/modules/conversation/controller/message_controller.dart';
 import 'package:alsat/app/modules/conversation/widget/music_ui.dart';
 import 'package:alsat/app/modules/conversation/widget/video_message_tile.dart';
 import 'package:alsat/utils/helper.dart';
-import 'package:ffmpeg_kit_flutter/ffmpeg_kit.dart';
-import 'package:ffmpeg_kit_flutter/return_code.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:alsat/config/theme/app_colors.dart';
