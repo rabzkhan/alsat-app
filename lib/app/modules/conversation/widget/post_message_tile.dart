@@ -19,8 +19,7 @@ class PostMessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return message?.data['_id'] == null ||
-            (message?.data['_id'].toString())!.isEmpty
+    return message?.data['_id'] == null || (message?.data['_id'].toString())!.isEmpty
         ? const Center()
         : InkWell(
             onTap: () {
@@ -61,10 +60,7 @@ class PostMessageTile extends StatelessWidget {
                               )
                             : NetworkImagePreview(
                                 radius: 10.r,
-                                url: (message?.data?['media'])
-                                        .toList()
-                                        .first['name'] ??
-                                    "",
+                                url: (message?.data?['media']).toList().first['name'] ?? "",
                                 height: 50.h,
                                 width: 60.h,
                                 fit: BoxFit.cover,
@@ -83,8 +79,7 @@ class PostMessageTile extends StatelessWidget {
                                   maxLines: 1,
                                   text: TextSpan(children: [
                                     TextSpan(
-                                      text: message?.data['title'] ??
-                                          'Hyundai santa fe ',
+                                      text: message?.data['title'] ?? 'Hyundai santa fe ',
                                       style: regular.copyWith(
                                         fontSize: 15.sp,
                                       ),
@@ -94,8 +89,7 @@ class PostMessageTile extends StatelessWidget {
                               RichText(
                                   text: TextSpan(children: [
                                 TextSpan(
-                                  text:
-                                      "\$${message?.data['price_info']['price'] ?? '00'}  ",
+                                  text: "${message?.data['price_info']['price'] ?? '00'} TMT",
                                   style: bold.copyWith(
                                     fontSize: 15.sp,
                                   ),

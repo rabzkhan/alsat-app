@@ -94,7 +94,7 @@ class ProductListTile extends StatelessWidget {
                             maxLines: 1,
                             text: TextSpan(children: [
                               TextSpan(
-                                text: productModel?.title ?? 'Hyundai santa fe ',
+                                text: productModel?.title ?? '',
                                 style: regular.copyWith(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -104,7 +104,7 @@ class ProductListTile extends StatelessWidget {
                         Text(
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          productModel?.description ?? 'Lorem ipsum is placeholder text  ',
+                          productModel?.description ?? '',
                           style: regular.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -112,7 +112,7 @@ class ProductListTile extends StatelessWidget {
                         RichText(
                             text: TextSpan(children: [
                           TextSpan(
-                            text: "\$${productModel?.priceInfo?.price ?? 96.00}  ",
+                            text: "${productModel?.priceInfo?.price ?? 00.00} TMT",
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
