@@ -1,0 +1,2 @@
+C:/Users/Dev_Orpon/Desktop/New folder (10)/alsat-app/android/app/.cxx/Debug/tj43101k/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/Dev_Orpon/Desktop/New folder (10)/alsat-app/android/app/.cxx/Debug/tj43101k/x86_64/CMakeFiles/rebuild_cache.dir

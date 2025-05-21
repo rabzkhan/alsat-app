@@ -5,7 +5,7 @@ import 'package:alsat/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 import '../../app_home/models/follower_res.dart';
 

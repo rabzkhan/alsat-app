@@ -1,6 +1,6 @@
 // ignore_for_file: deprecated_member_use
 import 'package:alsat/app/modules/authentication/controller/auth_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'package:alsat/app/modules/product/controller/product_details_controller.dart';
 import 'package:alsat/app/modules/story/component/story_video_player.dart';
 import 'package:alsat/app/modules/story/screen/story_video_editor.dart';
@@ -39,7 +39,8 @@ class HomeStorySection extends StatelessWidget {
                 Get.to(
                   () => ClientProfileView(
                     userId: userId,
-                    productDetailsController: Get.find<ProductDetailsController>(),
+                    productDetailsController:
+                        Get.find<ProductDetailsController>(),
                   ),
                   transition: Transition.fadeIn,
                 );
@@ -50,10 +51,14 @@ class HomeStorySection extends StatelessWidget {
                         onTap: homeController.isStoryPostLoading.value
                             ? null
                             : () {
-                                homeController.storyAssetPicker(context).then((_) {
-                                  if (homeController.pickStoryImageList.isNotEmpty) {
+                                homeController
+                                    .storyAssetPicker(context)
+                                    .then((_) {
+                                  if (homeController
+                                      .pickStoryImageList.isNotEmpty) {
                                     homeController.openEditor(Get.context!);
-                                  } else if (homeController.pickStoryVideoList.isNotEmpty) {
+                                  } else if (homeController
+                                      .pickStoryVideoList.isNotEmpty) {
                                     Get.to(
                                       () => StoryVideoEditor(
                                         homeController.pickStoryVideoList.first,
@@ -63,7 +68,8 @@ class HomeStorySection extends StatelessWidget {
                                 });
                               },
                         child: Padding(
-                          padding: EdgeInsets.only(left: 15.w, right: 5.w, bottom: 3.h),
+                          padding: EdgeInsets.only(
+                              left: 15.w, right: 5.w, bottom: 3.h),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -81,15 +87,18 @@ class HomeStorySection extends StatelessWidget {
                                       children: [
                                         CircleAvatar(
                                           radius: 27,
-                                          backgroundColor: AppColors.primary.withOpacity(.5),
-                                          child: homeController.isStoryPostLoading.value
+                                          backgroundColor:
+                                              AppColors.primary.withOpacity(.5),
+                                          child: homeController
+                                                  .isStoryPostLoading.value
                                               ? const CupertinoActivityIndicator(
                                                   color: Colors.white,
                                                 )
                                               : Icon(
                                                   Icons.add,
                                                   size: 23.r,
-                                                  color: AppColors.scaffoldBackgroundColor,
+                                                  color: AppColors
+                                                      .scaffoldBackgroundColor,
                                                 ),
                                         ),
                                       ],
@@ -122,7 +131,9 @@ class HomeStorySection extends StatelessWidget {
                     stories: [
                       ...(e.stories ?? []).map(
                         (e) => StoryMainModel(
-                          isVideo: (e.media?.type == "video" && e.media?.name != null && e.media!.name!.isNotEmpty),
+                          isVideo: (e.media?.type == "video" &&
+                              e.media?.name != null &&
+                              e.media!.name!.isNotEmpty),
                           url: e.media?.name ?? '',
                         ),
                       ),

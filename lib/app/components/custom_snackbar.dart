@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:toastification/toastification.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 class CustomSnackBar {
   static showCustomSnackBar(

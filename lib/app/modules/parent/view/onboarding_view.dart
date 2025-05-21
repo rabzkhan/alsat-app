@@ -10,7 +10,7 @@ import '../../../common/const/image_path.dart';
 import '../../../data/local/my_shared_pref.dart';
 import '../controller/splash_controller.dart';
 import '../data/onbording_data.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 class OnboardingPage extends StatelessWidget {
   const OnboardingPage({super.key});

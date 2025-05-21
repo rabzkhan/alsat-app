@@ -6,7 +6,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 import '../../../common/const/image_path.dart';
 import '../../../data/local/my_shared_pref.dart';
@@ -100,8 +100,12 @@ class LoginView extends GetView<AuthController> {
               // OTP Countdown and Resend Button
               Obx(() {
                 if (controller.hasStartedOtpProcess.value) {
-                  final minutes = (controller.countdown.value ~/ 60).toString().padLeft(2, '0');
-                  final seconds = (controller.countdown.value % 60).toString().padLeft(2, '0');
+                  final minutes = (controller.countdown.value ~/ 60)
+                      .toString()
+                      .padLeft(2, '0');
+                  final seconds = (controller.countdown.value % 60)
+                      .toString()
+                      .padLeft(2, '0');
                   return Column(
                     children: [
                       20.verticalSpace,
@@ -126,18 +130,24 @@ class LoginView extends GetView<AuthController> {
                 children: [
                   Expanded(
                     child: Obx(() {
-                      final isDisabled = controller.hasStartedOtpProcess.value && !controller.canResendOtp.value;
+                      final isDisabled =
+                          controller.hasStartedOtpProcess.value &&
+                              !controller.canResendOtp.value;
 
                       return CupertinoButton.filled(
                         onPressed: isDisabled
                             ? null
                             : () {
-                                if (controller.loginFormKey.currentState?.saveAndValidate() ?? false) {
+                                if (controller.loginFormKey.currentState
+                                        ?.saveAndValidate() ??
+                                    false) {
                                   controller.getOtp(isFromHome: isFromHome);
                                 }
                               },
                         child: Text(
-                          controller.isLoading.value ? "${localLanguage.verifying}.." : localLanguage.verify_and_login,
+                          controller.isLoading.value
+                              ? "${localLanguage.verifying}.."
+                              : localLanguage.verify_and_login,
                           style: TextStyle(fontSize: 14.sp),
                         ),
                       );
@@ -150,7 +160,8 @@ class LoginView extends GetView<AuthController> {
 
               // Guest login
               Obx(() {
-                final isDisabled = controller.hasStartedOtpProcess.value && !controller.canResendOtp.value;
+                final isDisabled = controller.hasStartedOtpProcess.value &&
+                    !controller.canResendOtp.value;
                 return isDisabled
                     ? SizedBox.shrink()
                     : Row(
@@ -161,7 +172,8 @@ class LoginView extends GetView<AuthController> {
                                 if (isFromHome) {
                                   Get.back();
                                 } else {
-                                  Get.offAll(const AppHomeView(), transition: Transition.fadeIn);
+                                  Get.offAll(const AppHomeView(),
+                                      transition: Transition.fadeIn);
                                 }
                               },
                               child: Text(

@@ -11,7 +11,7 @@ import '../../filter/controllers/filter_controller.dart';
 import '../../filter/views/user_filter_result_view.dart';
 import '../controller/home_controller.dart';
 import '../models/category_model.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 class PremiumCategoriesView extends StatelessWidget {
   const PremiumCategoriesView({
@@ -41,7 +41,8 @@ class PremiumCategoriesView extends StatelessWidget {
             final filteredCategories = isFromPremium
                 ? allCategories.where((cat) {
                     final name = cat.name?.toLowerCase() ?? '';
-                    return !name.startsWith('free of') && !name.startsWith('lost and found');
+                    return !name.startsWith('free of') &&
+                        !name.startsWith('lost and found');
                   }).toList()
                 : allCategories;
 
@@ -55,15 +56,18 @@ class PremiumCategoriesView extends StatelessWidget {
                   crossAxisSpacing: 10.w,
                   mainAxisSpacing: 10.h,
                 ),
-                itemCount: homeController.isCategoryLoading.value ? 10 : filteredCategories.length,
+                itemCount: homeController.isCategoryLoading.value
+                    ? 10
+                    : filteredCategories.length,
                 itemBuilder: (context, index) {
-                  final categoriesModel =
-                      homeController.isCategoryLoading.value ? CategoriesModel() : filteredCategories[index];
+                  final categoriesModel = homeController.isCategoryLoading.value
+                      ? CategoriesModel()
+                      : filteredCategories[index];
 
                   return GestureDetector(
                     onTap: () {
                       homeController.category.value = categoriesModel;
-                      homeController.fetchPremiumUser(isFilter: false);
+                      homeController.fetchPremiumUser();
                       filterController.clearAddress();
                       Get.to(
                         const UserFilterResultView(isBackFilter: false),
@@ -92,7 +96,9 @@ class PremiumCategoriesView extends StatelessWidget {
                             categoriesModel.icon.toString(),
                             width: 35.w,
                             height: 22.w,
-                            placeholderBuilder: (context) => const CupertinoActivityIndicator.partiallyRevealed(),
+                            placeholderBuilder: (context) =>
+                                const CupertinoActivityIndicator
+                                    .partiallyRevealed(),
                           ),
                           5.verticalSpace,
                           Text(

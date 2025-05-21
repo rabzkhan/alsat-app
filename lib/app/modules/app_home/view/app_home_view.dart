@@ -18,7 +18,7 @@ import '../../../../config/theme/app_text_theme.dart';
 import '../../auth_user/controller/user_controller.dart';
 import '../component/profile_content.dart';
 import '../controller/home_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 import 'notification_view.dart';
 
@@ -136,7 +136,8 @@ class _AppHomeViewState extends State<AppHomeView> {
     final now = DateTime.now();
 
     // Check if this is the first press or if too much time has passed
-    if (_lastPressedAt == null || now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
+    if (_lastPressedAt == null ||
+        now.difference(_lastPressedAt!) > const Duration(seconds: 2)) {
       _lastPressedAt = now;
 
       CustomSnackBar.showCustomToast(
@@ -175,7 +176,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                   Text(
                     localLanguage.doYouWantToGoBack,
                     textAlign: TextAlign.center,
-                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                    style:
+                        Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                   ),
                   20.verticalSpace,
                   SizedBox(
@@ -186,7 +188,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                           flex: 2,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              backgroundColor:
+                                  Get.theme.primaryColor.withOpacity(.1),
                               side: BorderSide(
                                 color: Get.theme.primaryColor,
                                 width: 1,
@@ -276,7 +279,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                           ),
                         )
                       : null,
-                  isShowLogo: homeController.homeBottomIndex.value == 0 || homeController.homeBottomIndex.value == 3,
+                  isShowLogo: homeController.homeBottomIndex.value == 0 ||
+                      homeController.homeBottomIndex.value == 3,
                   scaffoldKey: _scaffoldKey,
                   action: homeController.homeBottomIndex.value == 0 ||
                           homeController.homeBottomIndex.value == 3 ||
@@ -304,12 +308,15 @@ class _AppHomeViewState extends State<AppHomeView> {
                                 children: [
                                   Expanded(
                                     child: TextFormField(
-                                      controller: filterController.searchController,
+                                      controller:
+                                          filterController.searchController,
                                       onFieldSubmitted: (value) {
                                         filterController.category.value = null;
-                                        filterController.isFilterLoading.value = true;
+                                        filterController.isFilterLoading.value =
+                                            true;
                                         filterController.filterMapPassed = {
-                                          "title": filterController.searchText.value,
+                                          "title":
+                                              filterController.searchText.value,
                                         };
                                         filterController.clearAddress();
                                         filterController.applyFilter();
@@ -319,7 +326,8 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         );
                                       },
                                       onChanged: (value) {
-                                        filterController.searchText.value = value;
+                                        filterController.searchText.value =
+                                            value;
                                       },
                                       style: TextStyle(
                                         // Input text style
@@ -331,20 +339,26 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         prefixIcon: Icon(
                                           CupertinoIcons.search,
                                           size: 18.sp,
-                                          color: Get.theme.disabledColor.withOpacity(0.7),
+                                          color: Get.theme.disabledColor
+                                              .withOpacity(0.7),
                                         ),
                                         suffixIcon: Obx(() {
-                                          return filterController.searchText.value.isEmpty
+                                          return filterController
+                                                  .searchText.value.isEmpty
                                               ? const SizedBox()
                                               : InkWell(
                                                   onTap: () {
-                                                    filterController.searchText.value = '';
-                                                    filterController.searchController.clear();
+                                                    filterController
+                                                        .searchText.value = '';
+                                                    filterController
+                                                        .searchController
+                                                        .clear();
                                                   },
                                                   child: Icon(
                                                     CupertinoIcons.xmark,
                                                     size: 18.sp,
-                                                    color: Get.theme.disabledColor,
+                                                    color:
+                                                        Get.theme.disabledColor,
                                                   ),
                                                 );
                                         }),
@@ -352,49 +366,61 @@ class _AppHomeViewState extends State<AppHomeView> {
                                         hintStyle: TextStyle(
                                           fontSize: 12.sp,
                                           fontWeight: FontWeight.w500,
-                                          color: Get.theme.disabledColor.withOpacity(0.5),
+                                          color: Get.theme.disabledColor
+                                              .withOpacity(0.5),
                                         ),
                                         isDense: true,
                                         filled: true,
                                         fillColor: Colors.white,
-                                        contentPadding: EdgeInsets.symmetric(vertical: 12.h),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            vertical: 12.h),
                                         border: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: Get.theme.disabledColor.withOpacity(0.1),
+                                            color: Get.theme.disabledColor
+                                                .withOpacity(0.1),
                                           ),
                                         ),
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: Get.theme.disabledColor.withOpacity(0.1),
+                                            color: Get.theme.disabledColor
+                                                .withOpacity(0.1),
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
-                                            color: Get.theme.primaryColor.withOpacity(0.4),
+                                            color: Get.theme.primaryColor
+                                                .withOpacity(0.4),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
                                   Obx(() {
-                                    return filterController.searchText.value.isEmpty
+                                    return filterController
+                                            .searchText.value.isEmpty
                                         ? const Center()
                                         : InkWell(
                                             onTap: () {
-                                              filterController.category.value = null;
-                                              filterController.isFilterLoading.value = true;
-                                              filterController.filterMapPassed = {
-                                                "title": filterController.searchText.value,
+                                              filterController.category.value =
+                                                  null;
+                                              filterController
+                                                  .isFilterLoading.value = true;
+                                              filterController.filterMapPassed =
+                                                  {
+                                                "title": filterController
+                                                    .searchText.value,
                                               };
                                               filterController.applyFilter();
                                               filterController.clearAddress();
                                               Get.to(
                                                 const FilterResultsView(),
-                                                transition: Transition.rightToLeft,
+                                                transition:
+                                                    Transition.rightToLeft,
                                               );
                                             },
                                             child: Padding(
-                                              padding: EdgeInsets.only(left: 15.w),
+                                              padding:
+                                                  EdgeInsets.only(left: 15.w),
                                               child: const Icon(Icons.search),
                                             ),
                                           );

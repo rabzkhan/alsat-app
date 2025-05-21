@@ -5,9 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import '../../../../../config/theme/app_text_theme.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
-smsConfirmation({required String phoneNumber, required String message, bool isFromHome = false}) {
+smsConfirmation(
+    {required String phoneNumber,
+    required String message,
+    bool isFromHome = false}) {
   final localLanguage = AppLocalizations.of(Get.context!)!;
   Get.dialog(
     Center(
@@ -47,12 +50,14 @@ smsConfirmation({required String phoneNumber, required String message, bool isFr
                 Text(
                   localLanguage.to_authenticate,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 Text(
                   phoneNumber,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 20.verticalSpace,
                 SizedBox(
@@ -63,7 +68,8 @@ smsConfirmation({required String phoneNumber, required String message, bool isFr
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -120,7 +126,10 @@ smsConfirmation({required String phoneNumber, required String message, bool isFr
                 Text(
                   localLanguage.by_continuing,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.labelMedium!.copyWith(color: Colors.grey.shade700),
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .labelMedium!
+                      .copyWith(color: Colors.grey.shade700),
                 )
               ],
             ),

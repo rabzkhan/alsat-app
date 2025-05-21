@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:alsat/app/common/binding/app_binding.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,7 +11,7 @@ import 'app/routes/app_pages.dart';
 import 'app/services/firebase_messaging_services.dart';
 import 'config/theme/app_theme.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'config/translations/localization_controller.dart';
 import 'firebase_options.dart';
@@ -41,7 +42,8 @@ Future<void> main() async {
       useInheritedMediaQuery: true,
       rebuildFactor: (old, data) => true,
       builder: (context, widget) {
-        LocalizationController localizationService = Get.put(LocalizationController());
+        LocalizationController localizationService =
+            Get.put(LocalizationController());
         return ToastificationWrapper(
           child: Obx(() {
             return GetMaterialApp(

@@ -4,7 +4,7 @@ import 'dart:developer' as log;
 import 'package:alsat/app/modules/filter/models/item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'package:logger/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../../utils/constants.dart';
@@ -26,7 +26,8 @@ class FilterController extends GetxController {
 
   RxString location = "Not Chosen Yet".obs;
   RxList<BrandModel> brand = RxList<BrandModel>();
-  RxList<Map<String, dynamic>> brandAndSelectedModel = RxList<Map<String, dynamic>>();
+  RxList<Map<String, dynamic>> brandAndSelectedModel =
+      RxList<Map<String, dynamic>>();
   RxString bodyType = "Not Chosen Yet".obs;
   RxString driveType = "Not Chosen Yet".obs;
   RxString engineType = "Not Chosen Yet".obs;
@@ -152,8 +153,10 @@ class FilterController extends GetxController {
   }
 
 // Toggle city selection with single or multiple selection
-  void toggleCity(String provinceName, String cityName, bool allowMultipleSelection) {
-    if (!selectedProvinces.contains(provinceName) && selectedProvince.value != provinceName) {
+  void toggleCity(
+      String provinceName, String cityName, bool allowMultipleSelection) {
+    if (!selectedProvinces.contains(provinceName) &&
+        selectedProvince.value != provinceName) {
       return; // Province must be selected first
     }
     if (!allowMultipleSelection) {
@@ -204,7 +207,10 @@ class FilterController extends GetxController {
     }
     return selectedProvinces.map((province) {
       final cities = selectedCities[province];
-      return {"province": province, if (cities != null && cities.isNotEmpty) "city": cities};
+      return {
+        "province": province,
+        if (cities != null && cities.isNotEmpty) "city": cities
+      };
     }).toList();
   }
 
@@ -225,12 +231,15 @@ class FilterController extends GetxController {
         locationTexts.add(province);
       }
     }
-    return locationTexts.isNotEmpty ? locationTexts.join(',') : AppLocalizations.of(Get.context!)!.choose_location;
+    return locationTexts.isNotEmpty
+        ? locationTexts.join(',')
+        : AppLocalizations.of(Get.context!)!.choose_location;
   }
 
   // ============== end of location ================== //
 
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
   void onRefresh() async {
     await applyFilter(
       refresh: true,
@@ -261,37 +270,51 @@ class FilterController extends GetxController {
     bool paginate = false,
     String? nextValue,
   }) async {
-    bool isRealState = category.value?.filter?.toLowerCase().contains("real_estate") ?? false;
+    bool isRealState =
+        category.value?.filter?.toLowerCase().contains("real_estate") ?? false;
     bool isCar = category.value?.filter?.toLowerCase().contains("car") ?? false;
-    bool isPhone = category.value?.filter?.toLowerCase().contains("phone") ?? false;
+    bool isPhone =
+        category.value?.filter?.toLowerCase().contains("phone") ?? false;
     var map = {
       "category_id": category.value?.sId,
       "condition": accountType.value.toLowerCase(),
       "price_from": int.parse(priceFrom.value.text),
       "price_to": int.parse(priceTo.value.text),
-      "location": getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
+      "location":
+          getSelectedLocationData().isEmpty ? null : getSelectedLocationData(),
       "sort_price": sortDownToUp.value ? 1 : -1,
       if (isCar) "year_from": choseFirstYear.value,
       if (isCar) "year_to": choseLastYear.value,
       if (isPhone) "brand": brand.isEmpty ? [] : branFormate(),
-      if (isCar) "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
-      if (isCar) "drive_type": driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
-      if (isCar) "engine_type": engineType.value != "Not Chosen Yet" ? engineType.value : '',
-      if (isCar) "transmission": transmission.value != "Not Chosen Yet" ? transmission.value : '',
+      if (isCar)
+        "body_type": bodyType.value != "Not Chosen Yet" ? [bodyType.value] : [],
+      if (isCar)
+        "drive_type":
+            driveType.value != "Not Chosen Yet" ? [driveType.value] : [],
+      if (isCar)
+        "engine_type":
+            engineType.value != "Not Chosen Yet" ? engineType.value : '',
+      if (isCar)
+        "transmission":
+            transmission.value != "Not Chosen Yet" ? transmission.value : '',
       if (isCar) "color": color.isNotEmpty ? color : [],
       "credit": credit.value,
       "exchange": exchange.value,
       if (isCar) "has_vin_code": hasVinCode.value,
-      if (isRealState && (dEstateType.value?.isNotEmpty ?? false)) "real_estate_type": [dEstateType.value ?? ''],
-      if (isRealState && selectedFloor != "0") "real_estate_floor": [selectedFloor.value],
-      if (isRealState && selectedRoom != "0") "real_estate_room": [selectedRoom.value],
+      if (isRealState && (dEstateType.value?.isNotEmpty ?? false))
+        "real_estate_type": [dEstateType.value ?? ''],
+      if (isRealState && selectedFloor != "0")
+        "real_estate_floor": [selectedFloor.value],
+      if (isRealState && selectedRoom != "0")
+        "real_estate_room": [selectedRoom.value],
       if (isRealState && (dEstateRenovType.value?.isNotEmpty ?? false))
         "real_estate_renov": [dEstateRenovType.value ?? ''],
       if (isRealState) "real_estate_lift": isLiftAvaiable.value,
     };
 
     final filterData = Map<String, dynamic>.from(map);
-    filterData.removeWhere((key, value) => value == null || value == '' || value == "[]");
+    filterData.removeWhere(
+        (key, value) => value == null || value == '' || value == "[]");
     filterData.addAll(filterMapPassed ?? {});
     filterMapPassed = filterData;
 

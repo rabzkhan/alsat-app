@@ -12,7 +12,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 import '../../../../config/translations/localization_controller.dart';
 import '../../../../utils/constants.dart';
@@ -101,13 +101,15 @@ class HomeController extends GetxController {
       },
       onCacheData: (cachedata) {
         List<dynamic> data = cachedata ?? [];
-        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
         isCategoryLoading.value = false;
       },
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        categories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        categories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         isCategoryLoading.value = false;
       },
@@ -133,7 +135,8 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         Logger().d(response.data.toString());
         List<dynamic> data = response.data;
-        userPostCategories.value = data.map((json) => CategoriesModel.fromJson(json)).toList();
+        userPostCategories.value =
+            data.map((json) => CategoriesModel.fromJson(json)).toList();
 
         fetchMyProducts();
         isUserPostCategoryLoading.value = false;
@@ -233,7 +236,8 @@ class HomeController extends GetxController {
   RxBool isActiveUser = false.obs;
   RxBool buyerProtection = false.obs;
   Rxn<CategoriesModel> category = Rxn<CategoriesModel>();
-  AllUserInformationRes allUserInformationRes = AllUserInformationRes();
+  AllUserInformationRes allUserPremiumInformationRes = AllUserInformationRes();
+  AllUserInformationRes allUserFilterInformationRes = AllUserInformationRes();
   RxList<UserDataModel> premiumUserList = <UserDataModel>[].obs;
   RxList<UserDataModel> filterUserList = <UserDataModel>[].obs;
   RxBool isPremiumLoading = false.obs;
@@ -242,7 +246,7 @@ class HomeController extends GetxController {
   TextEditingController searchController = TextEditingController();
 
   //fetching premium user
-  Future<void> fetchPremiumUser({String? nextPaginateDate, bool isFilter = false}) async {
+  Future<void> fetchFilterPremiumUser({String? nextPaginateDate}) async {
     FilterController filterController = Get.find<FilterController>();
 
     String url = '${Constants.baseUrl}/users?plan=premium&limit=10';
@@ -250,27 +254,23 @@ class HomeController extends GetxController {
       url = "$url&next=$nextPaginateDate";
     }
 
-    Map<String, dynamic> data = isFilter
-        ? {
-            "category": category.value?.name,
-            "buyer_protection": buyerProtection.value,
-            "location":
-                filterController.getSelectedLocationData().isEmpty ? null : filterController.getSelectedLocationData(),
-            "sorting": {
-              "follower": followersValue.value == 'Max To Min' ? -1 : 1,
-              "registration": registrationValue.value == 'Old To New' ? 1 : -1,
-            }
-          }
-        : {
-            "category": category.value?.name,
-          };
+    Map<String, dynamic> data = {
+      "category": category.value?.name,
+      "buyer_protection": buyerProtection.value,
+      "location": filterController.getSelectedLocationData().isEmpty
+          ? null
+          : filterController.getSelectedLocationData(),
+      "sorting": {
+        "follower": followersValue.value == 'Max To Min' ? -1 : 1,
+        "registration": registrationValue.value == 'Old To New' ? 1 : -1,
+      }
+    };
 
     if (searchText.value.isNotEmpty) {
       data.clear();
       data['search'] = searchText.value;
     }
 
-    log('Premium User Fetch: $data -- $url');
     data.removeWhere((key, value) => value == null);
 
     await BaseClient().safeApiCall(
@@ -279,42 +279,63 @@ class HomeController extends GetxController {
       data: data,
       onLoading: () {
         if (nextPaginateDate == null) {
-          if (isFilter) {
-            isFilterLoading.value = true;
-            filterUserList.clear();
-          } else {
-            isPremiumLoading.value = true;
-            premiumUserList.clear();
-          }
+          isFilterLoading.value = true;
+          filterUserList.clear();
         }
       },
       onSuccess: (response) async {
         Map<String, dynamic> responseData = response.data;
-        allUserInformationRes = AllUserInformationRes.fromJson(responseData);
-        final fetchedUsers = allUserInformationRes.data?.users ?? [];
-
-        if (isFilter) {
-          // ✅ DO NOT TOUCH premiumUserList
-          if (nextPaginateDate != null) {
-            filterUserList.addAll(fetchedUsers);
-          } else {
-            filterUserList.value = fetchedUsers;
-          }
+        allUserFilterInformationRes =
+            AllUserInformationRes.fromJson(responseData);
+        final fetchedUsers = allUserFilterInformationRes.data?.users ?? [];
+        if (nextPaginateDate != null) {
+          filterUserList.addAll(fetchedUsers);
         } else {
-          // ✅ Only update premiumUserList here
-          if (nextPaginateDate != null) {
-            premiumUserList.addAll(fetchedUsers);
-          } else {
-            premiumUserList.value = fetchedUsers;
-          }
+          filterUserList.value = fetchedUsers;
         }
 
-        isPremiumLoading.value = false;
         isFilterLoading.value = false;
       },
       onError: (error) {
-        isPremiumLoading.value = false;
         isFilterLoading.value = false;
+        Logger().e("Fetch Premium User Error: $error");
+      },
+    );
+  }
+
+  Future<void> fetchPremiumUser({String? nextPaginateDate}) async {
+    String url = '${Constants.baseUrl}/users?plan=premium&limit=10';
+    if (nextPaginateDate != null) {
+      url = "$url&next=$nextPaginateDate";
+    }
+    await BaseClient().safeApiCall(
+      url,
+      DioRequestType.get,
+      data: {},
+      onLoading: () {
+        if (nextPaginateDate == null) {
+          isPremiumLoading.value = true;
+          premiumUserList.clear();
+        }
+      },
+      onSuccess: (response) async {
+        Map<String, dynamic> responseData = response.data;
+        allUserPremiumInformationRes =
+            AllUserInformationRes.fromJson(responseData);
+        final fetchedUsers = allUserPremiumInformationRes.data?.users ?? [];
+
+        // ✅ Only update premiumUserList here
+        if (nextPaginateDate != null) {
+          premiumUserList.addAll(fetchedUsers);
+        } else {
+          premiumUserList.value = fetchedUsers;
+        }
+
+        isPremiumLoading.value = false;
+      },
+      onError: (error) {
+        isPremiumLoading.value = false;
+
         Logger().e("Fetch Premium User Error: $error");
       },
     );
@@ -341,12 +362,14 @@ class HomeController extends GetxController {
   RefreshController userFilterRefreshController = RefreshController();
   void onUserFilterRefresh() async {
     filterUserList.clear();
-    fetchPremiumUser(isFilter: true);
+    fetchFilterPremiumUser();
     userFilterRefreshController.refreshCompleted();
   }
 
   void onUserFilterLoading() async {
-    await fetchPremiumUser(nextPaginateDate: filterUserList.last.createdAt, isFilter: true);
+    await fetchFilterPremiumUser(
+      nextPaginateDate: filterUserList.last.createdAt,
+    );
     userFilterRefreshController.loadComplete();
   }
 
@@ -362,7 +385,8 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data;
-        List<StoryModel> story = data.map((json) => StoryModel.fromJson(json)).toList();
+        List<StoryModel> story =
+            data.map((json) => StoryModel.fromJson(json)).toList();
         storyList.addAll(story);
         isStoryLoading.value = false;
         storyList.refresh();
@@ -391,7 +415,8 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         Logger().d("stories ${response.data.toString()}");
         List<dynamic> data = response.data;
-        authUserStory.value = data.map((json) => StoryModel.fromJson(json)).toList();
+        authUserStory.value =
+            data.map((json) => StoryModel.fromJson(json)).toList();
         // authUserStory.value = storyList;
         fetchAllStories();
         await userArchiveStory();
@@ -402,7 +427,8 @@ class HomeController extends GetxController {
     );
   }
 
-  RefreshController archiveStoryRefreshController = RefreshController(initialRefresh: false);
+  RefreshController archiveStoryRefreshController =
+      RefreshController(initialRefresh: false);
   void archiveStoryRefresh() async {
     await userOwnStory();
     archiveStoryRefreshController.refreshCompleted();
@@ -438,9 +464,11 @@ class HomeController extends GetxController {
       onSuccess: (response) async {
         List<dynamic> data = response.data['data'];
         if (next == null) {
-          authUserArchiveStory.value = data.map((json) => Story.fromJson(json)).toList();
+          authUserArchiveStory.value =
+              data.map((json) => Story.fromJson(json)).toList();
         } else {
-          authUserArchiveStory.addAll(data.map((json) => Story.fromJson(json)).toList());
+          authUserArchiveStory
+              .addAll(data.map((json) => Story.fromJson(json)).toList());
         }
         log('storiesArchive: ${authUserArchiveStory.length}');
         authUserArchiveStory.refresh();
@@ -591,12 +619,14 @@ class HomeController extends GetxController {
     AuthController authController = Get.find();
     String url = Constants.baseUrl + Constants.postProduct;
     if (nextPaginateDate != null) {
-      url = '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
+      url =
+          '$url?next=$nextPaginateDate&user=${authController.userDataModel.value.id}';
     } else {
       url = "$url?user=${authController.userDataModel.value.id}";
     }
-    Map<String, dynamic> data =
-        myListingSelectCategory.value != null ? {"category_id": myListingSelectCategory.value!.sId ?? ""} : {};
+    Map<String, dynamic> data = myListingSelectCategory.value != null
+        ? {"category_id": myListingSelectCategory.value!.sId ?? ""}
+        : {};
     log('PostMy $url  ${data.toString()} ${myListingSelectCategory.value?.name}');
     await BaseClient().safeApiCall(
       url,
@@ -629,7 +659,8 @@ class HomeController extends GetxController {
   Rxn<CategoriesModel> myListingSelectCategory = Rxn<CategoriesModel>();
 
   //--- Get All PRODUCT ---//
-  RefreshController myListingRefreshController = RefreshController(initialRefresh: false);
+  RefreshController myListingRefreshController =
+      RefreshController(initialRefresh: false);
   void myListingRefresh() async {
     await fetchMyProducts();
     myListingRefreshController.refreshCompleted();
@@ -664,7 +695,8 @@ class HomeController extends GetxController {
       },
       onSuccess: (response) async {
         List<dynamic> data = response.data['data'] as List<dynamic>? ?? [];
-        notifications.value = data.map((json) => NotificationData.fromJson(json)).toList();
+        notifications.value =
+            data.map((json) => NotificationData.fromJson(json)).toList();
         isNotificationLoading.value = false;
         log('fetchNotification: ${notifications.length}');
       },

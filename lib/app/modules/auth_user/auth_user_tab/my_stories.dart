@@ -8,7 +8,7 @@ import 'package:alsat/app/components/custom_footer_widget.dart';
 import 'package:alsat/app/components/custom_header_widget.dart';
 import 'package:alsat/app/components/no_data_widget.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../app_home/controller/home_controller.dart';
 import '../controller/thumbnail.dart';
 
@@ -36,10 +36,14 @@ class MyStories extends StatelessWidget {
             ? const NoDataWidget()
             : ListView(
                 children: [
-                  if ((homeController.authUserStory.firstOrNull?.stories ?? []).isNotEmpty)
+                  if ((homeController.authUserStory.firstOrNull?.stories ?? [])
+                      .isNotEmpty)
                     _sectionTitle(localLanguage.live_stories),
-                  _storyGrid(homeController.authUserStory.firstOrNull?.stories ?? [], false),
-                  if ((homeController.authUserArchiveStory).isNotEmpty) _sectionTitle(localLanguage.archive_stories),
+                  _storyGrid(
+                      homeController.authUserStory.firstOrNull?.stories ?? [],
+                      false),
+                  if ((homeController.authUserArchiveStory).isNotEmpty)
+                    _sectionTitle(localLanguage.archive_stories),
                   _storyGrid(homeController.authUserArchiveStory, true),
                 ],
               ),
@@ -92,8 +96,10 @@ class MyStories extends StatelessWidget {
           builder: (_) => CupertinoActionSheet(
             actions: [
               //_items(story, height: 200.h),
-              if (isArchive) _repostAction(homeController, story, localLanguage),
-              if (!isArchive) _deleteAction(homeController, story, localLanguage),
+              if (isArchive)
+                _repostAction(homeController, story, localLanguage),
+              if (!isArchive)
+                _deleteAction(homeController, story, localLanguage),
             ],
             cancelButton: CupertinoActionSheetAction(
               onPressed: () => Get.back(),
@@ -133,7 +139,8 @@ class MyStories extends StatelessWidget {
                   ),
                 ),
               ),
-              const Center(child: Icon(Icons.video_file_rounded, color: Colors.white)),
+              const Center(
+                  child: Icon(Icons.video_file_rounded, color: Colors.white)),
             ],
           );
         } else {
@@ -149,7 +156,8 @@ class MyStories extends StatelessWidget {
     }
   }
 
-  Widget _repostAction(HomeController controller, Story story, AppLocalizations localLanguage) {
+  Widget _repostAction(
+      HomeController controller, Story story, AppLocalizations localLanguage) {
     return Obx(() {
       final isLoading = controller.isStoryReporting.value;
       return CupertinoActionSheetAction(
@@ -164,7 +172,8 @@ class MyStories extends StatelessWidget {
     });
   }
 
-  Widget _deleteAction(HomeController controller, Story story, AppLocalizations localLanguage) {
+  Widget _deleteAction(
+      HomeController controller, Story story, AppLocalizations localLanguage) {
     return Obx(() {
       final isDeleting = controller.isStoryDeleting.value;
       return CupertinoActionSheetAction(

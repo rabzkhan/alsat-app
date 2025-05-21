@@ -10,7 +10,7 @@ import 'package:pinput/pinput.dart';
 import '../../../../../config/theme/app_text_theme.dart';
 import '../../../../common/const/image_path.dart';
 import '../../controller/user_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 upgradeToPremiumDialog() {
   final UserController userController = Get.find();
@@ -48,7 +48,8 @@ upgradeToPremiumDialog() {
                 Text(
                   localLanguage.upgrade_code,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: 20.h),
@@ -101,7 +102,8 @@ upgradeToPremiumDialog() {
                         flex: 2,
                         child: OutlinedButton(
                           style: OutlinedButton.styleFrom(
-                            backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                            backgroundColor:
+                                Get.theme.primaryColor.withOpacity(.1),
                             side: BorderSide(
                               color: Get.theme.primaryColor,
                               width: 1,
@@ -139,14 +141,15 @@ upgradeToPremiumDialog() {
                               onPressed: () async {
                                 await userController.upgradeToPremium();
                               },
-                              child: userController.isUpgradePreimumLoading.value
-                                  ? const CupertinoActivityIndicator()
-                                  : Text(
-                                      localLanguage.apply,
-                                      style: regular.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              child:
+                                  userController.isUpgradePreimumLoading.value
+                                      ? const CupertinoActivityIndicator()
+                                      : Text(
+                                          localLanguage.apply,
+                                          style: regular.copyWith(
+                                            color: Colors.white,
+                                          ),
+                                        ),
                             );
                           },
                         ),
@@ -158,7 +161,8 @@ upgradeToPremiumDialog() {
                 Text(
                   localLanguage.dont_have_code,
                   textAlign: TextAlign.center,
-                  style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                  style:
+                      Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                 )
               ],
             ),

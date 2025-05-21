@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../app/data/local/my_shared_pref.dart';
 import '../../app/modules/app_home/controller/home_controller.dart';
 import '../../utils/translations.dart';
@@ -18,7 +18,8 @@ class LocalizationController extends GetxController {
 
   late AppLocalizations localLanguage;
 
-  String translateName(String name, Map<String, Map<String, String>> translations) {
+  String translateName(
+      String name, Map<String, Map<String, String>> translations) {
     update();
     return translations[name]?[locale.value.languageCode] ?? name;
   }

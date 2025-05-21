@@ -64,7 +64,8 @@ class BaseClient {
             options: Options(headers: headers),
           );
           if (isDataCache) {
-            DataCacheService(apiEndPoint: url).setData(response.data, expiryTimeMinute: cacheAgeInMinute);
+            DataCacheService(apiEndPoint: url)
+                .setData(response.data, expiryTimeMinute: cacheAgeInMinute);
           }
           break;
 
@@ -128,7 +129,10 @@ class BaseClient {
 
       String errorMessage = '';
       if (res?.data is Map) {
-        errorMessage = res?.data['message'] ?? res?.data['error'] ?? res?.data['msg'] ?? 'Unknown error occurred';
+        errorMessage = res?.data['message'] ??
+            res?.data['error'] ??
+            res?.data['msg'] ??
+            'Unknown error occurred';
       } else if (res?.data is String) {
         errorMessage = res?.data;
       } else {
@@ -144,9 +148,11 @@ class BaseClient {
         ),
       );
     } on TimeoutException {
-      onError?.call(ConnectionException(url: url, message: "Connection Timeout"));
+      onError
+          ?.call(ConnectionException(url: url, message: "Connection Timeout"));
     } catch (error, stackTrace) {
-      onError?.call(ConnectionException(url: stackTrace.toString(), message: error.toString()));
+      onError?.call(ConnectionException(
+          url: stackTrace.toString(), message: error.toString()));
     }
   }
 }

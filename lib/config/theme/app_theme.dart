@@ -12,16 +12,16 @@ ThemeData appTheme() => ThemeData(
       primaryColor: AppColors.primary,
       scaffoldBackgroundColor: AppColors.scaffoldBackgroundColor,
       secondaryHeaderColor: Colors.grey.shade100,
-      tabBarTheme: TabBarTheme(
-        labelColor: AppColors.primary,
-        unselectedLabelColor: Colors.white,
-        labelStyle: bold,
-        unselectedLabelStyle: medium,
-        indicator: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(50)),
-        ),
-      ),
+      // tabBarTheme: TabBarTheme(
+      //   labelColor: AppColors.primary,
+      //   unselectedLabelColor: Colors.white,
+      //   labelStyle: bold,
+      //   unselectedLabelStyle: medium,
+      //   indicator: const BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.all(Radius.circular(50)),
+      //   ),
+      // ),
       appBarTheme: const AppBarTheme(
         foregroundColor: Colors.white,
         iconTheme: IconThemeData(

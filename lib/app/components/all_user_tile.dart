@@ -12,7 +12,7 @@ import '../common/const/image_path.dart';
 import '../modules/authentication/model/user_data_model.dart';
 import '../modules/product/controller/product_details_controller.dart';
 import '../modules/product/view/client_profile_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import 'network_image_preview.dart';
 
 class AllUserTile extends StatelessWidget {
@@ -32,7 +32,8 @@ class AllUserTile extends StatelessWidget {
         productDetailsController.isFetchUserLoading.value = false;
         Get.to(
           () => ClientProfileView(
-            userId: (productDetailsController.postUserModel.value?.id ?? '').toString(),
+            userId: (productDetailsController.postUserModel.value?.id ?? '')
+                .toString(),
             productDetailsController: productDetailsController,
           ),
           transition: Transition.fadeIn,
@@ -160,7 +161,8 @@ class AllUserTile extends StatelessWidget {
                                   )
                                 : regular.copyWith(
                                     fontSize: 12.sp,
-                                    color: Get.theme.disabledColor.withOpacity(0.2),
+                                    color: Get.theme.disabledColor
+                                        .withOpacity(0.2),
                                   ),
                           ),
                         ],

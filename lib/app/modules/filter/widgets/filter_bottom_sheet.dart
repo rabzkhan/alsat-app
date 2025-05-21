@@ -2,7 +2,7 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 
 class FilterBottomSheet extends StatefulWidget {
@@ -71,7 +71,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     setState(() {});
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+                    padding:
+                        EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

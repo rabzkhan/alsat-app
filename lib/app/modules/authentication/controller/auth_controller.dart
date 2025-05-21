@@ -26,7 +26,7 @@ import '../../../../utils/constants.dart';
 import '../../../data/local/my_shared_pref.dart';
 import '../../../services/base_client.dart';
 import '../../app_home/view/app_home_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../widgets/sms_confirmation.dart';
 
 class AuthController extends GetxController {
@@ -44,8 +44,10 @@ class AuthController extends GetxController {
   Timer? verificationTimer; // Timer for periodic verification API calls
   Timer? stopTimer; // Timer for 4-minute countdown for resending OTP
   RxInt countdown = 120.obs; // Countdown in seconds (4 minutes = 240 seconds)
-  RxBool canResendOtp = false.obs; // Flag to control whether user can resend OTP
-  RxBool hasStartedOtpProcess = false.obs; // Flag to check if OTP process has started
+  RxBool canResendOtp =
+      false.obs; // Flag to control whether user can resend OTP
+  RxBool hasStartedOtpProcess =
+      false.obs; // Flag to check if OTP process has started
 
   //
   Rx<UserDataModel> userDataModel = UserDataModel().obs;
@@ -59,6 +61,12 @@ class AuthController extends GetxController {
   }
 
   checkLogin() async {
+    //! remove it
+    await MySharedPref.setIsLoggedIn(true);
+    await MySharedPref.setAuthToken(
+        'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjMDBlMGI2Zi0wMWIzLTRlMjctYjg1YS0zMDA1ZjFiN2M2MzkiLCJhdWQiOiJtb2JpbGUiLCJpc3MiOiJBbHNhdCBBUEkiLCJzdWIiOiJkZGEwMTQxNS01ZWViLTQ3MTItYjk1Mi0wYTE0MTY4NmNjMjQiLCJleHAiOjE3NDgzNzQ0MDksImlhdCI6MTc0NzA3ODQwOSwibmJmIjoxNzQ3MDc4NDA4LCJhdXRoZW50aWNhdGVkIjp0cnVlLCJ0d29fZmFfYXV0aGVudGljYXRlZCI6ZmFsc2V9.zuj_lbPUs5sqPUXLpHctuzVvFYDr3NTt8imyin1AqVl2BbcnEwORnxbhhYsAYuWwYxTkREyynBuRcqD6NqEqi8ntJVdaBaRM9XRQqxf6XhbKiT5Uu7UHdBsQGF70vlA6c8Y-FMLWwb9Pi0vwdvgLGEl7CpNOeO-mehsDQNOw0Tj09JKHBPzCbgA_veXsbWiFtn4XmLqAKeDqdihkLUzuBv1rjk6PVNdVQJoiVyaGF4jorxUPBCrbtPlSCOf-1zZZQGVZ4w2bp-FpW5cHPglxnyy904UhF6CwqSFf5Th-O4ReN6P_yBisiJmbDqKy7D5Q_M5scjSPJO6IJ6DEgYMXxA');
+
+    //!
     isLoggedIn.value = MySharedPref.isLoggedIn();
     token.value = MySharedPref.getAuthToken();
     if (isLoggedIn.value && (token.value ?? '').isNotEmpty) {
@@ -94,7 +102,10 @@ class AuthController extends GetxController {
       onLoading: () {},
       onSuccess: (response) async {
         otpData.value = OtpModel.fromJson(response.data);
-        await smsConfirmation(phoneNumber: otpData.value.phone!, message: otpData.value.sms!, isFromHome: isFromHome);
+        await smsConfirmation(
+            phoneNumber: otpData.value.phone!,
+            message: otpData.value.sms!,
+            isFromHome: isFromHome);
         isLoading.value = false;
       },
       onError: (error) {
@@ -103,7 +114,8 @@ class AuthController extends GetxController {
     );
   }
 
-  Future<void> sendSms(String phoneNumber, String message, {bool isFromHome = false}) async {
+  Future<void> sendSms(String phoneNumber, String message,
+      {bool isFromHome = false}) async {
     final Uri smsUri = Uri(
       scheme: 'sms',
       //path: "65555109",
@@ -176,7 +188,8 @@ class AuthController extends GetxController {
         verificationTimer?.cancel();
         await MySharedPref.setIsLoggedIn(true);
         await MySharedPref.setAuthToken(verifiedModel.value.token!);
-        await MySharedPref.setAuthRefreshToken(verifiedModel.value.refreshToken!);
+        await MySharedPref.setAuthRefreshToken(
+            verifiedModel.value.refreshToken!);
         token.value = verifiedModel.value.token;
         await getProfile();
         isLoading.value = false;
@@ -285,11 +298,13 @@ class AuthController extends GetxController {
       onSuccess: (response) async {
         getProfile();
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomToast(message: localLanguage.updated_successfully);
+        CustomSnackBar.showCustomToast(
+            message: localLanguage.updated_successfully);
       },
       onError: (error) {
         isUpdateLoading.value = false;
-        CustomSnackBar.showCustomErrorToast(message: localLanguage.something_went_wrong);
+        CustomSnackBar.showCustomErrorToast(
+            message: localLanguage.something_went_wrong);
         log('profile $error <- error');
         Logger().d("$error <- error");
       },
@@ -328,7 +343,8 @@ class AuthController extends GetxController {
                   Text(
                     localLanguage.delete_account_confirmation,
                     textAlign: TextAlign.center,
-                    style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                    style:
+                        Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
                   ),
                   20.verticalSpace,
                   SizedBox(
@@ -339,7 +355,8 @@ class AuthController extends GetxController {
                           flex: 2,
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                              backgroundColor:
+                                  Get.theme.primaryColor.withOpacity(.1),
                               side: BorderSide(
                                 color: Get.theme.primaryColor,
                                 width: 1,
@@ -382,7 +399,8 @@ class AuthController extends GetxController {
                                   await userLogOut();
                                   Restart.restartApp(
                                     notificationTitle: 'Restarting App',
-                                    notificationBody: 'Please tap here to open the app again.',
+                                    notificationBody:
+                                        'Please tap here to open the app again.',
                                   );
                                   isDeletingAccount.value = false;
                                 },
@@ -454,7 +472,10 @@ class AuthController extends GetxController {
                     Text(
                       localLanguage.logout_confirmation,
                       textAlign: TextAlign.center,
-                      style: Theme.of(Get.context!).textTheme.bodyMedium!.copyWith(),
+                      style: Theme.of(Get.context!)
+                          .textTheme
+                          .bodyMedium!
+                          .copyWith(),
                     ),
                     20.verticalSpace,
                     SizedBox(
@@ -465,7 +486,8 @@ class AuthController extends GetxController {
                             flex: 2,
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Get.theme.primaryColor.withOpacity(.1),
+                                backgroundColor:
+                                    Get.theme.primaryColor.withOpacity(.1),
                                 side: BorderSide(
                                   color: Get.theme.primaryColor,
                                   width: 1,

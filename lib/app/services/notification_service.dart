@@ -1,12 +1,18 @@
 import 'dart:developer';
+import 'package:alsat/app/components/custom_snackbar.dart';
+import 'package:alsat/app/modules/conversation/model/conversations_res.dart';
+import 'package:alsat/app/modules/conversation/view/message_view.dart';
+import 'package:alsat/app/services/base_client.dart';
 import 'package:alsat/app/services/firebase_messaging_services.dart';
 import 'package:alsat/config/theme/app_colors.dart';
+import 'package:alsat/l10n/app_localizations.dart';
+import 'package:alsat/utils/constants.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:math' as Math;
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
+import 'dart:io';
 import '../modules/conversation/controller/conversation_controller.dart';
 
 class NotificationService {
@@ -30,14 +36,20 @@ class NotificationService {
             importance: NotificationImportance.High,
             enableLights: true,
             enableVibration: true,
+            soundSource: Platform.isIOS
+                ? "notification.aiff"
+                : 'resource://raw/notification',
           )
         ],
         // Channel groups are only visual and are not required
         channelGroups: [
-          NotificationChannelGroup(channelGroupKey: 'basic_channel_group', channelGroupName: 'Basic group')
+          NotificationChannelGroup(
+              channelGroupKey: 'basic_channel_group',
+              channelGroupName: 'Basic group')
         ],
         debug: true);
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -45,21 +57,22 @@ class NotificationService {
   }
 
   listenActionStream() {
-    AwesomeNotifications().setListeners(onActionReceivedMethod: onActionReceivedMethod);
+    AwesomeNotifications()
+        .setListeners(onActionReceivedMethod: onActionReceivedMethod);
   }
 
   @pragma('vm:entry-point')
-  static Future<void> onActionReceivedMethod(ReceivedAction receivedAction) async {
-    log("AwesomeNotifications Press:");
-    if (receivedAction.actionType == ActionType.SilentAction) {
-      if (receivedAction.payload != null) {}
-    } else {
-      if (receivedAction.payload != null) {
-        log("AwesomeNotifications Press: ${receivedAction.payload}");
-        FirebaseMessagingService.redirectUserBasePayload({
-          "type": receivedAction.payload!['type'],
-          "id": receivedAction.payload!['id'] ?? receivedAction.payload!['fixtureId'],
-        });
+  static Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction) async {
+    Map<String, dynamic> data = receivedAction.payload!;
+    if (data["type"] == "chat/inbox") {
+      ConversationModel? conversationModel =
+          await getConversationInfoByUserId(data["id"]);
+      if (conversationModel != null) {
+        if (Get.currentRoute != "/MessagesScreen") {
+          Get.back();
+        }
+        Get.to(() => MessagesScreen(conversation: conversationModel));
       }
     }
   }
@@ -70,7 +83,7 @@ class NotificationService {
     int uniqueId = Math.Random().nextInt(20);
     String? bigPicture = m.notification!.toMap()['android']['imageUrl'];
     String? smallIcon = m.notification!.toMap()['android']['smallIcon'];
-    log("$bigPicture-- $smallIcon");
+    log("RemoteMessage: ${m.data}$bigPicture-- $smallIcon");
     if (bigPicture == null) {
       if (smallIcon == null) {
         await AwesomeNotifications().createNotification(
@@ -78,12 +91,15 @@ class NotificationService {
               id: uniqueId,
               channelKey: 'basic_channel',
               summary: "Message from ${m.notification!.title}",
-              title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
-              body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
+              title: m.notification!.title ??
+                  m.data['title'] ??
+                  'Notification Title',
+              body:
+                  m.notification!.body ?? m.data['body'] ?? 'Notification Body',
               actionType: ActionType.Default,
               payload: {
                 "type": m.data['type'],
-                "id": m.data['id'] ?? m.data['fixtureId'],
+                "id": m.data['sender_id'],
               },
             ),
             actionButtons: [
@@ -101,8 +117,12 @@ class NotificationService {
                 largeIcon: smallIcon,
                 channelKey: 'basic_channel',
                 summary: "Message from ${m.notification!.title}",
-                title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
-                body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
+                title: m.notification!.title ??
+                    m.data['title'] ??
+                    'Notification Title',
+                body: m.notification!.body ??
+                    m.data['body'] ??
+                    'Notification Body',
                 actionType: ActionType.Default,
                 payload: {
                   "type": m.data['type'],
@@ -126,7 +146,8 @@ class NotificationService {
           largeIcon: smallIcon ?? bigPicture,
           color: Colors.amber,
           backgroundColor: AppColors.primary,
-          title: m.notification!.title ?? m.data['title'] ?? 'Notification Title',
+          title:
+              m.notification!.title ?? m.data['title'] ?? 'Notification Title',
           body: m.notification!.body ?? m.data['body'] ?? 'Notification Body',
           notificationLayout: NotificationLayout.BigPicture,
           bigPicture: m.data['type'] == 'news' ? smallIcon : bigPicture,
@@ -148,4 +169,19 @@ class NotificationService {
   }
 
   ///notification
+}
+
+Future<ConversationModel?> getConversationInfoByUserId(String userId) async {
+  ConversationModel? conversationInfo;
+  await BaseClient().safeApiCall(
+    "${Constants.baseUrl}/chats?user=$userId",
+    DioRequestType.get,
+    onSuccess: (response) {
+      Map<String, dynamic> data = response.data;
+      ConversationListRes conversationListRes =
+          ConversationListRes.fromJson(data);
+      conversationInfo = conversationListRes.data?.firstOrNull;
+    },
+  );
+  return conversationInfo;
 }

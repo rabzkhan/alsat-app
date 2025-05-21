@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../config/theme/app_text_theme.dart';
 import '../../config/translations/localization_controller.dart';
 import '../../utils/translations.dart';
@@ -18,7 +18,11 @@ class ProductListTile extends StatelessWidget {
   final ProductModel? productModel;
   final bool showBorder;
   final bool isShowLikeButton;
-  const ProductListTile({super.key, this.productModel, this.isShowLikeButton = false, this.showBorder = true});
+  const ProductListTile(
+      {super.key,
+      this.productModel,
+      this.isShowLikeButton = false,
+      this.showBorder = true});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +30,8 @@ class ProductListTile extends StatelessWidget {
     final localLanguage = AppLocalizations.of(Get.context!)!;
     return GestureDetector(
       onTap: () {
-        Get.to(ProductDetailsView(productModel: productModel), transition: Transition.fadeIn);
+        Get.to(ProductDetailsView(productModel: productModel),
+            transition: Transition.fadeIn);
       },
       child: Container(
         margin: EdgeInsets.symmetric(
@@ -94,7 +99,8 @@ class ProductListTile extends StatelessWidget {
                             maxLines: 1,
                             text: TextSpan(children: [
                               TextSpan(
-                                text: productModel?.title ?? 'Hyundai santa fe ',
+                                text:
+                                    productModel?.title ?? 'Hyundai santa fe ',
                                 style: regular.copyWith(
                                   fontSize: 16.sp,
                                   fontWeight: FontWeight.w600,
@@ -104,7 +110,8 @@ class ProductListTile extends StatelessWidget {
                         Text(
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          productModel?.description ?? 'Lorem ipsum is placeholder text  ',
+                          productModel?.description ??
+                              'Lorem ipsum is placeholder text  ',
                           style: regular.copyWith(
                             fontSize: 12.sp,
                           ),
@@ -112,7 +119,8 @@ class ProductListTile extends StatelessWidget {
                         RichText(
                             text: TextSpan(children: [
                           TextSpan(
-                            text: "\$${productModel?.priceInfo?.price ?? 96.00}  ",
+                            text:
+                                "\$${productModel?.priceInfo?.price ?? 96.00}  ",
                             style: bold.copyWith(
                               fontSize: 16.sp,
                             ),
@@ -127,9 +135,12 @@ class ProductListTile extends StatelessWidget {
                             ),
                           ),
                         ])),
-                        if ((productModel?.carInfo?.brand?.isNotEmpty ?? false) ||
-                            (productModel?.phoneInfo?.brand?.isNotEmpty ?? false) ||
-                            (productModel?.estateInfo?.address?.isNotEmpty ?? false))
+                        if ((productModel?.carInfo?.brand?.isNotEmpty ??
+                                false) ||
+                            (productModel?.phoneInfo?.brand?.isNotEmpty ??
+                                false) ||
+                            (productModel?.estateInfo?.address?.isNotEmpty ??
+                                false))
                           Row(
                             children: [
                               Row(
@@ -140,7 +151,10 @@ class ProductListTile extends StatelessWidget {
                                         ? Icons.check_circle_outline
                                         : Icons.cancel_outlined,
                                     size: 15.r,
-                                    color: (productModel?.priceInfo?.credit ?? false) ? Colors.green : Colors.red,
+                                    color: (productModel?.priceInfo?.credit ??
+                                            false)
+                                        ? Colors.green
+                                        : Colors.red,
                                   ),
                                   3.horizontalSpace,
                                   Text(
@@ -156,11 +170,15 @@ class ProductListTile extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   Icon(
-                                    (productModel?.priceInfo?.possibleExchange ?? false)
+                                    (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
                                         ? Icons.check_circle_outline
                                         : Icons.cancel_outlined,
                                     size: 15.r,
-                                    color: (productModel?.priceInfo?.possibleExchange ?? false)
+                                    color: (productModel
+                                                ?.priceInfo?.possibleExchange ??
+                                            false)
                                         ? Colors.green
                                         : Colors.red,
                                   ),
@@ -201,7 +219,8 @@ class ProductListTile extends StatelessWidget {
                     ),
                     child: Obx(() {
                       return productController.isProductLike.value &&
-                              productController.productLikeId.value == (productModel?.id ?? '')
+                              productController.productLikeId.value ==
+                                  (productModel?.id ?? '')
                           ? const CupertinoActivityIndicator(
                               color: Colors.red,
                             )

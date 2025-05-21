@@ -3,7 +3,7 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../controllers/filter_controller.dart';
 
 class FilterYearRangePicker extends StatefulWidget {
@@ -26,7 +26,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
     return Obx(() {
       return FilterOptionWidget(
         title: "Year",
-        subTitle: "${filterController.choseFirstYear.value} - ${filterController.choseLastYear.value}",
+        subTitle:
+            "${filterController.choseFirstYear.value} - ${filterController.choseLastYear.value}",
         onTap: () {
           showCustomDialog(context);
         },
@@ -41,7 +42,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
     scrollController2 = FixedExtentScrollController(initialItem: initialItem2);
     final ThemeData themeData = Theme.of(context);
     TextStyle? defaultStyle = themeData.textTheme.bodyMedium;
-    TextStyle? selectedStyle = themeData.textTheme.bodyLarge?.copyWith(color: themeData.colorScheme.secondary);
+    TextStyle? selectedStyle = themeData.textTheme.bodyLarge
+        ?.copyWith(color: themeData.colorScheme.secondary);
     final localLanguage = AppLocalizations.of(Get.context!)!;
 
     return showDialog(
@@ -51,10 +53,12 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(15.r),
           ),
-          child: LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+          child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
             widgetHeight = constraints.maxHeight;
             return Container(
-              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w).copyWith(bottom: 8.h),
+              padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 10.w)
+                  .copyWith(bottom: 8.h),
               height: MediaQuery.of(context).size.height * 0.4,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -66,7 +70,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    child: Text(localLanguage.year_range, style: themeData.textTheme.titleMedium),
+                    child: Text(localLanguage.year_range,
+                        style: themeData.textTheme.titleMedium),
                   ),
                   10.verticalSpace,
                   Expanded(
@@ -79,8 +84,9 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                               GestureDetector(
                                 onTapUp: _itemTapped,
                                 child: ListWheelScrollView.useDelegate(
-                                  childDelegate:
-                                      ListWheelChildBuilderDelegate(builder: (BuildContext context, int index) {
+                                  childDelegate: ListWheelChildBuilderDelegate(
+                                      builder:
+                                          (BuildContext context, int index) {
                                     if (index < 0 || index > items.length - 1) {
                                       return null;
                                     }
@@ -89,7 +95,9 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                       child: Obx(() {
                                         return Text(
                                           '$value',
-                                          style: (value == filterController.choseFirstYear.value)
+                                          style: (value ==
+                                                  filterController
+                                                      .choseFirstYear.value)
                                               ? selectedStyle
                                               : defaultStyle,
                                         );
@@ -100,7 +108,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                   itemExtent: 50,
                                   onSelectedItemChanged: (index) {
                                     setState(() {
-                                      filterController.choseFirstYear.value = items[index];
+                                      filterController.choseFirstYear.value =
+                                          items[index];
                                     });
                                   },
                                   physics: const FixedExtentScrollPhysics(),
@@ -109,7 +118,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                               const Divider(),
                               Center(
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
                                   height: 50,
                                   decoration: const BoxDecoration(
                                     border: Border(
@@ -135,8 +145,9 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                               GestureDetector(
                                 onTapUp: _itemTapped,
                                 child: ListWheelScrollView.useDelegate(
-                                  childDelegate:
-                                      ListWheelChildBuilderDelegate(builder: (BuildContext context, int index) {
+                                  childDelegate: ListWheelChildBuilderDelegate(
+                                      builder:
+                                          (BuildContext context, int index) {
                                     if (index < 0 || index > items.length - 1) {
                                       return null;
                                     }
@@ -145,7 +156,9 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                       child: Obx(() {
                                         return Text(
                                           '$value',
-                                          style: (value == filterController.choseLastYear.value)
+                                          style: (value ==
+                                                  filterController
+                                                      .choseLastYear.value)
                                               ? selectedStyle
                                               : defaultStyle,
                                         );
@@ -156,7 +169,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                                   itemExtent: 50,
                                   onSelectedItemChanged: (index) {
                                     setState(() {
-                                      filterController.choseLastYear.value = items[index];
+                                      filterController.choseLastYear.value =
+                                          items[index];
                                     });
                                   },
                                   physics: const FixedExtentScrollPhysics(),
@@ -165,7 +179,8 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
                               const Divider(),
                               Center(
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: 20.w),
+                                  margin:
+                                      EdgeInsets.symmetric(horizontal: 20.w),
                                   height: 50,
                                   decoration: const BoxDecoration(
                                     border: Border(
@@ -213,6 +228,7 @@ class _FilterYearRangePickerState extends State<FilterYearRangePicker> {
     double center = widgetHeight / 2;
     double changeBy = position.dy - center;
     double newPosition = scrollController.offset + changeBy;
-    scrollController.animateTo(newPosition, duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
+    scrollController.animateTo(newPosition,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeInOut);
   }
 }

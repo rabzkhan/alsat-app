@@ -13,7 +13,7 @@ import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
 import '../controller/product_controller.dart';
 import '../model/product_post_list_res.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 
 class UpdatePostView extends StatefulWidget {
   final ProductModel productModel;
@@ -45,13 +45,16 @@ class _UpdatePostViewState extends State<UpdatePostView> {
   }
 
   fetchUpdatedPostMedia() async {
-    await productController.getSingleProductDetails(widget.productModel.id!, external: true);
-    photoOfPost = (productController.selectExtraPostProductModel.value?.media ?? [])
-        .where((e) => (e.contentType ?? '').toLowerCase().contains('image'))
-        .toList();
-    videoOfPost = (productController.selectExtraPostProductModel.value?.media ?? [])
-        .where((e) => (e.contentType ?? '').toLowerCase().contains('video'))
-        .toList();
+    await productController.getSingleProductDetails(widget.productModel.id!,
+        external: true);
+    photoOfPost =
+        (productController.selectExtraPostProductModel.value?.media ?? [])
+            .where((e) => (e.contentType ?? '').toLowerCase().contains('image'))
+            .toList();
+    videoOfPost =
+        (productController.selectExtraPostProductModel.value?.media ?? [])
+            .where((e) => (e.contentType ?? '').toLowerCase().contains('video'))
+            .toList();
     setState(() {});
   }
 
@@ -90,16 +93,21 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                   Spacer(),
                   Obx(() {
                     return InkWell(
-                      onTap: productController.isUploadingMediaImageInPost.value ||
+                      onTap: productController
+                                  .isUploadingMediaImageInPost.value ||
                               productController.pickUpdateImageList.isEmpty
                           ? null
                           : () {
-                              if (productController.pickUpdateImageList.isEmpty) {
+                              if (productController
+                                  .pickUpdateImageList.isEmpty) {
                                 CustomSnackBar.showCustomToast(
                                   message: localLanguage.please_select_image,
                                 );
                               } else {
-                                productController.uploadMediaInPost(postId: widget.productModel.id ?? "").then((_) {
+                                productController
+                                    .uploadMediaInPost(
+                                        postId: widget.productModel.id ?? "")
+                                    .then((_) {
                                   fetchUpdatedPostMedia();
                                 });
                               }
@@ -113,8 +121,11 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                 horizontal: 10.w,
                               ),
                               decoration: BoxDecoration(
-                                color: productController.isUploadingMediaImageInPost.value ||
-                                        productController.pickUpdateImageList.isEmpty
+                                color: productController
+                                            .isUploadingMediaImageInPost
+                                            .value ||
+                                        productController
+                                            .pickUpdateImageList.isEmpty
                                     ? Get.theme.disabledColor
                                     : Get.theme.primaryColor,
                                 borderRadius: BorderRadius.circular(10.r),
@@ -167,7 +178,8 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                   clipBehavior: Clip.none,
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 7.w),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(
                                           15.r,
@@ -190,10 +202,13 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                             photoOfPost.remove(e);
                                             setState(() {});
                                             productController.deleteMediaInPost(
-                                                pId: widget.productModel.id ?? '', mediaId: e.id ?? '');
+                                                pId: widget.productModel.id ??
+                                                    '',
+                                                mediaId: e.id ?? '');
                                           } else {
                                             CustomSnackBar.showCustomToast(
-                                                message: localLanguage.you_can_not_delete_the_last_image);
+                                                message: localLanguage
+                                                    .you_can_not_delete_the_last_image);
                                           }
                                         },
                                         child: Image.asset(
@@ -210,19 +225,24 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ...List.generate(
-                                      productController.pickUpdateImageList.length,
+                                      productController
+                                          .pickUpdateImageList.length,
                                       (index) {
                                         return Stack(
                                           clipBehavior: Clip.none,
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 7.w),
                                               child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(
+                                                borderRadius:
+                                                    BorderRadius.circular(
                                                   15.r,
                                                 ),
                                                 child: Image.file(
-                                                  productController.pickUpdateImageList[index],
+                                                  productController
+                                                          .pickUpdateImageList[
+                                                      index],
                                                   fit: BoxFit.cover,
                                                   width: 80.w,
                                                   height: 70.h,
@@ -235,7 +255,9 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                               left: 0,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  productController.pickUpdateImageList.removeAt(index);
+                                                  productController
+                                                      .pickUpdateImageList
+                                                      .removeAt(index);
                                                 },
                                                 child: Image.asset(
                                                   xmarkIcon,
@@ -258,7 +280,9 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                     5.horizontalSpace,
                     GestureDetector(
                       onTap: () {
-                        productController.pickImage(context, external: true, pickItems: 4).then((onValue) {
+                        productController
+                            .pickImage(context, external: true, pickItems: 4)
+                            .then((onValue) {
                           List<File> files = onValue ?? [];
                           files.addAll(productController.pickUpdateImageList);
                           productController.pickUpdateImageList.clear();
@@ -273,7 +297,8 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
                             width: 1,
-                            color: context.theme.disabledColor.withValues(alpha: .4),
+                            color: context.theme.disabledColor
+                                .withValues(alpha: .4),
                           ),
                         ),
                         child: Column(
@@ -282,12 +307,14 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                             Icon(
                               CupertinoIcons.add,
                               size: 20.sp,
-                              color: context.theme.disabledColor.withValues(alpha: .4),
+                              color: context.theme.disabledColor
+                                  .withValues(alpha: .4),
                             ),
                             Text(
                               localLanguage.add,
                               style: regular.copyWith(
-                                color: context.theme.disabledColor.withValues(alpha: .4),
+                                color: context.theme.disabledColor
+                                    .withValues(alpha: .4),
                                 fontSize: 12.sp,
                               ),
                             )
@@ -311,25 +338,27 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                   Spacer(),
                   Obx(() {
                     return InkWell(
-                      onTap: productController.isUploadingMediaVideoInPost.value ||
-                              productController.pickUpdateVideoList.isEmpty
-                          ? null
-                          : () {
-                              if (productController.pickUpdateVideoList.isEmpty) {
-                                CustomSnackBar.showCustomToast(
-                                  message: localLanguage.please_pick_videos,
-                                );
-                              } else {
-                                productController
-                                    .uploadMediaInPost(
-                                  isVideoUpload: true,
-                                  postId: widget.productModel.id ?? "",
-                                )
-                                    .then((_) {
-                                  fetchUpdatedPostMedia();
-                                });
-                              }
-                            },
+                      onTap:
+                          productController.isUploadingMediaVideoInPost.value ||
+                                  productController.pickUpdateVideoList.isEmpty
+                              ? null
+                              : () {
+                                  if (productController
+                                      .pickUpdateVideoList.isEmpty) {
+                                    CustomSnackBar.showCustomToast(
+                                      message: localLanguage.please_pick_videos,
+                                    );
+                                  } else {
+                                    productController
+                                        .uploadMediaInPost(
+                                      isVideoUpload: true,
+                                      postId: widget.productModel.id ?? "",
+                                    )
+                                        .then((_) {
+                                      fetchUpdatedPostMedia();
+                                    });
+                                  }
+                                },
                       child: productController.isUploadingMediaVideoInPost.value
                           ? CupertinoActivityIndicator()
                           : Container(
@@ -338,8 +367,11 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                 horizontal: 10.w,
                               ),
                               decoration: BoxDecoration(
-                                color: productController.isUploadingMediaVideoInPost.value ||
-                                        productController.pickUpdateVideoList.isEmpty
+                                color: productController
+                                            .isUploadingMediaVideoInPost
+                                            .value ||
+                                        productController
+                                            .pickUpdateVideoList.isEmpty
                                     ? Get.theme.disabledColor
                                     : Get.theme.primaryColor,
                                 borderRadius: BorderRadius.circular(10.r),
@@ -389,27 +421,33 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                   clipBehavior: Clip.none,
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 7.w),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(
                                           15.r,
                                         ),
                                         child: FutureBuilder(
-                                            future: VideoThumbnail.thumbnailData(
+                                            future:
+                                                VideoThumbnail.thumbnailData(
                                               video: e.name ?? '',
                                               imageFormat: ImageFormat.JPEG,
                                               maxHeight: 400,
                                               quality: 100,
                                             ),
                                             builder: (context, snapshot) {
-                                              return snapshot.connectionState == ConnectionState.waiting
+                                              return snapshot.connectionState ==
+                                                      ConnectionState.waiting
                                                   ? Container(
-                                                      alignment: Alignment.center,
+                                                      alignment:
+                                                          Alignment.center,
                                                       width: 80.w,
-                                                      child: CupertinoActivityIndicator(),
+                                                      child:
+                                                          CupertinoActivityIndicator(),
                                                     )
                                                   : Stack(
-                                                      alignment: Alignment.center,
+                                                      alignment:
+                                                          Alignment.center,
                                                       children: [
                                                         Image.memory(
                                                           snapshot.data!,
@@ -434,7 +472,8 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                         onTap: () {
                                           videoOfPost.remove(e);
                                           productController.deleteMediaInPost(
-                                              pId: widget.productModel.id ?? '', mediaId: e.id ?? '');
+                                              pId: widget.productModel.id ?? '',
+                                              mediaId: e.id ?? '');
                                         },
                                         child: Image.asset(
                                           xmarkIcon,
@@ -450,43 +489,64 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     ...List.generate(
-                                      productController.pickUpdateVideoList.length,
+                                      productController
+                                          .pickUpdateVideoList.length,
                                       (index) {
                                         return Stack(
                                           clipBehavior: Clip.none,
                                           children: [
                                             Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 7.w),
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 7.w),
                                               child: ClipRRect(
-                                                borderRadius: BorderRadius.circular(
+                                                borderRadius:
+                                                    BorderRadius.circular(
                                                   15.r,
                                                 ),
                                                 child: FutureBuilder(
-                                                    future: VideoThumbnail.thumbnailData(
-                                                      video: productController.pickUpdateVideoList[index].path,
-                                                      imageFormat: ImageFormat.JPEG,
+                                                    future: VideoThumbnail
+                                                        .thumbnailData(
+                                                      video: productController
+                                                          .pickUpdateVideoList[
+                                                              index]
+                                                          .path,
+                                                      imageFormat:
+                                                          ImageFormat.JPEG,
                                                       maxHeight: 400,
                                                       quality: 100,
                                                     ),
-                                                    builder: (context, snapshot) {
-                                                      return snapshot.connectionState == ConnectionState.waiting
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      return snapshot
+                                                                  .connectionState ==
+                                                              ConnectionState
+                                                                  .waiting
                                                           ? Container(
-                                                              alignment: Alignment.center,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               width: 80.w,
-                                                              child: CupertinoActivityIndicator(),
+                                                              child:
+                                                                  CupertinoActivityIndicator(),
                                                             )
                                                           : Stack(
-                                                              alignment: Alignment.center,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               children: [
                                                                 Image.memory(
-                                                                  snapshot.data!,
+                                                                  snapshot
+                                                                      .data!,
                                                                   width: 80.w,
-                                                                  fit: BoxFit.cover,
+                                                                  fit: BoxFit
+                                                                      .cover,
                                                                 ),
                                                                 Icon(
-                                                                  Icons.play_circle,
+                                                                  Icons
+                                                                      .play_circle,
                                                                   size: 20.sp,
-                                                                  color: Colors.red,
+                                                                  color: Colors
+                                                                      .red,
                                                                 ),
                                                               ],
                                                             );
@@ -499,7 +559,9 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                                               left: 0,
                                               child: GestureDetector(
                                                 onTap: () {
-                                                  productController.pickUpdateVideoList.removeAt(index);
+                                                  productController
+                                                      .pickUpdateVideoList
+                                                      .removeAt(index);
                                                 },
                                                 child: Image.asset(
                                                   xmarkIcon,
@@ -522,7 +584,9 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                     5.horizontalSpace,
                     GestureDetector(
                       onTap: () {
-                        productController.pickVideo(context, external: true).then((value) {
+                        productController
+                            .pickVideo(context, external: true)
+                            .then((value) {
                           if (value != null) {
                             productController.pickUpdateVideoList.add(value);
                             productController.pickUpdateVideoList.refresh();
@@ -537,7 +601,8 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                           borderRadius: BorderRadius.circular(15.r),
                           border: Border.all(
                             width: 1,
-                            color: context.theme.disabledColor.withValues(alpha: .4),
+                            color: context.theme.disabledColor
+                                .withValues(alpha: .4),
                           ),
                         ),
                         child: Column(
@@ -546,12 +611,14 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                             Icon(
                               CupertinoIcons.add,
                               size: 20.sp,
-                              color: context.theme.disabledColor.withValues(alpha: .4),
+                              color: context.theme.disabledColor
+                                  .withValues(alpha: .4),
                             ),
                             Text(
                               localLanguage.add,
                               style: regular.copyWith(
-                                color: context.theme.disabledColor.withValues(alpha: .4),
+                                color: context.theme.disabledColor
+                                    .withValues(alpha: .4),
                                 fontSize: 12.sp,
                               ),
                             )
@@ -644,17 +711,27 @@ class _UpdatePostViewState extends State<UpdatePostView> {
                   onPressed: productController.isUpdatingPost.value
                       ? null
                       : () {
-                          productController.postUpdateFromKey.currentState?.save();
-                          if (productController.postUpdateFromKey.currentState!.validate()) {
+                          productController.postUpdateFromKey.currentState
+                              ?.save();
+                          if (productController.postUpdateFromKey.currentState!
+                              .validate()) {
                             Map<String, dynamic> data = {
-                              "title": productController.postUpdateFromKey.currentState?.value['title'],
-                              "description": productController.postUpdateFromKey.currentState?.value['description'],
+                              "title": productController.postUpdateFromKey
+                                  .currentState?.value['title'],
+                              "description": productController.postUpdateFromKey
+                                  .currentState?.value['description'],
                               "price_info": {
-                                "price": double.parse(
-                                    productController.postUpdateFromKey.currentState?.value['price'].toString() ?? '')
+                                "price": double.parse(productController
+                                        .postUpdateFromKey
+                                        .currentState
+                                        ?.value['price']
+                                        .toString() ??
+                                    '')
                               },
                             };
-                            productController.updatePost(postId: widget.productModel.id ?? '', data: data);
+                            productController.updatePost(
+                                postId: widget.productModel.id ?? '',
+                                data: data);
                           }
                         },
                   child: productController.isUpdatingPost.value

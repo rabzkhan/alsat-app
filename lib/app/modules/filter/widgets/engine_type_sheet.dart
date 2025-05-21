@@ -2,7 +2,7 @@ import 'package:alsat/config/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:alsat/l10n/app_localizations.dart';
 import '../../../../config/theme/app_text_theme.dart';
 
 class EngineTypeSheet extends StatefulWidget {
@@ -103,10 +103,12 @@ class _EngineTypeSheetState extends State<EngineTypeSheet> {
                         return Container(
                           alignment: Alignment.center,
                           width: Get.width * .4,
-                          padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 20.w),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 7.h, horizontal: 20.w),
                           decoration: BoxDecoration(
                             border: Border.all(
-                              color: widget.selectedData.value == widget.data[index]
+                              color: widget.selectedData.value ==
+                                      widget.data[index]
                                   ? AppColors.primary.withOpacity(.4)
                                   : Colors.transparent,
                             ),
