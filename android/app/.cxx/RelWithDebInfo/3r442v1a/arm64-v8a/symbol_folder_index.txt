@@ -1,0 +1,1 @@
+/Users/mac/Desktop/Personal Projects/ALSAT/build/app/intermediates/cxx/RelWithDebInfo/3r442v1a/obj/arm64-v8a
